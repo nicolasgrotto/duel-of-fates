@@ -4,3 +4,6 @@
 
 # Local agent rules (template in AGENTS.md.example)
 AGENTS.md
+
+# Generated from localization/strings.csv on import
+*.translation

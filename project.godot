@@ -10,22 +10,37 @@ config_version=5
 
 [application]
 
-config/name="gd_sw_duel_of_fates"
+config/name="Duel of Fates"
+run/main_scene="res://screens/menu/main_menu.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [autoload]
 
 MCPRuntimeServer="*res://addons/godot_mcp_toolkit/runtime/mcp_runtime_server.gd"
+Settings="*res://core/settings.gd"
+SceneRouter="*res://core/scene_router.gd"
 
 [display]
 
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/size/window_width_override=1600
+window/size/window_height_override=900
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/godot_mcp_toolkit/plugin.cfg")
+
+[gui]
+
+theme/custom="res://ui/theme/main_theme.tres"
+
+[internationalization]
+
+locale/translations=["res://localization/strings.pt_BR.translation", "res://localization/strings.en.translation"]
 
 [physics]
 
@@ -36,3 +51,4 @@ enabled=PackedStringArray("res://addons/godot_mcp_toolkit/plugin.cfg")
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.0196, 0.0275, 0.051, 1)

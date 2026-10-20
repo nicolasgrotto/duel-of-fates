@@ -1,0 +1,73 @@
+keys,pt_BR,en
+GAME_TITLE,DUEL OF FATES,DUEL OF FATES
+GAME_TAGLINE,UM DUELO DE LÂMINAS DE ENERGIA,A DUEL OF ENERGY BLADES
+MENU_DUEL,Duelar,Duel
+MENU_TRAINING,Treino,Training
+MENU_QUIT,Sair,Quit
+MENU_DIFFICULTY,Dificuldade · {value},Difficulty · {value}
+DIFFICULTY_EASY,Fácil,Easy
+DIFFICULTY_NORMAL,Normal,Normal
+DIFFICULTY_HARD,Difícil,Hard
+DIFFICULTY_BOSS,Chefe,Boss
+CHARACTER_GUARDIAN,Guardião,Guardian
+CHARACTER_SHADOW,Sombra,Shadow
+ARENA_TRAINING_PLATFORM,Plataforma de Treino,Training Platform
+HUD_ROUND,ROUND {number},ROUND {number}
+HUD_ROUND_FINAL,ROUND FINAL,FINAL ROUND
+HUD_KO,K.O.,K.O.
+HUD_WOUND_ARM,Braço ferido,Wounded arm
+HUD_WOUND_LEG,Perna ferida,Wounded leg
+HINT_PAUSE,pausar,pause
+HINT_SKIP,pular,skip
+HINT_CONFIRM,confirmar,confirm
+HINT_BACK,voltar,back
+HINT_CHANGE,mudar,change
+PAUSE_TITLE,PAUSADO,PAUSED
+PAUSE_CONTINUE,Continuar,Continue
+PAUSE_RESTART,Reiniciar duelo,Restart duel
+PAUSE_QUIT,Sair para o menu,Quit to menu
+RESULT_VICTORY,VITÓRIA,VICTORY
+RESULT_DEFEAT,DERROTA,DEFEAT
+RESULT_WINNER,{name} venceu o duelo,{name} won the duel
+RESULT_DURATION,Duração · {time},Duration · {time}
+RESULT_REMATCH,Revanche,Rematch
+RESULT_MENU,Menu principal,Main menu
+STAT_HITS,Golpes acertados,Hits landed
+STAT_DAMAGE,Dano causado,Damage dealt
+STAT_BLOCKS,Defesas,Blocks
+STAT_PARRIES,Parries,Parries
+STAT_PERFECT_PARRIES,Parries perfeitos,Perfect parries
+STAT_GUARD_BREAKS,Quebras de guarda,Guard breaks
+STAT_SHOVES,Empurrões,Shoves
+STAT_BEST_COMBO,Maior sequência,Longest combo
+REPLAY_LABEL,REPLAY,REPLAY
+TRAINING_DUMMY,Boneco · {behavior},Dummy · {behavior}
+DUMMY_STAND,parado,standing
+DUMMY_GUARD,em guarda,guarding
+DUMMY_ATTACK,atacando,attacking
+DUMMY_PLAYBACK,reproduzindo,playing back
+TRAINING_RECORDING,Gravando · {seconds} s,Recording · {seconds} s
+TRAINING_RECORDED,Gravação · {seconds} s,Recording · {seconds} s
+TRAINING_NO_RECORDING,Sem gravação,No recording
+TRAINING_FRAME_DATA,{move} · {result} · {advantage} s,{move} · {result} · {advantage} s
+TRAINING_PLAYER,Jogador · {commands},Player · {commands}
+TRAINING_DUMMY_COMMANDS,Boneco · {commands},Dummy · {commands}
+HINT_DUMMY,boneco,dummy
+HINT_RECORD,gravar,record
+HINT_PLAYBACK,reproduzir,play back
+HINT_BOXES,caixas,boxes
+FRAME_HIT,acertou,hit
+FRAME_BLOCK,bloqueado,blocked
+FRAME_PARRY,aparado,parried
+FRAME_PERFECT_PARRY,aparado perfeito,perfect parry
+FRAME_GUARD_BREAK,guarda quebrada,guard broken
+FRAME_SHOVE,empurrão,shove
+FRAME_EVADE_SUCCESS,esquivado,evaded
+MOVE_KIND_LIGHT,Rápido,Light
+MOVE_KIND_HEAVY,Forte,Heavy
+MOVE_KIND_FORWARD_HEAVY,Forte de avanço,Forward heavy
+MOVE_KIND_COUNTER,Contra-ataque,Counterattack
+MOVE_KIND_SHOVE,Empurrão,Shove
+MOVE_KIND_AERIAL_LIGHT,Aéreo rápido,Aerial light
+MOVE_KIND_AERIAL_HEAVY,Aéreo forte,Aerial heavy
+MOVE_KIND_LOCK_FINISH,Disputa de lâminas,Blade lock
