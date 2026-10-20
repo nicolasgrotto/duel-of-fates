@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="MoveData" format=3]
+
+[ext_resource type="Script" path="res://data/move_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"shove"
+kind = 4
+startup = 0.2
+active = 0.08
+recovery = 0.3
+damage = 0.0
+vigor_cost = 10.0
+block_vigor_cost = 0.0
+knockback = 90.0
+block_push = 0.0
+hitstun = 0.0
+blockstun = 0.0
+lunge = 15.0
+reach = 50.0
+hitbox_bottom = 40.0
+hitbox_top = 140.0
+blade_reach = 0.0
+can_blade_lock = false
+wound_limb = 0
+finisher_limb = 0
+blade_angle_windup = -60.0
+blade_angle_strike = -60.0

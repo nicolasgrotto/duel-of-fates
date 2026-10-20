@@ -1,0 +1,139 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Script" path="res://data/character_data.gd" id="1_script"]
+[ext_resource type="Script" path="res://data/move_data.gd" id="2_move"]
+[ext_resource type="Resource" path="res://data/characters/common/counter.tres" id="3_counter"]
+[ext_resource type="Resource" path="res://data/characters/common/shove.tres" id="4_shove"]
+[ext_resource type="Resource" path="res://data/characters/common/aerial_light.tres" id="5_aerial_light"]
+[ext_resource type="Resource" path="res://data/characters/common/aerial_heavy.tres" id="6_aerial_heavy"]
+[ext_resource type="Resource" path="res://data/characters/guardian/guardian_ai.tres" id="7_ai"]
+
+[sub_resource type="Resource" id="guardian_light_1"]
+script = ExtResource("2_move")
+id = &"guardian_light_1"
+kind = 0
+startup = 0.1
+active = 0.1
+recovery = 0.2
+damage = 10.0
+vigor_cost = 8.0
+block_vigor_cost = 8.0
+knockback = 40.0
+block_push = 30.0
+hitstun = 0.35
+blockstun = 0.24
+lunge = 20.0
+reach = 100.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 60.0
+can_blade_lock = false
+wound_limb = 0
+finisher_limb = 1
+blade_angle_windup = -150.0
+blade_angle_strike = 20.0
+
+[sub_resource type="Resource" id="guardian_light_2"]
+script = ExtResource("2_move")
+id = &"guardian_light_2"
+kind = 0
+startup = 0.1
+active = 0.1
+recovery = 0.2
+damage = 10.0
+vigor_cost = 8.0
+block_vigor_cost = 8.0
+knockback = 40.0
+block_push = 30.0
+hitstun = 0.35
+blockstun = 0.24
+lunge = 20.0
+reach = 100.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 60.0
+can_blade_lock = false
+wound_limb = 0
+finisher_limb = 1
+blade_angle_windup = 70.0
+blade_angle_strike = -110.0
+
+[sub_resource type="Resource" id="guardian_heavy"]
+script = ExtResource("2_move")
+id = &"guardian_heavy"
+kind = 1
+startup = 0.32
+active = 0.12
+recovery = 0.42
+damage = 24.0
+vigor_cost = 24.0
+block_vigor_cost = 30.0
+knockback = 120.0
+block_push = 60.0
+hitstun = 0.5
+blockstun = 0.3
+lunge = 40.0
+reach = 115.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 70.0
+can_blade_lock = true
+wound_limb = 1
+finisher_limb = 1
+blade_angle_windup = -170.0
+blade_angle_strike = 40.0
+
+[sub_resource type="Resource" id="guardian_forward_heavy"]
+script = ExtResource("2_move")
+id = &"guardian_forward_heavy"
+kind = 2
+startup = 0.36
+active = 0.12
+recovery = 0.52
+damage = 26.0
+vigor_cost = 30.0
+block_vigor_cost = 32.0
+knockback = 140.0
+block_push = 70.0
+hitstun = 0.5
+blockstun = 0.3
+lunge = 110.0
+reach = 115.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 70.0
+can_blade_lock = true
+wound_limb = 2
+finisher_limb = 2
+blade_angle_windup = -160.0
+blade_angle_strike = 60.0
+
+[resource]
+script = ExtResource("1_script")
+id = &"guardian"
+name_key = "CHARACTER_GUARDIAN"
+health = 5
+vigor = 4
+blade = 4
+defense = 6
+agility = 4
+flow = 5
+light_chain = Array[ExtResource("2_move")]([SubResource("guardian_light_1"), SubResource("guardian_light_2")])
+heavy = SubResource("guardian_heavy")
+forward_heavy = SubResource("guardian_forward_heavy")
+counter = ExtResource("3_counter")
+shove = ExtResource("4_shove")
+aerial_light = ExtResource("5_aerial_light")
+aerial_heavy = ExtResource("6_aerial_heavy")
+guard_break_stun = 1.2
+block_cost_multiplier = 0.8
+vigor_on_hit = 0.0
+double_jump_ratio = 0.7
+air_dash_vigor = 18.0
+ai_profile = ExtResource("7_ai")
+blade_color = Color(0.498, 0.894, 1, 1)
+cloak_color = Color(0.42, 0.353, 0.282, 1)
+body_color = Color(0.18, 0.161, 0.145, 1)
+hood_up = false
+cloak_to_floor = false
+guard_style = 0

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="CombatConfig" format=3]
+
+[ext_resource type="Script" path="res://data/balance/combat_config.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/balance/blade_lock_config.tres" id="2_lock"]
+[ext_resource type="Resource" path="res://data/balance/consequence_config.tres" id="3_consequences"]
+
+[resource]
+script = ExtResource("1_script")
+blade_lock = ExtResource("2_lock")
+consequences = ExtResource("3_consequences")

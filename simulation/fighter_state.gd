@@ -1,0 +1,220 @@
+class_name FighterState
+extends RefCounted
+
+enum State {
+	IDLE,
+	WALKING,
+	JUMPING,
+	ATTACKING,
+	HEAVY_ATTACK,
+	BLOCKING,
+	DODGING,
+	BLADE_LOCK,
+	HIT,
+	STAGGERED,
+	STUNNED,
+	DEAD,
+}
+enum Phase { NONE, STARTUP, ACTIVE, RECOVERY }
+enum DodgeKind { NONE, GROUND, AIR, EVADE }
+enum Action { NONE, JUMP, BLOCK, LIGHT, HEAVY, SHOVE, EVADE, DODGE }
+enum Wound { NONE, ARM, LEG }
+
+const NO_PARRY: int = -1
+
+var index: int = 0
+var character: CharacterData
+var hold_to_lock: bool = false
+
+var max_health: float = 100.0
+var max_vigor: float = 100.0
+var walk_speed: float = 260.0
+var jump_velocity: float = 820.0
+var vigor_regen: float = 25.0
+var blade_multiplier: float = 1.0
+var defense_multiplier: float = 1.0
+var agility_multiplier: float = 1.0
+var perfect_parry_ticks: int = 5
+
+var health: float = 100.0
+var vigor: float = 100.0
+var regen_delay_ticks: int = 0
+
+var x: float = 0.0
+var y: float = 0.0
+var vx: float = 0.0
+var vy: float = 0.0
+var facing: int = 1
+var on_ground: bool = true
+
+var state: State = State.IDLE
+var state_ticks: int = 0
+var stun_ticks: int = 0
+var freeze_ticks: int = 0
+
+var move: MoveData
+var move_phase: Phase = Phase.NONE
+var phase_ticks: int = 0
+var move_hit_done: bool = false
+var move_connected: bool = false
+var chain_index: int = 0
+
+var dodge_kind: DodgeKind = DodgeKind.NONE
+var dodge_direction: int = 0
+var invulnerable_ticks: int = 0
+var evade_window_ticks: int = 0
+var evade_succeeded: bool = false
+var evade_streak: int = 0
+
+var parry_ticks: int = NO_PARRY
+var parry_lockout_ticks: int = 0
+
+var buffered_action: Action = Action.NONE
+var buffer_ticks: int = 0
+
+var jumps_used: int = 0
+var air_dash_used: bool = false
+var air_attack_used: bool = false
+
+var exhausted: bool = false
+var exhausted_ticks: int = 0
+var wound: Wound = Wound.NONE
+var wounded_this_round: bool = false
+
+var lock_presses: int = 0
+var lock_press_cooldown: int = 0
+var lock_hold_ticks: int = 0
+
+var stagger_counterable: bool = false
+var combo_taken: int = 0
+var ticks_since_damage: int = 0
+var round_wins: int = 0
+
+var finisher_limb: MoveData.Limb = MoveData.Limb.NONE
+var finisher_from_front: bool = true
+
+
+func setup(fighter_index: int, data: CharacterData, config: CombatConfig) -> void:
+	index = fighter_index
+	character = data
+	max_health = config.health_base * config.attribute_multiplier(data.health)
+	max_vigor = config.vigor_base * config.attribute_multiplier(data.vigor)
+	vigor_regen = config.vigor_regen * config.attribute_multiplier(data.vigor)
+	blade_multiplier = config.attribute_multiplier(data.blade)
+	defense_multiplier = config.attribute_multiplier(data.defense)
+	agility_multiplier = config.attribute_multiplier(data.agility)
+	walk_speed = config.walk_speed * agility_multiplier
+	jump_velocity = config.jump_velocity * agility_multiplier
+	var perfect_window: float = config.perfect_parry_window + (blade_multiplier - 1.0) * config.perfect_parry_blade_bonus
+	perfect_parry_ticks = Ticks.from_seconds(perfect_window)
+
+
+func is_airborne() -> bool:
+	return not on_ground
+
+
+func is_attacking() -> bool:
+	return state == State.ATTACKING or state == State.HEAVY_ATTACK
+
+
+func is_active() -> bool:
+	return is_attacking() and move_phase == Phase.ACTIVE
+
+
+func is_free() -> bool:
+	return state == State.IDLE or state == State.WALKING
+
+
+func is_alive() -> bool:
+	return state != State.DEAD
+
+
+func is_air_dashing() -> bool:
+	return state == State.DODGING and dodge_kind == DodgeKind.AIR
+
+
+func is_invulnerable() -> bool:
+	return invulnerable_ticks > 0
+
+
+func vigor_ratio() -> float:
+	return vigor / max_vigor if max_vigor > 0.0 else 0.0
+
+
+func health_ratio() -> float:
+	return health / max_health if max_health > 0.0 else 0.0
+
+
+func ticks_left_in_move() -> int:
+	if move == null:
+		return 0
+	match move_phase:
+		Phase.STARTUP:
+			return move.total_ticks() - phase_ticks
+		Phase.ACTIVE:
+			return move.active_ticks() + move.recovery_ticks() - phase_ticks
+		Phase.RECOVERY:
+			return move.recovery_ticks() - phase_ticks
+	return 0
+
+
+func reset_for_round(start_x: float, start_facing: int) -> void:
+	health = max_health
+	vigor = max_vigor
+	regen_delay_ticks = 0
+	x = start_x
+	y = 0.0
+	vx = 0.0
+	vy = 0.0
+	facing = start_facing
+	on_ground = true
+	state = State.IDLE
+	state_ticks = 0
+	stun_ticks = 0
+	freeze_ticks = 0
+	clear_move()
+	chain_index = 0
+	dodge_kind = DodgeKind.NONE
+	invulnerable_ticks = 0
+	evade_window_ticks = 0
+	evade_streak = 0
+	parry_ticks = NO_PARRY
+	parry_lockout_ticks = 0
+	buffered_action = Action.NONE
+	buffer_ticks = 0
+	jumps_used = 0
+	air_dash_used = false
+	air_attack_used = false
+	exhausted = false
+	exhausted_ticks = 0
+	wound = Wound.NONE
+	wounded_this_round = false
+	lock_presses = 0
+	lock_press_cooldown = 0
+	lock_hold_ticks = 0
+	stagger_counterable = false
+	combo_taken = 0
+	ticks_since_damage = 0
+	finisher_limb = MoveData.Limb.NONE
+	finisher_from_front = true
+
+
+func clear_move() -> void:
+	move = null
+	move_phase = Phase.NONE
+	phase_ticks = 0
+	move_hit_done = false
+	move_connected = false
+
+
+func capture() -> Dictionary:
+	var snapshot: Dictionary = {}
+	for property in get_property_list():
+		if property["usage"] & PROPERTY_USAGE_SCRIPT_VARIABLE:
+			snapshot[property["name"]] = get(property["name"])
+	return snapshot
+
+
+func restore(snapshot: Dictionary) -> void:
+	for key in snapshot:
+		set(key, snapshot[key])

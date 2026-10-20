@@ -1,0 +1,6 @@
+[gd_resource type="Resource" script_class="BladeLockConfig" format=3]
+
+[ext_resource type="Script" path="res://data/balance/blade_lock_config.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")

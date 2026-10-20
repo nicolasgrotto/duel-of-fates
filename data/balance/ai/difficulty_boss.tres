@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="AiDifficultyData" format=3]
+
+[ext_resource type="Script" path="res://data/balance/ai/ai_difficulty_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"boss"
+name_key = "DIFFICULTY_BOSS"
+reaction_time = 0.16
+defend_chance = 0.9
+parry_chance = 0.8
+perfect_parry_chance = 0.5
+shove_chance = 0.5
+attack_warning = 0.0
+smart_punish = true
+whiff_bait_chance = 0.5
+error_chance = 0.02
+habit_memory = true
+lock_reaction = 0.3
+lock_presses_per_second = 14.0
