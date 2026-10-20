@@ -15,6 +15,6 @@ attack_warning = 0.0
 smart_punish = true
 whiff_bait_chance = 0.5
 error_chance = 0.06
-habit_memory = true
+habit_weight = 0.35
 lock_reaction = 0.3
 lock_presses_per_second = 12.0

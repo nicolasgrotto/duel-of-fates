@@ -1,0 +1,295 @@
+class_name AiController
+extends FighterController
+
+enum Plan { WAIT, APPROACH, RETREAT, GUARD }
+
+const PERFECT_PARRY_TARGET: int = 2
+const PARRY_TARGET: int = 7
+const EVADE_TARGET: int = 2
+const REACH_MARGIN: float = 20.0
+
+var difficulty: AiDifficultyData
+var profile: AiProfileData
+var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+var memory: AiHabitMemory
+var decision: String = ""
+
+var _plan: Plan = Plan.WAIT
+var _plan_ticks: int = 0
+var _think_ticks: int = 0
+var _press_command: int = 0
+var _press_hold: int = 0
+var _press_delay: int = 0
+var _press_move: int = 0
+var _after_press_plan: Plan = Plan.WAIT
+var _after_press_ticks: int = 0
+var _chain_left: int = 0
+var _lock_press_ticks: int = 0
+
+
+func _init(difficulty_data: AiDifficultyData, profile_data: AiProfileData, ai_seed: int) -> void:
+	difficulty = difficulty_data
+	profile = profile_data
+	rng.seed = ai_seed
+	memory = AiHabitMemory.new(difficulty.habit_window)
+
+
+func produce(sim: MatchSimulation, fighter_index: int, intent: Intent) -> void:
+	intent.clear()
+	var me: FighterState = sim.fighters[fighter_index]
+	var opponent: FighterState = sim.opponent_of(me)
+	if difficulty.habit_weight > 0.0:
+		memory.observe(opponent)
+	if sim.phase != MatchSimulation.Phase.FIGHT or not me.is_alive():
+		_reset_plan()
+		return
+	if me.state == FighterState.State.BLADE_LOCK:
+		_press_in_lock(sim, intent)
+		return
+	_think_ticks -= 1
+	if _think_ticks <= 0:
+		_think(sim, me, opponent)
+		_think_ticks = _reaction_ticks()
+	_execute(me, intent)
+
+
+func debug_lines() -> PackedStringArray:
+	return PackedStringArray([
+		"ai %s  plan %s  think %d" % [decision, Plan.keys()[_plan].to_lower(), _think_ticks],
+	])
+
+
+func _reaction_ticks() -> int:
+	var seconds: float = difficulty.reaction_time * (1.0 + rng.randf() * difficulty.reaction_jitter)
+	return maxi(Ticks.from_seconds(maxf(seconds, difficulty.reaction_floor)), 1)
+
+
+func _reset_plan() -> void:
+	_plan = Plan.WAIT
+	_press_command = 0
+	_chain_left = 0
+	_lock_press_ticks = 0
+
+
+func _think(sim: MatchSimulation, me: FighterState, opponent: FighterState) -> void:
+	if _chain_left > 0 and me.is_attacking():
+		return
+	var gap: float = CombatGeometry.gap(sim.config, me, opponent)
+	if rng.randf() < difficulty.error_chance:
+		_make_mistake()
+		return
+	if _try_defend(me, opponent, gap):
+		return
+	if _try_punish(sim, me, opponent, gap):
+		return
+	if _try_shove(me, opponent, gap):
+		return
+	if _try_recover(me, gap):
+		return
+	if _try_attack(me, gap):
+		return
+	_position(me, opponent, gap)
+
+
+func _try_defend(me: FighterState, opponent: FighterState, gap: float) -> bool:
+	if not opponent.is_attacking() or opponent.move == null or opponent.move_phase != FighterState.Phase.STARTUP:
+		return false
+	var move: MoveData = opponent.move
+	var ticks_to_active: int = move.startup_ticks() - opponent.phase_ticks
+	if move.kind == MoveData.Kind.SHOVE:
+		return _answer_shove(me, gap, ticks_to_active)
+	if gap > move.reach + move.lunge + REACH_MARGIN:
+		if gap <= move.reach + move.lunge + REACH_MARGIN * 3.0 and rng.randf() < difficulty.whiff_bait_chance:
+			_set_plan(Plan.RETREAT, ticks_to_active + move.active_ticks(), "whiff bait")
+			return true
+		return false
+	var defend_chance: float = difficulty.defend_chance * lerpf(0.6, 1.4, profile.defense)
+	defend_chance *= 1.0 + difficulty.habit_weight * memory.light_share()
+	if rng.randf() > defend_chance:
+		return false
+	var guard_ticks: int = ticks_to_active + move.active_ticks() + 4
+	if move.is_heavy():
+		var parry_chance: float = difficulty.parry_chance * lerpf(0.5, 1.5, profile.parry_bias)
+		parry_chance += difficulty.habit_weight * memory.heavy_share()
+		if rng.randf() < parry_chance:
+			var perfect: bool = rng.randf() < difficulty.perfect_parry_chance
+			var target: int = PERFECT_PARRY_TARGET if perfect else PARRY_TARGET
+			var delay: int = ticks_to_active - 1 - target
+			if delay >= 0:
+				_schedule(Intent.Command.BLOCK, delay, 0, Plan.GUARD, guard_ticks - delay, "perfect parry" if perfect else "parry")
+				return true
+		if rng.randf() < profile.dodge_bias * 0.5 and ticks_to_active - 1 - EVADE_TARGET >= 0:
+			_schedule(Intent.Command.EVADE, ticks_to_active - 1 - EVADE_TARGET, 0, Plan.WAIT, 0, "evade")
+			return true
+	_set_plan(Plan.GUARD, guard_ticks, "guard")
+	return true
+
+
+func _answer_shove(me: FighterState, gap: float, ticks_to_active: int) -> bool:
+	var light: MoveData = me.character.light_chain[0]
+	if gap <= light.reach and ticks_to_active > light.startup_ticks() and me.vigor >= light.vigor_cost:
+		_schedule(Intent.Command.LIGHT, 0, 0, Plan.WAIT, 0, "beat shove")
+	else:
+		_set_plan(Plan.RETREAT, ticks_to_active + 4, "avoid shove")
+	return true
+
+
+func _try_punish(sim: MatchSimulation, me: FighterState, opponent: FighterState, gap: float) -> bool:
+	var light: MoveData = me.character.light_chain[0]
+	var heavy: MoveData = me.character.heavy
+	var opening: int = _opening_ticks(sim, opponent)
+	if opening <= light.startup_ticks():
+		return false
+	if gap > light.reach + light.lunge:
+		if opponent.state == FighterState.State.STUNNED:
+			_set_plan(Plan.APPROACH, Ticks.from_seconds(difficulty.reaction_time), "close in")
+			return true
+		return false
+	if opponent.state == FighterState.State.STAGGERED and opponent.stagger_counterable:
+		_schedule(Intent.Command.LIGHT, 0, 0, Plan.WAIT, 0, "counter")
+	elif _heavy_fits(me, heavy, opening, gap) and (opponent.state == FighterState.State.STUNNED or difficulty.smart_punish):
+		_schedule(Intent.Command.HEAVY, 0, 0, Plan.WAIT, 0, "punish heavy")
+	else:
+		_schedule(Intent.Command.LIGHT, 0, 0, Plan.WAIT, 0, "punish")
+		_chain_left = me.character.light_chain.size() - 1
+	return true
+
+
+func _opening_ticks(sim: MatchSimulation, opponent: FighterState) -> int:
+	match opponent.state:
+		FighterState.State.STAGGERED, FighterState.State.STUNNED:
+			return opponent.stun_ticks
+		FighterState.State.ATTACKING, FighterState.State.HEAVY_ATTACK:
+			if opponent.move_phase == FighterState.Phase.RECOVERY:
+				return opponent.ticks_left_in_move()
+		FighterState.State.DODGING:
+			if opponent.dodge_kind == FighterState.DodgeKind.EVADE and opponent.evade_window_ticks == 0:
+				return Ticks.from_seconds(sim.config.evade_duration) - opponent.state_ticks
+	return 0
+
+
+func _heavy_fits(me: FighterState, heavy: MoveData, opening: int, gap: float) -> bool:
+	return me.vigor >= heavy.vigor_cost and opening >= heavy.startup_ticks() + 2 and gap <= heavy.reach + heavy.lunge
+
+
+func _try_shove(me: FighterState, opponent: FighterState, gap: float) -> bool:
+	if opponent.state != FighterState.State.BLOCKING:
+		return false
+	var shove: MoveData = me.character.shove
+	var chance: float = difficulty.shove_chance * lerpf(0.5, 1.5, profile.shove_bias)
+	chance += difficulty.habit_weight * memory.guard_share()
+	if rng.randf() > chance or me.vigor < shove.vigor_cost:
+		return false
+	if gap > shove.reach + shove.lunge:
+		_set_plan(Plan.APPROACH, Ticks.from_seconds(difficulty.reaction_time), "close to shove")
+		return true
+	_schedule(Intent.Command.LIGHT, 0, Intent.Command.BLOCK, Plan.WAIT, 0, "shove")
+	return true
+
+
+func _try_recover(me: FighterState, gap: float) -> bool:
+	if me.vigor_ratio() >= profile.low_vigor_ratio or gap >= profile.safe_gap:
+		return false
+	_set_plan(Plan.RETREAT, Ticks.from_seconds(difficulty.reaction_time * 2.0), "recover")
+	return true
+
+
+func _try_attack(me: FighterState, gap: float) -> bool:
+	var light: MoveData = me.character.light_chain[0]
+	var heavy: MoveData = me.character.heavy
+	if gap > light.reach + light.lunge:
+		return false
+	if rng.randf() > lerpf(0.3, 1.0, profile.aggression):
+		return false
+	var warning: int = Ticks.from_seconds(difficulty.attack_warning)
+	var wants_heavy: bool = rng.randf() < profile.heavy_ratio and me.vigor >= heavy.vigor_cost
+	if wants_heavy:
+		_schedule(Intent.Command.HEAVY, warning, 0, Plan.WAIT, 0, "heavy")
+	elif me.vigor >= light.vigor_cost:
+		_schedule(Intent.Command.LIGHT, warning, 0, Plan.WAIT, 0, "light")
+		_chain_left = rng.randi_range(0, me.character.light_chain.size() - 1)
+	else:
+		_set_plan(Plan.GUARD, Ticks.from_seconds(difficulty.reaction_time), "guard, no vigor")
+	return true
+
+
+func _position(me: FighterState, opponent: FighterState, gap: float) -> void:
+	var think_ticks: int = Ticks.from_seconds(difficulty.reaction_time)
+	var light: MoveData = me.character.light_chain[0]
+	if gap > profile.preferred_gap + light.reach * 0.5:
+		if rng.randf() < profile.patience * 0.5:
+			_set_plan(Plan.WAIT, think_ticks, "study")
+		else:
+			_set_plan(Plan.APPROACH, think_ticks, "approach")
+	elif gap < profile.preferred_gap * 0.5 and rng.randf() < profile.patience:
+		_set_plan(Plan.RETREAT, think_ticks, "space")
+	elif opponent.is_free() and rng.randf() < profile.defense * 0.5:
+		_set_plan(Plan.GUARD, think_ticks, "anticipate")
+	else:
+		_set_plan(Plan.WAIT, think_ticks, "wait")
+
+
+func _make_mistake() -> void:
+	var plans: Array[Plan] = [Plan.WAIT, Plan.APPROACH, Plan.RETREAT]
+	_set_plan(plans[rng.randi_range(0, plans.size() - 1)], Ticks.from_seconds(difficulty.reaction_time), "mistake")
+	if rng.randf() < profile.aggression:
+		_schedule(Intent.Command.LIGHT, 0, 0, _plan, _plan_ticks, "mistake swing")
+
+
+func _set_plan(plan: Plan, ticks: int, label: String) -> void:
+	_plan = plan
+	_plan_ticks = ticks
+	_press_command = 0
+	_chain_left = 0
+	decision = label
+
+
+func _schedule(command: int, delay: int, extra_hold: int, after_plan: Plan, after_ticks: int, label: String) -> void:
+	_set_plan(Plan.WAIT, delay, label)
+	_press_command = command
+	_press_hold = extra_hold
+	_press_delay = delay
+	_after_press_plan = after_plan
+	_after_press_ticks = after_ticks
+
+
+func _execute(me: FighterState, intent: Intent) -> void:
+	match _plan:
+		Plan.APPROACH:
+			intent.move_x = me.facing
+		Plan.RETREAT:
+			intent.move_x = -me.facing
+		Plan.GUARD:
+			intent.hold(Intent.Command.BLOCK)
+	if _press_command != 0:
+		if _press_delay > 0:
+			_press_delay -= 1
+		else:
+			intent.pressed |= _press_command
+			intent.held |= _press_command | _press_hold
+			_press_command = 0
+			_plan = _after_press_plan
+			_plan_ticks = _after_press_ticks
+	_continue_chain(me, intent)
+	_plan_ticks -= 1
+	if _plan_ticks <= 0 and _press_command == 0:
+		_plan = Plan.WAIT
+
+
+func _continue_chain(me: FighterState, intent: Intent) -> void:
+	if _chain_left <= 0 or me.move == null:
+		return
+	if me.move.kind == MoveData.Kind.LIGHT and me.move_connected and me.move_phase == FighterState.Phase.RECOVERY:
+		intent.press(Intent.Command.LIGHT)
+		_chain_left -= 1
+
+
+func _press_in_lock(sim: MatchSimulation, intent: Intent) -> void:
+	if sim.lock_ticks < Ticks.from_seconds(difficulty.lock_reaction):
+		return
+	_lock_press_ticks -= 1
+	if _lock_press_ticks > 0:
+		return
+	intent.press(Intent.Command.LIGHT)
+	var interval: float = Ticks.RATE / difficulty.lock_presses_per_second
+	_lock_press_ticks = maxi(roundi(interval * (0.85 + rng.randf() * 0.3)), 1)

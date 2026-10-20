@@ -22,7 +22,8 @@ extends Resource
 
 @export_group("Mistakes and memory")
 @export_range(0.0, 1.0) var error_chance: float = 0.15
-@export var habit_memory: bool = false
+@export_range(0.0, 1.0) var habit_weight: float = 0.0
+@export var habit_window: float = 8.0
 
 @export_group("Blade lock")
 @export var lock_reaction: float = 0.45
