@@ -30,7 +30,7 @@ Ferramentas de teste e de exportação entram na fase 0 do [ROADMAP.md](ROADMAP.
 
 | Arquivo | Conteúdo |
 | --- | --- |
-| [AGENTS.md](AGENTS.md) | Regras para agentes de código (Claude Code, Codex e outros) |
+| [AGENTS.md.example](AGENTS.md.example) | Modelo das regras para agentes de código; copie para `AGENTS.md` (local, fora do git) e personalize |
 | [DESIGN.md](DESIGN.md) | Briefing: conceito, pilares, sensação, o que não fazer, identidade |
 | [GAME_DESIGN.md](GAME_DESIGN.md) | Regras de gameplay, números de calibração, IA, modos e progressão |
 | [content/CHARACTERS.md](content/CHARACTERS.md) | Elenco: estilo, atributos, golpes, habilidades, poderes, visual |

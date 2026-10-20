@@ -1,0 +1,32 @@
+# Regras para agentes de código: personalize
+
+## Leitura obrigatória: personalize
+
+## Regra visual e sonora: personalize
+
+## Propriedade intelectual: personalize
+
+## Stack: personalize
+
+## Regras de arquitetura
+
+- A **simulação do duelo** é separada da **apresentação** (ver ARCHITECTURE.md). A simulação roda em passo fixo de 60 Hz e é determinística; animação, partículas, luz, som e câmera só leem o estado e os eventos.
+- Nenhuma regra de gameplay em scripts de animação, efeitos, HUD ou câmera.
+- O resto do jogo conhece **ações** (`light_attack`, `jump`) via InputMap, nunca teclas ou botões físicos.
+- Controladores (jogador, IA, boneco de treino, replay) só produzem uma **intenção** por tick. A IA nunca altera vida, Vigor, posição ou estado diretamente.
+- Personagens, golpes, poderes, arenas e encontros da História são **dados** (`Resource`), não código. Jogador e oponente usam o mesmo `Fighter`; muda só o controlador.
+- O combate emite **eventos** (`hit`, `block`, `parry`, `clash`...). Efeitos, câmera, som e HUD reagem a eventos, nunca o contrário.
+- Balanceamento fica em recursos de configuração. Sem números mágicos espalhados.
+- Telas e modos não se conhecem diretamente: a navegação passa pelo roteador de cenas.
+
+## Regras de código: personalize
+
+## Como trabalhar: personalize
+
+## Debug: personalize
+
+## Commits: personalize
+
+## Ao terminar uma tarefa, informe: personalize
+
+## Regra principal: personalize
