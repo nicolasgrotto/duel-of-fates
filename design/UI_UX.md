@@ -30,6 +30,8 @@ Fundo preto; uma lâmina horizontal acende do centro para as pontas (ciano-gelo)
 
 ### Menu
 
+> Provisório até a fase 6: uma lista única com Duelar, Treino, Dificuldade (← → muda) e Sair, no mesmo estilo descrito abaixo.
+
 Título centralizado, maiúsculas espaçadas, frase de apoio em destaque. Dois níveis na mesma tela: **Jogar** (Duelar, História, Arcade, Sobrevivência, 2 Jogadores), **Aprender** (Tutorial, Treinos guiados, Treino, Desafio de parry, Controles), **Extras** (Desafios, Galeria de poderes, Galeria da História), **Opções**. O nome do grupo aparece entre a frase e a lista; Voltar ou `Esc` volta à raiz.
 
 ### Seleção de personagem
@@ -56,7 +58,8 @@ NOME ESQUERDA                                          NOME DIREITA
 
 - Barras finas no topo, espelhadas; a parte cheia presa à borda da tela, esvaziando para o centro.
 - **Vida**: cor clara neutra; abaixo de 25% vira vermelho de perigo e **pisca devagar** (não depende só da cor). Dano recente fica como barra fantasma que encolhe depois de um atraso.
-- **Vigor**: barra mais fina. Ação recusada: a barra fica vermelha e pisca ~0,3 s. **Exausto**: a parte cheia fica num vermelho apagado com contorno, pulsando devagar.
+- **Vigor**: barra mais fina, na cor de destaque `#9fb4d9`. Ação recusada: a barra fica vermelha e pisca ~0,3 s. **Exausto**: a parte cheia fica num vermelho apagado (`#7a2a2e`) com contorno, pulsando devagar.
+- Medidas em 1080p: barras com 36% da largura da tela e margem lateral de 56 px; vida com 10 px de altura, Vigor com 5 px; fundo das barras no texto principal a 10% de opacidade, barra fantasma a 35%. Tudo ocupa menos de 10% da altura.
 - **Fluxo** (com Poderes): barra ainda mais fina, na cor do lado (Aurora azul, Eclipse vermelho). Poder recusado pisca a barra. **Marcas de custo alto**: traço fino no ponto do custo de cada poder caro equipado, apagado até dar para lançar, aceso na cor própria do poder com um pulso único ao acender — Tempestade âmbar `#ffd76a`, Repulsão Suprema água `#7ff0e0`, Fratura lima `#a6ff6a`, Telecinese em Massa laranja `#ff9a4a`, Santuário marfim `#f4f1d0`, Ira laranja forte `#ff8c1a`.
 - **Ferimento**: marca curta ao lado do nome ("Braço ferido" / "Perna ferida") em vermelho.
 - **Rounds**: quadrados pequenos, cheios para rounds vencidos.
@@ -90,6 +93,8 @@ Tela cheia sem HUD, letterbox fechado, "REPLAY" à esquerda na barra de baixo e 
 - **Diálogo**: arena do encontro ao fundo, escurecida, com os dois duelistas; título do capítulo no alto; faixa escura embaixo com o nome de quem fala (destaque, espaçado) e a fala, com fade a cada linha. Narração sem nome.
 
 ### Treino, Tutorial e desafios
+
+- **Treino (fases 1 e 2)**: teclas de ferramenta F5 (comportamento do boneco: parado, em guarda, atacando, reproduzindo), F6 (gravar até 10 s dos comandos do jogador), F7 (reproduzir a gravação no boneco em loop) e F3 (caixas e estado). O rodapé mostra os comandos dos dois, os dados de quadro do último golpe do jogador (`Forte · bloqueado · −0,30 s`), o comportamento do boneco e o estado da gravação.
 
 - **Tutorial / treinos guiados**: uma instrução no topo, abaixo das barras, com as teclas do preset ativo, e o progresso embaixo (`Passo 3 de 12 · 1 / 2`). Sem quadrados de round.
 - **Desafio de parry**: tempo restante e pontos no topo.

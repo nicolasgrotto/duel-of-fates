@@ -100,6 +100,10 @@ Cada golpe é um dado com: startup (preparação), active (hitbox ligada), recov
 
 Bloquear um rápido custa ~8 de Vigor ao defensor; um forte, ~30.
 
+- **Alcance** é medido a partir da borda da frente do corpo (o lutador padrão tem 46 u de largura). O empurrão, com 50 u, só alcança quem está quase encostado.
+- **Colisão de lâmina** (usada só no choque) é mais curta que o alcance do golpe: 60 u nos rápidos, 70 u nos fortes, 55 a 65 u nos aéreos. Duas lâminas se chocam quando a distância entre os corpos é menor ou igual à soma das duas.
+- **Valores iniciais por golpe** (lutador padrão; os exatos de cada personagem estão nos recursos): hitstun do rápido 0,35 s, do forte 0,5 s, do contra-ataque 0,45 s; blockstun do rápido 0,24 s e do forte 0,3 s; knockback do rápido 40 u, do forte 120 u, do forte de avanço 140 u. Forte de avanço: startup 0,36 s, recovery 0,52 s, 30 de Vigor, avanço de 110 u. Aéreo rápido: startup 0,08 s, 12 de dano; aéreo forte: startup 0,16 s, 14 de dano.
+
 ## 7. Combate
 
 ### Sequência de rápidos
@@ -132,7 +136,7 @@ Mesmo botão da guarda: **tocar** abre a janela de parry; **segurar** continua s
 | depois | guarda normal |
 
 - **Parry**: nenhum dano nem custo para o defensor, que fica livre na hora. O atacante perde o Vigor que o bloqueio daquele golpe custaria, o golpe deixa de acertar e segue para a recovery, sem desequilíbrio. Num rápido, a sequência do atacante continua; num forte, sobra a recovery longa para o defensor punir.
-- **Parry perfeito**: o atacante perde o dobro de Vigor e o defensor recupera 15. Contra um **forte**, o atacante perde o golpe e fica `STAGGERED` por 0,5 s, o que garante um forte ou o contra-ataque. Contra um rápido, vale como parry.
+- **Parry perfeito**: o atacante perde o dobro de Vigor e o defensor recupera 15. Contra um **forte**, o atacante perde o golpe e fica `STAGGERED` por 0,5 s, o que garante um forte ou o contra-ataque. Contra um rápido, vale como parry em tudo (custo normal, sem desequilíbrio, sem os 15 de Vigor, evento `parry`): o parry perfeito, a câmera lenta e a dessaturação ficam reservados ao forte.
 - **Parry falho**: se a janela acabar sem golpe, ela não abre de novo por 0,4 s (a guarda continua funcionando).
 - O toque precisa ser novo. Um toque durante o blockstun abre a janela (aparar o próximo golpe de uma sequência).
 - O empurrão não pode ser aparado.
@@ -150,7 +154,8 @@ Ataque rápido apertado enquanto o oponente está desequilibrado por um parry pe
 
 ### Esquiva
 
-- Dash rápido para a direção segurada; sem direção, para trás. Custa ~20 de Vigor, dura ~0,28 s, invulnerável nos primeiros ~0,18 s, vulnerável no fim.
+- Dash rápido para a direção segurada; sem direção, para trás. Custa ~20 de Vigor, dura ~0,28 s, percorre ~170 u, invulnerável nos primeiros ~0,18 s, vulnerável no fim.
+- O dash aéreo dura ~0,18 s e percorre ~190 u (valores iniciais).
 
 ### Esquiva de precisão
 
@@ -173,7 +178,8 @@ O momento mais físico do duelo: rostos próximos, lâminas cruzadas num X, trem
 - **Entrada**: dois fortes comuns ou de avanço se chocam no active a até ~70 u de distância. Recarga de 4 s entre disputas.
 - **Durante**: cada aperto de ataque rápido é uma pressão (no máximo 15 por segundo contam). Quem abrir **5 pressões de vantagem** vence. Tempo máximo de 3 s.
 - **Vitória**: o perdedor leva 8 de dano e perde 35 de Vigor uma única vez, fica `STAGGERED` por 0,35 s; o vencedor tem 0,25 s de recovery. Os dois se separam 420 u. A recuperação e a separação impedem converter a disputa num forte garantido.
-- **Empate** (tempo acabou com vantagem menor que 1): só separa.
+- **Empate** (tempo acabou com vantagem menor que 1): só separa. Se o tempo acabar com vantagem de 1 ou mais, quem lidera vence.
+- O dano da derrota na disputa (8) é fixo, não escala com Lâmina, e pode causar o K.O. (finalização de braço).
 - A disputa suspende ações, movimento, regeneração, efeitos de status e recargas dos participantes.
 - **Acessibilidade**: a opção "Segurar para disputar" permite segurar o rápido; conta 6 pressões por segundo, abaixo do teto, para incluir quem não pode apertar repetidamente sem empatar com quem aperta.
 - A IA só começa a pressionar depois de um tempo de reação (Fácil 0,6 s, Normal 0,45 s, Difícil e chefe 0,3 s).
@@ -244,7 +250,7 @@ Seis atributos: **Vida, Vigor, Lâmina, Defesa, Agilidade, Fluxo**.
 
 - Escala de **1 a 7** no elenco comum. Os secretos passam disso pelo **potencial**: Ancião até 8, Soberano até 9, Predestinado até 10.
 - Nota 4 tem multiplicador 1; cada nota muda 8% (1 = 0,76; 7 = 1,24; 10 = 1,48).
-- **Vida**: vida máxima. **Vigor**: máximo e regeneração. **Lâmina**: todos os danos de lâmina e um pequeno bônus na janela de parry perfeito. **Defesa**: custo da guarda, recuo no bloqueio e reserva antes da quebra (não reduz dano). **Agilidade**: caminhada, pulo, avanços e janela da esquiva de precisão. **Fluxo**: nível dos poderes.
+- **Vida**: vida máxima. **Vigor**: máximo e regeneração. **Lâmina**: todos os danos de lâmina e um pequeno bônus na janela de parry perfeito. **Defesa**: custo da guarda, recuo no bloqueio e reserva antes da quebra (não reduz dano; custo e recuo são divididos pelo multiplicador; a reserva ainda não está implementada). **Agilidade**: caminhada, pulo, avanços e janela da esquiva de precisão. **Fluxo**: nível dos poderes.
 - Os atributos do elenco são fixos. Só o protagonista da História distribui pontos.
 
 ## 12. Ritmo e balanceamento

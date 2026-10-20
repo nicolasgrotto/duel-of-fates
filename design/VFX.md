@@ -70,7 +70,8 @@ Sem câmera lenta, sem dessaturação, sem tela sobreposta. A tensão vem da pos
 
 - **Exaustão**: sem efeito de tela; o corpo mostra (respiração funda, guarda pendendo).
 - **Ferimento**: impacto pesado mais faíscas baixas extras na direção do golpe; sombra sobre o membro ferido.
-- **Finalização**: 10–14 faíscas na cor da lâmina de quem cortou, saindo do corte, brilho curto, brasa no coto e na peça. Usa a câmera lenta do K.O.
+- **Finalização**: 10–14 faíscas na cor da lâmina de quem cortou, saindo do corte, brilho curto, brasa no coto e na peça. Usa a câmera lenta do K.O. A brasa é laranja `#ff7a2a` e esfria até a cor do corpo em ~1,2 s.
+- Cores de faísca: branco `#ffffff` e amarelo-claro `#fff1b8`, alternadas. Na disputa, metade das faíscas de cada pressão vem na cor da lâmina de quem apertou.
 - **Cura que fecha ferimento**: luz suave na cor do tier sobre o corpo; a sombra do membro some.
 
 ## Poderes
@@ -108,6 +109,10 @@ Usam o rastro, o som e o impacto dos golpes fortes. O Giro desenha o círculo co
 ## Arena
 
 Poeira no knockback (Salinas), cristais e fungos que pegam a cor da lâmina, vapor nas lâminas sob a chuva, ondulações na água, vento nas capas: tudo como apresentação, sem mudar a simulação.
+
+## Receitas e implementação provisória
+
+As contagens de faíscas, tremor, flash e punch-in deste catálogo estão em `data/balance/effects_config.tres`, uma receita por evento. Nas fases 1 e 2 a lâmina é desenhada em três camadas aditivas (glow externo, glow interno, núcleo branco) com rastro de ~0,12 s e uma `PointLight2D` na cor da lâmina; o glow de tela do `WorldEnvironment` é sutil (ver ARCHITECTURE, verificação do renderer). Letterbox e câmera lenta já funcionam; a dessaturação do parry perfeito entra na fase 3.
 
 ## Efeitos reduzidos
 

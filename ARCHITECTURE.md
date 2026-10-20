@@ -86,6 +86,28 @@ Arquivos e pastas em `snake_case`; classes com `class_name` em `PascalCase`.
 - **Regras por modo**: um conjunto de capacidades (`powers`, `exhaustion`, `wounds`, `focus_evade`, `blade_lock`, `finishers`) passado à simulação; a simulação nunca pergunta "qual é o modo".
 - **Snapshot**: o estado completo pode ser copiado e restaurado (replay, desafios com seed, futuro rollback).
 
+### Como está implementada (fases 1 e 2)
+
+| Arquivo | Papel |
+| --- | --- |
+| `simulation/match_simulation.gd` (`MatchSimulation`) | dono do tick, fases da partida (`INTRO`, `FIGHT`, `KO`, `OVER`), rounds, eventos, snapshot (`capture`/`restore`) |
+| `simulation/fighter_state.gd` (`FighterState`) | dados puros do lutador; enums `State`, `Phase`, `Action`, `DodgeKind`, `Wound` |
+| `simulation/intent.gd` (`Intent`) | direção + comandos segurados/apertados (`Intent.Command`), empacotáveis num `int` para gravação |
+| `simulation/action_starter.gd` | buffer de entrada (0,15 s, prioridade esquiva > empurrão > forte > rápido > guarda) e início de ações com custo de Vigor |
+| `simulation/states/` | um `StateLogic` por estado: `GroundState` (IDLE/WALKING), `AirState`, `AttackState` (ATTACKING/HEAVY_ATTACK), `BlockState`, `DodgeState`, `BladeLockState`, `RecoilState` (HIT/STAGGERED/STUNNED), `DeadState` |
+| `simulation/combat/` | `ClashResolver`, `BladeLockResolver`, `HitResolver` (acerto, guarda, parry, parry perfeito, empurrão, esquiva de precisão), `BodyResolver` (corpos e paredes), `Consequences` (exaustão, ferimento, membro da finalização), `CombatGeometry` (caixas) |
+| `simulation/rules/match_rules.gd` | capacidades por modo: `rounds_to_win`, `exhaustion`, `wounds`, `blade_lock`, `finishers`, `endless` |
+
+Decisões:
+
+- **Ordem do tick**: buffer de entrada dos dois → estado de cada lutador (com integração física) → corpos e paredes → virar de frente → choque de lâminas → acertos → disputa de lâminas → fim de round. O choque é resolvido antes dos acertos (tem prioridade). Os acertos dos dois lados são coletados antes de aplicados, para a troca simultânea valer.
+- **Hit stop** é `freeze_ticks` nos dois participantes: o lutador congelado não avança estado nem posição, mas o buffer continua aceitando comandos.
+- **Resolvedores estáticos**: os resolvedores e o `ActionStarter` são funções estáticas que recebem a simulação. Assim não há ciclo de referência entre `MatchSimulation` e ajudantes (`RefCounted` em ciclo vaza memória).
+- **Sem alocação por tick**: eventos vêm de um pool (`events` + `event_count`), os arrays de trabalho dos acertos vivem na simulação. Os eventos só valem até o próximo `step`: quem precisa guardar copia os campos.
+- **Snapshot** lê as variáveis de script de `FighterState` pela lista de propriedades; o estado de RNG entra no snapshot.
+- **Geometria**: hurtbox = retângulo do corpo; hitbox = retângulo à frente da borda do corpo, com `reach` e faixa vertical do golpe; colisão de lâmina = mesmo retângulo com `blade_reach` (mais curto), usado só no choque.
+- **Distâncias** de knockback, empurrão no bloqueio e separação são dados em u; a simulação converte em velocidade inicial que a desaceleração de chão consome (`CombatConfig.slide_speed_for`).
+
 ## Dados
 
 Tudo o que é conteúdo é `Resource` editável no inspetor:
@@ -99,6 +121,13 @@ Tudo o que é conteúdo é `Resource` editável no inspetor:
 | `EncounterData` / `EndingData` | adversário, variante, arena, ajuste de IA, recompensas, condições de saída, chaves das falas |
 | Configs de balanceamento | combate, Vigor, Fluxo, disputa, consequências, IA por dificuldade e perfil, efeitos, modos |
 
+Implementados até a fase 2:
+
+- `data/move_data.gd`, `data/character_data.gd`, `data/arena_data.gd`.
+- `data/characters/<id>/<id>.tres`: Guardião e Sombra, com a sequência de rápidos e os fortes como sub-recursos; `data/characters/common/` guarda os golpes compartilhados (contra-ataque, empurrão, aéreos). O perfil de IA de cada personagem fica ao lado (`<id>_ai.tres`).
+- `data/balance/`: `combat_config.tres` (movimento, Vigor, parry, esquiva, choque, hit stop, câmera lenta, replay, partida), `blade_lock_config.tres`, `consequence_config.tres`, `effects_config.tres` (receitas de efeito por evento, enquadramento da câmera, lâmina, letterbox), `training_config.tres`, `ai/difficulty_*.tres`.
+- Os números iniciais vêm de GAME_DESIGN; os que o documento não definia (distância da esquiva, hitstun e blockstun por golpe, alcance de choque) estão nos recursos e citados em GAME_DESIGN.
+
 Nenhum número de balanceamento no código. Os valores iniciais estão nos documentos de `content/` e em GAME_DESIGN.
 
 ## Controladores e entrada
@@ -109,6 +138,16 @@ Nenhum número de balanceamento no código. Os valores iniciais estão nos docum
 - **`AiController`**: pensa em intervalos, lê o estado visível e produz `Intent`. Perfis e dificuldades vêm de dados. Nunca toca no estado.
 - **`DummyController`** (Treino, Tutorial) e **`ReplayController`** (reproduz intents gravados).
 - Remapeamento salvo em `user://`; telas mostram os bindings atuais com ícones do dispositivo em uso.
+
+Implementação:
+
+- As ações têm prefixo de jogador: `p1_move_left`, `p1_light_attack`, `p2_block`... Ferramentas: `debug_overlay` (F3), `training_dummy_behavior` (F5), `training_record` (F6), `training_playback` (F7). Menus usam as ações `ui_*` da Godot.
+- InputMap montado em tempo de execução por `Settings` a partir da tabela de `core/input_bindings.gd` (única fonte de teclas e botões do projeto). Motivo: os bindings de gamepad precisam do `device` por jogador, e o remapeamento da fase 6 vai sobrescrever a mesma tabela com o que estiver salvo. O `project.godot` não guarda ações de jogo.
+- Padrão atual: J1 usa o preset de um jogador do teclado (GAME_DESIGN, seção 3) e o gamepad 0; J2 usa o gamepad 1. O preset de teclado de 2 jogadores entra com o modo 2 Jogadores (fase 6).
+- `PlayerController` junta os toques recebidos por evento entre dois ticks (nenhum toque se perde em câmera lenta) com o estado segurado lido do `Input`.
+- `AiController` (`controllers/ai/`): pensa a cada `reaction_time` com variação, por prioridade (defender → punir → empurrar → recuperar → atacar → posicionar), agenda o toque de parry pela fase do golpe visível do oponente, continua a sequência só quando o golpe conectou, pressiona na disputa depois do tempo de reação, e usa `AiHabitMemory` (memória de hábitos com janela em segundos) no Difícil e no Chefe. Perfis em `AiProfileData`, dificuldades em `AiDifficultyData`.
+- `DummyController`: parado, em guarda, atacando ou reproduzindo uma gravação (`IntentRecording` relativa à frente do lutador, então a gravação espelha no boneco).
+- `ReplayController`: reproduz uma `IntentRecording` absoluta.
 
 ## Apresentação
 
@@ -121,6 +160,16 @@ Nenhum número de balanceamento no código. Os valores iniciais estão nos docum
 - **`StatsTracker`**, objetivos do tutorial e desafios: escutam eventos.
 - Debug **F3**: hitboxes, hurtboxes, colisão de lâmina, estado, fase, Vigor, Fluxo, intents, decisões da IA, FPS, tick.
 
+Implementação provisória (fases 1 e 2, arte de formas simples):
+
+- `presentation/tick_runner.gd` (`TickRunner`): executor de passo fixo com acumulador, no máximo 5 ticks por quadro, câmera lenta (K.O. e parry perfeito, valores em `CombatConfig`), gravação das intenções do round e snapshot no início de cada round. Emite `ticked` e `combat_event`; a interpolação de posição usa `alpha`.
+- `presentation/fighters/`: `FighterView` desenha a silhueta provisória em código a partir de `FighterPose` (pose por estado, fase e progresso do golpe; ângulos de preparação e golpe vêm de `MoveData`), `BladeView` desenha a lâmina em três camadas aditivas com rastro e `PointLight2D`, `SeveredPiece` é a peça da finalização (física própria da apresentação).
+- `presentation/effects/`: `EffectsDirector` (faíscas e anéis em pool, desenhados num único nó aditivo; emite impulsos para câmera e flash), `ScreenEffects` (flash, letterbox, rótulo do replay).
+- `presentation/camera/camera_rig.gd`, `presentation/hud/` (`Hud`, `HudBar`, `RoundMarks`, `TrainingPanel`), `presentation/debug/debug_overlay.gd`, `presentation/stats_tracker.gd`.
+- `presentation/duel_environment.tres`: `WorldEnvironment` com fundo Canvas e glow.
+- **Replay do golpe final**: a cada round o executor guarda o snapshot do início e as intenções. Depois do K.O. decisivo, `DuelScreen` cria uma nova simulação, restaura o snapshot, re-simula até 3,5 s antes do K.O. e passa a mostrar essa simulação a 45% com `ReplayController`. Nenhuma lógica é reaproveitada da partida original: o replay é a própria simulação de novo.
+- **Verificação técnica do renderer** (fase 0): no Compatibility, o glow do `WorldEnvironment` com fundo Canvas funciona em LDR (limiar abaixo de 1); com intensidade alta aparecem blocos de baixa resolução, por isso o glow fica sutil e a maior parte do brilho vem das camadas aditivas da lâmina. `PointLight2D` ilumina corpos e cenário. HDR 2D não é usado. Mapas de normal e reflexos (BackBufferCopy) ficam para o protótipo de arte da fase 3.
+
 **Validação lâmina × animação**: a colisão de lâmina vem da trilha em `MoveData`. Uma ferramenta de editor (ou teste) compara a trilha com a posição real da lâmina na animação, para o que se vê bater com o que acerta.
 
 ## Telas e fluxo
@@ -129,13 +178,17 @@ Nenhum número de balanceamento no código. Os valores iniciais estão nos docum
 - A pausa é uma tela empilhada sobre o duelo congelado.
 - Cada modo é um objeto de fluxo (`modes/`) que monta os parâmetros do duelo (lutadores, variantes, conjuntos, arena, dificuldade, capacidades, rounds, seed) e decide o que acontece no resultado.
 
+Implementação: `SceneRouter.change(id, params)` troca a tela com fade; `push`/`pop` empilham telas sobre a atual e pausam a árvore. Telas recebem os parâmetros em `open(params)`. Ids: `menu`, `duel`, `pause`, `result`. Modos: `DuelMode` (base: `build_setup()`, `result_options()`, `restart()`, `choose()`), `VersusMode` (Guardião contra Sombra na IA, dificuldade das configurações) e `TrainingMode` (boneco, regras `endless`, sem rounds). O menu atual é provisório (Duelar, Treino, Dificuldade, Sair) até o menu completo da fase 6.
+
 ## Serviços (autoloads)
 
 - **`Settings`**: opções, idioma, bindings (arquivo `ConfigFile` em `user://`).
 - **`SaveService`**: progresso (desbloqueios, recordes, campanha), com versão de formato e migração.
 - **`SceneRouter`**: navegação.
 - **`AudioDirector`**: música dinâmica em camadas, barramentos, zumbido das lâminas.
-- **Localização**: tabelas da Godot (`TranslationServer`, `tr()`), uma chave por texto, marcadores com `format()`.
+- **Localização**: tabelas da Godot (`TranslationServer`, `tr()`), uma chave por texto, marcadores com `format()`. A fonte é `localization/strings.csv` (colunas `pt_BR` e `en`); os `.translation` são gerados pelo import e ficam fora do git.
+- **Tema**: `ui/theme/main_theme.tres` (tema do projeto, fonte Oxanium e variações de tipo `TitleLabel`, `SubtitleLabel`, `MenuItemLabel`, `MenuItemSelectedLabel`, `HintLabel`, `HudNameLabel`, `HudWoundLabel`, `HudMessageLabel`, `DebugLabel`) e `ui/palette.tres` (`UiPalette`, cores de interface, HUD e efeitos). Scripts nunca escrevem cores soltas: leem a paleta.
+- Dicas de controle são montadas por `ui/widgets/control_hints.gd` a partir do InputMap; listas de menu usam `ui/widgets/menu_list.gd`.
 
 ## Testes
 
@@ -144,8 +197,21 @@ Nenhum número de balanceamento no código. Os valores iniciais estão nos docum
 - Testes automatizados aprovados pelo autor. Executor: mínimo e próprio, em `tools/run_tests.gd`, rodado com `godot --headless --script`. Um addon de testes (gdUnit4 ou GUT) só entra se o executor próprio não bastar, com autorização.
 - **Simulador**: `godot --headless --script tools/simulate.gd -- --duels 300 --difficulty normal` roda duelos IA × IA e relata vitórias, golpes até o K.O. e duração; uma matriz todos-contra-todos acompanha o equilíbrio do elenco.
 
+Como rodar:
+
+```
+godot --headless --path . --import                                   # só com o editor fechado
+godot --headless --path . --script res://tools/run_tests.gd          # todos os testes
+godot --headless --path . --script res://tools/run_tests.gd -- --filter test_defense
+godot --headless --path . --script res://tools/simulate.gd -- --duels 100 --difficulty hard --p1 guardian --p2 shadow --seed 1
+```
+
+- Testes ficam em `tests/` (arquivos `test_*.gd`, classe base `TestCase`, métodos `test_*`, `before_each`). `tests/support/duel_fixture.gd` monta um duelo Guardião × Sombra, posiciona os lutadores e registra os eventos.
+- O executor resolve `class_name` pelo cache global da Godot. Com o editor aberto, não rode `--import` por fora: o editor e o processo headless disputam o cache e o editor deixa de enxergar as classes novas (e o addon MCP perde o registro). Com o editor aberto, basta ele reescanear os arquivos.
+- `tools/headless_duel.gd` (`HeadlessDuel`) roda um duelo IA × IA sem tela; serve ao simulador e aos testes de IA.
+
 ## Desempenho
 
 - 60 FPS estáveis. Nada de alocação por tick na simulação; pools na apresentação.
 - Medir com o profiler da Godot em cada fase, nas arenas mais pesadas (reflexo, chuva, Tempestade) e com dois lutadores detalhados.
-- **Decisão**: verificar no início do projeto o suporte do renderer escolhido a glow/HDR 2D, luzes 2D com mapas de normal e o custo de reflexos, antes de fechar a técnica de arte.
+- **Decisão**: verificar mapas de normal em luzes 2D e o custo de reflexos no renderer Compatibility com o protótipo de arte da fase 3. Glow e luzes 2D já foram verificados (ver Apresentação).

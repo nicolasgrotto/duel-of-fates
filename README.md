@@ -6,7 +6,9 @@ Jogo de duelo de lâminas de energia em visão lateral, feito na **Godot 4.7** c
 
 ## Situação
 
-Fase de planejamento. A documentação abaixo descreve o jogo completo; a ordem de construção está em [ROADMAP.md](ROADMAP.md).
+Fases 0, 1 e 2 concluídas: o duelo completo de lâmina (movimento, rápidos em sequência, forte, guarda, parry, contra-ataque, empurrão, esquivas, choque e disputa de lâminas, exaustão, ferimentos, finalizações), IA com perfis e dificuldades, modo Treino com boneco, gravação e dados de quadro, e replay do golpe final. A arte ainda é provisória (formas simples); a próxima fase é o pipeline de arte. Detalhes em [ROADMAP.md](ROADMAP.md).
+
+Jogável agora: **Duelar** (Guardião contra Sombra controlada pela IA) e **Treino**, a partir do menu.
 
 ## O jogo em uma página
 
@@ -24,7 +26,14 @@ Fase de planejamento. A documentação abaixo descreve o jogo completo; a ordem 
 1. Instale a Godot 4.7 (versão padrão, GDScript).
 2. Abra a Godot, escolha **Importar** e selecione `project.godot` desta pasta.
 
-Ferramentas de teste e de exportação entram na fase 0 do [ROADMAP.md](ROADMAP.md).
+Controles padrão (J1): `A`/`D` ou setas para andar, `W`/`Espaço` pula, `J` rápido, `K` forte, `L` guarda (tocar apara), `L`+`J` empurrão, `Shift` esquiva, `S` esquiva de precisão, `Esc` pausa, `F3` debug. No Treino: `F5` boneco, `F6` gravar, `F7` reproduzir.
+
+Testes e simulador (ver [ARCHITECTURE.md](ARCHITECTURE.md#testes)):
+
+```
+godot --headless --path . --script res://tools/run_tests.gd
+godot --headless --path . --script res://tools/simulate.gd -- --duels 100 --difficulty normal
+```
 
 ## Documentação
 
