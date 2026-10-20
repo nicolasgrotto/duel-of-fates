@@ -37,6 +37,9 @@ enum GuardStyle { HIGH, LOW }
 @export var blade_color: Color = Color("#7fe4ff")
 @export var cloak_color: Color = Color("#6b5a48")
 @export var body_color: Color = Color("#2e2925")
+@export var skin_color: Color = Color("#7a5f4e")
+@export var hair_color: Color = Color("#3b2a20")
+@export var hilt_color: Color = Color("#9aa3ad")
 @export var hood_up: bool = false
 @export var cloak_to_floor: bool = false
 @export var guard_style: GuardStyle = GuardStyle.HIGH

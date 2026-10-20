@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ArenaData" format=3]
+
+[ext_resource type="Script" path="res://data/arena_data.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://arenas/training_platform/training_platform.tscn" id="2_scene"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"training_platform"
+name_key = "ARENA_TRAINING_PLATFORM"
+scene = ExtResource("2_scene")

@@ -162,3 +162,5 @@ body_color = Color(0.071, 0.075, 0.098, 1)
 hood_up = true
 cloak_to_floor = true
 guard_style = 1
+skin_color = Color(0.36, 0.3, 0.29, 1)
+hair_color = Color(0.07, 0.075, 0.1, 1)

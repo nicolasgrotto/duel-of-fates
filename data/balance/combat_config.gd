@@ -72,6 +72,17 @@ extends Resource
 @export var hitstop_guard_break: float = 0.10
 @export var hitstop_clash: float = 0.10
 
+@export_group("Slow motion")
+@export var knockout_slow_motion_scale: float = 0.3
+@export var knockout_slow_motion: float = 0.8
+@export var perfect_parry_slow_motion_scale: float = 0.5
+@export var perfect_parry_slow_motion: float = 0.25
+
+@export_group("Replay")
+@export var replay_speed: float = 0.45
+@export var replay_length: float = 3.5
+@export var replay_tail: float = 1.0
+
 @export_group("Match")
 @export var round_intro: float = 1.6
 @export var ko_duration: float = 2.6
