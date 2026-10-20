@@ -20,7 +20,6 @@ var _think_ticks: int = 0
 var _press_command: int = 0
 var _press_hold: int = 0
 var _press_delay: int = 0
-var _press_move: int = 0
 var _after_press_plan: Plan = Plan.WAIT
 var _after_press_ticks: int = 0
 var _chain_left: int = 0

@@ -16,7 +16,7 @@ func step(sim: MatchSimulation, fighter: FighterState, _intent: Intent) -> void:
 				fighter.phase_ticks = 0
 		FighterState.Phase.RECOVERY:
 			decelerate(sim, fighter)
-			if _try_chain(sim, fighter, _intent):
+			if _try_chain(sim, fighter):
 				return
 			if fighter.phase_ticks >= move.recovery_ticks():
 				finish_to_neutral(sim, fighter)
@@ -33,7 +33,7 @@ func _enter_active(fighter: FighterState, move: MoveData) -> void:
 		fighter.vx = fighter.facing * move.lunge * fighter.agility_multiplier / move.active
 
 
-func _try_chain(sim: MatchSimulation, fighter: FighterState, intent: Intent) -> bool:
+func _try_chain(sim: MatchSimulation, fighter: FighterState) -> bool:
 	var move: MoveData = fighter.move
 	if move.kind != MoveData.Kind.LIGHT or not fighter.move_connected:
 		return false

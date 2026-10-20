@@ -7,7 +7,7 @@ const SHADOW: CharacterData = preload("res://data/characters/shadow/shadow.tres"
 
 var sim: MatchSimulation
 var intents: Array[Intent] = [Intent.new(), Intent.new()]
-var log: Array[Dictionary] = []
+var events_log: Array[Dictionary] = []
 
 
 static func create(rules: MatchRules = null, config: CombatConfig = null, match_seed: int = 7) -> DuelFixture:
@@ -56,7 +56,7 @@ func step(count: int = 1) -> void:
 		sim.step(intents[0], intents[1])
 		for event_index in sim.event_count:
 			var event: CombatEvent = sim.events[event_index]
-			log.append({
+			events_log.append({
 				"type": event.type,
 				"source": event.source,
 				"target": event.target,
@@ -79,18 +79,18 @@ func step_until(predicate: Callable, max_ticks: int = 600) -> bool:
 
 func count_events(type: CombatEvent.Type) -> int:
 	var total: int = 0
-	for entry in log:
+	for entry in events_log:
 		if entry["type"] == type:
 			total += 1
 	return total
 
 
 func last_event(type: CombatEvent.Type) -> Dictionary:
-	for i in range(log.size() - 1, -1, -1):
-		if log[i]["type"] == type:
-			return log[i]
+	for i in range(events_log.size() - 1, -1, -1):
+		if events_log[i]["type"] == type:
+			return events_log[i]
 	return {}
 
 
 func clear_log() -> void:
-	log.clear()
+	events_log.clear()

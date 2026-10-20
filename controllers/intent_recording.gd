@@ -23,7 +23,7 @@ func append_relative(intent: Intent, facing: int) -> void:
 
 
 func length() -> int:
-	return data.size() / slots
+	return int(data.size() / float(slots))
 
 
 func packed_at(tick: int, slot: int = 0) -> int:

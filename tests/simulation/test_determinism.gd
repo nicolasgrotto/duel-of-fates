@@ -40,12 +40,12 @@ func test_same_seed_and_intents_give_same_state() -> void:
 func test_restored_snapshot_replays_identically() -> void:
 	var packed: PackedInt32Array = _scripted_intents(5)
 	var original: DuelFixture = DuelFixture.create(null, null, 77)
-	_run(original, packed, 0, TICKS / 2)
+	_run(original, packed, 0, TICKS >> 1)
 	var snapshot: Dictionary = original.sim.capture()
-	_run(original, packed, TICKS / 2, TICKS)
+	_run(original, packed, TICKS >> 1, TICKS)
 	var replay: DuelFixture = DuelFixture.create(null, null, 1)
 	replay.sim.restore(snapshot)
-	_run(replay, packed, TICKS / 2, TICKS)
+	_run(replay, packed, TICKS >> 1, TICKS)
 	assert_eq(replay.sim.capture(), original.sim.capture())
 
 
