@@ -4,7 +4,8 @@ extends RefCounted
 const CONFIG: CombatConfig = preload("res://data/balance/combat_config.tres")
 const GUARDIAN: CharacterData = preload("res://data/characters/guardian/guardian.tres")
 const SHADOW: CharacterData = preload("res://data/characters/shadow/shadow.tres")
-const DEFAULT_ARENA: ArenaData = preload("res://data/arenas/training_platform.tres")
+const DEFAULT_ARENA: ArenaData = preload("res://data/arenas/refinery_platform.tres")
+const TRAINING_ARENA: ArenaData = preload("res://data/arenas/training_platform.tres")
 
 
 func build_setup() -> DuelSetup:

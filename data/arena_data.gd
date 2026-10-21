@@ -4,4 +4,7 @@ extends Resource
 @export var id: StringName
 @export var name_key: String
 @export var scene: PackedScene
-@export var floor_color: Color = Color("#10141c")
+@export var ambient: Color = Color(0.55, 0.58, 0.66)
+@export var reflective_floor: bool = false
+@export var music: MusicData
+@export var ambience: AudioStream
