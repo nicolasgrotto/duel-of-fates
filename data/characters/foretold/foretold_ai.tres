@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="AiProfileData" format=3]
+
+[ext_resource type="Script" path="res://data/balance/ai/ai_profile_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"foretold"
+aggression = 0.55
+defense = 0.6
+heavy_ratio = 0.3
+shove_bias = 0.45
+parry_bias = 0.7
+dodge_bias = 0.4
+patience = 0.4
+preferred_gap = 70.0
+safe_gap = 260.0
+low_vigor_ratio = 0.3
+ability_bias = 0.45
+feint_bias = 0.35

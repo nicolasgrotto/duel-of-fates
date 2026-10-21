@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="AiProfileData" format=3]
+
+[ext_resource type="Script" path="res://data/balance/ai/ai_profile_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"elder"
+aggression = 0.5
+defense = 0.7
+heavy_ratio = 0.3
+shove_bias = 0.5
+parry_bias = 0.85
+dodge_bias = 0.35
+patience = 0.5
+preferred_gap = 75.0
+safe_gap = 270.0
+low_vigor_ratio = 0.3
+ability_bias = 0.45

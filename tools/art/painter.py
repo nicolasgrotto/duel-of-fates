@@ -8,6 +8,7 @@ The game recolors the material map with the costume palette (see
 presentation/fighters/fighter_material.gdshader).
 """
 import math
+import zlib
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
@@ -67,7 +68,7 @@ class Part:
         blur_px = max(bevel * SUPERSAMPLE * PIXELS_PER_UNIT / 4.0, 1.0)
         soft = np.asarray(Image.fromarray((mask * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(blur_px)), np.float32) / 255.0
         inner = np.clip(soft * mask * 1.6, 0.0, 1.0)
-        rng = np.random.default_rng(seed + hash(self.name) % 10000)
+        rng = np.random.default_rng(seed + zlib.crc32(self.name.encode()) % 10000)
         noise = rng.normal(0.0, 1.0, mask.shape).astype(np.float32)
         noise = np.asarray(Image.fromarray(((noise * 0.2 + 0.5).clip(0, 1) * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(1.2)), np.float32) / 255.0 - 0.5
         coordinate = self.ux if fold_axis == "x" else self.uy

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="AiProfileData" format=3]
+
+[ext_resource type="Script" path="res://data/balance/ai/ai_profile_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"wasp"
+aggression = 0.8
+defense = 0.35
+heavy_ratio = 0.2
+shove_bias = 0.3
+parry_bias = 0.3
+dodge_bias = 0.4
+patience = 0.15
+preferred_gap = 45.0
+safe_gap = 240.0
+low_vigor_ratio = 0.25
+ability_bias = 0.6

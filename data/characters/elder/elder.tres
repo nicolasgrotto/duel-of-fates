@@ -1,0 +1,264 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Script" path="res://data/character_data.gd" id="1_script"]
+[ext_resource type="Script" path="res://data/move_data.gd" id="2_move"]
+[ext_resource type="Script" path="res://data/weapon_data.gd" id="3_weapon"]
+[ext_resource type="Script" path="res://data/costume_data.gd" id="4_costume"]
+[ext_resource type="Resource" path="res://data/characters/common/counter.tres" id="5_counter"]
+[ext_resource type="Resource" path="res://data/characters/common/shove.tres" id="6_shove"]
+[ext_resource type="Resource" path="res://data/characters/common/aerial_light.tres" id="7_aerial_light"]
+[ext_resource type="Resource" path="res://data/characters/common/aerial_heavy.tres" id="8_aerial_heavy"]
+[ext_resource type="Resource" path="res://data/characters/elder/elder_ai.tres" id="9_ai"]
+[ext_resource type="Resource" path="res://assets/characters/elder/art.tres" id="10_art"]
+[ext_resource type="Resource" path="res://data/families/guardian.tres" id="11_family"]
+[ext_resource type="Script" path="res://data/ability_data.gd" id="12_ability"]
+
+[sub_resource type="Resource" id="elder_light_1"]
+script = ExtResource("2_move")
+id = &"elder_light_1"
+kind = 0
+startup = 0.1
+active = 0.1
+recovery = 0.2
+damage = 10.0
+vigor_cost = 8.0
+block_vigor_cost = 8.0
+knockback = 40.0
+block_push = 30.0
+hitstun = 0.35
+blockstun = 0.24
+lunge = 20.0
+reach = 100.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 60.0
+can_blade_lock = false
+wound_limb = 0
+finisher_limb = 1
+blade_angle_windup = -150.0
+blade_angle_strike = 20.0
+
+[sub_resource type="Resource" id="elder_light_2"]
+script = ExtResource("2_move")
+id = &"elder_light_2"
+kind = 0
+startup = 0.1
+active = 0.1
+recovery = 0.2
+damage = 10.0
+vigor_cost = 8.0
+block_vigor_cost = 8.0
+knockback = 40.0
+block_push = 30.0
+hitstun = 0.35
+blockstun = 0.24
+lunge = 20.0
+reach = 100.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 60.0
+can_blade_lock = false
+wound_limb = 0
+finisher_limb = 1
+blade_angle_windup = 70.0
+blade_angle_strike = -110.0
+
+[sub_resource type="Resource" id="elder_light_3"]
+script = ExtResource("2_move")
+id = &"elder_light_3"
+kind = 0
+startup = 0.1
+active = 0.1
+recovery = 0.24
+damage = 10.0
+vigor_cost = 8.0
+block_vigor_cost = 8.0
+knockback = 40.0
+block_push = 30.0
+hitstun = 0.35
+blockstun = 0.24
+lunge = 30.0
+reach = 105.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 60.0
+can_blade_lock = false
+wound_limb = 0
+finisher_limb = 1
+blade_angle_windup = -20.0
+blade_angle_strike = 0.0
+
+[sub_resource type="Resource" id="elder_heavy"]
+script = ExtResource("2_move")
+id = &"elder_heavy"
+kind = 1
+startup = 0.32
+active = 0.12
+recovery = 0.42
+damage = 24.0
+vigor_cost = 24.0
+block_vigor_cost = 30.0
+knockback = 120.0
+block_push = 60.0
+hitstun = 0.5
+blockstun = 0.3
+lunge = 40.0
+reach = 115.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 70.0
+can_blade_lock = true
+wound_limb = 1
+finisher_limb = 1
+blade_angle_windup = -170.0
+blade_angle_strike = 40.0
+
+[sub_resource type="Resource" id="elder_forward_heavy"]
+script = ExtResource("2_move")
+id = &"elder_forward_heavy"
+kind = 2
+startup = 0.36
+active = 0.12
+recovery = 0.52
+damage = 26.0
+vigor_cost = 30.0
+block_vigor_cost = 32.0
+knockback = 140.0
+block_push = 70.0
+hitstun = 0.5
+blockstun = 0.3
+lunge = 110.0
+reach = 115.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 70.0
+can_blade_lock = true
+wound_limb = 2
+finisher_limb = 2
+blade_angle_windup = -160.0
+blade_angle_strike = 60.0
+
+[sub_resource type="Resource" id="elder_aerial_heavy"]
+script = ExtResource("2_move")
+id = &"elder_aerial_heavy"
+kind = 6
+startup = 0.1
+active = 0.24
+recovery = 0.22
+damage = 16.0
+vigor_cost = 14.0
+block_vigor_cost = 18.0
+knockback = 100.0
+block_push = 30.0
+hitstun = 0.45
+blockstun = 0.24
+lunge = 0.0
+reach = 70.0
+hitbox_bottom = -90.0
+hitbox_top = 90.0
+blade_reach = 60.0
+can_blade_lock = false
+wound_limb = 0
+finisher_limb = 0
+blade_angle_windup = -150.0
+blade_angle_strike = 80.0
+dive_speed = 900.0
+
+[sub_resource type="Resource" id="elder_ability_move"]
+script = ExtResource("2_move")
+id = &"elder_ability_move"
+kind = 6
+startup = 0.1
+active = 0.24
+recovery = 0.22
+damage = 18.0
+vigor_cost = 0.0
+block_vigor_cost = 18.0
+knockback = 100.0
+block_push = 30.0
+hitstun = 0.45
+blockstun = 0.24
+lunge = 0.0
+reach = 70.0
+hitbox_bottom = -90.0
+hitbox_top = 90.0
+blade_reach = 60.0
+can_blade_lock = false
+wound_limb = 0
+finisher_limb = 0
+blade_angle_windup = -150.0
+blade_angle_strike = 80.0
+dive_speed = 900.0
+
+[sub_resource type="Resource" id="elder_ability"]
+script = ExtResource("12_ability")
+id = &"elder_ability"
+kind = 4
+move = SubResource("elder_ability_move")
+vigor_cost = 16.0
+leap_velocity = Vector2(240.0, 820.0)
+dive_when_falling = true
+
+[sub_resource type="Resource" id="elder_weapon"]
+script = ExtResource("3_weapon")
+kind = 0
+hilt = 0
+blade_length = 90.0
+blade_width = 1.0
+hilt_length = 12.0
+hum_pitch = 1.02
+
+[sub_resource type="Resource" id="elder_costume_0"]
+script = ExtResource("4_costume")
+id = &"elder_original"
+name_key = "COSTUME_ORIGINAL"
+requirement_key = ""
+colors = PackedColorArray(0.5412, 0.4863, 0.3608, 1, 0.2353, 0.2275, 0.1725, 1, 0.7882, 0.7255, 0.5412, 1, 0.7216, 0.5961, 0.4706, 1, 0.9098, 0.9020, 0.8745, 1, 0.6471, 0.6039, 0.4784, 1, 0.2275, 0.2039, 0.1569, 1, 1.0000, 0.6980, 0.1804, 1)
+show_parts = PackedStringArray()
+hide_parts = PackedStringArray()
+
+[sub_resource type="Resource" id="elder_costume_1"]
+script = ExtResource("4_costume")
+id = &"elder_hermit"
+name_key = "COSTUME_HERMIT"
+requirement_key = "REQUIREMENT_SECRET_ENDING"
+colors = PackedColorArray(0.3608, 0.3529, 0.2824, 1, 0.2353, 0.2275, 0.1725, 1, 0.7882, 0.7255, 0.5412, 1, 0.7216, 0.5961, 0.4706, 1, 0.9098, 0.9020, 0.8745, 1, 0.6471, 0.6039, 0.4784, 1, 0.2275, 0.2039, 0.1569, 1, 1.0000, 0.6980, 0.1804, 1)
+show_parts = PackedStringArray("hood", "cape")
+hide_parts = PackedStringArray()
+
+[resource]
+script = ExtResource("1_script")
+id = &"elder"
+name_key = "CHARACTER_ELDER"
+health = 6
+vigor = 6
+blade = 8
+defense = 8
+agility = 8
+flow = 8
+light_chain = Array[ExtResource("2_move")]([SubResource("elder_light_1"), SubResource("elder_light_2"), SubResource("elder_light_3")])
+heavy = SubResource("elder_heavy")
+forward_heavy = SubResource("elder_forward_heavy")
+counter = ExtResource("5_counter")
+shove = ExtResource("6_shove")
+aerial_light = ExtResource("7_aerial_light")
+aerial_heavy = SubResource("elder_aerial_heavy")
+guard_break_stun = 1.2
+wall_jump = true
+ability = SubResource("elder_ability")
+ai_profile = ExtResource("9_ai")
+path = 0
+style_key = "STYLE_ELDER"
+trait_key = "TRAIT_ELDER"
+ability_key = "ABILITY_ELDER"
+secret = true
+selectable = true
+art = ExtResource("10_art")
+family = ExtResource("11_family")
+weapon = SubResource("elder_weapon")
+costumes = Array[ExtResource("4_costume")]([SubResource("elder_costume_0"), SubResource("elder_costume_1")])
+blade_colors = PackedColorArray(0.2471, 0.8157, 0.4784, 1)
+blade_color_keys = PackedStringArray("BLADE_ELDER_0")
+guard_angle = -60.0
+guard_grip = Vector2(14.0, -26.0)
+eclipse_eyes = false

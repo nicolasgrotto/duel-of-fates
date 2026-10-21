@@ -11,6 +11,7 @@
 [ext_resource type="Resource" path="res://data/characters/guardian/guardian_ai.tres" id="9_ai"]
 [ext_resource type="Resource" path="res://assets/characters/guardian/art.tres" id="10_art"]
 [ext_resource type="Resource" path="res://data/families/guardian.tres" id="11_family"]
+[ext_resource type="Script" path="res://data/ability_data.gd" id="12_ability"]
 
 [sub_resource type="Resource" id="guardian_light_1"]
 script = ExtResource("2_move")
@@ -112,6 +113,16 @@ finisher_limb = 2
 blade_angle_windup = -160.0
 blade_angle_strike = 60.0
 
+[sub_resource type="Resource" id="guardian_ability"]
+script = ExtResource("12_ability")
+id = &"guardian_ability"
+kind = 1
+move = ExtResource("5_counter")
+vigor_cost = 10.0
+stance_duration = 0.35
+stance_recovery = 0.4
+stance_stagger = 0.3
+
 [sub_resource type="Resource" id="guardian_weapon"]
 script = ExtResource("3_weapon")
 kind = 0
@@ -167,6 +178,7 @@ aerial_light = ExtResource("7_aerial_light")
 aerial_heavy = ExtResource("8_aerial_heavy")
 guard_break_stun = 1.2
 block_cost_multiplier = 0.8
+ability = SubResource("guardian_ability")
 ai_profile = ExtResource("9_ai")
 path = 0
 style_key = "STYLE_GUARDIAN"

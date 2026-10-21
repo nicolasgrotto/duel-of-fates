@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="AiProfileData" format=3]
+
+[ext_resource type="Script" path="res://data/balance/ai/ai_profile_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"reaper"
+aggression = 0.7
+defense = 0.45
+heavy_ratio = 0.3
+shove_bias = 0.35
+parry_bias = 0.4
+dodge_bias = 0.4
+patience = 0.2
+preferred_gap = 55.0
+safe_gap = 240.0
+low_vigor_ratio = 0.25
+ability_bias = 0.5

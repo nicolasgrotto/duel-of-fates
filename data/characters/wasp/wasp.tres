@@ -1,0 +1,276 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Script" path="res://data/character_data.gd" id="1_script"]
+[ext_resource type="Script" path="res://data/move_data.gd" id="2_move"]
+[ext_resource type="Script" path="res://data/weapon_data.gd" id="3_weapon"]
+[ext_resource type="Script" path="res://data/costume_data.gd" id="4_costume"]
+[ext_resource type="Resource" path="res://data/characters/common/counter.tres" id="5_counter"]
+[ext_resource type="Resource" path="res://data/characters/common/shove.tres" id="6_shove"]
+[ext_resource type="Resource" path="res://data/characters/common/aerial_light.tres" id="7_aerial_light"]
+[ext_resource type="Resource" path="res://data/characters/common/aerial_heavy.tres" id="8_aerial_heavy"]
+[ext_resource type="Resource" path="res://data/characters/wasp/wasp_ai.tres" id="9_ai"]
+[ext_resource type="Resource" path="res://assets/characters/wasp/art.tres" id="10_art"]
+[ext_resource type="Resource" path="res://data/families/wasp.tres" id="11_family"]
+[ext_resource type="Script" path="res://data/ability_data.gd" id="12_ability"]
+
+[sub_resource type="Resource" id="wasp_light_1"]
+script = ExtResource("2_move")
+id = &"wasp_light_1"
+kind = 0
+startup = 0.09
+active = 0.1
+recovery = 0.2
+damage = 7.0
+vigor_cost = 6.0
+block_vigor_cost = 8.0
+knockback = 40.0
+block_push = 30.0
+hitstun = 0.35
+blockstun = 0.24
+lunge = 20.0
+reach = 90.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 60.0
+can_blade_lock = false
+wound_limb = 0
+finisher_limb = 1
+blade_angle_windup = -140.0
+blade_angle_strike = 20.0
+
+[sub_resource type="Resource" id="wasp_light_2"]
+script = ExtResource("2_move")
+id = &"wasp_light_2"
+kind = 0
+startup = 0.09
+active = 0.1
+recovery = 0.2
+damage = 7.0
+vigor_cost = 6.0
+block_vigor_cost = 8.0
+knockback = 40.0
+block_push = 30.0
+hitstun = 0.35
+blockstun = 0.24
+lunge = 20.0
+reach = 90.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 60.0
+can_blade_lock = false
+wound_limb = 0
+finisher_limb = 1
+blade_angle_windup = 60.0
+blade_angle_strike = -90.0
+
+[sub_resource type="Resource" id="wasp_light_3"]
+script = ExtResource("2_move")
+id = &"wasp_light_3"
+kind = 0
+startup = 0.09
+active = 0.1
+recovery = 0.2
+damage = 7.0
+vigor_cost = 6.0
+block_vigor_cost = 8.0
+knockback = 40.0
+block_push = 30.0
+hitstun = 0.35
+blockstun = 0.24
+lunge = 35.0
+reach = 95.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 60.0
+can_blade_lock = false
+wound_limb = 0
+finisher_limb = 1
+blade_angle_windup = -20.0
+blade_angle_strike = 0.0
+
+[sub_resource type="Resource" id="wasp_light_4"]
+script = ExtResource("2_move")
+id = &"wasp_light_4"
+kind = 0
+startup = 0.09
+active = 0.1
+recovery = 0.2
+damage = 7.0
+vigor_cost = 6.0
+block_vigor_cost = 8.0
+knockback = 40.0
+block_push = 30.0
+hitstun = 0.35
+blockstun = 0.24
+lunge = 20.0
+reach = 90.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 60.0
+can_blade_lock = false
+wound_limb = 0
+finisher_limb = 1
+blade_angle_windup = 70.0
+blade_angle_strike = -100.0
+
+[sub_resource type="Resource" id="wasp_light_5"]
+script = ExtResource("2_move")
+id = &"wasp_light_5"
+kind = 0
+startup = 0.1
+active = 0.1
+recovery = 0.28
+damage = 9.0
+vigor_cost = 7.0
+block_vigor_cost = 8.0
+knockback = 90.0
+block_push = 30.0
+hitstun = 0.35
+blockstun = 0.24
+lunge = 20.0
+reach = 95.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 60.0
+can_blade_lock = false
+wound_limb = 0
+finisher_limb = 1
+blade_angle_windup = -170.0
+blade_angle_strike = 50.0
+
+[sub_resource type="Resource" id="wasp_heavy"]
+script = ExtResource("2_move")
+id = &"wasp_heavy"
+kind = 1
+startup = 0.32
+active = 0.12
+recovery = 0.42
+damage = 22.0
+vigor_cost = 24.0
+block_vigor_cost = 30.0
+knockback = 120.0
+block_push = 60.0
+hitstun = 0.5
+blockstun = 0.3
+lunge = 40.0
+reach = 105.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 70.0
+can_blade_lock = true
+wound_limb = 1
+finisher_limb = 1
+blade_angle_windup = -170.0
+blade_angle_strike = 40.0
+
+[sub_resource type="Resource" id="wasp_forward_heavy"]
+script = ExtResource("2_move")
+id = &"wasp_forward_heavy"
+kind = 2
+startup = 0.36
+active = 0.12
+recovery = 0.52
+damage = 26.0
+vigor_cost = 30.0
+block_vigor_cost = 32.0
+knockback = 140.0
+block_push = 70.0
+hitstun = 0.5
+blockstun = 0.3
+lunge = 110.0
+reach = 115.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 70.0
+can_blade_lock = true
+wound_limb = 2
+finisher_limb = 2
+blade_angle_windup = -160.0
+blade_angle_strike = 60.0
+
+[sub_resource type="Resource" id="wasp_ability"]
+script = ExtResource("12_ability")
+id = &"wasp_ability"
+kind = 2
+vigor_cost = 16.0
+dash_distance = 240.0
+dash_duration = 0.26
+dash_invulnerable = 0.2
+dash_through = true
+
+[sub_resource type="Resource" id="wasp_weapon"]
+script = ExtResource("3_weapon")
+kind = 1
+hilt = 2
+blade_length = 64.0
+blade_width = 0.75
+hilt_length = 10.0
+second_blade_length = 58.0
+hum_pitch = 1.25
+hum_detune = 0.03
+
+[sub_resource type="Resource" id="wasp_costume_0"]
+script = ExtResource("4_costume")
+id = &"wasp_original"
+name_key = "COSTUME_ORIGINAL"
+requirement_key = ""
+colors = PackedColorArray(0.3608, 0.2902, 0.2000, 1, 0.1647, 0.1333, 0.0980, 1, 0.7882, 0.7059, 0.5412, 1, 0.7686, 0.6039, 0.4706, 1, 0.5412, 0.4157, 0.2667, 1, 0.6039, 0.6392, 0.6784, 1, 0.2275, 0.1725, 0.1255, 1, 1.0000, 0.6980, 0.1804, 1)
+show_parts = PackedStringArray()
+hide_parts = PackedStringArray()
+
+[sub_resource type="Resource" id="wasp_costume_1"]
+script = ExtResource("4_costume")
+id = &"wasp_traveler"
+name_key = "COSTUME_TRAVELER"
+requirement_key = "REQUIREMENT_TRAVELER"
+colors = PackedColorArray(0.2706, 0.3020, 0.3451, 1, 0.1333, 0.1529, 0.1882, 1, 0.5137, 0.5647, 0.6196, 1, 0.7686, 0.6039, 0.4706, 1, 0.5412, 0.4157, 0.2667, 1, 0.6039, 0.6392, 0.6784, 1, 0.2275, 0.1725, 0.1255, 1, 1.0000, 0.6980, 0.1804, 1)
+show_parts = PackedStringArray("collar", "neckerchief")
+hide_parts = PackedStringArray("hood", "mask")
+
+[sub_resource type="Resource" id="wasp_costume_2"]
+script = ExtResource("4_costume")
+id = &"wasp_sentinel"
+name_key = "COSTUME_SENTINEL"
+requirement_key = "REQUIREMENT_SENTINEL"
+colors = PackedColorArray(0.3176, 0.2824, 0.2353, 1, 0.1569, 0.1373, 0.1176, 1, 0.6275, 0.5843, 0.4941, 1, 0.7686, 0.6039, 0.4706, 1, 0.5412, 0.4157, 0.2667, 1, 0.6039, 0.6392, 0.6784, 1, 0.2275, 0.1725, 0.1255, 1, 1.0000, 0.6980, 0.1804, 1)
+show_parts = PackedStringArray("pad")
+hide_parts = PackedStringArray()
+
+[resource]
+script = ExtResource("1_script")
+id = &"wasp"
+name_key = "CHARACTER_WASP"
+health = 3
+vigor = 6
+blade = 3
+defense = 3
+agility = 7
+flow = 3
+light_chain = Array[ExtResource("2_move")]([SubResource("wasp_light_1"), SubResource("wasp_light_2"), SubResource("wasp_light_3"), SubResource("wasp_light_4"), SubResource("wasp_light_5")])
+heavy = SubResource("wasp_heavy")
+forward_heavy = SubResource("wasp_forward_heavy")
+counter = ExtResource("5_counter")
+shove = ExtResource("6_shove")
+aerial_light = ExtResource("7_aerial_light")
+aerial_heavy = ExtResource("8_aerial_heavy")
+guard_break_stun = 1.4
+light_block_drain = 4.0
+double_jump_ratio = 0.9
+air_dash_vigor = 8.0
+ability = SubResource("wasp_ability")
+ai_profile = ExtResource("9_ai")
+path = 0
+style_key = "STYLE_WASP"
+trait_key = "TRAIT_WASP"
+ability_key = "ABILITY_WASP"
+secret = false
+selectable = true
+art = ExtResource("10_art")
+family = ExtResource("11_family")
+weapon = SubResource("wasp_weapon")
+costumes = Array[ExtResource("4_costume")]([SubResource("wasp_costume_0"), SubResource("wasp_costume_1"), SubResource("wasp_costume_2")])
+blade_colors = PackedColorArray(1.0000, 0.8235, 0.2471, 1, 0.4863, 1.0000, 0.4196, 1, 1.0000, 0.4196, 0.8353, 1)
+blade_color_keys = PackedStringArray("BLADE_WASP_0", "BLADE_WASP_1", "BLADE_WASP_2")
+guard_angle = -20.0
+guard_grip = Vector2(16.0, -20.0)
+eclipse_eyes = false
