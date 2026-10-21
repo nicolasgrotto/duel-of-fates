@@ -10,6 +10,12 @@ static func hitbox(config: CombatConfig, fighter: FighterState, move: MoveData) 
 	return _forward_box(config, fighter, move.reach, move.hitbox_bottom, move.hitbox_top)
 
 
+static func hitbox_behind(config: CombatConfig, fighter: FighterState, move: MoveData) -> Rect2:
+	var back: float = fighter.x - fighter.facing * config.body_width * 0.5
+	var left: float = back - move.reach if fighter.facing > 0 else back
+	return Rect2(left, fighter.y + move.hitbox_bottom, move.reach, move.hitbox_top - move.hitbox_bottom)
+
+
 static func blade_box(config: CombatConfig, fighter: FighterState, move: MoveData) -> Rect2:
 	return _forward_box(config, fighter, move.blade_reach, move.hitbox_bottom, move.hitbox_top)
 

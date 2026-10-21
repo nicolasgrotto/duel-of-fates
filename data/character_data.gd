@@ -29,6 +29,22 @@ enum Path { AURORA, ECLIPSE }
 @export var vigor_on_hit: float = 0.0
 @export var double_jump_ratio: float = 0.7
 @export var air_dash_vigor: float = 18.0
+@export var max_health_override: float = 0.0
+@export var block_walk_ratio: float = 0.0
+@export var block_push_immune: bool = false
+@export var light_block_drain: float = 0.0
+@export var perfect_parry_window: float = 0.0
+@export var parry_window: float = 0.0
+@export var sweet_spot: bool = false
+@export var punish_bonus: float = 0.0
+@export var knockback_multiplier: float = 1.0
+@export var wall_jump: bool = false
+@export var dodge_passes_through: bool = false
+@export var aerials_per_jump: int = 1
+@export var can_feint: bool = false
+
+@export_group("Ability")
+@export var ability: AbilityData
 
 @export_group("AI")
 @export var ai_profile: AiProfileData
@@ -51,3 +67,5 @@ enum Path { AURORA, ECLIPSE }
 @export var guard_angle: float = -55.0
 @export var guard_grip: Vector2 = Vector2(14.0, -24.0)
 @export var eclipse_eyes: bool = false
+@export var variant: CharacterData
+@export var variant_key: String

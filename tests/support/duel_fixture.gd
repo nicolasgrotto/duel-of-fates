@@ -10,12 +10,25 @@ var intents: Array[Intent] = [Intent.new(), Intent.new()]
 var events_log: Array[Dictionary] = []
 
 
-static func create(rules: MatchRules = null, config: CombatConfig = null, match_seed: int = 7) -> DuelFixture:
+static func create(rules: MatchRules = null, config: CombatConfig = null, match_seed: int = 7, cast: Array[CharacterData] = []) -> DuelFixture:
 	var fixture: DuelFixture = DuelFixture.new()
 	var characters: Array[CharacterData] = [GUARDIAN, SHADOW]
+	if not cast.is_empty():
+		characters = cast
 	fixture.sim = MatchSimulation.new(config if config != null else CONFIG, rules if rules != null else MatchRules.new(), characters, match_seed)
 	fixture.sim.start_match()
 	return fixture
+
+
+static func versus(first: StringName, second: StringName) -> DuelFixture:
+	var cast: Array[CharacterData] = [character(first), character(second)]
+	var fixture: DuelFixture = create(null, null, 7, cast)
+	fixture.skip_intro()
+	return fixture
+
+
+static func character(id: StringName) -> CharacterData:
+	return load("res://data/characters/%s/%s.tres" % [id, id]) as CharacterData
 
 
 static func config_copy() -> CombatConfig:

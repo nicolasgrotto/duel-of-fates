@@ -13,12 +13,15 @@ static func resolve(sim: MatchSimulation) -> void:
 
 
 static func _connects(sim: MatchSimulation, attacker: FighterState, defender: FighterState) -> bool:
-	if not attacker.is_active() or attacker.move_hit_done:
+	if not attacker.is_active() or attacker.move_hit_done or attacker.move.kind == MoveData.Kind.STANCE:
 		return false
 	if not defender.is_alive() or defender.is_invulnerable() or defender.state == FighterState.State.BLADE_LOCK:
 		return false
 	var config: CombatConfig = sim.config
-	return CombatGeometry.overlaps(CombatGeometry.hitbox(config, attacker, attacker.move), CombatGeometry.hurtbox(config, defender))
+	var hurtbox: Rect2 = CombatGeometry.hurtbox(config, defender)
+	if CombatGeometry.overlaps(CombatGeometry.hitbox(config, attacker, attacker.move), hurtbox):
+		return true
+	return attacker.move.hits_behind and CombatGeometry.overlaps(CombatGeometry.hitbox_behind(config, attacker, attacker.move), hurtbox)
 
 
 static func _apply(sim: MatchSimulation, attacker: FighterState, defender: FighterState, move: MoveData) -> void:
@@ -27,6 +30,8 @@ static func _apply(sim: MatchSimulation, attacker: FighterState, defender: Fight
 		_evade(sim, attacker, defender, move)
 	elif move.kind == MoveData.Kind.SHOVE:
 		_shove(sim, attacker, defender, move)
+	elif _in_stance(defender) and CombatGeometry.faces(defender, attacker):
+		_respond(sim, attacker, defender, move)
 	elif defender.state == FighterState.State.BLOCKING and CombatGeometry.faces(defender, attacker):
 		if defender.parry_ticks == FighterState.NO_PARRY:
 			_block(sim, attacker, defender, move)
@@ -36,6 +41,29 @@ static func _apply(sim: MatchSimulation, attacker: FighterState, defender: Fight
 			_parry(sim, attacker, defender, move)
 	else:
 		_hit(sim, attacker, defender, move)
+
+
+static func _in_stance(fighter: FighterState) -> bool:
+	return fighter.is_active() and fighter.move.kind == MoveData.Kind.STANCE
+
+
+static func _respond(sim: MatchSimulation, attacker: FighterState, defender: FighterState, move: MoveData) -> void:
+	var config: CombatConfig = sim.config
+	var ability: AbilityData = defender.character.ability
+	var type: CombatEvent.Type = CombatEvent.Type.PERFECT_PARRY if ability.perfect_response else CombatEvent.Type.RESPONSE
+	var event: CombatEvent = _event(sim, type, attacker, defender, move)
+	if ability.perfect_response:
+		sim.drain_vigor(attacker, sim.block_cost(defender, move) * 2.0)
+		sim.gain_vigor(defender, config.perfect_parry_vigor_gain)
+	_recoil(sim, attacker, FighterState.State.STAGGERED, ability.stance_stagger)
+	attacker.stagger_counterable = ability.perfect_response
+	ActionStarter.start_attack(sim, defender, ability.move)
+	event.hitstop_ticks = sim.freeze_pair(attacker, defender, config.hitstop_perfect_parry if ability.perfect_response else config.hitstop_parry)
+	event.frame_advantage = attacker.stun_ticks
+
+
+static func _knockback(sim: MatchSimulation, attacker: FighterState, distance: float) -> float:
+	return sim.config.slide_speed_for(distance * attacker.character.knockback_multiplier)
 
 
 static func _contact_point(sim: MatchSimulation, attacker: FighterState, defender: FighterState, move: MoveData) -> Vector2:
@@ -68,15 +96,17 @@ static func _shove(sim: MatchSimulation, attacker: FighterState, defender: Fight
 	var event: CombatEvent = _event(sim, CombatEvent.Type.SHOVE, attacker, defender, move)
 	sim.drain_vigor(defender, config.shove_vigor_loss)
 	_recoil(sim, defender, FighterState.State.STAGGERED, config.shove_stagger)
-	defender.vx = CombatGeometry.away_from(attacker, defender) * config.slide_speed_for(move.knockback)
+	defender.vx = CombatGeometry.away_from(attacker, defender) * _knockback(sim, attacker, move.knockback)
 	event.frame_advantage = defender.stun_ticks - attacker.ticks_left_in_move()
 
 
 static func _block(sim: MatchSimulation, attacker: FighterState, defender: FighterState, move: MoveData) -> void:
 	var config: CombatConfig = sim.config
 	var cost: float = sim.block_cost(defender, move)
+	if move.kind == MoveData.Kind.LIGHT:
+		cost += attacker.character.light_block_drain
 	attacker.move_connected = true
-	if defender.vigor < cost:
+	if defender.vigor < cost or _breaks_guard(attacker, move):
 		sim.drain_vigor(defender, defender.vigor)
 		var break_event: CombatEvent = _event(sim, CombatEvent.Type.GUARD_BREAK, attacker, defender, move)
 		_recoil(sim, defender, FighterState.State.STUNNED, defender.character.guard_break_stun)
@@ -87,10 +117,65 @@ static func _block(sim: MatchSimulation, attacker: FighterState, defender: Fight
 	var event: CombatEvent = _event(sim, CombatEvent.Type.BLOCK, attacker, defender, move)
 	event.amount = cost
 	defender.stun_ticks = Ticks.from_seconds(move.blockstun)
-	var push: float = move.block_push / defender.defense_multiplier
-	defender.vx = CombatGeometry.away_from(attacker, defender) * config.slide_speed_for(push)
+	if not defender.character.block_push_immune:
+		var push: float = move.block_push / defender.defense_multiplier
+		defender.vx = CombatGeometry.away_from(attacker, defender) * _knockback(sim, attacker, push)
 	event.hitstop_ticks = sim.freeze_pair(attacker, defender, config.hitstop_block)
 	event.frame_advantage = defender.stun_ticks - attacker.ticks_left_in_move()
+
+
+static func _breaks_guard(attacker: FighterState, move: MoveData) -> bool:
+	var ability: AbilityData = attacker.character.ability
+	if ability == null or ability.kind != AbilityData.Kind.CHARGE or move != ability.move or attacker.move != move:
+		return false
+	return attacker.charge_level >= ability.guard_break_level
+
+
+static func _damage(sim: MatchSimulation, attacker: FighterState, defender: FighterState, move: MoveData) -> float:
+	var config: CombatConfig = sim.config
+	var damage: float = move.damage * attacker.blade_multiplier
+	var character: CharacterData = attacker.character
+	if character.sweet_spot and move.reach > 0.0:
+		var ratio: float = CombatGeometry.gap(config, attacker, defender) / move.reach
+		if ratio >= config.sweet_spot_tip_ratio:
+			damage *= config.sweet_spot_tip_multiplier
+		elif ratio <= config.sweet_spot_close_ratio:
+			damage *= config.sweet_spot_close_multiplier
+	if character.punish_bonus > 0.0 and _is_open(defender):
+		damage *= 1.0 + character.punish_bonus
+	var ability: AbilityData = character.ability
+	if ability != null and ability.kind == AbilityData.Kind.CHARGE and move == ability.move and attacker.move == move:
+		damage *= 1.0 + ability.charge_bonus_per_level * (maxi(attacker.charge_level, 1) - 1)
+	if defender.exhausted and sim.rules.exhaustion and move.is_blade():
+		damage *= config.consequences.exhausted_damage_multiplier
+	return damage
+
+
+static func _is_open(fighter: FighterState) -> bool:
+	if fighter.state == FighterState.State.STAGGERED or fighter.state == FighterState.State.STUNNED:
+		return true
+	return fighter.is_attacking() and fighter.move_phase == FighterState.Phase.RECOVERY
+
+
+static func _armor_absorbs(defender: FighterState) -> bool:
+	if not defender.is_attacking() or defender.move == null:
+		return false
+	var move: MoveData = defender.move
+	if defender.armor_used >= move.armor_hits:
+		return false
+	return defender.move_phase == FighterState.Phase.STARTUP or (defender.move_phase == FighterState.Phase.ACTIVE and move.armor_in_active)
+
+
+static func _absorb(sim: MatchSimulation, attacker: FighterState, defender: FighterState, move: MoveData, damage: float) -> void:
+	defender.armor_used += 1
+	var absorbed: float = damage * defender.move.armor_damage_ratio
+	var event: CombatEvent = _event(sim, CombatEvent.Type.ARMOR_ABSORBED, attacker, defender, move)
+	event.amount = absorbed
+	attacker.move_connected = true
+	var lethal: bool = sim.apply_damage(defender, absorbed)
+	event.hitstop_ticks = sim.freeze_pair(attacker, defender, sim.config.hitstop_light)
+	if lethal:
+		sim.kill(defender, attacker, move)
 
 
 static func _parry(sim: MatchSimulation, attacker: FighterState, defender: FighterState, move: MoveData) -> void:
@@ -121,9 +206,10 @@ static func _perfect_parry(sim: MatchSimulation, attacker: FighterState, defende
 
 static func _hit(sim: MatchSimulation, attacker: FighterState, defender: FighterState, move: MoveData) -> void:
 	var config: CombatConfig = sim.config
-	var damage: float = move.damage * attacker.blade_multiplier
-	if defender.exhausted and sim.rules.exhaustion and move.is_blade():
-		damage *= config.consequences.exhausted_damage_multiplier
+	var damage: float = _damage(sim, attacker, defender, move)
+	if _armor_absorbs(defender):
+		_absorb(sim, attacker, defender, move, damage)
+		return
 	var combo: int = defender.combo_taken + 1 if _is_recoiling(defender) else 1
 	attacker.move_connected = true
 	var event: CombatEvent = _event(sim, CombatEvent.Type.HIT, attacker, defender, move)
@@ -134,7 +220,7 @@ static func _hit(sim: MatchSimulation, attacker: FighterState, defender: Fighter
 	_recoil(sim, defender, FighterState.State.HIT, move.hitstun)
 	defender.combo_taken = combo
 	event.combo = combo
-	defender.vx = CombatGeometry.away_from(attacker, defender) * config.slide_speed_for(move.knockback)
+	defender.vx = CombatGeometry.away_from(attacker, defender) * _knockback(sim, attacker, move.knockback)
 	if not lethal:
 		Consequences.try_wound(sim, attacker, defender, move)
 	var hitstop: float = config.hitstop_heavy if move.is_heavy() else config.hitstop_light

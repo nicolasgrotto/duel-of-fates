@@ -58,6 +58,15 @@ extends Resource
 @export var evade_duration: float = 0.4
 @export var evade_step: float = 14.0
 
+@export_group("Traits")
+@export var sweet_spot_tip_ratio: float = 0.667
+@export var sweet_spot_tip_multiplier: float = 1.5
+@export var sweet_spot_close_ratio: float = 0.25
+@export var sweet_spot_close_multiplier: float = 0.6
+@export var feint_vigor: float = 12.0
+@export var wall_jump_speed: float = 380.0
+@export var wall_contact: float = 6.0
+
 @export_group("Clash")
 @export var clash_light_separation: float = 120.0
 @export var clash_heavy_separation: float = 280.0

@@ -22,6 +22,8 @@ func _blade_moves(data: CharacterData) -> Array[MoveData]:
 	for move in [data.heavy, data.forward_heavy, data.counter, data.aerial_light, data.aerial_heavy]:
 		if move != null:
 			moves.append(move)
+	if data.ability != null and data.ability.move != null and data.ability.kind != AbilityData.Kind.STANCE:
+		moves.append(data.ability.move)
 	return moves
 
 

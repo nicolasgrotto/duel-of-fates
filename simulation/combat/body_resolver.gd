@@ -44,7 +44,13 @@ static func _limit(sim: MatchSimulation) -> float:
 
 
 static func _passes_through(fighter: FighterState) -> bool:
-	return fighter.is_air_dashing() or not fighter.is_alive()
+	if fighter.is_air_dashing() or not fighter.is_alive():
+		return true
+	if fighter.state != FighterState.State.DODGING:
+		return false
+	if fighter.dodge_kind == FighterState.DodgeKind.DASH:
+		return fighter.character.ability.dash_through
+	return fighter.dodge_kind == FighterState.DodgeKind.GROUND and fighter.character.dodge_passes_through
 
 
 static func _pinned(fighter: FighterState, push_direction: float, limit: float) -> bool:

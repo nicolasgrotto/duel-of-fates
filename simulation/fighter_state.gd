@@ -16,8 +16,8 @@ enum State {
 	DEAD,
 }
 enum Phase { NONE, STARTUP, ACTIVE, RECOVERY }
-enum DodgeKind { NONE, GROUND, AIR, EVADE }
-enum Action { NONE, JUMP, BLOCK, LIGHT, HEAVY, SHOVE, EVADE, DODGE }
+enum DodgeKind { NONE, GROUND, AIR, EVADE, DASH }
+enum Action { NONE, JUMP, BLOCK, LIGHT, HEAVY, SHOVE, EVADE, DODGE, SPECIAL }
 enum Wound { NONE, ARM, LEG }
 
 const NO_PARRY: int = -1
@@ -35,6 +35,7 @@ var blade_multiplier: float = 1.0
 var defense_multiplier: float = 1.0
 var agility_multiplier: float = 1.0
 var perfect_parry_ticks: int = 5
+var parry_window_ticks: int = 12
 
 var health: float = 100.0
 var vigor: float = 100.0
@@ -74,7 +75,9 @@ var buffer_ticks: int = 0
 
 var jumps_used: int = 0
 var air_dash_used: bool = false
-var air_attack_used: bool = false
+var air_attacks: int = 0
+var last_wall: int = 0
+var leap_dive: bool = false
 
 var exhausted: bool = false
 var exhausted_ticks: int = 0
@@ -86,6 +89,9 @@ var lock_press_cooldown: int = 0
 var lock_hold_ticks: int = 0
 
 var stagger_counterable: bool = false
+var armor_used: int = 0
+var charge_ticks: int = 0
+var charge_level: int = 0
 var combo_taken: int = 0
 var ticks_since_damage: int = 0
 var round_wins: int = 0
@@ -105,8 +111,12 @@ func setup(fighter_index: int, data: CharacterData, config: CombatConfig) -> voi
 	agility_multiplier = config.attribute_multiplier(data.agility)
 	walk_speed = config.walk_speed * agility_multiplier
 	jump_velocity = config.jump_velocity * agility_multiplier
-	var perfect_window: float = config.perfect_parry_window + (blade_multiplier - 1.0) * config.perfect_parry_blade_bonus
+	if data.max_health_override > 0.0:
+		max_health = data.max_health_override
+	var base_perfect: float = data.perfect_parry_window if data.perfect_parry_window > 0.0 else config.perfect_parry_window
+	var perfect_window: float = base_perfect + (blade_multiplier - 1.0) * config.perfect_parry_blade_bonus
 	perfect_parry_ticks = Ticks.from_seconds(perfect_window)
+	parry_window_ticks = Ticks.from_seconds(data.parry_window if data.parry_window > 0.0 else config.parry_window)
 
 
 func is_airborne() -> bool:
@@ -184,7 +194,9 @@ func reset_for_round(start_x: float, start_facing: int) -> void:
 	buffer_ticks = 0
 	jumps_used = 0
 	air_dash_used = false
-	air_attack_used = false
+	air_attacks = 0
+	last_wall = 0
+	leap_dive = false
 	exhausted = false
 	exhausted_ticks = 0
 	wound = Wound.NONE
@@ -205,6 +217,9 @@ func clear_move() -> void:
 	phase_ticks = 0
 	move_hit_done = false
 	move_connected = false
+	armor_used = 0
+	charge_ticks = 0
+	charge_level = 0
 
 
 func capture() -> Dictionary:

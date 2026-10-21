@@ -321,7 +321,9 @@ func _land(fighter: FighterState) -> void:
 	fighter.on_ground = true
 	fighter.jumps_used = 0
 	fighter.air_dash_used = false
-	fighter.air_attack_used = false
+	fighter.air_attacks = 0
+	fighter.last_wall = 0
+	fighter.leap_dive = false
 	var landing_cancels: bool = (
 		fighter.state == FighterState.State.JUMPING
 		or fighter.is_air_dashing()

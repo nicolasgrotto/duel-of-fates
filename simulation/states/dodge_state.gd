@@ -20,6 +20,10 @@ func step(sim: MatchSimulation, fighter: FighterState, _intent: Intent) -> void:
 				finish_to_neutral(sim, fighter)
 		FighterState.DodgeKind.EVADE:
 			_step_evade(sim, fighter)
+		FighterState.DodgeKind.DASH:
+			_set_velocity(sim, fighter)
+			if fighter.state_ticks >= Ticks.from_seconds(fighter.character.ability.dash_duration):
+				finish_to_neutral(sim, fighter)
 
 
 func exit(_sim: MatchSimulation, fighter: FighterState) -> void:
@@ -34,6 +38,9 @@ func _set_velocity(sim: MatchSimulation, fighter: FighterState) -> void:
 			fighter.vx = fighter.dodge_direction * config.dodge_distance * fighter.agility_multiplier / config.dodge_duration
 		FighterState.DodgeKind.AIR:
 			fighter.vx = fighter.dodge_direction * config.air_dash_distance * fighter.agility_multiplier / config.air_dash_duration
+		FighterState.DodgeKind.DASH:
+			var ability: AbilityData = fighter.character.ability
+			fighter.vx = fighter.dodge_direction * ability.dash_distance * fighter.agility_multiplier / ability.dash_duration
 		FighterState.DodgeKind.EVADE:
 			if fighter.evade_window_ticks > 0:
 				fighter.vx = fighter.dodge_direction * config.evade_step / Ticks.to_seconds(fighter.evade_window_ticks)

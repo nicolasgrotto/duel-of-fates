@@ -10,6 +10,7 @@ const GROUND_ACTIONS: int = (
 	| (1 << FighterState.Action.SHOVE)
 	| (1 << FighterState.Action.EVADE)
 	| (1 << FighterState.Action.DODGE)
+	| (1 << FighterState.Action.SPECIAL)
 )
 const AIR_ACTIONS: int = (
 	(1 << FighterState.Action.JUMP)
@@ -41,6 +42,8 @@ static func pressed_action(intent: Intent) -> FighterState.Action:
 		return FighterState.Action.EVADE
 	if intent.was_pressed(Intent.Command.LIGHT) and intent.is_held(Intent.Command.BLOCK):
 		return FighterState.Action.SHOVE
+	if intent.was_pressed(Intent.Command.SPECIAL):
+		return FighterState.Action.SPECIAL
 	if intent.was_pressed(Intent.Command.HEAVY):
 		return FighterState.Action.HEAVY
 	if intent.was_pressed(Intent.Command.LIGHT):
@@ -84,6 +87,8 @@ static func _start(sim: MatchSimulation, fighter: FighterState, intent: Intent, 
 			return _start_evade(sim, fighter)
 		FighterState.Action.DODGE:
 			return _start_dodge(sim, fighter, intent)
+		FighterState.Action.SPECIAL:
+			return _start_ability(sim, fighter, intent)
 	return Result.NOT_POSSIBLE
 
 
@@ -98,12 +103,15 @@ static func start_attack(sim: MatchSimulation, fighter: FighterState, move: Move
 	fighter.chain_index = chain_index
 	fighter.move_hit_done = false
 	fighter.move_connected = false
+	fighter.armor_used = 0
+	fighter.charge_ticks = 0
+	fighter.charge_level = 1
 	fighter.phase_ticks = 0
 	fighter.move_phase = FighterState.Phase.STARTUP
 	if move.startup_ticks() == 0:
 		fighter.move_phase = FighterState.Phase.ACTIVE if move.active_ticks() > 0 else FighterState.Phase.RECOVERY
 	if move.is_aerial():
-		fighter.air_attack_used = true
+		fighter.air_attacks += 1
 	var event: CombatEvent = sim.emit(CombatEvent.Type.ATTACK_STARTED, fighter.index, sim.opponent_of(fighter).index)
 	event.move = move
 	event.heavy = move.is_heavy()
@@ -112,7 +120,7 @@ static func start_attack(sim: MatchSimulation, fighter: FighterState, move: Move
 
 static func _start_light(sim: MatchSimulation, fighter: FighterState) -> Result:
 	if fighter.is_airborne():
-		return Result.NOT_POSSIBLE if fighter.air_attack_used else start_attack(sim, fighter, fighter.character.aerial_light)
+		return start_attack(sim, fighter, fighter.character.aerial_light) if can_attack_in_air(fighter) else Result.NOT_POSSIBLE
 	var opponent: FighterState = sim.opponent_of(fighter)
 	if opponent.state == FighterState.State.STAGGERED and opponent.stagger_counterable:
 		return start_attack(sim, fighter, fighter.character.counter)
@@ -123,14 +131,25 @@ static func _start_light(sim: MatchSimulation, fighter: FighterState) -> Result:
 
 static func _start_heavy(sim: MatchSimulation, fighter: FighterState, intent: Intent) -> Result:
 	if fighter.is_airborne():
-		return Result.NOT_POSSIBLE if fighter.air_attack_used else start_attack(sim, fighter, fighter.character.aerial_heavy)
+		return start_attack(sim, fighter, fighter.character.aerial_heavy) if can_attack_in_air(fighter) else Result.NOT_POSSIBLE
 	var forward: bool = intent.move_x != 0 and intent.move_x == fighter.facing
 	if forward and fighter.character.forward_heavy != null:
 		return start_attack(sim, fighter, fighter.character.forward_heavy)
 	return start_attack(sim, fighter, fighter.character.heavy)
 
 
+static func can_attack_in_air(fighter: FighterState) -> bool:
+	return fighter.air_attacks < fighter.character.aerials_per_jump
+
+
 static func _start_jump(sim: MatchSimulation, fighter: FighterState) -> Result:
+	var wall: int = _touching_wall(sim, fighter)
+	if fighter.is_airborne() and wall != 0 and fighter.character.wall_jump and wall != fighter.last_wall:
+		fighter.last_wall = wall
+		fighter.vx = -wall * sim.config.wall_jump_speed * fighter.agility_multiplier
+		fighter.vy = fighter.jump_velocity
+		sim.emit(CombatEvent.Type.JUMP, fighter.index, CombatEvent.NO_FIGHTER).amount = 3.0
+		return Result.STARTED
 	if fighter.on_ground:
 		fighter.vy = fighter.jump_velocity
 		fighter.on_ground = false
@@ -145,6 +164,15 @@ static func _start_jump(sim: MatchSimulation, fighter: FighterState) -> Result:
 		sim.change_state(fighter, FighterState.State.JUMPING)
 	sim.emit(CombatEvent.Type.JUMP, fighter.index, CombatEvent.NO_FIGHTER).amount = fighter.jumps_used
 	return Result.STARTED
+
+
+static func _touching_wall(sim: MatchSimulation, fighter: FighterState) -> int:
+	var limit: float = sim.config.half_width() - sim.config.body_width * 0.5 - sim.config.wall_contact
+	if fighter.x >= limit:
+		return 1
+	if fighter.x <= -limit:
+		return -1
+	return 0
 
 
 static func _start_guard(sim: MatchSimulation, fighter: FighterState) -> Result:
@@ -191,4 +219,45 @@ static func _start_evade(sim: MatchSimulation, fighter: FighterState) -> Result:
 	fighter.evade_succeeded = false
 	fighter.evade_window_ticks = maxi(Ticks.from_seconds(sim.config.evade_invulnerable * fighter.agility_multiplier), 1)
 	sim.change_state(fighter, FighterState.State.DODGING)
+	return Result.STARTED
+
+
+static func _start_ability(sim: MatchSimulation, fighter: FighterState, intent: Intent) -> Result:
+	var ability: AbilityData = fighter.character.ability
+	if ability == null or fighter.is_airborne():
+		return Result.NOT_POSSIBLE
+	match ability.kind:
+		AbilityData.Kind.STRIKE, AbilityData.Kind.CHARGE:
+			return start_attack(sim, fighter, ability.move)
+		AbilityData.Kind.STANCE:
+			return start_attack(sim, fighter, ability.stance_move())
+		AbilityData.Kind.DASH:
+			return _start_dash(sim, fighter, intent, ability)
+		AbilityData.Kind.LEAP:
+			return _start_leap(sim, fighter, ability)
+	return Result.NOT_POSSIBLE
+
+
+static func _start_dash(sim: MatchSimulation, fighter: FighterState, intent: Intent, ability: AbilityData) -> Result:
+	if not sim.spend_vigor(fighter, ability.vigor_cost):
+		return Result.REJECTED
+	var default_direction: int = fighter.facing if ability.dash_forward_by_default else -fighter.facing
+	fighter.dodge_kind = FighterState.DodgeKind.DASH
+	fighter.dodge_direction = intent.move_x if intent.move_x != 0 else default_direction
+	fighter.invulnerable_ticks = Ticks.from_seconds(ability.dash_invulnerable)
+	sim.change_state(fighter, FighterState.State.DODGING)
+	sim.emit(CombatEvent.Type.DODGE, fighter.index, CombatEvent.NO_FIGHTER)
+	return Result.STARTED
+
+
+static func _start_leap(sim: MatchSimulation, fighter: FighterState, ability: AbilityData) -> Result:
+	if not sim.spend_vigor(fighter, ability.vigor_cost):
+		return Result.REJECTED
+	fighter.vx = fighter.facing * ability.leap_velocity.x * fighter.agility_multiplier
+	fighter.vy = ability.leap_velocity.y
+	fighter.on_ground = false
+	fighter.jumps_used = 1
+	fighter.leap_dive = ability.dive_when_falling
+	sim.change_state(fighter, FighterState.State.JUMPING)
+	sim.emit(CombatEvent.Type.JUMP, fighter.index, CombatEvent.NO_FIGHTER).amount = 1.0
 	return Result.STARTED

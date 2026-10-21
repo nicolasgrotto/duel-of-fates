@@ -28,6 +28,14 @@ enum Limb { NONE, ARM, LEG, HEAD }
 @export var hitbox_top: float = 140.0
 @export var blade_reach: float = 60.0
 
+@export_group("Properties")
+@export var counts_as_heavy: bool = false
+@export var armor_hits: int = 0
+@export_range(0.0, 1.0) var armor_damage_ratio: float = 1.0
+@export var armor_in_active: bool = false
+@export var hits_behind: bool = false
+@export var dive_speed: float = 0.0
+
 @export_group("Consequences")
 @export var can_blade_lock: bool = false
 @export var wound_limb: Limb = Limb.NONE
@@ -55,7 +63,7 @@ func total_ticks() -> int:
 
 
 func is_heavy() -> bool:
-	return kind == Kind.HEAVY or kind == Kind.FORWARD_HEAVY or kind == Kind.AERIAL_HEAVY
+	return kind == Kind.HEAVY or kind == Kind.FORWARD_HEAVY or kind == Kind.AERIAL_HEAVY or counts_as_heavy
 
 
 func is_aerial() -> bool:
@@ -63,7 +71,7 @@ func is_aerial() -> bool:
 
 
 func is_blade() -> bool:
-	return kind != Kind.SHOVE and kind != Kind.LOCK_FINISH
+	return kind != Kind.SHOVE and kind != Kind.LOCK_FINISH and kind != Kind.STANCE
 
 
 func can_clash() -> bool:
