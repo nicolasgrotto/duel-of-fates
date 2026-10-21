@@ -7,3 +7,6 @@ AGENTS.md
 
 # Generated from localization/strings.csv on import
 *.translation
+
+# Python bytecode from the offline art and audio tools
+__pycache__/
