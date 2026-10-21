@@ -9,6 +9,7 @@ extends Resource
 @export var danger: Color = Color("#e5484d")
 @export var aurora: Color = Color("#5aa2ff")
 @export var eclipse: Color = Color("#ff4458")
+@export var potential: Color = Color("#d9b45a")
 
 @export_group("Duel HUD")
 @export var bar_back: Color = Color(0.91, 0.925, 0.96, 0.1)

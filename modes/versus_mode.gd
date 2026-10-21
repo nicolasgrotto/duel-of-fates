@@ -11,4 +11,4 @@ func build_setup() -> DuelSetup:
 	setup.rules = MatchRules.new()
 	setup.arena = DEFAULT_ARENA
 	setup.match_seed = _new_seed()
-	return setup
+	return _finish_setup(setup)

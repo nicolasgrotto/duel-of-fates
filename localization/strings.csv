@@ -71,3 +71,152 @@ MOVE_KIND_SHOVE,Empurrão,Shove
 MOVE_KIND_AERIAL_LIGHT,Aéreo rápido,Aerial light
 MOVE_KIND_AERIAL_HEAVY,Aéreo forte,Aerial heavy
 MOVE_KIND_LOCK_FINISH,Disputa de lâminas,Blade lock
+CHARACTER_BASTION,Bastião,Bastion
+CHARACTER_WASP,Vespa,Wasp
+CHARACTER_MIRROR,Espelho,Mirror
+CHARACTER_LANCE,Haste,Lance
+CHARACTER_EMBER,Brasa,Ember
+CHARACTER_FORGE,Forja,Forge
+CHARACTER_HERON,Garça,Heron
+CHARACTER_REAPER,Ceifador,Reaper
+CHARACTER_ECHO,Eco,Echo
+CHARACTER_AWAKENED_SHADOW,Sombra Desperta,Awakened Shadow
+CHARACTER_SOVEREIGN,Soberano,Sovereign
+CHARACTER_ELDER,Ancião,Elder
+CHARACTER_FORETOLD,Predestinado,Foretold
+CHARACTER_FORETOLD_ECLIPSE,Predestinado,Foretold
+STYLE_GUARDIAN,"Técnico, fundamentos","Technical, fundamentals"
+STYLE_SHADOW,"Agressiva, pressão","Aggressive, pressure"
+STYLE_BASTION,"Tanque, peso","Tank, weight"
+STYLE_WASP,"Velocidade, duas lâminas","Speed, twin blades"
+STYLE_MIRROR,"Defensivo, parry","Defensive, parry"
+STYLE_LANCE,"Alcance, lâmina em haste","Reach, hafted blade"
+STYLE_EMBER,"Resposta, leitura","Response, reading"
+STYLE_FORGE,"Pesada, carga","Heavy, charge"
+STYLE_HERON,"Acrobática, mobilidade","Acrobatic, mobility"
+STYLE_REAPER,"Acrobata, lâmina dupla","Acrobat, double blade"
+STYLE_ECHO,"Trapaceira, fintas","Trickster, feints"
+STYLE_AWAKENED_SHADOW,Chefe,Boss
+STYLE_SOVEREIGN,Senhor do Fluxo,Lord of the Flow
+STYLE_ELDER,Mestre da Aurora,Master of the Aurora
+STYLE_FORETOLD,Fluxo 10,Flow 10
+STYLE_FORETOLD_ECLIPSE,Fluxo 10,Flow 10
+TRAIT_GUARDIAN,Bloquear custa 20% menos Vigor,Blocking costs 20% less Vigor
+TRAIT_SHADOW,Ímpeto: cada acerto devolve Vigor,Momentum: every hit returns Vigor
+TRAIT_BASTION,Anda em guarda e não é empurrado no bloqueio,Walks in guard and is not pushed on block
+TRAIT_WASP,Sequência de 5; rápidos bloqueados drenam Vigor; pulo duplo forte,5-hit sequence; blocked lights drain Vigor; strong double jump
+TRAIT_MIRROR,Janelas de parry maiores,Wider parry windows
+TRAIT_LANCE,"Ponto doce: a ponta fere mais, de perto fere menos","Sweet spot: the tip hurts more, up close less"
+TRAIT_EMBER,+20% de dano contra quem está aberto,+20% damage against an open opponent
+TRAIT_FORGE,Knockback maior em tudo,Bigger knockback on everything
+TRAIT_HERON,"Pulo na parede, esquiva que atravessa, dois aéreos","Wall jump, dodge through, two aerials"
+TRAIT_REAPER,O terceiro rápido empurra e atordoa mais,The third light pushes and stuns more
+TRAIT_ECHO,Finta: tocar a guarda cancela o forte,Feint: tapping guard cancels the heavy
+TRAIT_AWAKENED_SHADOW,Ímpeto e mais vida,Momentum and more health
+TRAIT_SOVEREIGN,Ponto doce da haste,Hafted sweet spot
+TRAIT_ELDER,Pulo na parede e mergulho aéreo,Wall jump and aerial dive
+TRAIT_FORETOLD,Finta,Feint
+TRAIT_FORETOLD_ECLIPSE,Finta,Feint
+ABILITY_GUARDIAN,Contraguarda: desvia e responde,Counterguard: deflect and answer
+ABILITY_SHADOW,Ímpeto: avanço cortante com armadura,Onslaught: armored cutting dash
+ABILITY_BASTION,Marreta: golpe lento com armadura dupla,Maul: slow strike with double armor
+ABILITY_WASP,Zumbido: avanço invulnerável que atravessa,Buzz: invulnerable dash through
+ABILITY_MIRROR,Postura de Espera: apara tudo o que chegar,Waiting Stance: parries whatever comes
+ABILITY_LANCE,"Varredura: alcance enorme, baixa e lenta","Sweep: huge reach, low and slow"
+ABILITY_EMBER,Brasa Viva: postura com resposta forte,Living Ember: stance with a strong answer
+ABILITY_FORGE,Forja: segure para carregar até quebrar a guarda,Forge: hold to charge until it breaks guard
+ABILITY_HERON,Voo da Garça: salto alto por cima do oponente,Heron Flight: high leap over the opponent
+ABILITY_REAPER,Roda Dupla: acerta na frente e atrás,Twin Wheel: hits front and back
+ABILITY_ECHO,Passo-reflexo: passo curto invulnerável,Reflex Step: short invulnerable step
+ABILITY_AWAKENED_SHADOW,Ímpeto,Onslaught
+ABILITY_SOVEREIGN,Varredura,Sweep
+ABILITY_ELDER,Salto: avança pelo ar e cai golpeando,Leap: flies forward and strikes on the way down
+ABILITY_FORETOLD,Passo-reflexo,Reflex Step
+ABILITY_FORETOLD_ECLIPSE,Passo-reflexo,Reflex Step
+BLADE_GUARDIAN_0,Ciano-gelo,Ice cyan
+BLADE_GUARDIAN_1,Azul-profundo,Deep blue
+BLADE_GUARDIAN_2,Verde-água,Sea green
+BLADE_SHADOW_0,Magenta,Magenta
+BLADE_SHADOW_1,Violeta-escuro,Dark violet
+BLADE_SHADOW_2,Rubi,Ruby
+BLADE_BASTION_0,Verde-ácido,Acid green
+BLADE_BASTION_1,Ouro-pálido,Pale gold
+BLADE_BASTION_2,Azul-céu,Sky blue
+BLADE_WASP_0,Amarelo-âmbar,Amber yellow
+BLADE_WASP_1,Lima,Lime
+BLADE_WASP_2,Rosa,Pink
+BLADE_MIRROR_0,Branco-prata,Silver white
+BLADE_MIRROR_1,Prata-azulada,Bluish silver
+BLADE_MIRROR_2,Marfim,Ivory
+BLADE_LANCE_0,Violeta,Violet
+BLADE_LANCE_1,Anil,Indigo
+BLADE_LANCE_2,Fúcsia,Fuchsia
+BLADE_EMBER_0,Laranja-brasa,Ember orange
+BLADE_EMBER_1,Ouro,Gold
+BLADE_EMBER_2,Carmim,Carmine
+BLADE_FORGE_0,Vermelho-forja,Forge red
+BLADE_FORGE_1,Laranja-forno,Furnace orange
+BLADE_FORGE_2,Verde-escória,Slag green
+BLADE_HERON_0,Verde-menta,Mint green
+BLADE_HERON_1,Azul-gelo,Ice blue
+BLADE_HERON_2,Coral,Coral
+BLADE_REAPER_0,Vermelho-sangue,Blood red
+BLADE_REAPER_1,Laranja-brasa,Ember orange
+BLADE_REAPER_2,Violeta,Violet
+BLADE_ECHO_0,Rosa-pálido,Pale pink
+BLADE_ECHO_1,Lilás,Lilac
+BLADE_ECHO_2,Prata,Silver
+BLADE_AWAKENED_SHADOW_0,Magenta,Magenta
+BLADE_SOVEREIGN_0,Carmesim,Crimson
+BLADE_SOVEREIGN_1,Ouro-velho,Old gold
+BLADE_ELDER_0,Verde-jade,Jade green
+BLADE_FORETOLD_0,Azul-aurora,Aurora blue
+BLADE_FORETOLD_ECLIPSE_0,Vermelho-ápice,Apex red
+MOVE_KIND_ABILITY,Habilidade,Ability
+MOVE_KIND_STANCE,Postura,Stance
+FRAME_RESPONSE,respondido,answered
+FRAME_ARMOR_ABSORBED,armadura,armor
+COSTUME_ORIGINAL,Original,Original
+COSTUME_TRAVELER,Viajante,Traveler
+COSTUME_SENTINEL,Sentinela,Sentinel
+COSTUME_LEGACY,Legado,Legacy
+COSTUME_HERMIT,Eremita,Hermit
+COSTUME_DUSK,Ocaso,Dusk
+COSTUME_FALLEN,Caído,Fallen
+COSTUME_DUEL,Duelo,Duel
+REQUIREMENT_TRAVELER,Vencer o Arcade com este lutador,Beat Arcade with this fighter
+REQUIREMENT_SENTINEL,Concluir qualquer final da História,Finish any Story ending
+REQUIREMENT_SECRET_ENDING,Final secreto da História,Secret Story ending
+REQUIREMENT_STORY,Concluir a História,Finish the Story
+REQUIREMENT_ARCADE,Vencer o Arcade com este lutador,Beat Arcade with this fighter
+VARIANT_AURORA,Aurora,Aurora
+VARIANT_ECLIPSE,Eclipse,Eclipse
+PATH_AURORA,Aurora,Aurora
+PATH_ECLIPSE,Eclipse,Eclipse
+SELECT_RANDOM,Aleatório,Random
+SELECT_RANDOM_ARENA,Aleatória,Random
+SELECT_PLAYER,ESCOLHA SEU LUTADOR,CHOOSE YOUR FIGHTER
+SELECT_OPPONENT,ESCOLHA O ADVERSÁRIO,CHOOSE YOUR OPPONENT
+SELECT_DUMMY,ESCOLHA O BONECO,CHOOSE THE DUMMY
+SELECT_ARENA,ESCOLHA A ARENA,CHOOSE THE ARENA
+SELECT_STYLE,Estilo,Style
+SELECT_PATH,Caminho,Path
+SELECT_TRAIT,Traço,Trait
+SELECT_ABILITY,Habilidade,Ability
+SELECT_LOOK,Visual · {name} ({index}/{count}),Look · {name} ({index}/{count})
+SELECT_BLADE,Lâmina · {name} ({index}/{count}),Blade · {name} ({index}/{count})
+SELECT_VARIANT,Variante · {name},Variant · {name}
+SELECT_REQUIREMENT,Libera: {requirement},Unlocks: {requirement}
+HINT_BLADE,lâmina,blade
+HINT_LOOK,visual,look
+HINT_VARIANT,variante,variant
+ATTRIBUTE_HEALTH,Vida,Health
+ATTRIBUTE_VIGOR,Vigor,Stamina
+ATTRIBUTE_BLADE,Lâmina,Blade
+ATTRIBUTE_DEFENSE,Defesa,Defense
+ATTRIBUTE_AGILITY,Agilidade,Agility
+ATTRIBUTE_FLOW,Fluxo,Flow
+ARENA_REFINERY_PLATFORM,Plataforma de Refino,Refinery Platform
+ARENA_PHRASE_REFINERY_PLATFORM,Plataforma industrial suspensa sobre o fosso.,Industrial platform hanging over the pit.
+ARENA_PHRASE_TRAINING_PLATFORM,Plataforma neutra com marcas de distância.,Neutral platform with distance marks.
+ARENA_PHRASE_RANDOM,Uma arena sorteada.,A random arena.

@@ -2,6 +2,7 @@ extends Node
 
 const SCREENS: Dictionary = {
 	&"menu": "res://screens/menu/main_menu.tscn",
+	&"select": "res://screens/select/character_select.tscn",
 	&"duel": "res://screens/duel/duel_screen.tscn",
 	&"pause": "res://screens/pause/pause_screen.tscn",
 	&"result": "res://screens/result/result_screen.tscn",

@@ -3,6 +3,7 @@ extends VBoxContainer
 
 signal chosen(id: StringName)
 signal adjusted(id: StringName, step: int)
+signal highlighted(id: StringName)
 
 const PALETTE: UiPalette = preload("res://ui/palette.tres")
 const DASH_SIZE: Vector2 = Vector2(22.0, 2.0)
@@ -81,6 +82,27 @@ func _on_row_input(event: InputEvent, index: int) -> void:
 func _select(index: int) -> void:
 	selected = posmod(index, _ids.size())
 	_refresh()
+	highlighted.emit(_ids[selected])
+
+
+func clear_items() -> void:
+	for child in get_children():
+		remove_child(child)
+		child.queue_free()
+	_ids.clear()
+	_labels.clear()
+	_dashes.clear()
+	selected = 0
+
+
+func select_id(id: StringName) -> void:
+	var index: int = _ids.find(id)
+	if index >= 0:
+		_select(index)
+
+
+func current_id() -> StringName:
+	return _ids[selected] if not _ids.is_empty() else &""
 
 
 func _refresh() -> void:

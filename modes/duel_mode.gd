@@ -6,6 +6,13 @@ const GUARDIAN: CharacterData = preload("res://data/characters/guardian/guardian
 const SHADOW: CharacterData = preload("res://data/characters/shadow/shadow.tres")
 const DEFAULT_ARENA: ArenaData = preload("res://data/arenas/refinery_platform.tres")
 const TRAINING_ARENA: ArenaData = preload("res://data/arenas/training_platform.tres")
+const ARENAS: Array[ArenaData] = [DEFAULT_ARENA, TRAINING_ARENA]
+
+var selection: DuelSelection = DuelSelection.new()
+
+
+func steps() -> Array[StringName]:
+	return [&"player", &"opponent", &"arena"]
 
 
 func build_setup() -> DuelSetup:
@@ -16,8 +23,12 @@ func result_options() -> Array[StringName]:
 	return [&"rematch", &"menu"]
 
 
-func restart() -> void:
+func start() -> void:
 	SceneRouter.change(&"duel", {"mode": self})
+
+
+func restart() -> void:
+	start()
 
 
 func choose(option: StringName) -> void:
@@ -26,6 +37,12 @@ func choose(option: StringName) -> void:
 			restart()
 		&"menu":
 			SceneRouter.change(&"menu")
+
+
+func _finish_setup(setup: DuelSetup) -> DuelSetup:
+	setup.fill_default_looks()
+	selection.apply_to(setup)
+	return setup
 
 
 func _new_seed() -> int:

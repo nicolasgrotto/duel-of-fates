@@ -14,3 +14,4 @@ ambient = Color(0.5, 0.54, 0.62, 1)
 reflective_floor = true
 music = ExtResource("3_music")
 ambience = ExtResource("4_ambience")
+phrase_key = "ARENA_PHRASE_REFINERY_PLATFORM"

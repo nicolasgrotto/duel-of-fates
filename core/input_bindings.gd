@@ -38,6 +38,18 @@ const COMBAT_AXES: Dictionary = {
 	"power": [[JOY_AXIS_TRIGGER_RIGHT, 1.0]],
 }
 
+const MENU_KEYS: Dictionary = {
+	"menu_costume": [KEY_C],
+	"menu_variant": [KEY_V],
+}
+
+const MENU_BUTTONS: Dictionary = {
+	"menu_costume": [JOY_BUTTON_Y],
+	"menu_variant": [JOY_BUTTON_X],
+}
+
+const ALL_DEVICES: int = -1
+
 const TOOL_KEYS: Dictionary = {
 	"debug_overlay": [KEY_F3],
 	"training_dummy_behavior": [KEY_F5],
@@ -62,6 +74,12 @@ static func apply_defaults() -> void:
 				_add_button(prefix + action, button, slot)
 			for axis in COMBAT_AXES.get(action, []):
 				_add_axis(prefix + action, axis[0], axis[1], slot)
+	for action in MENU_KEYS:
+		_reset_action(action)
+		for keycode in MENU_KEYS[action]:
+			_add_key(action, keycode)
+		for button in MENU_BUTTONS.get(action, []):
+			_add_button(action, button, ALL_DEVICES)
 	for action in TOOL_KEYS:
 		_reset_action(action)
 		for keycode in TOOL_KEYS[action]:

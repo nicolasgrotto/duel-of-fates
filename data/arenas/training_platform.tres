@@ -10,3 +10,4 @@ id = &"training_platform"
 name_key = "ARENA_TRAINING_PLATFORM"
 scene = ExtResource("2_scene")
 music = ExtResource("3_music")
+phrase_key = "ARENA_PHRASE_TRAINING_PLATFORM"

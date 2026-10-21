@@ -2,6 +2,10 @@ class_name TrainingMode
 extends DuelMode
 
 
+func steps() -> Array[StringName]:
+	return [&"player", &"dummy"]
+
+
 func build_setup() -> DuelSetup:
 	var setup: DuelSetup = DuelSetup.new()
 	setup.characters = [GUARDIAN, SHADOW]
@@ -12,7 +16,7 @@ func build_setup() -> DuelSetup:
 	setup.arena = TRAINING_ARENA
 	setup.match_seed = _new_seed()
 	setup.training = true
-	return setup
+	return _finish_setup(setup)
 
 
 func result_options() -> Array[StringName]:

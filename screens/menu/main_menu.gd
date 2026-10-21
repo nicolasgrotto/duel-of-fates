@@ -44,9 +44,9 @@ func _ready() -> void:
 func _on_chosen(id: StringName) -> void:
 	match id:
 		&"duel":
-			SceneRouter.change(&"duel", {"mode": VersusMode.new()})
+			SceneRouter.change(&"select", {"mode": VersusMode.new()})
 		&"training":
-			SceneRouter.change(&"duel", {"mode": TrainingMode.new()})
+			SceneRouter.change(&"select", {"mode": TrainingMode.new()})
 		&"difficulty":
 			_on_adjusted(id, 1)
 		&"quit":
