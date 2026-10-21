@@ -24,6 +24,10 @@ var _after_press_plan: Plan = Plan.WAIT
 var _after_press_ticks: int = 0
 var _chain_left: int = 0
 var _lock_press_ticks: int = 0
+var _hold_command: int = 0
+var _hold_until_gap: float = 0.0
+var _followup_command: int = 0
+var _followup_delay: int = 0
 
 
 func _init(difficulty_data: AiDifficultyData, profile_data: AiProfileData, ai_seed: int) -> void:
@@ -49,7 +53,7 @@ func produce(sim: MatchSimulation, fighter_index: int, intent: Intent) -> void:
 	if _think_ticks <= 0:
 		_think(sim, me, opponent)
 		_think_ticks = _reaction_ticks()
-	_execute(me, intent)
+	_execute(me, opponent, sim, intent)
 
 
 func debug_lines() -> PackedStringArray:
@@ -68,16 +72,23 @@ func _reset_plan() -> void:
 	_press_command = 0
 	_chain_left = 0
 	_lock_press_ticks = 0
+	_hold_command = 0
+	_followup_command = 0
 
 
 func _think(sim: MatchSimulation, me: FighterState, opponent: FighterState) -> void:
-	if _chain_left > 0 and me.is_attacking():
+	if (_chain_left > 0 and me.is_attacking()) or _hold_command != 0:
 		return
 	var gap: float = CombatGeometry.gap(sim.config, me, opponent)
 	if rng.randf() < difficulty.error_chance:
 		_make_mistake()
 		return
+	if me.is_airborne():
+		_think_in_air(me, opponent)
+		return
 	if _try_defend(me, opponent, gap):
+		return
+	if _try_ability(me, opponent, gap):
 		return
 	if _try_punish(sim, me, opponent, gap):
 		return
@@ -107,6 +118,8 @@ func _try_defend(me: FighterState, opponent: FighterState, gap: float) -> bool:
 	if rng.randf() > defend_chance:
 		return false
 	var guard_ticks: int = ticks_to_active + move.active_ticks() + 4
+	if _ability_answers(me, move, ticks_to_active):
+		return true
 	if move.is_heavy():
 		var parry_chance: float = difficulty.parry_chance * lerpf(0.5, 1.5, profile.parry_bias)
 		parry_chance += difficulty.habit_weight * memory.heavy_share()
@@ -122,6 +135,65 @@ func _try_defend(me: FighterState, opponent: FighterState, gap: float) -> bool:
 			return true
 	_set_plan(Plan.GUARD, guard_ticks, "guard")
 	return true
+
+
+func _ability_answers(me: FighterState, move: MoveData, ticks_to_active: int) -> bool:
+	var ability: AbilityData = me.character.ability
+	if ability == null or rng.randf() > profile.ability_bias * difficulty.defend_chance * 1.4:
+		return false
+	match ability.kind:
+		AbilityData.Kind.STANCE:
+			var window: int = Ticks.from_seconds(ability.stance_duration)
+			if ticks_to_active < window - 2:
+				_schedule(Intent.Command.SPECIAL, maxi(ticks_to_active - window + 4, 0), 0, Plan.WAIT, 0, "response stance")
+				return true
+		AbilityData.Kind.DASH:
+			if ability.dash_through and move.is_heavy() and ticks_to_active > 3:
+				_schedule(Intent.Command.SPECIAL, 0, 0, Plan.WAIT, 0, "dash through")
+				return true
+			if not ability.dash_through and ticks_to_active > 1:
+				_schedule(Intent.Command.SPECIAL, maxi(ticks_to_active - 3, 0), 0, Plan.WAIT, 0, "reflex step")
+				return true
+		AbilityData.Kind.STRIKE:
+			if ability.move.armor_hits > 0 and ticks_to_active > 2:
+				_schedule(Intent.Command.SPECIAL, 0, 0, Plan.WAIT, 0, "armored strike")
+				return true
+	return false
+
+
+func _try_ability(me: FighterState, opponent: FighterState, gap: float) -> bool:
+	var ability: AbilityData = me.character.ability
+	if ability == null or rng.randf() > profile.ability_bias * 0.35:
+		return false
+	var warning: int = Ticks.from_seconds(difficulty.attack_warning)
+	match ability.kind:
+		AbilityData.Kind.STRIKE:
+			var move: MoveData = ability.move
+			var reach: float = move.reach + move.lunge
+			var minimum: float = 0.0 if move.hits_behind else me.character.heavy.reach * 0.6
+			if gap <= reach and gap >= minimum and me.vigor >= move.vigor_cost:
+				_schedule(Intent.Command.SPECIAL, warning, 0, Plan.WAIT, 0, "ability strike")
+				return true
+		AbilityData.Kind.CHARGE:
+			if gap > profile.safe_gap * 0.6 and me.vigor >= ability.move.vigor_cost:
+				_schedule(Intent.Command.SPECIAL, 0, 0, Plan.APPROACH, Ticks.from_seconds(1.0), "charge")
+				_hold_command = Intent.Command.SPECIAL
+				_hold_until_gap = ability.move.reach + ability.move.lunge * 0.5
+				return true
+		AbilityData.Kind.LEAP:
+			if gap > 120.0 and gap < 360.0 and me.vigor >= ability.vigor_cost and opponent.is_alive():
+				_schedule(Intent.Command.SPECIAL, warning, 0, Plan.WAIT, 0, "leap")
+				return true
+	return false
+
+
+func _think_in_air(me: FighterState, opponent: FighterState) -> void:
+	if not ActionStarter.can_attack_in_air(me):
+		return
+	var dx: float = absf(opponent.x - me.x)
+	if dx < 120.0 and me.y > opponent.y + 20.0:
+		var command: int = Intent.Command.HEAVY if rng.randf() < profile.heavy_ratio or me.vy < 0.0 else Intent.Command.LIGHT
+		_schedule(command, 0, 0, Plan.WAIT, 0, "aerial")
 
 
 func _answer_shove(me: FighterState, gap: float, ticks_to_active: int) -> bool:
@@ -204,6 +276,11 @@ func _try_attack(me: FighterState, gap: float) -> bool:
 	var wants_heavy: bool = rng.randf() < profile.heavy_ratio and me.vigor >= heavy.vigor_cost
 	if wants_heavy:
 		_schedule(Intent.Command.HEAVY, warning, 0, Plan.WAIT, 0, "heavy")
+		var feint_chance: float = profile.feint_bias * (0.5 + difficulty.habit_weight + memory.guard_share())
+		if me.character.can_feint and rng.randf() < feint_chance:
+			_followup_command = Intent.Command.BLOCK
+			_followup_delay = warning + int(heavy.startup_ticks() * 0.5)
+			decision = "feint"
 	elif me.vigor >= light.vigor_cost:
 		_schedule(Intent.Command.LIGHT, warning, 0, Plan.WAIT, 0, "light")
 		_chain_left = rng.randi_range(0, me.character.light_chain.size() - 1)
@@ -252,7 +329,8 @@ func _schedule(command: int, delay: int, extra_hold: int, after_plan: Plan, afte
 	_after_press_ticks = after_ticks
 
 
-func _execute(me: FighterState, intent: Intent) -> void:
+func _execute(me: FighterState, opponent: FighterState, sim: MatchSimulation, intent: Intent) -> void:
+	_execute_holds(me, opponent, sim, intent)
 	match _plan:
 		Plan.APPROACH:
 			intent.move_x = me.facing
@@ -273,6 +351,24 @@ func _execute(me: FighterState, intent: Intent) -> void:
 	_plan_ticks -= 1
 	if _plan_ticks <= 0 and _press_command == 0:
 		_plan = Plan.WAIT
+
+
+func _execute_holds(me: FighterState, opponent: FighterState, sim: MatchSimulation, intent: Intent) -> void:
+	if _followup_command != 0 and _press_command == 0:
+		_followup_delay -= 1
+		if _followup_delay <= 0:
+			intent.press(_followup_command)
+			_followup_command = 0
+	if _hold_command == 0:
+		return
+	var gap: float = CombatGeometry.gap(sim.config, me, opponent)
+	if not me.is_attacking() and _press_command == 0:
+		_hold_command = 0
+		return
+	if gap <= _hold_until_gap or not opponent.is_alive():
+		_hold_command = 0
+		return
+	intent.hold(_hold_command)
 
 
 func _continue_chain(me: FighterState, intent: Intent) -> void:

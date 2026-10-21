@@ -3,6 +3,7 @@ extends SceneTree
 const CONFIG_PATH: String = "res://data/balance/combat_config.tres"
 const CHARACTER_PATH: String = "res://data/characters/%s/%s.tres"
 const DIFFICULTY_PATH: String = "res://data/balance/ai/difficulty_%s.tres"
+const MATRIX_CAST: Array[String] = ["guardian", "shadow", "bastion", "wasp", "mirror", "lance", "ember", "forge", "heron", "reaper", "echo"]
 
 
 func _initialize() -> void:
@@ -14,6 +15,10 @@ func _initialize() -> void:
 		"seed": "1",
 	})
 	var config: CombatConfig = load(CONFIG_PATH)
+	if options.has("matrix"):
+		_matrix(config, options)
+		quit()
+		return
 	var characters: Array[CharacterData] = [_character(options["p1"]), _character(options["p2"])]
 	var difficulty: AiDifficultyData = load(DIFFICULTY_PATH % options["difficulty"])
 	var difficulties: Array[AiDifficultyData] = [difficulty, difficulty]
@@ -66,3 +71,42 @@ func _report(options: Dictionary, duels: int, wins: Array[int], unfinished: int,
 		per_round.append("%s %.1f" % [CombatEvent.Type.keys()[type].to_lower(), float(totals[type]) / rounds])
 	per_round.sort()
 	print("Events per round: ", ", ".join(per_round))
+
+
+func _matrix(config: CombatConfig, options: Dictionary) -> void:
+	var difficulty: AiDifficultyData = load(DIFFICULTY_PATH % options["difficulty"])
+	var difficulties: Array[AiDifficultyData] = [difficulty, difficulty]
+	var duels: int = int(options["duels"])
+	var cast: Array[String] = MATRIX_CAST
+	if options["matrix"] != "all":
+		cast = []
+		for id in String(options["matrix"]).split(","):
+			cast.append(id)
+	var totals: Dictionary = {}
+	var header: String = "%-10s" % ""
+	for id in cast:
+		header += " %6s" % id.substr(0, 6)
+		totals[id] = [0, 0]
+	print("Matrix: %d duels per pair, difficulty %s (row win %%, both sides)" % [duels, options["difficulty"]])
+	print(header + "   total")
+	for a in cast:
+		var line: String = "%-10s" % a
+		for b in cast:
+			if a == b:
+				line += " %6s" % "-"
+				continue
+			var wins: int = 0
+			for i in duels:
+				var swap: bool = i % 2 == 1
+				var pair: Array[CharacterData] = [_character(a), _character(b)]
+				if swap:
+					pair.reverse()
+				var duel: HeadlessDuel = HeadlessDuel.new(config, pair, difficulties, int(options["seed"]) + i * 7919 + a.hash() % 997)
+				var winner: int = duel.run()
+				if winner == (1 if swap else 0):
+					wins += 1
+			totals[a][0] += wins
+			totals[a][1] += duels
+			line += " %5.0f%%" % (100.0 * wins / duels)
+		line += "  %5.1f%%" % (100.0 * totals[a][0] / maxi(totals[a][1], 1))
+		print(line)

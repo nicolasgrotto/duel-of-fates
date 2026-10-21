@@ -12,3 +12,5 @@ extends Resource
 @export var preferred_gap: float = 70.0
 @export var safe_gap: float = 260.0
 @export_range(0.0, 1.0) var low_vigor_ratio: float = 0.3
+@export_range(0.0, 1.0) var ability_bias: float = 0.5
+@export_range(0.0, 1.0) var feint_bias: float = 0.0

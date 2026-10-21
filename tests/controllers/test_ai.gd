@@ -5,7 +5,7 @@ const NORMAL: AiDifficultyData = preload("res://data/balance/ai/difficulty_norma
 const HARD: AiDifficultyData = preload("res://data/balance/ai/difficulty_hard.tres")
 
 
-func _parries_against_heavies(difficulty: AiDifficultyData, trials: int) -> int:
+func _parries_against_heavies(difficulty: AiDifficultyData, trials: int, count_responses: bool = false) -> int:
 	var parries: int = 0
 	for trial in trials:
 		var duel: DuelFixture = DuelFixture.create(null, null, trial)
@@ -17,11 +17,13 @@ func _parries_against_heavies(difficulty: AiDifficultyData, trials: int) -> int:
 			ai.produce(duel.sim, 0, duel.intents[0])
 			duel.step(1)
 		parries += duel.count_events(CombatEvent.Type.PARRY) + duel.count_events(CombatEvent.Type.PERFECT_PARRY)
+		if count_responses:
+			parries += duel.count_events(CombatEvent.Type.RESPONSE)
 	return parries
 
 
-func test_hard_ai_parries_heavies() -> void:
-	assert_gt(_parries_against_heavies(HARD, 40), 5.0)
+func test_hard_ai_answers_heavies_with_timing() -> void:
+	assert_gt(_parries_against_heavies(HARD, 40, true), 3.0)
 
 
 func test_easy_ai_never_parries() -> void:
