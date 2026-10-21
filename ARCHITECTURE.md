@@ -160,7 +160,30 @@ Implementação:
 - **`StatsTracker`**, objetivos do tutorial e desafios: escutam eventos.
 - Debug **F3**: hitboxes, hurtboxes, colisão de lâmina, estado, fase, Vigor, Fluxo, intents, decisões da IA, FPS, tick.
 
-Implementação provisória (fases 1 e 2, arte de formas simples):
+### Pipeline de arte (fase 3)
+
+- **Pintura**: `tools/art/paint_fighters.py` (Python 3 com numpy e Pillow, ferramenta offline; o jogo não depende dela) pinta cada personagem descrito em `tools/art/fighter_specs.py` em peças de alta resolução (4 px por u). Cada peça gera dois PNG em `assets/characters/<id>/`:
+  - `<peça>.png`, **mapa de material**: R = tom (0,5 é a cor do traje), G = slot de paleta / 7, B = emissão, A = cobertura;
+  - `<peça>_n.png`, **mapa de normal** (convenção OpenGL, Y para cima), gerado do relevo pintado.
+- **Slots de paleta**: 0 capa/túnica, 1 corpo, 2 acabamento, 3 pele, 4 cabelo, 5 metal, 6 couro, 7 olhos (emissivo). Os trajes (`CostumeData`) escolhem as 8 cores e mostram ou escondem peças (`hood`, `mask`, `pad`, `collar`, `neckerchief`, `cape`...). Trocar de traje não muda nenhuma textura: o shader `presentation/fighters/fighter_material.gdshader` recolore o mapa de material.
+- **`art.tres`** (`FighterArt`, gerado junto): texturas, mapas de normal, pivôs das peças, proporções do rig (`dims`) e os tecidos (`cloths`: âncora, comprimento, larguras, rigidez).
+- Peças pintadas à mão podem substituir as procedurais mantendo o mesmo formato (nomes, pivôs, canais).
+- **Rig** (`FighterRig`): `Skeleton2D` com um `Bone2D` por segmento (pélvis, tronco, cabeça, braços, pernas), `Sprite2D` com `CanvasTexture` (difusa + normal) em cada osso, IK de dois ossos para braços e pernas (`TwoBoneIk`), `ClothStrip` com física própria (verlet) para capas, túnicas, cachecol e faixas, e `HiltView` para o cabo.
+- **Pose** (`PoseSolver` → `RigPose`): calculada a cada quadro a partir do `FighterState` (estado, fase e progresso do golpe) e da família de movimento (`MotionFamily` em `data/families/`). Ângulos de preparação e golpe vêm do `MoveData`; guarda e empunhadura vêm do `CharacterData`. A pose é suavizada (exponencial), mais rígida durante o golpe para não atrasar o que a simulação mostra.
+- **Arma** (`WeaponData`, `WeaponPose`): lâmina simples, dupla (duas mãos), lança (haste longa) ou bastão com duas lâminas; o mesmo cálculo serve à apresentação e ao teste de sincronia.
+- **Camadas e luz**: o mundo (arena e corpos) fica no canvas principal, escurecido por um `CanvasModulate` com a cor ambiente da arena; cada lâmina tem uma `PointLight2D` que ilumina os corpos pelos mapas de normal. Lâminas, olhos do Eclipse, imagens residuais e faíscas ficam numa `CanvasLayer` acima (`follow_viewport_enabled`), com cor total. Entre as duas, a `CanvasLayer` de dessaturação do parry perfeito (shader de tela): assim só as lâminas mantêm a cor.
+- **Reflexo**: em arenas com `reflective_floor`, cada lâmina é desenhada de novo, espelhada e achatada sobre o chão, como mancha de luz (decisão da verificação técnica: sem `BackBufferCopy`, barato no Compatibility).
+- **Validação lâmina × hitbox**: `tests/presentation/test_blade_sync.gd` percorre todos os golpes de todos os personagens com arte e exige que a lâmina desenhada cruze a hitbox real em algum tick do active.
+
+### Áudio (fase 3)
+
+- `tools/audio/synth_audio.py` sintetiza todos os sons, a música e a ambiência (WAV em `assets/audio/`). Loops (zumbido, atrito da disputa, música, ambiência) são importados com `loop_mode` Forward.
+- Barramentos em `default_bus_layout.tres`: Music, Effects, Blades, Interface, Ambience. Music, Effects e Ambience têm um passa-baixas desligado que o `AudioDirector` liga para abafar o mundo (parry perfeito, K.O.); Blades nunca é abafado.
+- `AudioDirector` (autoload): pool de `AudioStreamPlayer2D` (estéreo pela posição na tela), sons de interface, música em camadas sincronizadas (`AudioStreamSynchronized`: base, percussão e tensão, abrindo conforme a vida mais baixa), ambiência da arena, abafar e abaixar a música.
+- `DuelAudio` (apresentação): reage aos eventos de combate, mantém o zumbido de cada lâmina (tom por `WeaponData.hum_pitch`, mais alto e agudo no active), o atrito contínuo da disputa, passos e a batida de vida baixa do jogador.
+- `SoundBank` (`data/audio/sound_bank.tres`) liga ids a arquivos; `MusicData` agrupa as camadas; `ArenaData` aponta música e ambiência.
+
+Implementação provisória (fases 1 e 2, arte de formas simples, substituída na fase 3):
 
 - `presentation/tick_runner.gd` (`TickRunner`): executor de passo fixo com acumulador, no máximo 5 ticks por quadro, câmera lenta (K.O. e parry perfeito, valores em `CombatConfig`), gravação das intenções do round e snapshot no início de cada round. Emite `ticked` e `combat_event`; a interpolação de posição usa `alpha`.
 - `presentation/fighters/`: `FighterView` desenha a silhueta provisória em código a partir de `FighterPose` (pose por estado, fase e progresso do golpe; ângulos de preparação e golpe vêm de `MoveData`), `BladeView` desenha a lâmina em três camadas aditivas com rastro e `PointLight2D`, `SeveredPiece` é a peça da finalização (física própria da apresentação).
@@ -214,4 +237,5 @@ godot --headless --path . --script res://tools/simulate.gd -- --duels 100 --diff
 
 - 60 FPS estáveis. Nada de alocação por tick na simulação; pools na apresentação.
 - Medir com o profiler da Godot em cada fase, nas arenas mais pesadas (reflexo, chuva, Tempestade) e com dois lutadores detalhados.
-- **Decisão**: verificar mapas de normal em luzes 2D e o custo de reflexos no renderer Compatibility com o protótipo de arte da fase 3. Glow e luzes 2D já foram verificados (ver Apresentação).
+- Verificação do renderer concluída na fase 3: glow em LDR, `PointLight2D` com mapas de normal e reflexo desenhado (não por cópia de tela) funcionam no Compatibility.
+- Arte e áudio são gerados offline; o jogo só carrega PNG e WAV.

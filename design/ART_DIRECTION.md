@@ -12,6 +12,7 @@ Referências de **sensação** (nunca de assets): os duelos de sabre da trilogia
 
 - O **combate acontece num plano 2D lateral**. A câmera é lateral; profundidade é cenário.
 - Os personagens são **detalhados**: rostos com feições (exceto onde há máscara ou sombra de capuz), tecidos com dobras e peso, armaduras, couro, metal, cabos de lâmina com acabamento, cabelo com movimento secundário.
+- **Pipeline fechado na fase 3** (detalhes em ARCHITECTURE.md): peças pintadas proceduralmente em alta resolução com mapa de material (tom + slot de cor) e mapa de normal, rig com `Skeleton2D`, IK de braços e pernas, tecidos com física e pose calculada da simulação por família de movimento. A primeira versão de cada personagem é a pintura procedural; peças pintadas à mão entram no mesmo formato sem mudar o código.
 - **Técnica decidida: 2D em alta definição com esqueleto.** Peças pintadas animadas por ossos (`Skeleton2D`, `Polygon2D` ou equivalente), com **mapas de normal** para a luz das lâminas iluminar o corpo. Combina com o renderer Compatibility e com animações fluidas e editáveis. O pipeline (ferramentas de pintura, rig, formato das peças) é fechado na fase 3 do ROADMAP com o protótipo de um personagem completo.
 - Descartados: 2.5D com modelos 3D (custo e troca de renderer) e sprites quadro a quadro (caros de produzir e iterar).
 

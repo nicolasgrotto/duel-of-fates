@@ -4,8 +4,8 @@ Ordem de construção do jogo. Cada fase termina jogável e testada. Marque `[x]
 
 ## Ponto de continuidade
 
-- **Fase atual**: 3 — Pipeline de arte. Fases 0, 1 e 2 concluídas (exceto a verificação de mapas de normal e reflexos, que depende de arte real).
-- **Próximo passo**: protótipo de pipeline de arte com um personagem (Guardião), já validando mapas de normal com `PointLight2D` e reflexo do chão no renderer Compatibility. A arte entra substituindo `FighterView`/`FighterPose` (formas simples) sem tocar na simulação.
+- **Fase atual**: 4 — Elenco. Fases 0 a 3 concluídas.
+- **Próximo passo**: dados, habilidades, traços e IA de cada personagem; pintura das peças do elenco; seleção de personagem.
 - **Pendências conhecidas**:
   - Equilíbrio Guardião × Sombra por dificuldade (simulador, 100 duelos: Fácil 6% × 94%, Normal 29% × 71%, Difícil 82% × 18%); golpes até o K.O. 8,4–8,7 (alvo 6–9) e rounds de ~10–11 s (alvo ~15 s). Ajustar na matriz de equilíbrio da fase 4.
   - A IA quase não usa o empurrão contra IA (o oponente raramente fica parado em guarda); revisar junto com o equilíbrio.
@@ -25,7 +25,7 @@ Ordem de construção do jogo. Cada fase termina jogável e testada. Marque `[x]
 - [x] Autoloads vazios só quando forem usados: `Settings`, `SceneRouter`
 - [x] InputMap com as ações de GAME_DESIGN (P1 e P2, teclado e gamepad)
 - [x] Fonte Oxanium registrada em ASSETS.md e tema base da UI
-- [ ] Verificação técnica: glow/HDR 2D, luzes 2D com mapa de normal, reflexos no renderer Compatibility (glow em LDR e `PointLight2D` verificados; mapa de normal e reflexo com o protótipo de arte da fase 3)
+- [x] Verificação técnica: glow/HDR 2D, luzes 2D com mapa de normal, reflexos no renderer Compatibility (glow em LDR e `PointLight2D` verificados; mapa de normal e reflexo com o protótipo de arte da fase 3)
 
 ## Fase 1 — O duelo mínimo
 
@@ -52,12 +52,12 @@ Arte provisória (formas simples), sensação final.
 ## Fase 3 — Pipeline de arte
 
 - [x] Decisão: técnica de apresentação — 2D em alta definição com esqueleto e mapas de normal
-- [ ] Pipeline de arte (pintura, rig, formato das peças) fechado com o protótipo de um personagem
-- [ ] Guardião completo (família Guardião) e Sombra completa (família Agressor): modelo, todas as animações, lâmina, luz
-- [ ] Sincronia animação × simulação e validação lâmina × hitbox
-- [ ] Efeitos da VFX.md para o combate de lâmina, dessaturação do parry perfeito, letterbox, câmera lenta (faíscas, anel, flash, tremor, punch-in, letterbox e câmera lenta já existem em versão provisória)
-- [ ] Plataforma de Refino completa
-- [ ] Áudio das lâminas e do combate; primeira música dinâmica
+- [x] Pipeline de arte (pintura, rig, formato das peças) fechado com o protótipo de um personagem
+- [x] Guardião completo (família Guardião) e Sombra completa (família Agressor): modelo, todas as animações, lâmina, luz
+- [x] Sincronia animação × simulação e validação lâmina × hitbox
+- [x] Efeitos da VFX.md para o combate de lâmina, dessaturação do parry perfeito, letterbox, câmera lenta (faíscas, anel, flash, tremor, punch-in, letterbox e câmera lenta já existem em versão provisória)
+- [x] Plataforma de Refino completa
+- [x] Áudio das lâminas e do combate; primeira música dinâmica
 
 ## Fase 4 — Elenco
 
@@ -107,11 +107,13 @@ Arte provisória (formas simples), sensação final.
 | InputMap | montado em tempo de execução por `Settings` a partir de `core/input_bindings.gd` (ARCHITECTURE) |
 | Parry perfeito contra rápido | vale como parry comum (GAME_DESIGN, seção 7) |
 | Glow no Compatibility | funciona em LDR com fundo Canvas; brilho principal nas camadas aditivas da lâmina |
+| Pipeline de arte | peças pintadas proceduralmente (mapa de material + normal), recoloridas por traje; rig com `Skeleton2D` e IK |
+| Reflexo das lâminas | desenho espelhado e achatado sobre o chão (sem cópia de tela) |
+| Áudio | sintetizado offline, sem amostras; música em camadas sincronizadas |
 
 ## Decisões em aberto
 
 | Decisão | Onde | Recomendação |
 | --- | --- | --- |
-| Mapas de normal e reflexos no renderer | ARCHITECTURE | verificar com o protótipo de arte da fase 3 |
 | Voz gravada | AUDIO | fora do escopo inicial |
 | Versão para toque | UI_UX | depois do lançamento no PC |

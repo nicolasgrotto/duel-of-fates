@@ -2,6 +2,8 @@
 
 Segue [DESIGN.md](../DESIGN.md). Som e música são parte da sensação do duelo: o choque precisa ser **ouvido** tanto quanto visto.
 
+> Implementado na fase 3: sons sintetizados (sem amostras) por `tools/audio/synth_audio.py`, barramentos, zumbido por personagem, disputa, abafar no parry perfeito e no K.O., música em três camadas (base, percussão, tensão) que abrem com a vida mais baixa, batida de vida baixa e ambiência da Plataforma de Refino. Tema próprio de chefe e ambiências das outras arenas ficam para as fases 4 a 8.
+
 ## Regras
 
 - **Tudo original**: efeitos gravados, desenhados ou sintetizados para o jogo, ou bibliotecas com licença compatível registrada em [ASSETS.md](../ASSETS.md). Nenhum som ou música da franquia, nem imitação reconhecível deles (o zumbido, a ignição e os temas clássicos não podem ser copiados nem "quase copiados").
