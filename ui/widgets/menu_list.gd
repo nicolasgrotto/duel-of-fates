@@ -52,13 +52,18 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event.is_action_pressed(&"ui_down"):
 		_select(selected + 1)
+		AudioDirector.play_ui(&"ui_move")
 	elif event.is_action_pressed(&"ui_up"):
 		_select(selected - 1)
+		AudioDirector.play_ui(&"ui_move")
 	elif event.is_action_pressed(&"ui_accept"):
+		AudioDirector.play_ui(&"ui_confirm")
 		chosen.emit(_ids[selected])
 	elif event.is_action_pressed(&"ui_right"):
+		AudioDirector.play_ui(&"ui_move")
 		adjusted.emit(_ids[selected], 1)
 	elif event.is_action_pressed(&"ui_left"):
+		AudioDirector.play_ui(&"ui_move")
 		adjusted.emit(_ids[selected], -1)
 	else:
 		return
