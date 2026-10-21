@@ -184,6 +184,30 @@ O momento mais físico do duelo: rostos próximos, lâminas cruzadas num X, trem
 - **Acessibilidade**: a opção "Segurar para disputar" permite segurar o rápido; conta 6 pressões por segundo, abaixo do teto, para incluir quem não pode apertar repetidamente sem empatar com quem aperta.
 - A IA só começa a pressionar depois de um tempo de reação (Fácil 0,6 s, Normal 0,45 s, Difícil e chefe 0,3 s).
 
+### Habilidades e traços: valores iniciais
+
+Os personagens em [content/CHARACTERS.md](content/CHARACTERS.md) não fixavam números; estes são os valores iniciais da fase 4 (ajustados pela matriz de equilíbrio):
+
+| Habilidade | Valores |
+| --- | --- |
+| Contraguarda (Guardião) | postura 0,35 s, recovery 0,4 s se nada vier, 10 de Vigor; atacante desequilibrado 0,3 s; resposta = contra-ataque |
+| Ímpeto (Sombra, Sombra Desperta) | startup 0,2 s, avanço de 140 u, 20 de dano, 18 de Vigor, armadura contra 1 golpe (preparação e active) |
+| Marreta (Bastião) | startup 0,55 s, 32 de dano, 30 de Vigor, armadura contra 2 golpes recebendo metade do dano, conta como forte |
+| Zumbido (Vespa) | 240 u em 0,26 s, invulnerável por 0,2 s, atravessa, 16 de Vigor |
+| Postura de Espera (Espelho) | postura 0,5 s, recovery 0,5 s, 20 de Vigor; efeito de parry perfeito e contra-ataque |
+| Varredura (Haste, Soberano) | startup 0,42 s, alcance 190 u rente ao chão, 20 de dano, conta como forte, finalização de perna |
+| Brasa Viva (Brasa) | postura 0,4 s, recovery 0,45 s, 14 de Vigor; resposta com startup 0,08 s e 13 de dano (o bônus de punição se soma) |
+| Forja (Forja) | startup 0,28 s; segurar prende o golpe; nível a cada 0,3 s até 3; +35% de dano por nível; nível 3 quebra a guarda |
+| Voo da Garça (Garça) | salto de 300 u/s para a frente e 1050 u/s para cima, 14 de Vigor; permite os aéreos |
+| Roda Dupla (Ceifador) | startup 0,15 s, active 0,36 s, 20 de dano, acerta na frente e atrás (atrás não pode ser bloqueado) |
+| Passo-reflexo (Eco, Predestinado) | 60 u em 0,14 s, invulnerável o passo todo, para trás sem direção, 8 de Vigor |
+| Salto (Ancião) | salto de 240 u/s e 820 u/s; na descida, mergulho automático de 18 de dano |
+
+- **Ponto doce** (Haste, Soberano): a distância entre os corpos no acerto dividida pelo alcance do golpe; de 2/3 para cima, ×1,5; até 1/4, ×0,6.
+- **Pulo na parede**: encostado (até 6 u da parede) no ar, pular lança para o outro lado a 380 u/s. Uma vez por parede até tocar o chão.
+- **Mergulho** (forte no ar da Garça e do Ancião): no active, a velocidade vertical vira 900 u/s para baixo.
+- **Habilidade** entra na prioridade de entrada logo depois do empurrão. Só no chão; Habilidade com direção e no ar fica para as técnicas (fase 5).
+
 ### Ser atingido
 
 - Perde vida, recebe knockback na direção do golpe e entra em `HIT`. Se estava atacando, o ataque é cancelado.
@@ -279,7 +303,7 @@ Valores que fazem parte da regra porque mudam o tempo do duelo:
 
 ## 14. Eventos de combate
 
-A simulação emite eventos; efeitos, câmera, som, HUD, estatísticas e tutoriais reagem a eles: `attack_started`, `hit`, `block`, `guard_break`, `parry`, `perfect_parry`, `clash`, `technique_clash`, `blade_lock_started`, `blade_lock_pressed`, `blade_lock_ended`, `shove`, `dodge`, `evade_success`, `action_rejected`, `exhaustion`, `exhaustion_recovered`, `wound`, `feint`, `armor_absorbed`, `power_started`, `power_active`, `power_hit`, `power_blocked`, `power_resisted`, `power_absorbed`, `projectile_*`, `death`, `round_started`, `round_ended`.
+A simulação emite eventos; efeitos, câmera, som, HUD, estatísticas e tutoriais reagem a eles: `attack_started`, `hit`, `block`, `guard_break`, `parry`, `perfect_parry`, `clash`, `technique_clash`, `blade_lock_started`, `blade_lock_pressed`, `blade_lock_ended`, `shove`, `dodge`, `evade_success`, `response`, `action_rejected`, `exhaustion`, `exhaustion_recovered`, `wound`, `feint`, `armor_absorbed`, `power_started`, `power_active`, `power_hit`, `power_blocked`, `power_resisted`, `power_absorbed`, `projectile_*`, `death`, `round_started`, `round_ended`.
 
 ## 15. IA
 

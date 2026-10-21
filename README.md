@@ -6,9 +6,9 @@ Jogo de duelo de lâminas de energia em visão lateral, feito na **Godot 4.7** c
 
 ## Situação
 
-Fases 0, 1 e 2 concluídas: o duelo completo de lâmina (movimento, rápidos em sequência, forte, guarda, parry, contra-ataque, empurrão, esquivas, choque e disputa de lâminas, exaustão, ferimentos, finalizações), IA com perfis e dificuldades, modo Treino com boneco, gravação e dados de quadro, e replay do golpe final. A arte ainda é provisória (formas simples); a próxima fase é o pipeline de arte. Detalhes em [ROADMAP.md](ROADMAP.md).
+Fases 0 a 4 concluídas: o duelo completo de lâmina com o elenco inteiro (onze lutadores, o chefe e três secretos), cada um com traço, habilidade, sequência, família de movimento, trajes, cores de lâmina e IA própria; arte em peças pintadas com mapa de normal e esqueleto 2D, iluminada pelas lâminas; Plataforma de Refino; áudio e música dinâmica sintetizados. A próxima fase é o Fluxo (poderes). Detalhes em [ROADMAP.md](ROADMAP.md).
 
-Jogável agora: **Duelar** (Guardião contra Sombra controlada pela IA) e **Treino**, a partir do menu.
+Jogável agora: **Duelar** (escolha de lutador, adversário e arena, contra a IA) e **Treino**, a partir do menu.
 
 ## O jogo em uma página
 
@@ -26,14 +26,17 @@ Jogável agora: **Duelar** (Guardião contra Sombra controlada pela IA) e **Trei
 1. Instale a Godot 4.7 (versão padrão, GDScript).
 2. Abra a Godot, escolha **Importar** e selecione `project.godot` desta pasta.
 
-Controles padrão (J1): `A`/`D` ou setas para andar, `W`/`Espaço` pula, `J` rápido, `K` forte, `L` guarda (tocar apara), `L`+`J` empurrão, `Shift` esquiva, `S` esquiva de precisão, `Esc` pausa, `F3` debug. No Treino: `F5` boneco, `F6` gravar, `F7` reproduzir.
+Controles padrão (J1): `A`/`D` ou setas para andar, `W`/`Espaço` pula, `J` rápido, `K` forte, `L` guarda (tocar apara), `L`+`J` empurrão, `I` habilidade, `Shift` esquiva, `S` esquiva de precisão, `Esc` pausa, `F3` debug. Na seleção: `←`/`→` cor da lâmina, `C` visual, `V` variante. No Treino: `F5` boneco, `F6` gravar, `F7` reproduzir.
 
 Testes e simulador (ver [ARCHITECTURE.md](ARCHITECTURE.md#testes)):
 
 ```
 godot --headless --path . --script res://tools/run_tests.gd
 godot --headless --path . --script res://tools/simulate.gd -- --duels 100 --difficulty normal
+godot --headless --path . --script res://tools/simulate.gd -- --matrix all --duels 10 --difficulty hard
 ```
+
+Arte e áudio são gerados por ferramentas offline (Python 3 com numpy e Pillow): `python tools/art/paint_fighters.py` e `python tools/audio/synth_audio.py`. O jogo não depende delas.
 
 ## Documentação
 

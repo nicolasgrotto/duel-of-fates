@@ -36,6 +36,8 @@ Título centralizado, maiúsculas espaçadas, frase de apoio em destaque. Dois n
 
 ### Seleção de personagem
 
+> Implementada na fase 4 (`screens/select/`): lista com Aleatório e os secretos no fim, coluna central com estilo, caminho na cor do lado, traço, habilidade e as seis barras (potencial em dourado `#d9b45a`), lutador animado à direita com Visual, Lâmina e Variante. ← → trocam a cor da lâmina, `C` troca o visual, `V` a variante. Ainda faltam: as linhas de **Poderes** e o editor de poderes (fase 5), o bloqueio real de trajes, cores e secretos (fase 6, com os saves; até lá tudo é selecionável e o requisito aparece como informação) e a miniatura da arena.
+
 Três colunas:
 
 - **Esquerda**: lista de lutadores, começando com **Aleatório**; rola com setas quando passa do espaço. Secretos liberados no fim.

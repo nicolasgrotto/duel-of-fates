@@ -13,6 +13,8 @@ Todos os personagens são originais. A referência é sempre um **arquétipo** (
 - Atributos de 1 a 7 (secretos até 8, 9 e 10). Ordem: Vida · Vigor · Lâmina · Defesa · Agilidade · Fluxo.
 - **Família de movimento**: personagens com o mesmo jeito de lutar compartilham a base das animações (postura, arcos, defesa, disputa). A diferença vem da silhueta, da lâmina, dos golpes e da habilidade.
 
+> Valores iniciais das habilidades e traços: [GAME_DESIGN.md](../GAME_DESIGN.md), seção 7 ("Habilidades e traços: valores iniciais"). Os dados ficam em `data/characters/<id>/<id>.tres`.
+
 ## Tipos de habilidade
 
 - **Golpe**: ataque com propriedades extras (armadura, alcance enorme, carga).

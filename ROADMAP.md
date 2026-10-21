@@ -4,10 +4,11 @@ Ordem de construção do jogo. Cada fase termina jogável e testada. Marque `[x]
 
 ## Ponto de continuidade
 
-- **Fase atual**: 4 — Elenco. Fases 0 a 3 concluídas.
-- **Próximo passo**: dados, habilidades, traços e IA de cada personagem; pintura das peças do elenco; seleção de personagem.
+- **Fase atual**: 5 — O Fluxo. Fases 0 a 4 concluídas.
+- **Próximo passo**: medidor de Fluxo, tiers e comandos com direção; depois os poderes do Fluxo comum, as técnicas de lâmina (Habilidade com direção e no ar) e as linhas de Poderes na seleção.
 - **Pendências conhecidas**:
-  - Equilíbrio Guardião × Sombra por dificuldade (simulador, 100 duelos: Fácil 6% × 94%, Normal 29% × 71%, Difícil 82% × 18%); golpes até o K.O. 8,4–8,7 (alvo 6–9) e rounds de ~10–11 s (alvo ~15 s). Ajustar na matriz de equilíbrio da fase 4.
+  - Equilíbrio do elenco pela matriz (10 duelos por par, lados alternados): no Difícil, todos entre 38% e 65%; no Normal, entre 33% e 62%. Os personagens defensivos (Guardião, Espelho) rendem mais no Difícil, porque dependem da defesa reativa da IA. Rounds de ~10–11 s (alvo ~15 s).
+  - Trajes, cores e secretos selecionáveis sem bloqueio até os saves da fase 6.
   - A IA quase não usa o empurrão contra IA (o oponente raramente fica parado em guarda); revisar junto com o equilíbrio.
   - Reserva de Defesa antes da quebra de guarda (GAME_DESIGN, seção 11) ainda não implementada.
   - Habilidades de personagem (botão `special`) ficam para a fase 4; poderes (`power`) para a fase 5.
@@ -61,10 +62,10 @@ Arte provisória (formas simples), sensação final.
 
 ## Fase 4 — Elenco
 
-- [ ] Dados e jogabilidade de cada personagem (traço, habilidade, sequência, IA)
-- [ ] Famílias de movimento restantes e arte de cada personagem
-- [ ] Seleção de personagem completa, cores de lâmina, trajes
-- [ ] Matriz de equilíbrio no simulador
+- [x] Dados e jogabilidade de cada personagem (traço, habilidade, sequência, IA)
+- [x] Famílias de movimento restantes e arte de cada personagem
+- [x] Seleção de personagem completa, cores de lâmina, trajes
+- [x] Matriz de equilíbrio no simulador
 
 ## Fase 5 — O Fluxo
 
@@ -110,6 +111,8 @@ Arte provisória (formas simples), sensação final.
 | Pipeline de arte | peças pintadas proceduralmente (mapa de material + normal), recoloridas por traje; rig com `Skeleton2D` e IK |
 | Reflexo das lâminas | desenho espelhado e achatado sobre o chão (sem cópia de tela) |
 | Áudio | sintetizado offline, sem amostras; música em camadas sincronizadas |
+| Habilidades | `AbilityData` com cinco tipos (golpe, postura, avanço, carga, salto) sobre os estados existentes |
+| Variante do Predestinado | dois `CharacterData` ligados por `variant` |
 
 ## Decisões em aberto
 

@@ -106,6 +106,13 @@ Decisões:
 - **Sem alocação por tick**: eventos vêm de um pool (`events` + `event_count`), os arrays de trabalho dos acertos vivem na simulação. Os eventos só valem até o próximo `step`: quem precisa guardar copia os campos.
 - **Snapshot** lê as variáveis de script de `FighterState` pela lista de propriedades; o estado de RNG entra no snapshot.
 - **Geometria**: hurtbox = retângulo do corpo; hitbox = retângulo à frente da borda do corpo, com `reach` e faixa vertical do golpe; colisão de lâmina = mesmo retângulo com `blade_reach` (mais curto), usado só no choque.
+- **Habilidades** (fase 4): `AbilityData` (`data/ability_data.gd`) com cinco tipos, todos sobre os estados existentes:
+  - `STRIKE`: um `MoveData` de tipo `ABILITY` (armadura `armor_hits`/`armor_damage_ratio`, `hits_behind`, `counts_as_heavy`);
+  - `STANCE`: um golpe de tipo `STANCE` gerado pela habilidade (sem hitbox); um golpe de lâmina de frente durante o active desequilibra o atacante e inicia o golpe de resposta (`RESPONSE`, ou `PERFECT_PARRY` com `perfect_response`);
+  - `DASH`: `DODGING` com `DodgeKind.DASH` (distância, invulnerabilidade, atravessar);
+  - `CHARGE`: o golpe fica preso no último tick da preparação enquanto Habilidade é segurada; o nível sobe a cada `charge_level_time`, aumenta o dano e no nível máximo quebra a guarda;
+  - `LEAP`: pulo com velocidade própria; com `dive_when_falling`, o golpe de mergulho sai sozinho na descida.
+- **Traços** são campos de `CharacterData` lidos pelos resolvedores: andar em guarda, imunidade ao empurrão no bloqueio, dreno extra do rápido bloqueado, janelas de parry próprias, ponto doce, bônus de punição, multiplicador de knockback, pulo na parede, esquiva que atravessa, número de aéreos por pulo, finta e vida fixa (chefe).
 - **Distâncias** de knockback, empurrão no bloqueio e separação são dados em u; a simulação converte em velocidade inicial que a desaceleração de chão consome (`CombatConfig.slide_speed_for`).
 
 ## Dados
@@ -120,6 +127,11 @@ Tudo o que é conteúdo é `Resource` editável no inspetor:
 | `ArenaData` | id, cena, música, ambiência, frase, flags de apresentação (reflexo, cristais, vento, sombra, poeira) |
 | `EncounterData` / `EndingData` | adversário, variante, arena, ajuste de IA, recompensas, condições de saída, chaves das falas |
 | Configs de balanceamento | combate, Vigor, Fluxo, disputa, consequências, IA por dificuldade e perfil, efeitos, modos |
+
+Implementados até a fase 4:
+
+- Elenco completo em `data/characters/<id>/`: os onze do elenco comum, o chefe (`awakened_shadow`, não selecionável) e os três secretos (`sovereign`, `elder`, `foretold`); a variante Eclipse do Predestinado é um personagem à parte (`foretold_eclipse`) apontado por `CharacterData.variant`.
+- Aparência no próprio `CharacterData`: `art` (peças pintadas), `family` (`data/families/*.tres`), `weapon` (`WeaponData`), `costumes` (`CostumeData`), `blade_colors` com as chaves dos nomes, guarda e empunhadura.
 
 Implementados até a fase 2:
 
@@ -201,6 +213,8 @@ Implementação provisória (fases 1 e 2, arte de formas simples, substituída n
 - A pausa é uma tela empilhada sobre o duelo congelado.
 - Cada modo é um objeto de fluxo (`modes/`) que monta os parâmetros do duelo (lutadores, variantes, conjuntos, arena, dificuldade, capacidades, rounds, seed) e decide o que acontece no resultado.
 
+Seleção (fase 4): `screens/select/character_select.gd` percorre os passos do modo (`DuelMode.steps()`: Duelar = jogador, adversário, arena; Treino = jogador, boneco) e grava as escolhas em `DuelMode.selection` (`DuelSelection`: personagem, traje e cor de lâmina por lado, arena). `build_setup()` aplica a seleção; Revanche e Reiniciar reaproveitam a mesma seleção. Ações de menu próprias: `menu_costume` (C, botão Y) e `menu_variant` (V, botão X).
+
 Implementação: `SceneRouter.change(id, params)` troca a tela com fade; `push`/`pop` empilham telas sobre a atual e pausam a árvore. Telas recebem os parâmetros em `open(params)`. Ids: `menu`, `duel`, `pause`, `result`. Modos: `DuelMode` (base: `build_setup()`, `result_options()`, `restart()`, `choose()`), `VersusMode` (Guardião contra Sombra na IA, dificuldade das configurações) e `TrainingMode` (boneco, regras `endless`, sem rounds). O menu atual é provisório (Duelar, Treino, Dificuldade, Sair) até o menu completo da fase 6.
 
 ## Serviços (autoloads)
@@ -231,6 +245,9 @@ godot --headless --path . --script res://tools/simulate.gd -- --duels 100 --diff
 
 - Testes ficam em `tests/` (arquivos `test_*.gd`, classe base `TestCase`, métodos `test_*`, `before_each`). `tests/support/duel_fixture.gd` monta um duelo Guardião × Sombra, posiciona os lutadores e registra os eventos.
 - O executor resolve `class_name` pelo cache global da Godot. Com o editor aberto, não rode `--import` por fora: o editor e o processo headless disputam o cache e o editor deixa de enxergar as classes novas (e o addon MCP perde o registro). Com o editor aberto, basta ele reescanear os arquivos.
+- O executor registra um `Logger` (Godot 4.5+): qualquer erro de script durante um teste faz o teste falhar, mesmo que nenhuma asserção tenha falhado.
+- `tests/data/test_translations.gd` garante que todo texto de personagem e toda chave usada pelo código existe em português e em inglês.
+- Matriz de equilíbrio: `godot --headless --path . --script res://tools/simulate.gd -- --matrix all --duels 10 --difficulty hard` imprime a taxa de vitória de cada personagem contra cada outro (lados alternados) e o total.
 - `tools/headless_duel.gd` (`HeadlessDuel`) roda um duelo IA × IA sem tela; serve ao simulador e aos testes de IA.
 
 ## Desempenho
