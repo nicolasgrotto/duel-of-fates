@@ -1,112 +1,12 @@
-[gd_resource type="Resource" script_class="CharacterData" format=3]
+[gd_resource type="Resource" script_class="CharacterData" format=3 uid="uid://bcn28dso6g324"]
 
-[ext_resource type="Script" path="res://data/character_data.gd" id="1_script"]
-[ext_resource type="Script" path="res://data/move_data.gd" id="2_move"]
+[ext_resource type="Script" uid="uid://c1vfymi5rbm86" path="res://data/character_data.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://b5ybw5ex3bqbq" path="res://data/move_data.gd" id="2_move"]
 [ext_resource type="Resource" path="res://data/characters/common/counter.tres" id="3_counter"]
 [ext_resource type="Resource" path="res://data/characters/common/shove.tres" id="4_shove"]
 [ext_resource type="Resource" path="res://data/characters/common/aerial_light.tres" id="5_aerial_light"]
 [ext_resource type="Resource" path="res://data/characters/common/aerial_heavy.tres" id="6_aerial_heavy"]
 [ext_resource type="Resource" path="res://data/characters/shadow/shadow_ai.tres" id="7_ai"]
-
-[sub_resource type="Resource" id="shadow_light_1"]
-script = ExtResource("2_move")
-id = &"shadow_light_1"
-kind = 0
-startup = 0.1
-active = 0.1
-recovery = 0.2
-damage = 10.0
-vigor_cost = 8.0
-block_vigor_cost = 8.0
-knockback = 40.0
-block_push = 30.0
-hitstun = 0.35
-blockstun = 0.24
-lunge = 20.0
-reach = 105.0
-hitbox_bottom = 30.0
-hitbox_top = 150.0
-blade_reach = 60.0
-can_blade_lock = false
-wound_limb = 0
-finisher_limb = 1
-blade_angle_windup = -165.0
-blade_angle_strike = 35.0
-
-[sub_resource type="Resource" id="shadow_light_2"]
-script = ExtResource("2_move")
-id = &"shadow_light_2"
-kind = 0
-startup = 0.1
-active = 0.1
-recovery = 0.2
-damage = 10.0
-vigor_cost = 8.0
-block_vigor_cost = 8.0
-knockback = 40.0
-block_push = 30.0
-hitstun = 0.35
-blockstun = 0.24
-lunge = 20.0
-reach = 100.0
-hitbox_bottom = 30.0
-hitbox_top = 150.0
-blade_reach = 60.0
-can_blade_lock = false
-wound_limb = 0
-finisher_limb = 1
-blade_angle_windup = 80.0
-blade_angle_strike = -120.0
-
-[sub_resource type="Resource" id="shadow_light_3"]
-script = ExtResource("2_move")
-id = &"shadow_light_3"
-kind = 0
-startup = 0.1
-active = 0.1
-recovery = 0.26
-damage = 11.0
-vigor_cost = 9.0
-block_vigor_cost = 8.0
-knockback = 70.0
-block_push = 30.0
-hitstun = 0.35
-blockstun = 0.24
-lunge = 50.0
-reach = 110.0
-hitbox_bottom = 30.0
-hitbox_top = 150.0
-blade_reach = 60.0
-can_blade_lock = false
-wound_limb = 0
-finisher_limb = 2
-blade_angle_windup = -20.0
-blade_angle_strike = 0.0
-
-[sub_resource type="Resource" id="shadow_heavy"]
-script = ExtResource("2_move")
-id = &"shadow_heavy"
-kind = 1
-startup = 0.32
-active = 0.12
-recovery = 0.42
-damage = 24.0
-vigor_cost = 24.0
-block_vigor_cost = 30.0
-knockback = 120.0
-block_push = 60.0
-hitstun = 0.5
-blockstun = 0.3
-lunge = 40.0
-reach = 115.0
-hitbox_bottom = 30.0
-hitbox_top = 150.0
-blade_reach = 70.0
-can_blade_lock = true
-wound_limb = 1
-finisher_limb = 1
-blade_angle_windup = -190.0
-blade_angle_strike = 55.0
 
 [sub_resource type="Resource" id="shadow_forward_heavy"]
 script = ExtResource("2_move")
@@ -133,15 +33,69 @@ finisher_limb = 2
 blade_angle_windup = -160.0
 blade_angle_strike = 60.0
 
+[sub_resource type="Resource" id="shadow_heavy"]
+script = ExtResource("2_move")
+id = &"shadow_heavy"
+kind = 1
+startup = 0.32
+active = 0.12
+recovery = 0.42
+damage = 24.0
+vigor_cost = 24.0
+block_vigor_cost = 30.0
+knockback = 120.0
+block_push = 60.0
+hitstun = 0.5
+blockstun = 0.3
+lunge = 40.0
+reach = 115.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 70.0
+can_blade_lock = true
+wound_limb = 1
+blade_angle_windup = -190.0
+blade_angle_strike = 55.0
+
+[sub_resource type="Resource" id="shadow_light_1"]
+script = ExtResource("2_move")
+id = &"shadow_light_1"
+reach = 105.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_angle_windup = -165.0
+blade_angle_strike = 35.0
+
+[sub_resource type="Resource" id="shadow_light_2"]
+script = ExtResource("2_move")
+id = &"shadow_light_2"
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_angle_windup = 80.0
+blade_angle_strike = -120.0
+
+[sub_resource type="Resource" id="shadow_light_3"]
+script = ExtResource("2_move")
+id = &"shadow_light_3"
+recovery = 0.26
+damage = 11.0
+vigor_cost = 9.0
+knockback = 70.0
+lunge = 50.0
+reach = 110.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+finisher_limb = 2
+blade_angle_windup = -20.0
+blade_angle_strike = 0.0
+
 [resource]
 script = ExtResource("1_script")
 id = &"shadow"
 name_key = "CHARACTER_SHADOW"
 health = 3
-vigor = 4
 blade = 5
 defense = 3
-agility = 4
 flow = 5
 light_chain = Array[ExtResource("2_move")]([SubResource("shadow_light_1"), SubResource("shadow_light_2"), SubResource("shadow_light_3")])
 heavy = SubResource("shadow_heavy")
@@ -151,16 +105,13 @@ shove = ExtResource("4_shove")
 aerial_light = ExtResource("5_aerial_light")
 aerial_heavy = ExtResource("6_aerial_heavy")
 guard_break_stun = 1.4
-block_cost_multiplier = 1.0
 vigor_on_hit = 6.0
-double_jump_ratio = 0.7
-air_dash_vigor = 18.0
 ai_profile = ExtResource("7_ai")
 blade_color = Color(1, 0.247, 0.62, 1)
 cloak_color = Color(0.122, 0.125, 0.161, 1)
 body_color = Color(0.071, 0.075, 0.098, 1)
+skin_color = Color(0.36, 0.3, 0.29, 1)
+hair_color = Color(0.07, 0.075, 0.1, 1)
 hood_up = true
 cloak_to_floor = true
 guard_style = 1
-skin_color = Color(0.36, 0.3, 0.29, 1)
-hair_color = Color(0.07, 0.075, 0.1, 1)

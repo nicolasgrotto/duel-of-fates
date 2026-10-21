@@ -1,14 +1,68 @@
-[gd_resource type="Resource" script_class="EffectsConfig" format=3]
+[gd_resource type="Resource" script_class="EffectsConfig" format=3 uid="uid://nnc01s3xhypo"]
 
-[ext_resource type="Script" path="res://data/balance/effects_config.gd" id="1_script"]
-[ext_resource type="Script" path="res://data/balance/effect_recipe.gd" id="2_recipe"]
+[ext_resource type="Script" uid="uid://dhguujpggnc2b" path="res://data/balance/effects_config.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://bd1qg0j1so3pe" path="res://data/balance/effect_recipe.gd" id="2_recipe"]
 
-[sub_resource type="Resource" id="hit_light"]
+[sub_resource type="Resource" id="blade_lock_end"]
 script = ExtResource("2_recipe")
-sparks_min = 6
-sparks_max = 10
-spark_speed = 520.0
+sparks_min = 12
+sparks_max = 16
+spark_speed = 640.0
+shake = 6.0
+shake_duration = 0.18
+flash = 0.12
 hit_flash = true
+
+[sub_resource type="Resource" id="blade_lock_press"]
+script = ExtResource("2_recipe")
+sparks_min = 3
+sparks_max = 5
+spark_speed = 420.0
+spread_degrees = 60.0
+
+[sub_resource type="Resource" id="blade_lock_start"]
+script = ExtResource("2_recipe")
+sparks_min = 16
+sparks_max = 22
+spark_speed = 640.0
+spread_degrees = 160.0
+shake = 6.0
+shake_duration = 0.18
+flash = 0.12
+punch_in = 0.02
+
+[sub_resource type="Resource" id="block"]
+script = ExtResource("2_recipe")
+sparks_min = 10
+sparks_max = 16
+spark_speed = 560.0
+shake = 2.0
+shake_duration = 0.1
+
+[sub_resource type="Resource" id="clash"]
+script = ExtResource("2_recipe")
+sparks_min = 24
+sparks_max = 32
+spark_speed = 760.0
+spread_degrees = 150.0
+shake = 10.0
+shake_duration = 0.25
+flash = 0.22
+
+[sub_resource type="Resource" id="evade"]
+script = ExtResource("2_recipe")
+sparks_min = 0
+sparks_max = 0
+
+[sub_resource type="Resource" id="guard_break"]
+script = ExtResource("2_recipe")
+sparks_min = 18
+sparks_max = 24
+spark_speed = 700.0
+shake = 8.0
+shake_duration = 0.22
+flash = 0.12
+punch_in = 0.04
 
 [sub_resource type="Resource" id="hit_heavy"]
 script = ExtResource("2_recipe")
@@ -21,33 +75,20 @@ flash = 0.12
 punch_in = 0.03
 hit_flash = true
 
-[sub_resource type="Resource" id="block"]
+[sub_resource type="Resource" id="hit_light"]
+script = ExtResource("2_recipe")
+hit_flash = true
+
+[sub_resource type="Resource" id="knockout"]
 script = ExtResource("2_recipe")
 sparks_min = 10
-sparks_max = 16
-spark_speed = 560.0
-shake = 2.0
-shake_duration = 0.1
-
-[sub_resource type="Resource" id="guard_break"]
-script = ExtResource("2_recipe")
-sparks_min = 18
-sparks_max = 24
-spark_speed = 700.0
-shake = 8.0
-shake_duration = 0.22
-flash = 0.12
-punch_in = 0.04
-
-[sub_resource type="Resource" id="clash"]
-script = ExtResource("2_recipe")
-sparks_min = 24
-sparks_max = 32
-spark_speed = 760.0
-spread_degrees = 150.0
-shake = 10.0
-shake_duration = 0.25
-flash = 0.22
+sparks_max = 14
+spark_speed = 600.0
+shake = 12.0
+shake_duration = 0.3
+flash = 0.35
+punch_in = 0.06
+hit_flash = true
 
 [sub_resource type="Resource" id="parry"]
 script = ExtResource("2_recipe")
@@ -79,51 +120,6 @@ spark_speed = 360.0
 lift_degrees = 5.0
 shake = 2.0
 shake_duration = 0.1
-
-[sub_resource type="Resource" id="blade_lock_start"]
-script = ExtResource("2_recipe")
-sparks_min = 16
-sparks_max = 22
-spark_speed = 640.0
-spread_degrees = 160.0
-shake = 6.0
-shake_duration = 0.18
-flash = 0.12
-punch_in = 0.02
-
-[sub_resource type="Resource" id="blade_lock_press"]
-script = ExtResource("2_recipe")
-sparks_min = 3
-sparks_max = 5
-spark_speed = 420.0
-spread_degrees = 60.0
-
-[sub_resource type="Resource" id="blade_lock_end"]
-script = ExtResource("2_recipe")
-sparks_min = 12
-sparks_max = 16
-spark_speed = 640.0
-shake = 6.0
-shake_duration = 0.18
-flash = 0.12
-hit_flash = true
-
-[sub_resource type="Resource" id="knockout"]
-script = ExtResource("2_recipe")
-sparks_min = 10
-sparks_max = 14
-spark_speed = 600.0
-shake = 12.0
-shake_duration = 0.3
-flash = 0.35
-punch_in = 0.06
-hit_flash = true
-
-[sub_resource type="Resource" id="evade"]
-script = ExtResource("2_recipe")
-sparks_min = 0
-sparks_max = 0
-ring_radius = 0.0
 
 [resource]
 script = ExtResource("1_script")
