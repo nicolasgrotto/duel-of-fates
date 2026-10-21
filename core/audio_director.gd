@@ -40,6 +40,15 @@ func _ready() -> void:
 	add_child(_ambience)
 
 
+func _exit_tree() -> void:
+	for voice in _voices:
+		voice.stop()
+		voice.stream = null
+	for player in [_ui, _music, _ambience]:
+		player.stop()
+		player.stream = null
+
+
 func play(id: StringName, at: Vector2, volume_db: float = 0.0, pitch: float = 1.0, bus: StringName = &"Effects") -> void:
 	var stream: AudioStream = BANK.stream(id)
 	if stream == null:

@@ -15,6 +15,8 @@ const SOUNDS: Dictionary = {
 	CombatEvent.Type.BLOCK: &"block",
 	CombatEvent.Type.GUARD_BREAK: &"guard_break",
 	CombatEvent.Type.PARRY: &"parry",
+	CombatEvent.Type.RESPONSE: &"parry",
+	CombatEvent.Type.ARMOR_ABSORBED: &"hit_light",
 	CombatEvent.Type.PERFECT_PARRY: &"perfect_parry",
 	CombatEvent.Type.CLASH: &"clash",
 	CombatEvent.Type.BLADE_LOCK_STARTED: &"clash",
@@ -63,10 +65,17 @@ func setup(simulation: MatchSimulation, fighter_views: Array[FighterView], local
 			_hums[i].play()
 
 
+func _exit_tree() -> void:
+	stop()
+
+
 func stop() -> void:
 	for hum in _hums:
 		hum.stop()
-	_lock_loop.stop()
+		hum.stream = null
+	if _lock_loop != null:
+		_lock_loop.stop()
+		_lock_loop.stream = null
 
 
 func on_ticked() -> void:
@@ -110,6 +119,8 @@ func on_event(event: CombatEvent) -> void:
 			AudioDirector.play(&"land", views[event.source].global_position, -6.0)
 		CombatEvent.Type.ACTION_REJECTED:
 			AudioDirector.play(&"rejected", views[event.source].global_position, -2.0, 1.0, &"Interface")
+		CombatEvent.Type.FEINT:
+			AudioDirector.play(&"swing_light", views[event.source].global_position, -8.0, 0.8)
 		CombatEvent.Type.EXHAUSTION:
 			AudioDirector.play(&"exhaustion", views[event.source].global_position)
 

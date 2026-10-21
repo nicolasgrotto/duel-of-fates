@@ -5,7 +5,6 @@ const GRAVITY: float = 1300.0
 const DAMPING: float = 0.9
 const ITERATIONS: int = 3
 const BACK_TILT: float = 0.18
-const FLOOR_Y: float = 0.0
 
 var texture: Texture2D
 var length: float = 40.0
@@ -14,6 +13,7 @@ var bottom_width: float = 26.0
 var stiffness: float = 0.5
 var segments: int = 5
 var back_layer: bool = false
+var floor_y: float = 0.0
 
 var _points: PackedVector2Array = []
 var _previous: PackedVector2Array = []
@@ -78,8 +78,8 @@ func simulate(anchor: Vector2, body_angle: float, facing: int, delta: float) -> 
 				_points[i] = a + correction * 0.5
 				_points[i + 1] = b - correction * 0.5
 		for i in range(1, segments + 1):
-			if _points[i].y > FLOOR_Y:
-				_points[i].y = FLOOR_Y
+			if _points[i].y > floor_y:
+				_points[i].y = floor_y
 	queue_redraw()
 
 

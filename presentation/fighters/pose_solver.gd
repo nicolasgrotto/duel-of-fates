@@ -13,6 +13,8 @@ const STUN_ANGLE: float = 96.0
 const WINDUP_GRIP: Vector2 = Vector2(-6.0, -40.0)
 const HEAVY_WINDUP_GRIP: Vector2 = Vector2(-8.0, -54.0)
 const STRIKE_GRIP: Vector2 = Vector2(24.0, -28.0)
+const STANCE_GRIP: Vector2 = Vector2(20.0, -30.0)
+const STANCE_ANGLE: float = -35.0
 const RELAXED_HAND: Vector2 = Vector2(-4.0, -30.0)
 const SHOVE_HAND: Vector2 = Vector2(34.0, -38.0)
 const TUCK_FRONT: Vector2 = Vector2(14.0, -20.0)
@@ -140,6 +142,11 @@ func _attack(fighter: FighterState, pose: RigPose, guard_angle: float, guard_gri
 	var move: MoveData = fighter.move
 	if move == null:
 		return Vector2.ZERO
+	if move.kind == MoveData.Kind.STANCE:
+		var ready: float = 1.0 if fighter.move_phase == FighterState.Phase.ACTIVE else 1.0 - _progress(fighter, move)
+		pose.grip = guard_grip.lerp(STANCE_GRIP, ready)
+		pose.blade_angle = lerpf(guard_angle, STANCE_ANGLE, ready)
+		return Vector2(8.0 * ready, -4.0 * ready)
 	if move.kind == MoveData.Kind.SHOVE:
 		var push: float = _progress(fighter, move)
 		var amount: float = ease(push, 0.5) if fighter.move_phase != FighterState.Phase.RECOVERY else 1.0 - push
@@ -200,6 +207,8 @@ func _dodge(fighter: FighterState, pose: RigPose) -> Vector2:
 		FighterState.DodgeKind.AIR:
 			_tuck(pose, 0.6)
 			return Vector2(0.0, 28.0)
+		FighterState.DodgeKind.DASH:
+			return Vector2(14.0, 26.0 if toward else -18.0)
 		FighterState.DodgeKind.EVADE:
 			pose.back_foot.x -= 8.0
 			return Vector2(12.0, -24.0 if fighter.evade_streak % 2 == 0 else -16.0)

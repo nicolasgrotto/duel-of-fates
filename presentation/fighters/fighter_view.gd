@@ -12,6 +12,7 @@ const LIGHT_ENERGY: float = 1.1
 const LIGHT_SCALE: float = 2.8
 const LIGHT_HEIGHT: float = 40.0
 const LIGHT_TEXTURE_SIZE: int = 256
+const CHARGE_FLARE: float = 0.08
 
 var fighter: FighterState
 var opponent: FighterState
@@ -118,7 +119,7 @@ func on_event(event: CombatEvent) -> void:
 	match event.type:
 		CombatEvent.Type.ROUND_STARTED:
 			reset_round(true)
-		CombatEvent.Type.PARRY, CombatEvent.Type.PERFECT_PARRY:
+		CombatEvent.Type.PARRY, CombatEvent.Type.PERFECT_PARRY, CombatEvent.Type.RESPONSE:
 			if event.target == fighter.index:
 				blade.flare = effects.parry_flare
 		CombatEvent.Type.HIT, CombatEvent.Type.GUARD_BREAK, CombatEvent.Type.BLADE_LOCK_ENDED:
@@ -206,6 +207,8 @@ func _update_blade() -> void:
 	_geometry.second_length *= rig.scale.x
 	blade.length_ratio = 0.0 if _lost_blade else _ignition * (1.0 - _extinguish)
 	blade.tremble = _pose.tremble
+	if fighter.charge_level > 1:
+		blade.flare = maxf(blade.flare, CHARGE_FLARE * (fighter.charge_level - 1))
 	blade.set_blades(_geometry, _pose.trail, _pose.off_trail or (_pose.trail and fighter.character.weapon.kind == WeaponData.Kind.STAFF))
 	blade.eyes_visible = rig.shows_eyes() and _death_time < 0.0
 	blade.eyes_position = rig.to_global(rig.eye_position())

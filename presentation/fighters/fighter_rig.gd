@@ -14,6 +14,7 @@ var character: CharacterData
 var costume: CostumeData
 var shader_material: ShaderMaterial
 var visible_parts: PackedStringArray = []
+var floor_y: float = 0.0
 
 var _skeleton: Skeleton2D
 var _bones: Dictionary = {}
@@ -178,6 +179,7 @@ func _leg(side: String, hip: Vector2, foot: Vector2) -> Vector2:
 
 func _simulate_cloths(pose: RigPose, pelvis: Vector2, facing: int, delta: float) -> void:
 	for i in _cloths.size():
+		_cloths[i].floor_y = floor_y
 		var anchor: Vector2 = _cloth_anchor(_cloth_anchors[i], pose, pelvis)
 		_cloths[i].simulate(to_global(anchor), pose.torso_angle * facing, facing, delta)
 

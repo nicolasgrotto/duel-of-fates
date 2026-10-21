@@ -67,8 +67,10 @@ func _recipe_for(event: CombatEvent) -> EffectRecipe:
 			return config.guard_break
 		CombatEvent.Type.CLASH:
 			return config.clash
-		CombatEvent.Type.PARRY:
+		CombatEvent.Type.PARRY, CombatEvent.Type.RESPONSE:
 			return config.parry
+		CombatEvent.Type.ARMOR_ABSORBED:
+			return config.hit_light
 		CombatEvent.Type.PERFECT_PARRY:
 			return config.perfect_parry
 		CombatEvent.Type.SHOVE:
