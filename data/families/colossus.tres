@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="MotionFamily" format=3]
+
+[ext_resource type="Script" path="res://data/motion_family.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"colossus"
+grip = 0
+stance_width = 40.0
+crouch = 12.0
+lean = 2.0
+breath = 1.0
+sway = 0.3
+stride = 8.0
+bob = 1.0
+windup_pull = 0.7
+strike_reach = 0.9
+strike_lean = 8.0
+follow_through = 6.0
+heavy_crouch = 14.0
+heavy_step = 6.0
+lock_crouch = 14.0

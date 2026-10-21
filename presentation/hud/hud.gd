@@ -36,6 +36,7 @@ var _time: float = 0.0
 
 
 func setup(simulation: MatchSimulation, rounds_visible: bool) -> void:
+	layer = 10
 	sim = simulation
 	show_rounds = rounds_visible
 	if _root == null:

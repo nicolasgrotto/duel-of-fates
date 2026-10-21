@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="MotionFamily" format=3]
+
+[ext_resource type="Script" path="res://data/motion_family.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"guardian"
+grip = 0
+stance_width = 30.0
+crouch = 7.0
+lean = 4.0
+breath = 1.2
+sway = 0.6
+stride = 9.0
+bob = 1.5
+windup_pull = 0.8
+strike_reach = 1.0
+strike_lean = 10.0
+follow_through = 4.0
+heavy_crouch = 8.0
+heavy_step = 8.0

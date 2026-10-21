@@ -1,107 +1,91 @@
 class_name BladeView
 extends Node2D
 
-const BLADE_LENGTH: float = 92.0
-const OUTER_WIDTH: float = 15.0
-const INNER_WIDTH: float = 6.5
-const CORE_WIDTH: float = 2.6
-const OUTER_ALPHA: float = 0.2
-const INNER_ALPHA: float = 0.75
-const TRAIL_ALPHA: float = 0.45
-const MAX_TRAIL_POINTS: int = 24
-const LIGHT_ENERGY: float = 0.9
-const LIGHT_SCALE: float = 2.6
-const LIGHT_TEXTURE_SIZE: int = 256
+const OUTER_WIDTH: float = 11.0
+const INNER_WIDTH: float = 4.6
+const CORE_WIDTH: float = 2.0
+const OUTER_ALPHA: float = 0.22
+const INNER_ALPHA: float = 0.78
+const TRAIL_ALPHA: float = 0.42
+const REFLECTION_ALPHA: float = 0.16
+const REFLECTION_WIDTH: float = 3.2
+const REFLECTION_SQUASH: float = 0.16
+const EYE_RADIUS: float = 1.4
+const EYE_HALO: float = 5.0
+const EYE_HALO_ALPHA: float = 0.25
 
 var color: Color = Color.WHITE
-var base: Vector2 = Vector2.ZERO
-var angle_degrees: float = 0.0
+var width_scale: float = 1.0
 var length_ratio: float = 0.0
 var tremble: bool = false
 var flare: float = 0.0
-var trail_active: bool = false
 var trail_duration: float = 0.12
+var reflect: bool = false
+var eyes_visible: bool = false
+var eyes_position: Vector2 = Vector2.ZERO
+var eyes_color: Color = Color("#ffb22e")
+var eyes_core: Color = Color("#e2321e")
 
-var _trail_bases: PackedVector2Array = []
-var _trail_tips: PackedVector2Array = []
-var _trail_times: PackedFloat32Array = []
+var _blades: Array[PackedVector2Array] = [PackedVector2Array([Vector2.ZERO, Vector2.ZERO]), PackedVector2Array([Vector2.ZERO, Vector2.ZERO])]
+var _blade_count: int = 0
+var _trails: Array[BladeTrail] = [BladeTrail.new(), BladeTrail.new()]
+var _trail_active: Array[bool] = [false, false]
 var _time: float = 0.0
-var _light: PointLight2D
 
 
 func _ready() -> void:
 	var additive: CanvasItemMaterial = CanvasItemMaterial.new()
 	additive.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
 	material = additive
-	_light = PointLight2D.new()
-	_light.texture = _light_texture()
-	_light.texture_scale = LIGHT_SCALE
-	_light.energy = LIGHT_ENERGY
-	add_child(_light)
 
 
-func tip() -> Vector2:
-	return base + Vector2.from_angle(deg_to_rad(angle_degrees)) * BLADE_LENGTH * length_ratio
+func set_blades(geometry: WeaponPose, main_trail: bool, second_trail: bool) -> void:
+	_blade_count = 2 if geometry.has_second and geometry.second_length > 0.0 else 1
+	_blades[0][0] = geometry.blade_base
+	_blades[0][1] = geometry.blade_base + geometry.blade_direction * geometry.blade_length * length_ratio
+	if _blade_count == 2:
+		_blades[1][0] = geometry.second_base
+		_blades[1][1] = geometry.second_base + geometry.second_direction * geometry.second_length * length_ratio
+	_trail_active[0] = main_trail
+	_trail_active[1] = second_trail
+
+
+func center() -> Vector2:
+	return _blades[0][0].lerp(_blades[0][1], 0.5)
 
 
 func _process(delta: float) -> void:
 	_time += delta
 	flare = maxf(flare - delta, 0.0)
-	_light.color = color
-	_light.position = base.lerp(tip(), 0.5)
-	_light.energy = LIGHT_ENERGY * length_ratio * (1.0 + flare * 4.0)
-	_update_trail()
+	for i in _blade_count:
+		_trails[i].update(_time, trail_duration, _trail_active[i] and length_ratio > 0.0, _blades[i][0].lerp(_blades[i][1], 0.3), _blades[i][1])
 	queue_redraw()
 
 
-func _update_trail() -> void:
-	while not _trail_times.is_empty() and _time - _trail_times[0] > trail_duration:
-		_trail_bases.remove_at(0)
-		_trail_tips.remove_at(0)
-		_trail_times.remove_at(0)
-	if trail_active and length_ratio > 0.0:
-		_trail_bases.append(to_global(base.lerp(tip(), 0.35)))
-		_trail_tips.append(to_global(tip()))
-		_trail_times.append(_time)
-		if _trail_times.size() > MAX_TRAIL_POINTS:
-			_trail_bases.remove_at(0)
-			_trail_tips.remove_at(0)
-			_trail_times.remove_at(0)
-
-
 func _draw() -> void:
+	if eyes_visible:
+		draw_circle(eyes_position, EYE_HALO, Color(eyes_color, EYE_HALO_ALPHA))
+		draw_circle(eyes_position, EYE_RADIUS, eyes_core.lerp(eyes_color, 0.5))
 	if length_ratio <= 0.0:
 		return
-	_draw_trail()
-	var end: Vector2 = tip()
+	for i in _blade_count:
+		_trails[i].draw_on(self, color, TRAIL_ALPHA)
+	for i in _blade_count:
+		_draw_blade(_blades[i][0], _blades[i][1])
+		if reflect:
+			_draw_reflection(_blades[i][0], _blades[i][1])
+
+
+func _draw_blade(base: Vector2, tip: Vector2) -> void:
 	var outer_alpha: float = OUTER_ALPHA * (randf_range(0.3, 1.0) if tremble else 1.0)
 	var boost: float = 1.0 + flare * 3.0
-	draw_line(base, end, Color(color, outer_alpha * boost), OUTER_WIDTH * boost)
-	draw_line(base, end, Color(color, INNER_ALPHA), INNER_WIDTH)
-	draw_line(base, end, Color(1.0, 1.0, 1.0, 1.0), CORE_WIDTH)
+	draw_line(base, tip, Color(color, outer_alpha * boost), OUTER_WIDTH * width_scale * boost)
+	draw_line(base, tip, Color(color, INNER_ALPHA), INNER_WIDTH * width_scale)
+	draw_line(base, tip, Color.WHITE, CORE_WIDTH * width_scale)
 
 
-func _draw_trail() -> void:
-	var count: int = _trail_times.size()
-	if count < 2:
-		return
-	draw_set_transform_matrix(get_global_transform().affine_inverse())
-	for i in count - 1:
-		var age: float = 1.0 - (_time - _trail_times[i]) / trail_duration
-		var quad: PackedVector2Array = [_trail_bases[i], _trail_tips[i], _trail_tips[i + 1], _trail_bases[i + 1]]
-		draw_colored_polygon(quad, Color(color, TRAIL_ALPHA * clampf(age, 0.0, 1.0)))
-	draw_set_transform_matrix(Transform2D.IDENTITY)
-
-
-func _light_texture() -> GradientTexture2D:
-	var gradient: Gradient = Gradient.new()
-	gradient.set_color(0, Color(1.0, 1.0, 1.0, 1.0))
-	gradient.set_color(1, Color(1.0, 1.0, 1.0, 0.0))
-	var texture: GradientTexture2D = GradientTexture2D.new()
-	texture.gradient = gradient
-	texture.fill = GradientTexture2D.FILL_RADIAL
-	texture.fill_from = Vector2(0.5, 0.5)
-	texture.fill_to = Vector2(1.0, 0.5)
-	texture.width = LIGHT_TEXTURE_SIZE
-	texture.height = LIGHT_TEXTURE_SIZE
-	return texture
+func _draw_reflection(base: Vector2, tip: Vector2) -> void:
+	var mirrored_base: Vector2 = Vector2(base.x, -base.y * REFLECTION_SQUASH)
+	var mirrored_tip: Vector2 = Vector2(tip.x, -tip.y * REFLECTION_SQUASH)
+	draw_line(mirrored_base, mirrored_tip, Color(color, REFLECTION_ALPHA), OUTER_WIDTH * width_scale)
+	draw_line(mirrored_base, mirrored_tip, Color(color, REFLECTION_ALPHA * 1.5), REFLECTION_WIDTH * width_scale)

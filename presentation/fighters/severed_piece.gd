@@ -8,23 +8,35 @@ const SPIN: float = 11.0
 const BOUNCE: float = 0.25
 const FLOOR_FRICTION: float = 6.0
 const EMBER_COOLING: float = 1.2
-const LIMB_LENGTH: float = 34.0
-const LIMB_WIDTH: float = 9.0
-const HEAD_RADIUS: float = 12.0
+const EMBER_RADIUS: float = 3.5
+const REST_HEIGHT: float = -3.0
 
-var _limb: MoveData.Limb = MoveData.Limb.ARM
-var _look: CharacterData
 var _velocity: Vector2 = Vector2.ZERO
 var _spin: float = 0.0
 var _age: float = 0.0
+var _ember: Color = Color.ORANGE
 
 
-func setup(limb: MoveData.Limb, look: CharacterData, start: Vector2, direction: int) -> void:
-	_limb = limb
-	_look = look
-	global_position = start
+func setup(rig: FighterRig, limb: MoveData.Limb, direction: int) -> void:
+	global_position = rig.to_global(rig.limb_anchor(limb))
 	_velocity = Vector2(LAUNCH_SPEED.x * direction, LAUNCH_SPEED.y)
 	_spin = SPIN * direction
+	_ember = PALETTE.ember
+	var art: FighterArt = rig.art
+	var offset: Vector2 = Vector2.ZERO
+	for part in rig.severed_parts(limb):
+		var sprite: Sprite2D = Sprite2D.new()
+		sprite.texture = art.canvas_texture(part)
+		sprite.centered = false
+		sprite.offset = -art.pivot(part)
+		sprite.scale = Vector2.ONE / art.pixels_per_unit * rig.scale
+		sprite.material = rig.shader_material
+		sprite.position = offset
+		add_child(sprite)
+		if part == "forearm":
+			offset = Vector2(art.dim("forearm"), 0.0) * rig.scale
+		elif part == "shin":
+			offset = Vector2(art.dim("shin"), 0.0) * rig.scale
 
 
 func _process(delta: float) -> void:
@@ -32,8 +44,8 @@ func _process(delta: float) -> void:
 	_velocity.y += GRAVITY * delta
 	position += _velocity * delta
 	rotation += _spin * delta
-	if position.y >= 0.0:
-		position.y = 0.0
+	if position.y >= REST_HEIGHT:
+		position.y = REST_HEIGHT
 		_velocity.y = -_velocity.y * BOUNCE
 		_velocity.x = move_toward(_velocity.x, 0.0, absf(_velocity.x) * FLOOR_FRICTION * delta + 1.0)
 		_spin = move_toward(_spin, 0.0, absf(_spin) * FLOOR_FRICTION * delta + 0.5)
@@ -41,14 +53,5 @@ func _process(delta: float) -> void:
 
 
 func _draw() -> void:
-	var ember: Color = PALETTE.ember.lerp(_look.body_color, clampf(_age / EMBER_COOLING, 0.0, 1.0))
-	if _limb == MoveData.Limb.HEAD:
-		var cover: Color = _look.cloak_color if _look.hood_up else _look.hair_color
-		draw_circle(Vector2.ZERO, HEAD_RADIUS, cover)
-		draw_circle(Vector2(0.0, HEAD_RADIUS * 0.8), 4.0, ember)
-		return
-	var color: Color = _look.body_color
-	draw_line(Vector2(-LIMB_LENGTH * 0.5, 0.0), Vector2(LIMB_LENGTH * 0.5, 0.0), color, LIMB_WIDTH)
-	draw_circle(Vector2(-LIMB_LENGTH * 0.5, 0.0), LIMB_WIDTH * 0.5, ember)
-	if _limb == MoveData.Limb.ARM:
-		draw_line(Vector2(LIMB_LENGTH * 0.5, 0.0), Vector2(LIMB_LENGTH * 0.5 + 12.0, 0.0), _look.hilt_color, 5.0)
+	var cooled: float = clampf(_age / EMBER_COOLING, 0.0, 1.0)
+	draw_circle(Vector2.ZERO, EMBER_RADIUS * (1.0 - cooled * 0.5), Color(_ember, 1.0 - cooled * 0.8))

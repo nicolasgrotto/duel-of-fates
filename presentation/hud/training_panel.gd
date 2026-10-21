@@ -29,6 +29,7 @@ var _frame_text: String = ""
 
 
 func setup(tick_runner: TickRunner, dummy_controller: DummyController, training_config: TrainingConfig) -> void:
+	layer = 11
 	runner = tick_runner
 	dummy = dummy_controller
 	config = training_config

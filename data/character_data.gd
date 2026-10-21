@@ -1,7 +1,7 @@
 class_name CharacterData
 extends Resource
 
-enum GuardStyle { HIGH, LOW }
+enum Path { AURORA, ECLIPSE }
 
 @export var id: StringName
 @export var name_key: String
@@ -33,13 +33,21 @@ enum GuardStyle { HIGH, LOW }
 @export_group("AI")
 @export var ai_profile: AiProfileData
 
+@export_group("Identity")
+@export var path: Path = Path.AURORA
+@export var style_key: String
+@export var trait_key: String
+@export var ability_key: String
+@export var secret: bool = false
+@export var selectable: bool = true
+
 @export_group("Look")
-@export var blade_color: Color = Color("#7fe4ff")
-@export var cloak_color: Color = Color("#6b5a48")
-@export var body_color: Color = Color("#2e2925")
-@export var skin_color: Color = Color("#7a5f4e")
-@export var hair_color: Color = Color("#3b2a20")
-@export var hilt_color: Color = Color("#9aa3ad")
-@export var hood_up: bool = false
-@export var cloak_to_floor: bool = false
-@export var guard_style: GuardStyle = GuardStyle.HIGH
+@export var art: FighterArt
+@export var family: MotionFamily
+@export var weapon: WeaponData
+@export var costumes: Array[CostumeData] = []
+@export var blade_colors: PackedColorArray = PackedColorArray([Color("#7fe4ff")])
+@export var blade_color_keys: PackedStringArray = []
+@export var guard_angle: float = -55.0
+@export var guard_grip: Vector2 = Vector2(14.0, -24.0)
+@export var eclipse_eyes: bool = false

@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="MotionFamily" format=3]
+
+[ext_resource type="Script" path="res://data/motion_family.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"wasp"
+grip = 2
+stance_width = 30.0
+crouch = 10.0
+lean = 18.0
+breath = 1.6
+sway = 3.0
+stride = 14.0
+bob = 2.5
+windup_pull = 0.9
+strike_reach = 1.15
+strike_lean = 18.0
+follow_through = 22.0
+heavy_crouch = 8.0
+heavy_step = 12.0
+finisher_twirl = true
+flip_on_double_jump = true
+lock_lean = 26.0

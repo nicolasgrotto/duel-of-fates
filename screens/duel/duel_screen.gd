@@ -20,6 +20,9 @@ var _hud: Hud
 var _screen: ScreenEffects
 var _debug: DebugOverlay
 var _training: TrainingPanel
+var _glow_layer: CanvasLayer
+var _desaturation: Desaturation
+var _audio: DuelAudio
 var _death_index: int = -1
 var _replaying: bool = false
 var _replay_controllers: Array[FighterController] = []
@@ -30,6 +33,7 @@ var _finished: bool = false
 func open(params: Dictionary) -> void:
 	mode = params["mode"]
 	setup = mode.build_setup()
+	setup.fill_default_looks()
 	sim = MatchSimulation.new(CONFIG, setup.rules, setup.characters, setup.match_seed)
 	for i in sim.fighters.size():
 		sim.fighters[i].hold_to_lock = setup.hold_to_lock[i]
@@ -46,6 +50,16 @@ func _build_scene() -> void:
 	_world = Node2D.new()
 	add_child(_world)
 	_world.add_child(setup.arena.scene.instantiate())
+	var ambient: CanvasModulate = CanvasModulate.new()
+	ambient.color = setup.arena.ambient
+	_world.add_child(ambient)
+	_desaturation = Desaturation.new()
+	_desaturation.layer = 1
+	add_child(_desaturation)
+	_glow_layer = CanvasLayer.new()
+	_glow_layer.layer = 2
+	_glow_layer.follow_viewport_enabled = true
+	add_child(_glow_layer)
 	for i in 2:
 		var view: FighterView = FighterView.new()
 		view.show_finishers = Settings.show_finishers
@@ -56,7 +70,7 @@ func _build_scene() -> void:
 	_effects.config = EFFECTS
 	_effects.reduced = Settings.reduced_effects
 	_effects.z_index = 20
-	_world.add_child(_effects)
+	_glow_layer.add_child(_effects)
 	_camera = CameraRig.new()
 	add_child(_camera)
 	_camera.make_current()
@@ -68,6 +82,10 @@ func _build_scene() -> void:
 	_screen.setup(EFFECTS)
 	_debug = DebugOverlay.new()
 	add_child(_debug)
+	_audio = DuelAudio.new()
+	add_child(_audio)
+	AudioDirector.play_music(setup.arena.music)
+	AudioDirector.play_ambience(setup.arena.ambience)
 	_runner = TickRunner.new()
 	add_child(_runner)
 	_runner.ticked.connect(_on_ticked)
@@ -99,11 +117,13 @@ func _add_training_panel(dummy: DummyController) -> void:
 
 func _bind_presentation(simulation: MatchSimulation) -> void:
 	for i in 2:
-		_views[i].setup(simulation.fighters[i], _runner, EFFECTS)
+		_views[i].setup(simulation.fighters[i], simulation.fighters[1 - i], _runner, EFFECTS, _glow_layer, setup.costumes[i], setup.arena.reflective_floor)
+		_views[i].set_blade_color(setup.blade_colors[i])
 		_views[i].reset_round(simulation.phase == MatchSimulation.Phase.INTRO)
 	_effects.sim = simulation
-	_effects.blade_colors = [simulation.fighters[0].character.blade_color, simulation.fighters[1].character.blade_color]
+	_effects.blade_colors = [setup.blade_colors[0], setup.blade_colors[1]]
 	_camera.setup(simulation, EFFECTS)
+	_audio.setup(simulation, _views, PLAYER_INDEX)
 	_hud.setup(simulation, not setup.training)
 	_hud.set_footer(ControlHints.hint(&"p1_pause", "HINT_PAUSE"))
 	_debug.attach(_world, simulation, _runner)
@@ -122,9 +142,15 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
+func _exit_tree() -> void:
+	AudioDirector.stop_music()
+	AudioDirector.stop_ambience()
+
+
 func _on_ticked() -> void:
 	for view in _views:
 		view.on_ticked()
+	_audio.on_ticked()
 	if _replaying:
 		if _replay_controllers[0] is ReplayController and (_replay_controllers[0] as ReplayController).cursor >= _replay_end:
 			_finish_replay()
@@ -140,6 +166,7 @@ func _on_combat_event(event: CombatEvent) -> void:
 	for view in _views:
 		view.on_event(event)
 	_effects.on_event(event)
+	_audio.on_event(event)
 	if _replaying:
 		return
 	_hud.on_event(event)
@@ -149,6 +176,7 @@ func _on_combat_event(event: CombatEvent) -> void:
 	match event.type:
 		CombatEvent.Type.PERFECT_PARRY:
 			_screen.pulse_letterbox(EFFECTS.perfect_parry_letterbox)
+			_desaturation.pulse(EFFECTS.desaturation)
 		CombatEvent.Type.DEATH:
 			_death_index = _runner.recording.length()
 		CombatEvent.Type.MATCH_ENDED:

@@ -1,0 +1,52 @@
+class_name RigPose
+extends RefCounted
+
+var pelvis: Vector2 = Vector2(0.0, -72.0)
+var torso_angle: float = 0.0
+var head_angle: float = 0.0
+var grip: Vector2 = Vector2(14.0, -96.0)
+var off_hand: Vector2 = Vector2(8.0, -92.0)
+var blade_angle: float = -55.0
+var off_blade_angle: float = 120.0
+var front_foot: Vector2 = Vector2(15.0, 0.0)
+var back_foot: Vector2 = Vector2(-15.0, 0.0)
+var spin: float = 0.0
+var tremble: bool = false
+var trail: bool = false
+var off_trail: bool = false
+
+
+func copy_from(other: RigPose) -> void:
+	pelvis = other.pelvis
+	torso_angle = other.torso_angle
+	head_angle = other.head_angle
+	grip = other.grip
+	off_hand = other.off_hand
+	blade_angle = other.blade_angle
+	off_blade_angle = other.off_blade_angle
+	front_foot = other.front_foot
+	back_foot = other.back_foot
+	spin = other.spin
+	tremble = other.tremble
+	trail = other.trail
+	off_trail = other.off_trail
+
+
+func blend_toward(target: RigPose, weight: float) -> void:
+	pelvis = pelvis.lerp(target.pelvis, weight)
+	torso_angle = lerp_angle(torso_angle, target.torso_angle, weight)
+	head_angle = lerp_angle(head_angle, target.head_angle, weight)
+	grip = grip.lerp(target.grip, weight)
+	off_hand = off_hand.lerp(target.off_hand, weight)
+	blade_angle = rad_to_deg(lerp_angle(deg_to_rad(blade_angle), deg_to_rad(target.blade_angle), weight))
+	off_blade_angle = rad_to_deg(lerp_angle(deg_to_rad(off_blade_angle), deg_to_rad(target.off_blade_angle), weight))
+	front_foot = front_foot.lerp(target.front_foot, weight)
+	back_foot = back_foot.lerp(target.back_foot, weight)
+	spin = target.spin
+	tremble = target.tremble
+	trail = target.trail
+	off_trail = target.off_trail
+
+
+func blade_direction() -> Vector2:
+	return Vector2.from_angle(deg_to_rad(blade_angle))

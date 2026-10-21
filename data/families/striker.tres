@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="MotionFamily" format=3]
+
+[ext_resource type="Script" path="res://data/motion_family.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"striker"
+grip = 1
+stance_width = 32.0
+crouch = 12.0
+lean = 12.0
+breath = 1.3
+sway = 1.0
+stride = 11.0
+bob = 1.8
+windup_pull = 0.8
+strike_reach = 1.1
+strike_lean = 14.0
+follow_through = 12.0
+heavy_crouch = 12.0
+heavy_step = 10.0
+lock_crouch = 16.0

@@ -49,3 +49,6 @@ extends Resource
 @export var letterbox_height: float = 0.11
 @export var letterbox_speed: float = 4.0
 @export var perfect_parry_letterbox: float = 0.35
+
+@export_group("Signature")
+@export var desaturation: float = 0.15

@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="MotionFamily" format=3]
+
+[ext_resource type="Script" path="res://data/motion_family.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"reaper"
+grip = 3
+stance_width = 32.0
+crouch = 9.0
+lean = 10.0
+breath = 1.4
+sway = 1.5
+stride = 12.0
+bob = 2.0
+windup_pull = 1.0
+strike_reach = 1.1
+strike_lean = 14.0
+follow_through = 20.0
+heavy_crouch = 10.0
+heavy_step = 12.0
+finisher_twirl = true
+flip_on_double_jump = true
+roll_on_dodge = true

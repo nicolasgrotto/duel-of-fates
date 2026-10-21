@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="MotionFamily" format=3]
+
+[ext_resource type="Script" path="res://data/motion_family.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"fencer"
+grip = 1
+stance_width = 32.0
+crouch = 3.0
+lean = 0.0
+breath = 0.8
+sway = 0.4
+stride = 10.0
+bob = 1.2
+windup_pull = 0.6
+strike_reach = 1.4
+strike_lean = 6.0
+follow_through = 6.0
+heavy_crouch = 4.0
+heavy_step = 14.0
+lock_lean = 12.0

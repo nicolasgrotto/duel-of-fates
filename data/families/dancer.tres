@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="MotionFamily" format=3]
+
+[ext_resource type="Script" path="res://data/motion_family.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"dancer"
+grip = 0
+stance_width = 26.0
+crouch = 2.0
+lean = 8.0
+breath = 1.4
+sway = 2.2
+stride = 13.0
+bob = 2.5
+windup_pull = 1.2
+strike_reach = 1.2
+strike_lean = 16.0
+follow_through = 30.0
+heavy_crouch = 6.0
+heavy_step = 12.0
+finisher_twirl = true
+flip_on_double_jump = true
+roll_on_dodge = true
+lock_lean = 14.0
