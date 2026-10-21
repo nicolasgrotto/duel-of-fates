@@ -1,0 +1,45 @@
+[gd_resource type="Resource" script_class="FighterArt" format=3]
+
+[ext_resource type="Script" path="res://presentation/fighters/fighter_art.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/torso.png" id="t_torso"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/torso_n.png" id="n_torso"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/head.png" id="t_head"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/head_n.png" id="n_head"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/hair.png" id="t_hair"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/hair_n.png" id="n_hair"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/hood.png" id="t_hood"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/hood_n.png" id="n_hood"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/mask.png" id="t_mask"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/mask_n.png" id="n_mask"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/upper_arm.png" id="t_upper_arm"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/upper_arm_n.png" id="n_upper_arm"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/forearm.png" id="t_forearm"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/forearm_n.png" id="n_forearm"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/hand.png" id="t_hand"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/hand_n.png" id="n_hand"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/thigh.png" id="t_thigh"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/thigh_n.png" id="n_thigh"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/shin.png" id="t_shin"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/shin_n.png" id="n_shin"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/boot.png" id="t_boot"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/boot_n.png" id="n_boot"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/pad.png" id="t_pad"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/pad_n.png" id="n_pad"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/neckerchief.png" id="t_neckerchief"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/neckerchief_n.png" id="n_neckerchief"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/collar.png" id="t_collar"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/collar_n.png" id="n_collar"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/skirt.png" id="t_skirt"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/skirt_n.png" id="n_skirt"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/cape.png" id="t_cape"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/cape_n.png" id="n_cape"]
+
+[resource]
+script = ExtResource("1_script")
+pixels_per_unit = 4.0
+textures = {"torso": ExtResource("t_torso"), "head": ExtResource("t_head"), "hair": ExtResource("t_hair"), "hood": ExtResource("t_hood"), "mask": ExtResource("t_mask"), "upper_arm": ExtResource("t_upper_arm"), "forearm": ExtResource("t_forearm"), "hand": ExtResource("t_hand"), "thigh": ExtResource("t_thigh"), "shin": ExtResource("t_shin"), "boot": ExtResource("t_boot"), "pad": ExtResource("t_pad"), "neckerchief": ExtResource("t_neckerchief"), "collar": ExtResource("t_collar"), "skirt": ExtResource("t_skirt"), "cape": ExtResource("t_cape")}
+normals = {"torso": ExtResource("n_torso"), "head": ExtResource("n_head"), "hair": ExtResource("n_hair"), "hood": ExtResource("n_hood"), "mask": ExtResource("n_mask"), "upper_arm": ExtResource("n_upper_arm"), "forearm": ExtResource("n_forearm"), "hand": ExtResource("n_hand"), "thigh": ExtResource("n_thigh"), "shin": ExtResource("n_shin"), "boot": ExtResource("n_boot"), "pad": ExtResource("n_pad"), "neckerchief": ExtResource("n_neckerchief"), "collar": ExtResource("n_collar"), "skirt": ExtResource("n_skirt"), "cape": ExtResource("n_cape")}
+pivots = {"torso": Vector2(60.00, 192.00), "head": Vector2(48.00, 112.00), "hair": Vector2(48.00, 112.00), "hood": Vector2(64.00, 144.00), "mask": Vector2(48.00, 112.00), "upper_arm": Vector2(30.80, 30.80), "forearm": Vector2(28.00, 28.00), "hand": Vector2(16.00, 16.00), "thigh": Vector2(50.60, 50.60), "shin": Vector2(39.60, 39.60), "boot": Vector2(24.00, 24.00), "pad": Vector2(36.00, 28.00), "neckerchief": Vector2(40.00, 24.00), "collar": Vector2(56.00, 40.00), "skirt": Vector2(0.00, 0.00), "cape": Vector2(0.00, 0.00)}
+dims = {"shoulder_half": 11.0, "waist_half": 9.0, "hip_half": 8.0, "torso_length": 44.0, "neck": 5.0, "upper_arm": 23.0, "forearm": 21.0, "thigh": 35.0, "shin": 33.0, "ankle": 4.0, "foot": 13.0, "arm_width": 7.0, "leg_width": 11.0, "head": 1.0, "scale": 1.0, "hunch": 0.12}
+cloths = [{"name": "skirt", "anchor": "waist", "layer": "front", "length": 40.0, "top_width": 20.0, "bottom_width": 30.0, "stiffness": 0.75, "segments": 5}, {"name": "cape", "anchor": "shoulders", "layer": "back", "length": 112.0, "top_width": 22.0, "bottom_width": 36.0, "stiffness": 0.35, "segments": 7}]
+default_parts = PackedStringArray("hood", "hair", "skirt", "cape")
