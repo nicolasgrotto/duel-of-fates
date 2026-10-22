@@ -102,6 +102,8 @@ Sempre na cor do tier de quem lança. Tiers mais altos mudam a **forma** (mais f
 - **Resistido**: anel curto na cor do tier do **alvo**, como se o poder batesse numa parede.
 - **Bloqueado / absorvido**: partículas e anel na cor da Barreira.
 
+> Na grade de pixels: transparências que somem (faíscas, anéis, rastros, flashes) caem em 3 degraus de opacidade (`EffectsConfig.fade_steps`), sem degradê contínuo; o golpe forte acende uma estrela de 4 pontas na ponta da lâmina durante a preparação (aviso de golpe perigoso); a disputa de lâminas solta faíscas contínuas nas duas cores e um pulso em anel alternando as cores no ponto de contato.
+
 > Implementado na fase 5 em `PowerView` (ver ARCHITECTURE), com formas vetoriais na camada aditiva. Ainda não entraram: poeira, o asteroide da Telecinese em Massa (a cinemática tem letterbox e recuo de câmera, depois a chuva sobre as marcas), pedras subindo na preparação do Arremesso e fragmentos de impacto. Cores dos tiers: `#9cc4ff`, `#5d8dff`, `#b26bff`, `#ff2b45` (`UiPalette.flow_tiers`).
 
 ## Técnicas de lâmina

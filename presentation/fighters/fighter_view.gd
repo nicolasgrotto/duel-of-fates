@@ -13,6 +13,7 @@ const LIGHT_SCALE: float = 2.8
 const LIGHT_HEIGHT: float = 40.0
 const LIGHT_TEXTURE_SIZE: int = 256
 const CHARGE_FLARE: float = 0.08
+const TELEPORT_DISTANCE: float = 150.0
 
 var fighter: FighterState
 var opponent: FighterState
@@ -78,6 +79,8 @@ func _build(glow_layer: Node) -> void:
 		_light.height = LIGHT_HEIGHT
 		add_child(_light)
 	blade.trail_duration = effects.trail_duration
+	blade.fade_steps = effects.fade_steps
+	blade.glint_duration = effects.heavy_glint
 	blade.width_scale = fighter.character.weapon.blade_width
 	blade.eyes_color = costume.color(CostumeData.Slot.EYES)
 	set_blade_color(fighter.character.blade_colors[0])
@@ -113,6 +116,9 @@ func reset_round(ignite: bool) -> void:
 func on_ticked() -> void:
 	_previous = _current
 	_current = Vector2(fighter.x, -fighter.y)
+	if _previous.distance_to(_current) > TELEPORT_DISTANCE:
+		snap()
+		rig.reset_cloths()
 
 
 func on_event(event: CombatEvent) -> void:
@@ -125,6 +131,9 @@ func on_event(event: CombatEvent) -> void:
 		CombatEvent.Type.HIT, CombatEvent.Type.GUARD_BREAK, CombatEvent.Type.BLADE_LOCK_ENDED:
 			if event.target == fighter.index and not reduced_effects:
 				_flash_left = effects.hit_flash_duration
+		CombatEvent.Type.ATTACK_STARTED:
+			if event.source == fighter.index and event.heavy:
+				blade.glint = effects.heavy_glint
 		CombatEvent.Type.JUMP:
 			if event.source == fighter.index and event.amount >= 2.0:
 				_solver.flip_progress = 0.0

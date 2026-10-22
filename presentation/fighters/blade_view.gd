@@ -6,13 +6,15 @@ const INNER_WIDTH: float = 4.6
 const CORE_WIDTH: float = 2.0
 const OUTER_ALPHA: float = 0.22
 const INNER_ALPHA: float = 0.78
-const TRAIL_ALPHA: float = 0.42
+const TRAIL_ALPHA: float = 0.32
 const REFLECTION_ALPHA: float = 0.16
 const REFLECTION_WIDTH: float = 3.2
 const REFLECTION_SQUASH: float = 0.16
 const EYE_RADIUS: float = 1.4
 const EYE_HALO: float = 5.0
 const EYE_HALO_ALPHA: float = 0.25
+const GLINT_SIZE: float = 9.0
+const GLINT_CORE: float = 2.0
 
 var color: Color = Color.WHITE
 var width_scale: float = 1.0
@@ -20,6 +22,9 @@ var length_ratio: float = 0.0
 var tremble: bool = false
 var flare: float = 0.0
 var trail_duration: float = 0.12
+var fade_steps: int = 3
+var glint: float = 0.0
+var glint_duration: float = 0.2
 var reflect: bool = false
 var eyes_visible: bool = false
 var eyes_position: Vector2 = Vector2.ZERO
@@ -57,6 +62,7 @@ func center() -> Vector2:
 func _process(delta: float) -> void:
 	_time += delta
 	flare = maxf(flare - delta, 0.0)
+	glint = maxf(glint - delta, 0.0)
 	for i in _blade_count:
 		_trails[i].update(_time, trail_duration, _trail_active[i] and length_ratio > 0.0, _blades[i][0].lerp(_blades[i][1], 0.3), _blades[i][1])
 	queue_redraw()
@@ -69,11 +75,20 @@ func _draw() -> void:
 	if length_ratio <= 0.0:
 		return
 	for i in _blade_count:
-		_trails[i].draw_on(self, color, TRAIL_ALPHA)
+		_trails[i].draw_on(self, color, TRAIL_ALPHA, fade_steps)
 	for i in _blade_count:
 		_draw_blade(_blades[i][0], _blades[i][1])
 		if reflect:
 			_draw_reflection(_blades[i][0], _blades[i][1])
+	if glint > 0.0:
+		_draw_glint(_blades[0][1])
+
+
+func _draw_glint(at: Vector2) -> void:
+	var size: float = GLINT_SIZE * sin(glint / glint_duration * PI)
+	draw_line(at - Vector2(size, 0.0), at + Vector2(size, 0.0), color, GLINT_CORE)
+	draw_line(at - Vector2(0.0, size), at + Vector2(0.0, size), color, GLINT_CORE)
+	draw_rect(Rect2(at - Vector2.ONE * GLINT_CORE, Vector2.ONE * GLINT_CORE * 2.0), Color.WHITE)
 
 
 func _draw_blade(base: Vector2, tip: Vector2) -> void:

@@ -30,9 +30,9 @@ func update(now: float, duration: float, active: bool, base: Vector2, tip: Vecto
 			times.remove_at(0)
 
 
-func draw_on(canvas: CanvasItem, color: Color, alpha: float) -> void:
+func draw_on(canvas: CanvasItem, color: Color, alpha: float, steps: int) -> void:
 	for i in times.size() - 1:
-		var age: float = 1.0 - (_now - times[i]) / _duration
+		var age: float = ceilf((1.0 - (_now - times[i]) / _duration) * steps) / steps
 		_quad[0] = bases[i]
 		_quad[1] = tips[i]
 		_quad[2] = tips[i + 1]

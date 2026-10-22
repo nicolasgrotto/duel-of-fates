@@ -25,6 +25,10 @@ var _ring_ages: PackedFloat32Array = []
 var _ring_radii: PackedFloat32Array = []
 var _ring_colors: PackedColorArray = []
 var _next_ring: int = 0
+var _lock_height: float = 0.0
+var _lock_spark_clock: float = 0.0
+var _lock_pulse_clock: float = 0.0
+var _lock_pulse_side: int = 0
 
 
 func _ready() -> void:
@@ -43,6 +47,8 @@ func _ready() -> void:
 
 
 func on_event(event: CombatEvent) -> void:
+	if event.type == CombatEvent.Type.BLADE_LOCK_STARTED:
+		_lock_height = -event.position.y
 	var recipe: EffectRecipe = _recipe_for(event)
 	if recipe == null:
 		return
@@ -165,14 +171,32 @@ func _process(delta: float) -> void:
 		_positions[i] += velocity * delta
 	for i in RING_POOL:
 		_ring_ages[i] += delta
+	_feed_lock(delta)
 	queue_redraw()
+
+
+func _feed_lock(delta: float) -> void:
+	if sim == null or not BladeLockResolver.is_active(sim):
+		return
+	var contact: Vector2 = Vector2((sim.fighters[0].x + sim.fighters[1].x) * 0.5, _lock_height)
+	_lock_spark_clock += delta
+	if _lock_spark_clock >= config.lock_spark_interval and not reduced:
+		_lock_spark_clock = 0.0
+		for side in 2:
+			var angle: float = -PI * 0.5 + randf_range(-1.2, 1.2)
+			_spawn_spark(contact, Vector2.from_angle(angle) * randf_range(180.0, 380.0), blade_colors[side] if randf() < 0.5 else PALETTE.spark_hot)
+	_lock_pulse_clock += delta
+	if _lock_pulse_clock >= config.lock_pulse_interval:
+		_lock_pulse_clock = 0.0
+		_lock_pulse_side = 1 - _lock_pulse_side
+		_ring(contact, config.lock_pulse_radius, blade_colors[_lock_pulse_side])
 
 
 func _draw() -> void:
 	for i in SPARK_POOL:
 		if _lives[i] <= 0.0:
 			continue
-		var fade: float = clampf(_lives[i] / config.spark_life, 0.0, 1.0)
+		var fade: float = _banded(_lives[i] / config.spark_life)
 		var tail: Vector2 = _positions[i] - _velocities[i] * config.spark_length
 		draw_line(tail, _positions[i], Color(_colors[i], fade), SPARK_WIDTH)
 	for i in RING_POOL:
@@ -180,4 +204,8 @@ func _draw() -> void:
 		if progress >= 1.0:
 			continue
 		var radius: float = _ring_radii[i] * ease(progress, 0.4)
-		draw_arc(_ring_positions[i], radius, 0.0, TAU, 40, Color(_ring_colors[i], 1.0 - progress), RING_WIDTH)
+		draw_arc(_ring_positions[i], radius, 0.0, TAU, 40, Color(_ring_colors[i], _banded(1.0 - progress)), RING_WIDTH)
+
+
+func _banded(value: float) -> float:
+	return ceilf(clampf(value, 0.0, 1.0) * config.fade_steps) / config.fade_steps

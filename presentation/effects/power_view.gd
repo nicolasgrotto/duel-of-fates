@@ -12,6 +12,7 @@ const CLEAVE_SPREAD: float = 1.05
 const ARSENAL_LENGTH: float = 30.0
 const STORM_DARKEN: float = 0.45
 const STORM_FADE: float = 3.0
+const FADE_STEPS: float = 3.0
 
 enum Burst { WAVE, RING_IN, RING_OUT, BOLT, FLASH, CHEVRONS }
 
@@ -333,8 +334,9 @@ func _draw_bursts() -> void:
 				draw_arc(at, _sizes[i] * (1.0 - progress), 0.0, TAU, 36, color, 3.0)
 			Burst.FLASH:
 				var radius: float = _sizes[i] * (0.5 + progress * 0.5)
-				for ring in 4:
-					draw_circle(at, radius * (1.0 - ring * 0.22), Color(_colors[i], 0.14 * (1.0 - progress)))
+				var strength: float = ceilf((1.0 - progress) * FADE_STEPS) / FADE_STEPS
+				draw_circle(at, radius, Color(_colors[i], 0.18 * strength))
+				draw_circle(at, radius * 0.45, Color(_colors[i], 0.45 * strength))
 			Burst.BOLT:
 				_draw_beam(at + Vector2(0.0, -_sizes[i]), at, _colors[i] * Color(1, 1, 1, 1.0 - progress), i * 13 + _beam_seed, 3.0)
 			Burst.CHEVRONS:

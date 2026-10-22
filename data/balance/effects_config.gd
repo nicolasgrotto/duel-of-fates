@@ -64,3 +64,8 @@ extends Resource
 
 @export_group("Pixel grid")
 @export var units_per_pixel: float = 2.0
+@export var fade_steps: int = 3
+@export var heavy_glint: float = 0.2
+@export var lock_spark_interval: float = 0.07
+@export var lock_pulse_interval: float = 0.45
+@export var lock_pulse_radius: float = 30.0
