@@ -75,3 +75,30 @@ func test_habit_memory_tracks_heavy_use() -> void:
 		memory.observe(opponent)
 	assert_gt(memory.heavy_share(), 0.7)
 	assert_lt(memory.light_share(), 0.01)
+
+
+func test_ai_casts_powers_in_a_duel() -> void:
+	var characters: Array[CharacterData] = [DuelFixture.GUARDIAN, DuelFixture.SHADOW]
+	var difficulties: Array[AiDifficultyData] = [HARD, HARD]
+	var duel: HeadlessDuel = HeadlessDuel.new(DuelFixture.CONFIG, characters, difficulties, 5)
+	duel.run()
+	assert_gt(duel.count(CombatEvent.Type.POWER_STARTED), 2.0)
+
+
+func test_ai_jumps_over_a_fracture() -> void:
+	var jumps: int = 0
+	for trial in 20:
+		var duel: DuelFixture = DuelFixture.create(null, null, trial)
+		duel.skip_intro()
+		duel.place(260.0)
+		duel.give_power(1, &"fracture")
+		duel.set_level(1, 8)
+		var ai: AiController = AiController.new(HARD, DuelFixture.GUARDIAN.ai_profile, trial)
+		duel.cast(1)
+		for tick in 50:
+			ai.produce(duel.sim, 0, duel.intents[0])
+			duel.step(1)
+			if duel.fighter(0).is_airborne():
+				jumps += 1
+				break
+	assert_gt(jumps, 5.0)

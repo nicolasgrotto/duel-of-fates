@@ -28,6 +28,8 @@ var _hold_command: int = 0
 var _hold_until_gap: float = 0.0
 var _followup_command: int = 0
 var _followup_delay: int = 0
+var _press_direction: int = 0
+var _channel_ticks: int = 0
 
 
 func _init(difficulty_data: AiDifficultyData, profile_data: AiProfileData, ai_seed: int) -> void:
@@ -74,10 +76,14 @@ func _reset_plan() -> void:
 	_lock_press_ticks = 0
 	_hold_command = 0
 	_followup_command = 0
+	_press_direction = 0
+	_channel_ticks = 0
 
 
 func _think(sim: MatchSimulation, me: FighterState, opponent: FighterState) -> void:
-	if (_chain_left > 0 and me.is_attacking()) or _hold_command != 0:
+	if (_chain_left > 0 and me.is_attacking()) or _hold_command != 0 or _channel_ticks > 0:
+		return
+	if _try_escape(sim, me):
 		return
 	var gap: float = CombatGeometry.gap(sim.config, me, opponent)
 	if rng.randf() < difficulty.error_chance:
@@ -86,9 +92,15 @@ func _think(sim: MatchSimulation, me: FighterState, opponent: FighterState) -> v
 	if me.is_airborne():
 		_think_in_air(me, opponent)
 		return
+	if _try_flow_defense(sim, me, opponent):
+		return
 	if _try_defend(me, opponent, gap):
 		return
 	if _try_ability(me, opponent, gap):
+		return
+	if _try_power(sim, me, opponent, gap):
+		return
+	if _try_technique(sim, me, gap):
 		return
 	if _try_punish(sim, me, opponent, gap):
 		return
@@ -185,6 +197,84 @@ func _try_ability(me: FighterState, opponent: FighterState, gap: float) -> bool:
 				_schedule(Intent.Command.SPECIAL, warning, 0, Plan.WAIT, 0, "leap")
 				return true
 	return false
+
+
+func _try_escape(sim: MatchSimulation, me: FighterState) -> bool:
+	if me.state != FighterState.State.HIT or rng.randf() > difficulty.power_defense_chance * 0.5:
+		return false
+	var slot: int = AiPowers.escape_slot(sim, me)
+	if slot == AiPowers.NO_SLOT:
+		return false
+	_schedule_power(me, slot, 0, "escape power")
+	return true
+
+
+func _try_flow_defense(sim: MatchSimulation, me: FighterState, opponent: FighterState) -> bool:
+	var hazard: Hazard = AiPowers.hazard_threat(sim, me)
+	if hazard != null and rng.randf() < difficulty.power_defense_chance * 1.5:
+		if hazard.kind == Hazard.Kind.FRACTURE:
+			_schedule(Intent.Command.JUMP, 0, 0, Plan.WAIT, 0, "jump fracture")
+		else:
+			_set_plan(Plan.RETREAT if absf(hazard.x - me.x) < absf(hazard.x - opponent.x) else Plan.APPROACH, AiPowers.THREAT_TICKS, "leave mark")
+		return true
+	var projectile: Projectile = AiPowers.projectile_threat(sim, me)
+	if projectile != null and rng.randf() < difficulty.power_defense_chance * 1.5:
+		if projectile.kind == Projectile.Kind.ROCK and rng.randf() < profile.dodge_bias:
+			_schedule(Intent.Command.JUMP, 0, 0, Plan.WAIT, 0, "jump rock")
+		else:
+			_set_plan(Plan.GUARD, AiPowers.THREAT_TICKS, "guard projectile")
+		return true
+	var incoming: PowerData = AiPowers.incoming_power(opponent)
+	if incoming == null or rng.randf() > difficulty.power_defense_chance:
+		return false
+	if incoming.kind == PowerData.Kind.FRACTURE:
+		_schedule(Intent.Command.JUMP, incoming.startup_ticks() - opponent.power_ticks, 0, Plan.WAIT, 0, "jump fracture")
+		return true
+	var slot: int = AiPowers.guard_slot(sim, me, incoming)
+	if slot != AiPowers.NO_SLOT:
+		_schedule_power(me, slot, 0, "guard power")
+		return true
+	if incoming.guard_blocks:
+		_set_plan(Plan.GUARD, incoming.startup_ticks() + Ticks.from_seconds(incoming.max_channel) + 6, "guard power")
+		return true
+	return false
+
+
+func _try_power(sim: MatchSimulation, me: FighterState, opponent: FighterState, gap: float) -> bool:
+	if rng.randf() > difficulty.power_chance * lerpf(0.4, 1.6, profile.power_bias):
+		return false
+	var slot: int = AiPowers.offensive_slot(sim, me, opponent, gap)
+	if slot == AiPowers.NO_SLOT:
+		return false
+	_schedule_power(me, slot, Ticks.from_seconds(difficulty.attack_warning), "power " + String(me.powers[slot].id))
+	return true
+
+
+func _try_technique(sim: MatchSimulation, me: FighterState, gap: float) -> bool:
+	if not sim.rules.powers or me.character.technique_forward == null or rng.randf() > profile.technique_bias * 0.4:
+		return false
+	var options: Array[MoveData] = [me.character.technique_forward, me.character.technique_back]
+	var pick: int = rng.randi_range(0, options.size() - 1)
+	var technique: MoveData = options[pick]
+	if technique == null or me.vigor < technique.vigor_cost:
+		return false
+	var reach: float = technique.reach + technique.lunge
+	if technique.throws_blade:
+		reach = sim.config.flow.blade_throw_base
+	if gap > reach or gap < reach * 0.3:
+		return false
+	_schedule(Intent.Command.SPECIAL, Ticks.from_seconds(difficulty.attack_warning), 0, Plan.WAIT, 0, "technique " + String(technique.id))
+	_press_direction = 1 if pick == 0 else -1
+	return true
+
+
+func _schedule_power(me: FighterState, slot: int, delay: int, label: String) -> void:
+	var command: int = Intent.Command.POWER
+	if slot == FighterState.FOURTH_SLOT:
+		command |= Intent.Command.SPECIAL
+	_schedule(command, delay, 0, Plan.WAIT, 0, label)
+	_press_direction = AiPowers.direction_for(slot)
+	_channel_ticks = AiPowers.hold_ticks(me.powers[slot])
 
 
 func _think_in_air(me: FighterState, opponent: FighterState) -> void:
@@ -316,6 +406,7 @@ func _set_plan(plan: Plan, ticks: int, label: String) -> void:
 	_plan = plan
 	_plan_ticks = ticks
 	_press_command = 0
+	_press_direction = 0
 	_chain_left = 0
 	decision = label
 
@@ -344,6 +435,9 @@ func _execute(me: FighterState, opponent: FighterState, sim: MatchSimulation, in
 		else:
 			intent.pressed |= _press_command
 			intent.held |= _press_command | _press_hold
+			if _press_direction != 0:
+				intent.move_x = me.facing * _press_direction
+				_press_direction = 0
 			_press_command = 0
 			_plan = _after_press_plan
 			_plan_ticks = _after_press_ticks
@@ -354,6 +448,10 @@ func _execute(me: FighterState, opponent: FighterState, sim: MatchSimulation, in
 
 
 func _execute_holds(me: FighterState, opponent: FighterState, sim: MatchSimulation, intent: Intent) -> void:
+	if _channel_ticks > 0 and _press_command == 0:
+		_channel_ticks -= 1
+		if me.is_casting():
+			intent.hold(Intent.Command.POWER)
 	if _followup_command != 0 and _press_command == 0:
 		_followup_delay -= 1
 		if _followup_delay <= 0:

@@ -25,6 +25,10 @@ extends Resource
 @export_range(0.0, 1.0) var habit_weight: float = 0.0
 @export var habit_window: float = 8.0
 
+@export_group("Flow")
+@export_range(0.0, 1.0) var power_chance: float = 0.35
+@export_range(0.0, 1.0) var power_defense_chance: float = 0.4
+
 @export_group("Blade lock")
 @export var lock_reaction: float = 0.45
 @export var lock_presses_per_second: float = 9.0

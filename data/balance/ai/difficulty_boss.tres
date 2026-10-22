@@ -18,3 +18,5 @@ error_chance = 0.02
 habit_weight = 0.45
 lock_reaction = 0.3
 lock_presses_per_second = 14.0
+power_chance = 0.55
+power_defense_chance = 0.75
