@@ -81,9 +81,9 @@ Arte provisória (formas simples), sensação final.
 
 Decisão do autor depois da fase 5: o jogo passa a ser pixel art sci-fi (ART_DIRECTION, "Técnica de apresentação"). A versão em alta definição fica na tag `phase-5-hd`; se o resultado não agradar, o desenvolvimento volta a partir dela. A simulação, as regras e os testes não mudam.
 
-- [ ] Grade de pixels do mundo (`PixelStage`): mundo renderizado em baixa resolução, zoom uniforme, câmera em pixels inteiros com deslize suave
+- [x] Grade de pixels do mundo (`PixelStage`): mundo renderizado em baixa resolução, zoom uniforme, câmera em pixels inteiros com deslize suave
 - [ ] Prova de conceito: Guardião pintado na grade, golpe com rastro e impacto, Plataforma de Refino
-- [ ] Todos os lutadores pintados na grade; prévia da seleção na grade
+- [x] Todos os lutadores pintados na grade; prévia da seleção na grade
 - [ ] Lâminas, rastros, faíscas, poderes e disputa ajustados à grade
 - [ ] Arenas na grade
 - [ ] Revisão de desempenho e testes

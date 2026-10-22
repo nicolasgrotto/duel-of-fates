@@ -23,6 +23,7 @@ var _debug: DebugOverlay
 var _training: TrainingPanel
 var _gallery: GalleryPanel
 var _glow_layer: CanvasLayer
+var _stage: PixelStage
 var _desaturation: Desaturation
 var _audio: DuelAudio
 var _death_index: int = -1
@@ -50,22 +51,24 @@ func open(params: Dictionary) -> void:
 
 
 func _build_scene() -> void:
+	_stage = PixelStage.new(EFFECTS.units_per_pixel)
+	add_child(_stage)
 	var environment: WorldEnvironment = WorldEnvironment.new()
 	environment.environment = ENVIRONMENT
-	add_child(environment)
+	_stage.viewport.add_child(environment)
 	_world = Node2D.new()
-	add_child(_world)
+	_stage.viewport.add_child(_world)
 	_world.add_child(setup.arena.scene.instantiate())
 	var ambient: CanvasModulate = CanvasModulate.new()
 	ambient.color = setup.arena.ambient
 	_world.add_child(ambient)
 	_desaturation = Desaturation.new()
 	_desaturation.layer = 1
-	add_child(_desaturation)
+	_stage.viewport.add_child(_desaturation)
 	_glow_layer = CanvasLayer.new()
 	_glow_layer.layer = 2
 	_glow_layer.follow_viewport_enabled = true
-	add_child(_glow_layer)
+	_stage.viewport.add_child(_glow_layer)
 	for i in 2:
 		var view: FighterView = FighterView.new()
 		view.show_finishers = Settings.show_finishers
@@ -85,6 +88,7 @@ func _build_scene() -> void:
 	_camera = CameraRig.new()
 	add_child(_camera)
 	_camera.make_current()
+	_stage.rig = _camera
 	_hud = Hud.new()
 	add_child(_hud)
 	_screen = ScreenEffects.new()

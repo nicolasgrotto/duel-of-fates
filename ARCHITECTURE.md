@@ -196,7 +196,7 @@ Implementação:
 
 ### Pipeline de arte (fase 3)
 
-- **Pintura**: `tools/art/paint_fighters.py` (Python 3 com numpy e Pillow, ferramenta offline; o jogo não depende dela) pinta cada personagem descrito em `tools/art/fighter_specs.py` em peças de alta resolução (4 px por u). Cada peça gera dois PNG em `assets/characters/<id>/`:
+- **Pintura**: `tools/art/paint_fighters.py` (Python 3 com numpy e Pillow, ferramenta offline; o jogo não depende dela) pinta cada personagem descrito em `tools/art/fighter_specs.py` direto na grade de pixels do mundo (0,5 px por u, 1 pixel = 2 u): pinta as formas numa escala fina (8× a grade) e reduz para a grade com borda dura (cobertura ≥ 50%), quatro tons fixos (`TONES`) e contorno de 1 px (`RIM_TONE`) na borda externa. Até a fase 5 eram peças de alta resolução (4 px por u, tag `phase-5-hd`). Cada peça gera dois PNG em `assets/characters/<id>/`:
   - `<peça>.png`, **mapa de material**: R = tom (0,5 é a cor do traje), G = slot de paleta / 7, B = emissão, A = cobertura;
   - `<peça>_n.png`, **mapa de normal** (convenção OpenGL, Y para cima), gerado do relevo pintado.
 - **Slots de paleta**: 0 capa/túnica, 1 corpo, 2 acabamento, 3 pele, 4 cabelo, 5 metal, 6 couro, 7 olhos (emissivo). Os trajes (`CostumeData`) escolhem as 8 cores e mostram ou escondem peças (`hood`, `mask`, `pad`, `collar`, `neckerchief`, `cape`...). Trocar de traje não muda nenhuma textura: o shader `presentation/fighters/fighter_material.gdshader` recolore o mapa de material.
@@ -226,6 +226,13 @@ Implementação provisória (fases 1 e 2, arte de formas simples, substituída n
 - `presentation/duel_environment.tres`: `WorldEnvironment` com fundo Canvas e glow.
 - **Replay do golpe final**: a cada round o executor guarda o snapshot do início e as intenções. Depois do K.O. decisivo, `DuelScreen` cria uma nova simulação, restaura o snapshot, re-simula até 3,5 s antes do K.O. e passa a mostrar essa simulação a 45% com `ReplayController`. Nenhuma lógica é reaproveitada da partida original: o replay é a própria simulação de novo.
 - **Verificação técnica do renderer** (fase 0): no Compatibility, o glow do `WorldEnvironment` com fundo Canvas funciona em LDR (limiar abaixo de 1); com intensidade alta aparecem blocos de baixa resolução, por isso o glow fica sutil e a maior parte do brilho vem das camadas aditivas da lâmina. `PointLight2D` ilumina corpos e cenário. HDR 2D não é usado. Mapas de normal e reflexos (BackBufferCopy) ficam para o protótipo de arte da fase 3.
+
+### Grade de pixels (migração para pixel art)
+
+- `PixelStage` (`presentation/camera/pixel_stage.gd`): o mundo do duelo (arena, lutadores, camada de brilho, dessaturação, `WorldEnvironment`) vive num `SubViewport` com filtro nearest e transformações presas a pixels. Uma `Camera2D` interna com zoom fixo `1 / units_per_pixel` (`EffectsConfig.units_per_pixel` = 2 u por pixel) segue o `CameraRig`, que continua no viewport principal calculando o enquadramento (e servindo de ouvinte do áudio 2D).
+- A cada quadro o tamanho do `SubViewport` é a tela dividida pela escala de pixel (`zoom do CameraRig × units_per_pixel`), então o zoom muda o tamanho de todos os pixels por igual. A câmera interna anda em pixels inteiros; a sobra fracionária desloca a imagem final, para a câmera deslizar suave sem os pixels tremerem.
+- A imagem é ampliada por `pixel_upscale.gdshader` (sharp bilinear: cada pixel é um bloco sólido, com transição de 1 pixel de tela entre blocos), o que mantém os pixels do mesmo tamanho mesmo em escalas não inteiras. HUD, telas e textos ficam fora da grade, em alta resolução.
+- `FighterPreview` (seleção) desenha o lutador num `SubViewport` próprio na mesma grade e o mostra ampliado 4×.
 
 ### Poderes na apresentação (fase 5)
 

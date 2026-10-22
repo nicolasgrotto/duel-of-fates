@@ -61,3 +61,6 @@ extends Resource
 @export var mass_letterbox: float = 1.6
 @export var mass_pull_back: float = 0.18
 @export var pull_back_speed: float = 2.5
+
+@export_group("Pixel grid")
+@export var units_per_pixel: float = 2.0
