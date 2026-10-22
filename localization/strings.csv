@@ -281,5 +281,5 @@ SELECT_SET_BASE,Conjunto: Base,Set: Base
 SELECT_SET_CUSTOM,Conjunto: Personalizado,Set: Custom
 SELECT_EDIT_DONE,Pronto,Done
 SELECT_EDIT_RESET,Voltar ao conjunto base,Back to the base set
-HINT_POWERS,Poderes,Powers
-HINT_EDIT_POWER,Trocar poder,Change power
+HINT_POWERS,poderes,powers
+HINT_EDIT_POWER,trocar poder,change power

@@ -41,11 +41,13 @@ const COMBAT_AXES: Dictionary = {
 const MENU_KEYS: Dictionary = {
 	"menu_costume": [KEY_C],
 	"menu_variant": [KEY_V],
+	"menu_powers": [KEY_P],
 }
 
 const MENU_BUTTONS: Dictionary = {
 	"menu_costume": [JOY_BUTTON_Y],
 	"menu_variant": [JOY_BUTTON_X],
+	"menu_powers": [JOY_BUTTON_LEFT_SHOULDER],
 }
 
 const ALL_DEVICES: int = -1
