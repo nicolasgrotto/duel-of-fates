@@ -3,6 +3,7 @@ extends Node2D
 
 const MATERIAL_SHADER: Shader = preload("res://presentation/fighters/fighter_material.gdshader")
 const BACK_SHADE: Color = Color(0.68, 0.68, 0.72)
+const BODY_DEPTH: int = 32
 const WOUND_SHADE: Color = Color(0.55, 0.5, 0.5)
 const ARM_PREFER: Vector2 = Vector2(-0.35, 1.0)
 const LEG_PREFER: Vector2 = Vector2(1.0, 0.1)
@@ -44,6 +45,7 @@ func build(data: CharacterData, look: CostumeData) -> void:
 	shader_material.shader = MATERIAL_SHADER
 	shader_material.set_shader_parameter(&"palette", costume.colors)
 	scale = Vector2.ONE * art.dim("scale")
+	z_index = BODY_DEPTH
 	_skeleton = Skeleton2D.new()
 	add_child(_skeleton)
 	for bone_name in ["pelvis", "torso", "head", "chest", "shoulder_front", "shoulder_back",
