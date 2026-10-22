@@ -4,7 +4,7 @@ extends RefCounted
 const HIP_HEIGHT_FALLBACK: float = 72.0
 const BLOCK_GRIP: Vector2 = Vector2(18.0, -36.0)
 const BLOCK_ANGLE: float = -84.0
-const LOCK_GRIP: Vector2 = Vector2(22.0, -52.0)
+const LOCK_GRIP: Vector2 = Vector2(22.0, -44.0)
 const LOCK_ANGLE: float = -62.0
 const HIT_GRIP: Vector2 = Vector2(6.0, -20.0)
 const HIT_ANGLE: float = 52.0
@@ -35,6 +35,25 @@ const LANCE_SPACING: float = 22.0
 const STAFF_SPACING: float = 11.0
 const LANDING_CROUCH: float = 12.0
 const LANDING_TIME: float = 0.12
+const HEAVY_SCALE: float = 1.6
+const ANTICIPATION_EASE: float = 2.4
+const SWING_SMOOTHING: float = 0.35
+const FOLLOW_SHARE: float = 0.35
+const ARC_CENTER: Vector2 = Vector2(-2.0, -34.0)
+const MAX_FROM_REACH: float = 60.0
+const HIT_DECAY: float = 9.0
+const REBOUND_GRIP: Vector2 = Vector2(4.0, -50.0)
+const REBOUND_ANGLE: float = -125.0
+const HIT_LEAN: float = -26.0
+const CLASH_RECOIL_TIME: float = 0.22
+const CLASH_LEAN: float = 12.0
+const CLASH_SHIFT: float = 6.0
+const CLASH_BLADE: float = 22.0
+const LOCK_FACE_HEIGHT: float = 66.0
+const LOCK_SLIDE: float = 7.0
+const LOCK_PUSH: float = 5.0
+const LOCK_PULSE_DECAY: float = 10.0
+const JUMP_APEX_SPEED: float = 260.0
 
 var character: CharacterData
 var family: MotionFamily
@@ -44,6 +63,16 @@ var walk_phase: float = 0.0
 var flip_progress: float = -1.0
 var landing_left: float = 0.0
 
+var _attack_key: int = -1
+var _from_angle: float = 0.0
+var _from_grip: Vector2 = Vector2.ZERO
+var _body_shift: float = 0.0
+var _head_snap: float = 0.0
+var _lock_presses: int = 0
+var _lock_pulse: float = 0.0
+var clash_left: float = 0.0
+var rebounding: bool = false
+
 
 func setup(data: CharacterData, art: FighterArt) -> void:
 	character = data
@@ -52,12 +81,24 @@ func setup(data: CharacterData, art: FighterArt) -> void:
 		hip_height = art.dim("thigh") + art.dim("shin") + art.dim("ankle")
 
 
+func advance(delta: float) -> void:
+	time += delta
+	landing_left = maxf(landing_left - delta, 0.0)
+	clash_left = maxf(clash_left - delta, 0.0)
+	_lock_pulse = maxf(_lock_pulse - delta * LOCK_PULSE_DECAY, 0.0)
+
+
 func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void:
 	var guard_angle: float = character.guard_angle
 	var guard_grip: Vector2 = character.guard_grip
 	if fighter.exhausted:
 		guard_angle += EXHAUSTED_DROP
 		guard_grip.y += EXHAUSTED_DROP * 0.5
+	_track_attack(fighter, pose, guard_angle, guard_grip)
+	if fighter.state != FighterState.State.HIT and clash_left == 0.0:
+		rebounding = false
+	_body_shift = 0.0
+	_head_snap = 0.0
 	var breath: float = sin(time * 2.2) * family.breath * (2.0 if fighter.exhausted else 1.0)
 	var crouch: float = family.crouch + breath + LANDING_CROUCH * clampf(landing_left / LANDING_TIME, 0.0, 1.0)
 	var lean: float = family.lean + (6.0 if fighter.exhausted else 0.0)
@@ -76,9 +117,7 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 			_walk(fighter, pose)
 			crouch += absf(sin(walk_phase)) * family.bob
 		FighterState.State.JUMPING:
-			_tuck(pose, 1.0)
-			if flip_progress >= 0.0 and family.flip_on_double_jump:
-				pose.spin = TAU * ease(flip_progress, 0.6)
+			_jump_pose(fighter, pose)
 		FighterState.State.ATTACKING, FighterState.State.HEAVY_ATTACK:
 			var extra: Vector2 = _attack(fighter, pose, guard_angle, guard_grip)
 			crouch += extra.x
@@ -93,21 +132,33 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 			crouch += dodge.x
 			lean += dodge.y
 		FighterState.State.BLADE_LOCK:
-			var pressure: float = clampf(float(fighter.lock_presses - opponent.lock_presses) / 5.0, -1.0, 1.0)
-			lean = family.lock_lean * (1.0 + pressure * 0.5)
-			crouch += family.lock_crouch - pressure * 4.0
-			pose.grip = LOCK_GRIP + Vector2(pressure * 6.0, 0.0)
-			pose.blade_angle = LOCK_ANGLE
-			pose.tremble = true
+			var lock: Vector2 = _blade_lock(fighter, opponent, pose)
+			crouch += lock.x
+			lean = lock.y
 		FighterState.State.HIT:
-			lean = -18.0
-			pose.grip = HIT_GRIP
-			pose.blade_angle = HIT_ANGLE
+			var jolt: float = exp(-Ticks.to_seconds(fighter.state_ticks) * HIT_DECAY)
+			lean = HIT_LEAN * (0.4 + 0.6 * jolt)
+			crouch += 6.0 * jolt
+			if rebounding:
+				pose.grip = guard_grip.lerp(REBOUND_GRIP, jolt)
+				pose.blade_angle = lerpf(guard_angle, REBOUND_ANGLE, jolt)
+			else:
+				pose.grip = guard_grip.lerp(HIT_GRIP, 0.4 + 0.6 * jolt)
+				pose.blade_angle = lerpf(guard_angle, HIT_ANGLE, 0.5 + 0.5 * jolt)
+			pose.back_foot.x -= 8.0 * jolt
+			pose.front_foot.y = -4.0 * jolt
+			_head_snap = -0.5 * jolt
+			_body_shift = -6.0 * jolt
 			off_free = true
 		FighterState.State.STAGGERED:
-			lean = -14.0
-			pose.grip = guard_grip + Vector2(-12.0, 10.0)
-			pose.blade_angle = guard_angle + 34.0
+			var wobble: float = sin(time * 7.0)
+			lean = -14.0 + wobble * 5.0
+			pose.grip = guard_grip + Vector2(-14.0, 12.0 + wobble * 3.0)
+			pose.blade_angle = guard_angle + 40.0 + wobble * 8.0
+			pose.front_foot.x += 4.0
+			pose.back_foot.x -= 6.0
+			pose.front_foot.y = -maxf(wobble, 0.0) * 3.0
+			_head_snap = -0.25
 			pose.tremble = true
 			off_free = true
 		FighterState.State.STUNNED:
@@ -134,9 +185,16 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 				lean = -10.0
 	if fighter.is_airborne() and fighter.state != FighterState.State.JUMPING:
 		_tuck(pose, 0.7)
-	pose.pelvis = Vector2(0.0, -hip_height + crouch)
+	pose.pelvis = Vector2(_body_shift, -hip_height + crouch)
+	if clash_left > 0.0:
+		var recoil: float = clash_left / CLASH_RECOIL_TIME
+		lean -= CLASH_LEAN * recoil
+		_body_shift -= CLASH_SHIFT * recoil
+		pose.grip += Vector2(-CLASH_SHIFT, -4.0) * recoil
+		pose.blade_angle -= CLASH_BLADE * recoil
+		pose.pelvis.x = _body_shift
 	pose.torso_angle = deg_to_rad(lean)
-	pose.head_angle = -pose.torso_angle * 0.55
+	pose.head_angle = -pose.torso_angle * 0.55 + _head_snap
 	pose.grip += pose.pelvis
 	if off_free and pose.off_hand == RELAXED_HAND:
 		pose.off_hand = RELAXED_HAND + pose.pelvis
@@ -153,6 +211,36 @@ func _walk(fighter: FighterState, pose: RigPose) -> void:
 	pose.front_foot.y = -maxf(cos(phase), 0.0) * 5.0
 	pose.back_foot.x -= sin(phase) * family.stride
 	pose.back_foot.y = -maxf(-cos(phase), 0.0) * 5.0
+
+
+func _blade_lock(fighter: FighterState, opponent: FighterState, pose: RigPose) -> Vector2:
+	if fighter.lock_presses > _lock_presses:
+		_lock_pulse = 1.0
+	_lock_presses = fighter.lock_presses
+	var pressure: float = clampf(float(fighter.lock_presses - opponent.lock_presses) / 5.0, -1.0, 1.0)
+	var push: float = _lock_pulse
+	var half: float = maxf(absf(opponent.x - fighter.x) * 0.5, 20.0)
+	pose.grip = LOCK_GRIP + Vector2(pressure * LOCK_SLIDE * 0.5 + push * LOCK_PUSH, -pressure * 3.0)
+	var cross: Vector2 = Vector2(half + pressure * LOCK_SLIDE, -LOCK_FACE_HEIGHT)
+	pose.blade_angle = rad_to_deg((cross - pose.grip).angle())
+	pose.front_foot.x = family.stance_width * 0.35
+	pose.back_foot.x = -family.stance_width * 0.75 - maxf(pressure, 0.0) * 6.0
+	pose.tremble = true
+	_body_shift = pressure * 4.0 + push * 2.0
+	var lean: float = family.lock_lean * (1.0 + pressure * 0.5) + push * 4.0
+	return Vector2(family.lock_crouch - pressure * 4.0, lean)
+
+
+func _jump_pose(fighter: FighterState, pose: RigPose) -> void:
+	var rise: float = clampf(fighter.vy / JUMP_APEX_SPEED, -1.0, 1.0)
+	if rise > 0.0:
+		_tuck(pose, 1.0 - rise * 0.55)
+		pose.back_foot += Vector2(-6.0, 4.0) * rise
+	else:
+		_tuck(pose, 1.0 + rise * 0.45)
+		pose.front_foot += Vector2(4.0, 6.0) * -rise
+	if flip_progress >= 0.0 and family.flip_on_double_jump:
+		pose.spin = TAU * ease(flip_progress, 0.6)
 
 
 func _tuck(pose: RigPose, amount: float) -> void:
@@ -177,41 +265,79 @@ func _attack(fighter: FighterState, pose: RigPose, guard_angle: float, guard_gri
 		pose.off_hand = RELAXED_HAND.lerp(SHOVE_HAND, amount)
 		pose.grip = guard_grip + Vector2(-8.0, 4.0) * amount
 		pose.front_foot.x += family.heavy_step * amount
+		_body_shift = family.lunge * amount
 		return Vector2(4.0 * amount, 16.0 * amount)
 	var heavy: bool = move.is_heavy()
+	var power: float = HEAVY_SCALE if heavy else 1.0
 	var windup_grip: Vector2 = (HEAVY_WINDUP_GRIP if heavy else WINDUP_GRIP) * Vector2(family.windup_pull, 1.0)
 	var strike_grip: Vector2 = STRIKE_GRIP * Vector2(family.strike_reach, 1.0)
 	var progress: float = _progress(fighter, move)
-	var crouch: float = family.heavy_crouch if heavy else 0.0
+	var crouch: float = 0.0
 	var lean: float = 0.0
-	var step: float = family.heavy_step if heavy else family.heavy_step * 0.4
+	var step: float = family.heavy_step if heavy else family.heavy_step * 0.5
 	match fighter.move_phase:
 		FighterState.Phase.STARTUP:
-			var eased: float = ease(progress, 0.45)
-			pose.blade_angle = lerpf(guard_angle, move.blade_angle_windup, eased)
-			pose.grip = guard_grip.lerp(windup_grip, eased)
-			lean = -5.0 * eased
-			crouch *= eased
+			var eased: float = 1.0 - pow(1.0 - progress, ANTICIPATION_EASE)
+			pose.blade_angle = rad_to_deg(lerp_angle(deg_to_rad(_from_angle), deg_to_rad(move.blade_angle_windup), eased))
+			pose.grip = _arc(_from_grip, windup_grip, eased)
+			lean = family.windup_lean * power * eased
+			crouch = family.heavy_crouch * 0.4 * power * eased
+			_body_shift = -family.windup_shift * power * eased
+			pose.back_foot.x -= 2.0 * power * eased
 		FighterState.Phase.ACTIVE:
-			pose.blade_angle = lerpf(move.blade_angle_windup, move.blade_angle_strike, progress)
-			pose.grip = windup_grip.lerp(strike_grip, ease(progress, 0.7))
-			lean = family.strike_lean
-			pose.front_foot.x += step
+			var swing: float = lerpf(progress, smoothstep(0.0, 1.0, progress), SWING_SMOOTHING)
+			pose.blade_angle = lerpf(move.blade_angle_windup, move.blade_angle_strike, swing)
+			pose.grip = _arc(windup_grip, strike_grip, swing)
+			lean = lerpf(family.windup_lean * power, family.strike_lean * power, swing)
+			crouch = lerpf(family.heavy_crouch * 0.4, family.heavy_crouch, swing) * power
+			_body_shift = lerpf(-family.windup_shift, family.lunge, swing) * power
+			pose.front_foot.x += step * swing
+			pose.back_foot.x -= 2.0 * power * (1.0 - swing)
 			pose.trail = true
 		FighterState.Phase.RECOVERY:
-			var through: float = minf(progress / 0.3, 1.0)
-			var settle: float = smoothstep(0.3, 1.0, progress)
-			var follow: float = move.blade_angle_strike + signf(move.blade_angle_strike - move.blade_angle_windup) * family.follow_through * through
-			pose.blade_angle = lerpf(follow, guard_angle, settle)
-			pose.grip = strike_grip.lerp(guard_grip, settle)
-			lean = family.strike_lean * (1.0 - settle)
+			var through: float = 1.0 - pow(1.0 - minf(progress / FOLLOW_SHARE, 1.0), 2.0)
+			var settle: float = smoothstep(FOLLOW_SHARE * 0.6, 1.0, progress)
+			var sweep: float = signf(move.blade_angle_strike - move.blade_angle_windup)
+			var follow: float = move.blade_angle_strike + sweep * family.follow_through * through
+			var follow_grip: Vector2 = strike_grip + Vector2(family.follow_through * 0.12, family.follow_through * 0.2 * sweep) * through
+			pose.blade_angle = rad_to_deg(lerp_angle(deg_to_rad(follow), deg_to_rad(guard_angle), settle))
+			pose.grip = _arc(follow_grip, guard_grip, settle)
+			lean = family.strike_lean * power * (1.0 - settle)
+			crouch = family.heavy_crouch * power * (1.0 - settle)
+			_body_shift = family.lunge * power * (1.0 - settle)
 			pose.front_foot.x += step * (1.0 - settle)
-			crouch *= 1.0 - settle
 			if family.finisher_twirl and _is_last_chain(fighter):
 				pose.blade_angle += 360.0 * smoothstep(0.1, 0.9, progress)
 	if move.is_aerial():
 		_tuck(pose, 0.8)
+		_body_shift = 0.0
 	return Vector2(crouch, lean)
+
+
+func _arc(from: Vector2, to: Vector2, weight: float) -> Vector2:
+	var chord: Vector2 = to - from
+	var middle: Vector2 = (from + to) * 0.5
+	var outward: Vector2 = (middle - ARC_CENTER)
+	if outward.length_squared() < 0.01:
+		outward = Vector2.RIGHT
+	var control: Vector2 = middle + outward.normalized() * chord.length() * family.arc_bulge
+	var a: Vector2 = from.lerp(control, weight)
+	var b: Vector2 = control.lerp(to, weight)
+	return a.lerp(b, weight)
+
+
+func _track_attack(fighter: FighterState, pose: RigPose, guard_angle: float, guard_grip: Vector2) -> void:
+	var key: int = -1
+	if fighter.is_attacking() and fighter.move != null:
+		key = fighter.move.get_instance_id() * 8 + fighter.chain_index
+	if key == _attack_key:
+		return
+	_attack_key = key
+	var started: bool = pose.grip != Vector2.ZERO and pose.pelvis != Vector2.ZERO
+	_from_angle = pose.blade_angle if started else guard_angle
+	_from_grip = pose.grip - pose.pelvis if started else guard_grip
+	if _from_grip.length() > MAX_FROM_REACH:
+		_from_grip = guard_grip
 
 
 func _cast(fighter: FighterState, pose: RigPose) -> Vector2:

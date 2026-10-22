@@ -128,6 +128,10 @@ func on_event(event: CombatEvent) -> void:
 		CombatEvent.Type.PARRY, CombatEvent.Type.PERFECT_PARRY, CombatEvent.Type.RESPONSE:
 			if event.target == fighter.index:
 				blade.flare = effects.parry_flare
+		CombatEvent.Type.CLASH, CombatEvent.Type.TECHNIQUE_CLASH:
+			if event.source == fighter.index or event.target == fighter.index:
+				_solver.clash_left = PoseSolver.CLASH_RECOIL_TIME
+				_solver.rebounding = true
 		CombatEvent.Type.HIT, CombatEvent.Type.GUARD_BREAK, CombatEvent.Type.BLADE_LOCK_ENDED:
 			if event.target == fighter.index and not reduced_effects:
 				_flash_left = effects.hit_flash_duration
@@ -192,8 +196,7 @@ func _process(delta: float) -> void:
 
 
 func _advance_solver(delta: float) -> void:
-	_solver.time += delta
-	_solver.landing_left = maxf(_solver.landing_left - delta, 0.0)
+	_solver.advance(delta)
 	if _solver.flip_progress >= 0.0:
 		_solver.flip_progress = minf(_solver.flip_progress + delta / FLIP_DURATION, 1.0)
 	if fighter.state == FighterState.State.WALKING:
