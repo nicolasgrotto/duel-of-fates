@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="PowerData" format=3]
+
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/powers/tables/basic.tres" id="2_table"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"storm"
+name_key = "POWER_STORM"
+description_key = "POWER_STORM_TEXT"
+path = 2
+kind = 16
+cost = 70.0
+high_cost = true
+mark_color = Color(1.0000, 0.8431, 0.4157, 1)
+min_level = 6
+startup = 0.5
+recovery = 0.8
+duration = 5.0
+pulse_interval = 0.9
+tier_values = PackedFloat32Array(2.0, 2.0, 3.0, 4.0)
+damage = 5.0
+barrier_drain = 30.0
+guard_blocks = false
+interaction = ExtResource("2_table")

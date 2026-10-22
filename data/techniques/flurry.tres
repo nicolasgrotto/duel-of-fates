@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="MoveData" format=3]
+
+[ext_resource type="Script" path="res://data/move_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"flurry"
+kind = 10
+startup = 0.18
+active = 0.28
+recovery = 0.42
+damage = 4.0
+vigor_cost = 30.0
+block_vigor_cost = 6.0
+knockback = 15.0
+block_push = 40.0
+hitstun = 0.2
+blockstun = 0.12
+lunge = 25.0
+reach = 110.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 65.0
+finisher_limb = 1
+blade_angle_windup = -20.0
+blade_angle_strike = 10.0
+multi_hits = 4
+multi_interval = 0.07

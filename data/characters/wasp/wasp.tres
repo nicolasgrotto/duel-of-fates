@@ -12,6 +12,12 @@
 [ext_resource type="Resource" path="res://assets/characters/wasp/art.tres" id="10_art"]
 [ext_resource type="Resource" path="res://data/families/wasp.tres" id="11_family"]
 [ext_resource type="Script" path="res://data/ability_data.gd" id="12_ability"]
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="14_power"]
+[ext_resource type="Resource" path="res://data/powers/barrier.tres" id="p_barrier"]
+[ext_resource type="Resource" path="res://data/powers/repulse.tres" id="p_repulse"]
+[ext_resource type="Resource" path="res://data/powers/throw.tres" id="p_throw"]
+[ext_resource type="Resource" path="res://data/techniques/blade_throw.tres" id="t_blade_throw"]
+[ext_resource type="Resource" path="res://data/techniques/flurry.tres" id="t_flurry"]
 
 [sub_resource type="Resource" id="wasp_light_1"]
 script = ExtResource("2_move")
@@ -258,6 +264,9 @@ light_block_drain = 4.0
 double_jump_ratio = 0.9
 air_dash_vigor = 8.0
 ability = SubResource("wasp_ability")
+powers = Array[ExtResource("14_power")]([ExtResource("p_repulse"), ExtResource("p_throw"), ExtResource("p_barrier")])
+technique_forward = ExtResource("t_flurry")
+technique_back = ExtResource("t_blade_throw")
 ai_profile = ExtResource("9_ai")
 path = 0
 style_key = "STYLE_WASP"

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="PowerData" format=3]
+
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/powers/tables/freeze.tres" id="2_table"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"freeze"
+name_key = "POWER_FREEZE"
+description_key = "POWER_FREEZE_TEXT"
+path = 2
+kind = 15
+cost = 40.0
+startup = 0.3
+recovery = 0.35
+reach = 340.0
+duration = 1.1
+absorb_gain = 20.0
+interaction = ExtResource("2_table")

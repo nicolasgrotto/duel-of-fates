@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="PowerData" format=3]
+
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/powers/tables/basic.tres" id="2_table"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"flow_cleave"
+name_key = "POWER_FLOW_CLEAVE"
+description_key = "POWER_FLOW_CLEAVE_TEXT"
+path = 1
+kind = 12
+cost = 20.0
+startup = 0.25
+recovery = 0.35
+damage = 10.0
+speed = 700.0
+reach = 520.0
+guard_vigor = 10.0
+absorb_gain = 10.0
+interaction = ExtResource("2_table")

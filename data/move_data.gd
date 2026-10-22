@@ -1,7 +1,7 @@
 class_name MoveData
 extends Resource
 
-enum Kind { LIGHT, HEAVY, FORWARD_HEAVY, COUNTER, SHOVE, AERIAL_LIGHT, AERIAL_HEAVY, LOCK_FINISH, ABILITY, STANCE }
+enum Kind { LIGHT, HEAVY, FORWARD_HEAVY, COUNTER, SHOVE, AERIAL_LIGHT, AERIAL_HEAVY, LOCK_FINISH, ABILITY, STANCE, TECHNIQUE }
 enum Limb { NONE, ARM, LEG, HEAD }
 
 @export var id: StringName
@@ -35,6 +35,16 @@ enum Limb { NONE, ARM, LEG, HEAD }
 @export var armor_in_active: bool = false
 @export var hits_behind: bool = false
 @export var dive_speed: float = 0.0
+@export var aerial_technique: bool = false
+
+@export_group("Technique")
+@export var stagger_on_guard: float = 0.0
+@export var multi_hits: int = 1
+@export var multi_interval: float = 0.07
+@export var airborne_bonus: float = 0.0
+@export var launch_speed: float = 0.0
+@export var throws_blade: bool = false
+@export var recovery_on_hit: float = -1.0
 
 @export_group("Consequences")
 @export var can_blade_lock: bool = false
@@ -67,7 +77,11 @@ func is_heavy() -> bool:
 
 
 func is_aerial() -> bool:
-	return kind == Kind.AERIAL_LIGHT or kind == Kind.AERIAL_HEAVY
+	return kind == Kind.AERIAL_LIGHT or kind == Kind.AERIAL_HEAVY or aerial_technique
+
+
+func is_technique() -> bool:
+	return kind == Kind.TECHNIQUE
 
 
 func is_blade() -> bool:
@@ -75,4 +89,4 @@ func is_blade() -> bool:
 
 
 func can_clash() -> bool:
-	return is_blade()
+	return is_blade() and not throws_blade

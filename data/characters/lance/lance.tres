@@ -12,6 +12,12 @@
 [ext_resource type="Resource" path="res://assets/characters/lance/art.tres" id="10_art"]
 [ext_resource type="Resource" path="res://data/families/fencer.tres" id="11_family"]
 [ext_resource type="Script" path="res://data/ability_data.gd" id="12_ability"]
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="14_power"]
+[ext_resource type="Resource" path="res://data/powers/lightning.tres" id="p_lightning"]
+[ext_resource type="Resource" path="res://data/powers/pull.tres" id="p_pull"]
+[ext_resource type="Resource" path="res://data/powers/throw.tres" id="p_throw"]
+[ext_resource type="Resource" path="res://data/techniques/spin.tres" id="t_spin"]
+[ext_resource type="Resource" path="res://data/techniques/thrust.tres" id="t_thrust"]
 
 [sub_resource type="Resource" id="lance_light_1"]
 script = ExtResource("2_move")
@@ -202,6 +208,9 @@ aerial_heavy = ExtResource("8_aerial_heavy")
 guard_break_stun = 1.3
 sweet_spot = true
 ability = SubResource("lance_ability")
+powers = Array[ExtResource("14_power")]([ExtResource("p_lightning"), ExtResource("p_pull"), ExtResource("p_throw")])
+technique_forward = ExtResource("t_thrust")
+technique_back = ExtResource("t_spin")
 ai_profile = ExtResource("9_ai")
 path = 1
 style_key = "STYLE_LANCE"

@@ -46,6 +46,13 @@ enum Path { AURORA, ECLIPSE }
 @export_group("Ability")
 @export var ability: AbilityData
 
+@export_group("Flow")
+@export var powers: Array[PowerData] = []
+@export var fourth_power: PowerData
+@export var technique_forward: MoveData
+@export var technique_back: MoveData
+@export var technique_air: MoveData
+
 @export_group("AI")
 @export var ai_profile: AiProfileData
 

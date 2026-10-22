@@ -4,6 +4,9 @@ extends RefCounted
 enum Phase { INTRO, FIGHT, KO, OVER }
 
 const EVENT_POOL_SIZE: int = 32
+const PROJECTILE_POOL_SIZE: int = 16
+const HAZARD_POOL_SIZE: int = 48
+const GROUP_MEMORY: int = 16
 const NO_WINNER: int = -1
 
 var config: CombatConfig
@@ -27,10 +30,17 @@ var hit_attackers: Array[FighterState] = []
 var hit_moves: Array[MoveData] = []
 var events: Array[CombatEvent] = []
 var event_count: int = 0
+var projectiles: Array[Projectile] = []
+var hazards: Array[Hazard] = []
+var impact: PowerImpact = PowerImpact.new()
+var basic_table: InteractionTable
+var hazard_group_counter: int = 0
+var hazard_groups_hit: Array[PackedInt32Array] = [PackedInt32Array(), PackedInt32Array()]
 
 var _states: Array[StateLogic] = []
 var _neutral_intent: Intent = Intent.new()
 var _intents: Array[Intent] = [null, null]
+var _twisted: Array[Intent] = [Intent.new(), Intent.new()]
 
 
 func _init(combat_config: CombatConfig, match_rules: MatchRules, characters: Array[CharacterData], match_seed: int) -> void:
@@ -39,9 +49,14 @@ func _init(combat_config: CombatConfig, match_rules: MatchRules, characters: Arr
 	seed_value = match_seed
 	rng.seed = match_seed
 	lock_finish_move = BladeLockResolver.create_finish_move(config)
+	basic_table = config.flow.basic_table
 	_build_states()
 	for i in EVENT_POOL_SIZE:
 		events.append(CombatEvent.new())
+	for i in PROJECTILE_POOL_SIZE:
+		projectiles.append(Projectile.new())
+	for i in HAZARD_POOL_SIZE:
+		hazards.append(Hazard.new())
 	for i in characters.size():
 		var fighter: FighterState = FighterState.new()
 		fighter.setup(i, characters[i], config)
@@ -65,6 +80,10 @@ func _build_states() -> void:
 	_states[FighterState.State.STAGGERED] = recoil
 	_states[FighterState.State.STUNNED] = recoil
 	_states[FighterState.State.DEAD] = DeadState.new()
+	var power_state: PowerState = PowerState.new()
+	_states[FighterState.State.CASTING] = power_state
+	_states[FighterState.State.CHANNELING] = power_state
+	_states[FighterState.State.HELD] = HeldState.new()
 
 
 func start_match() -> void:
@@ -86,6 +105,12 @@ func step(first_intent: Intent, second_intent: Intent) -> void:
 	_intents[0] = first_intent if fighting else _neutral_intent
 	_intents[1] = second_intent if fighting else _neutral_intent
 	for i in fighters.size():
+		fighters[i].input_idle = _intents[i].held == 0 and _intents[i].move_x == 0
+		if fighters[i].twisted_ticks > 0:
+			_twisted[i].copy_from(_intents[i])
+			_twisted[i].move_x = -_intents[i].move_x
+			_intents[i] = _twisted[i]
+	for i in fighters.size():
 		ActionStarter.update_buffer(self, fighters[i], _intents[i])
 	for i in fighters.size():
 		_step_fighter(fighters[i], _intents[i])
@@ -94,6 +119,8 @@ func step(first_intent: Intent, second_intent: Intent) -> void:
 	if fighting:
 		ClashResolver.resolve(self)
 		HitResolver.resolve(self)
+		ProjectileSystem.step(self)
+		HazardSystem.step(self)
 		BladeLockResolver.step(self)
 		_check_round_end()
 	if lock_cooldown_ticks > 0:
@@ -141,6 +168,8 @@ func push_apart(a: FighterState, b: FighterState, total_distance: float) -> void
 
 
 func spend_vigor(fighter: FighterState, amount: float) -> bool:
+	if fighter.focus_ticks > 0:
+		amount *= config.flow.focus_cost_ratio
 	if amount <= 0.0:
 		return true
 	if fighter.vigor < amount:
@@ -168,10 +197,104 @@ func block_cost(defender: FighterState, move: MoveData) -> float:
 	var cost: float = move.block_vigor_cost * defender.character.block_cost_multiplier / defender.defense_multiplier
 	if defender.wound == FighterState.Wound.ARM:
 		cost *= config.consequences.wounded_arm_block_multiplier
+	if defender.focus_ticks > 0:
+		cost *= config.flow.focus_cost_ratio
 	return cost
 
 
+func gain_flow(fighter: FighterState, amount: float) -> void:
+	if not rules.powers:
+		return
+	fighter.flow = clampf(fighter.flow + amount * fighter.flow_potency, 0.0, config.flow.maximum)
+
+
+func wrath_scale(attacker: FighterState, defender: FighterState) -> float:
+	var scale: float = 1.0
+	if attacker.wrath_ticks > 0:
+		scale *= config.flow.wrath_dealt
+	if defender.wrath_ticks > 0:
+		scale *= config.flow.wrath_taken
+	return scale
+
+
+func spawn_projectile(kind: Projectile.Kind, owner: FighterState, power: PowerData) -> Projectile:
+	for projectile in projectiles:
+		if projectile.active:
+			continue
+		projectile.active = true
+		projectile.kind = kind
+		projectile.owner = owner.index
+		projectile.x = owner.x + owner.facing * config.body_width
+		projectile.y = owner.y + config.flow.projectile_height
+		projectile.vx = 0.0
+		projectile.travelled = 0.0
+		projectile.returning = false
+		projectile.hit_done = false
+		projectile.flow_level = owner.flow_level
+		projectile.tier = owner.flow_tier
+		projectile.delay_ticks = 0
+		projectile.power = power
+		projectile.move = null
+		var event: CombatEvent = emit(CombatEvent.Type.PROJECTILE_SPAWNED, owner.index, CombatEvent.NO_FIGHTER)
+		event.power = power
+		event.amount = kind
+		return projectile
+	return null
+
+
+func spawn_hazard(kind: Hazard.Kind, owner: FighterState, at_x: float, half_width: float, delay: float, group: int, damage: float, power: PowerData) -> void:
+	for hazard in hazards:
+		if hazard.active:
+			continue
+		hazard.active = true
+		hazard.kind = kind
+		hazard.owner = owner.index
+		hazard.x = at_x
+		hazard.half_width = half_width
+		hazard.delay_ticks = maxi(Ticks.from_seconds(delay), 1)
+		hazard.total_delay = hazard.delay_ticks
+		hazard.group = group
+		hazard.damage = damage
+		hazard.flow_level = owner.flow_level
+		hazard.power = power
+		var event: CombatEvent = emit(CombatEvent.Type.HAZARD_MARKED, owner.index, CombatEvent.NO_FIGHTER)
+		event.power = power
+		event.position = Vector2(at_x, 0.0)
+		event.amount = kind
+		return
+
+
+func next_hazard_group() -> int:
+	hazard_group_counter += 1
+	return hazard_group_counter
+
+
+func skip_hazard_groups(count: int) -> void:
+	hazard_group_counter += count
+
+
+func hazard_group_hit(group: int, fighter_index: int) -> bool:
+	return hazard_groups_hit[fighter_index].has(group)
+
+
+func mark_hazard_group(group: int, fighter_index: int) -> void:
+	var memory: PackedInt32Array = hazard_groups_hit[fighter_index]
+	memory.append(group)
+	if memory.size() > GROUP_MEMORY:
+		memory.remove_at(0)
+	hazard_groups_hit[fighter_index] = memory
+
+
 func apply_damage(fighter: FighterState, amount: float) -> bool:
+	if fighter.sanctuary_hp > 0.0:
+		var absorbed: float = minf(fighter.sanctuary_hp, amount)
+		fighter.sanctuary_hp -= absorbed
+		amount -= absorbed
+		if fighter.sanctuary_hp <= 0.0:
+			fighter.sanctuary_ticks = 0
+	if amount <= 0.0:
+		return false
+	fighter.heal_ticks = 0
 	fighter.ticks_since_damage = 0
 	if rules.endless:
 		fighter.health = maxf(fighter.health - amount, 1.0)
@@ -208,6 +331,10 @@ func capture() -> Dictionary:
 		"lock_cooldown_ticks": lock_cooldown_ticks,
 		"rng_state": rng.state,
 		"fighters": fighter_snapshots,
+		"projectiles": projectiles.map(func(item: Projectile) -> Dictionary: return item.capture()),
+		"hazards": hazards.map(func(item: Hazard) -> Dictionary: return item.capture()),
+		"hazard_group_counter": hazard_group_counter,
+		"hazard_groups_hit": [hazard_groups_hit[0].duplicate(), hazard_groups_hit[1].duplicate()],
 	}
 
 
@@ -225,6 +352,15 @@ func restore(snapshot: Dictionary) -> void:
 	var fighter_snapshots: Array = snapshot["fighters"]
 	for i in fighters.size():
 		fighters[i].restore(fighter_snapshots[i])
+	var projectile_snapshots: Array = snapshot["projectiles"]
+	for i in projectiles.size():
+		projectiles[i].restore(projectile_snapshots[i])
+	var hazard_snapshots: Array = snapshot["hazards"]
+	for i in hazards.size():
+		hazards[i].restore(hazard_snapshots[i])
+	hazard_group_counter = snapshot["hazard_group_counter"]
+	var groups: Array = snapshot["hazard_groups_hit"]
+	hazard_groups_hit = [PackedInt32Array(groups[0]), PackedInt32Array(groups[1])]
 	event_count = 0
 
 
@@ -237,6 +373,13 @@ func _start_round() -> void:
 	var half_distance: float = config.round_start_distance * 0.5
 	fighters[0].reset_for_round(-half_distance, 1)
 	fighters[1].reset_for_round(half_distance, -1)
+	for fighter in fighters:
+		fighter.flow = config.flow.round_start if rules.powers else 0.0
+	for projectile in projectiles:
+		projectile.active = false
+	for hazard in hazards:
+		hazard.active = false
+	hazard_groups_hit = [PackedInt32Array(), PackedInt32Array()]
 	_set_phase(Phase.INTRO)
 	emit(CombatEvent.Type.ROUND_STARTED, CombatEvent.NO_FIGHTER, CombatEvent.NO_FIGHTER).amount = round_number
 
@@ -287,6 +430,7 @@ func _tick_timers(fighter: FighterState) -> void:
 	fighter.ticks_since_damage += 1
 	_regenerate(fighter)
 	Consequences.step_exhaustion(self, fighter)
+	FlowStatuses.step(self, fighter)
 	if rules.endless and fighter.ticks_since_damage >= Ticks.from_seconds(config.endless_refill_delay):
 		fighter.health = fighter.max_health
 
@@ -306,11 +450,12 @@ func _regenerate(fighter: FighterState) -> void:
 func _integrate(fighter: FighterState) -> void:
 	if fighter.state == FighterState.State.BLADE_LOCK:
 		return
-	if not fighter.on_ground:
+	var suspended: bool = fighter.state == FighterState.State.HELD and fighter.held_by_choke
+	if not fighter.on_ground and not suspended:
 		fighter.vy = maxf(fighter.vy - config.gravity * Ticks.DELTA, -config.max_fall_speed)
 	fighter.x += fighter.vx * Ticks.DELTA
 	fighter.y += fighter.vy * Ticks.DELTA
-	if not fighter.on_ground and fighter.y <= 0.0 and fighter.vy <= 0.0:
+	if not fighter.on_ground and fighter.y <= 0.0 and fighter.vy <= 0.0 and not suspended:
 		_land(fighter)
 	BodyResolver.clamp_to_walls(self, fighter)
 
@@ -324,10 +469,14 @@ func _land(fighter: FighterState) -> void:
 	fighter.air_attacks = 0
 	fighter.last_wall = 0
 	fighter.leap_dive = false
+	if fighter.is_attacking() and fighter.move != null and fighter.move.aerial_technique and fighter.move_phase != FighterState.Phase.RECOVERY:
+		fighter.move_phase = FighterState.Phase.RECOVERY
+		fighter.phase_ticks = 0
+		fighter.vx = 0.0
 	var landing_cancels: bool = (
 		fighter.state == FighterState.State.JUMPING
 		or fighter.is_air_dashing()
-		or (fighter.is_attacking() and fighter.move != null and fighter.move.is_aerial())
+		or (fighter.is_attacking() and fighter.move != null and fighter.move.is_aerial() and not fighter.move.aerial_technique)
 	)
 	if landing_cancels:
 		change_state(fighter, FighterState.State.IDLE)

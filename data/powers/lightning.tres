@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="PowerData" format=3]
+
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/powers/tables/basic.tres" id="2_table"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"lightning"
+name_key = "POWER_LIGHTNING"
+description_key = "POWER_LIGHTNING_TEXT"
+path = 2
+kind = 13
+cost = 15.0
+cost_per_second = 55.0
+max_channel = 1.0
+startup = 0.25
+recovery = 0.35
+reach = 480.0
+damage = 2.2
+pulse_interval = 0.1
+stagger = 0.12
+guard_damage_ratio = 0.25
+barrier_drain = 5.0
+guard_vigor = 2.0
+tier_values = PackedFloat32Array(1.0, 1.0, 2.0, 3.0)
+absorb_gain = 4.0
+interaction = ExtResource("2_table")

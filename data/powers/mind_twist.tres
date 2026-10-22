@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="PowerData" format=3]
+
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/powers/tables/basic.tres" id="2_table"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"mind_twist"
+name_key = "POWER_MIND_TWIST"
+description_key = "POWER_MIND_TWIST_TEXT"
+path = 0
+kind = 3
+cost = 30.0
+startup = 0.25
+recovery = 0.3
+reach = 320.0
+duration = 0.8
+absorb_gain = 15.0
+interaction = ExtResource("2_table")

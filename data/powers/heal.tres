@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="PowerData" format=3]
+
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"heal"
+name_key = "POWER_HEAL"
+description_key = "POWER_HEAL_TEXT"
+path = 1
+kind = 7
+cost = 40.0
+startup = 0.3
+recovery = 0.3
+duration = 2.0
+strength = 14.0

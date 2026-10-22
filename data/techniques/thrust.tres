@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="MoveData" format=3]
+
+[ext_resource type="Script" path="res://data/move_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"thrust"
+kind = 10
+startup = 0.24
+active = 0.1
+recovery = 0.5
+damage = 14.0
+vigor_cost = 26.0
+block_vigor_cost = 16.0
+knockback = 80.0
+block_push = 40.0
+hitstun = 0.45
+blockstun = 0.3
+lunge = 45.0
+reach = 170.0
+hitbox_bottom = 80.0
+hitbox_top = 120.0
+blade_reach = 75.0
+finisher_limb = 1
+blade_angle_windup = -10.0
+blade_angle_strike = 0.0

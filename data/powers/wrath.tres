@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="PowerData" format=3]
+
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"wrath"
+name_key = "POWER_WRATH"
+description_key = "POWER_WRATH_TEXT"
+path = 2
+kind = 17
+cost = 60.0
+high_cost = true
+mark_color = Color(1.0000, 0.5490, 0.1020, 1)
+startup = 0.3
+recovery = 0.3
+duration = 5.0

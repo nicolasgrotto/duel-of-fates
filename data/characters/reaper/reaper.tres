@@ -12,6 +12,13 @@
 [ext_resource type="Resource" path="res://assets/characters/reaper/art.tres" id="10_art"]
 [ext_resource type="Resource" path="res://data/families/reaper.tres" id="11_family"]
 [ext_resource type="Script" path="res://data/ability_data.gd" id="12_ability"]
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="14_power"]
+[ext_resource type="Resource" path="res://data/powers/pull.tres" id="p_pull"]
+[ext_resource type="Resource" path="res://data/powers/repulse.tres" id="p_repulse"]
+[ext_resource type="Resource" path="res://data/powers/wrath.tres" id="p_wrath"]
+[ext_resource type="Resource" path="res://data/techniques/blade_throw.tres" id="t_blade_throw"]
+[ext_resource type="Resource" path="res://data/techniques/dash_slash.tres" id="t_dash_slash"]
+[ext_resource type="Resource" path="res://data/techniques/plunge.tres" id="t_plunge"]
 
 [sub_resource type="Resource" id="reaper_light_1"]
 script = ExtResource("2_move")
@@ -228,6 +235,10 @@ aerial_light = ExtResource("7_aerial_light")
 aerial_heavy = ExtResource("8_aerial_heavy")
 guard_break_stun = 1.4
 ability = SubResource("reaper_ability")
+powers = Array[ExtResource("14_power")]([ExtResource("p_repulse"), ExtResource("p_pull"), ExtResource("p_wrath")])
+technique_forward = ExtResource("t_dash_slash")
+technique_back = ExtResource("t_blade_throw")
+technique_air = ExtResource("t_plunge")
 ai_profile = ExtResource("9_ai")
 path = 1
 style_key = "STYLE_REAPER"

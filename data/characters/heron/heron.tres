@@ -12,6 +12,12 @@
 [ext_resource type="Resource" path="res://assets/characters/heron/art.tres" id="10_art"]
 [ext_resource type="Resource" path="res://data/families/dancer.tres" id="11_family"]
 [ext_resource type="Script" path="res://data/ability_data.gd" id="12_ability"]
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="14_power"]
+[ext_resource type="Resource" path="res://data/powers/absorption.tres" id="p_absorption"]
+[ext_resource type="Resource" path="res://data/powers/repulse.tres" id="p_repulse"]
+[ext_resource type="Resource" path="res://data/powers/throw.tres" id="p_throw"]
+[ext_resource type="Resource" path="res://data/techniques/plunge.tres" id="t_plunge"]
+[ext_resource type="Resource" path="res://data/techniques/spin.tres" id="t_spin"]
 
 [sub_resource type="Resource" id="heron_light_1"]
 script = ExtResource("2_move")
@@ -230,6 +236,9 @@ wall_jump = true
 dodge_passes_through = true
 aerials_per_jump = 2
 ability = SubResource("heron_ability")
+powers = Array[ExtResource("14_power")]([ExtResource("p_repulse"), ExtResource("p_throw"), ExtResource("p_absorption")])
+technique_back = ExtResource("t_spin")
+technique_air = ExtResource("t_plunge")
 ai_profile = ExtResource("9_ai")
 path = 0
 style_key = "STYLE_HERON"

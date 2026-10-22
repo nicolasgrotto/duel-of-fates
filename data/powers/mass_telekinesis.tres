@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="PowerData" format=3]
+
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/powers/tables/basic.tres" id="2_table"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"mass_telekinesis"
+name_key = "POWER_MASS_TELEKINESIS"
+description_key = "POWER_MASS_TELEKINESIS_TEXT"
+path = 1
+kind = 11
+cost = 80.0
+high_cost = true
+mark_color = Color(1.0000, 0.6039, 0.2902, 1)
+min_level = 6
+startup = 0.8
+recovery = 0.4
+tier_values = PackedFloat32Array(5.0, 5.0, 6.0, 7.0)
+damage = 7.0
+strength = 500.0
+reach = 360.0
+guard_vigor = 8.0
+absorb_gain = 10.0
+interaction = ExtResource("2_table")

@@ -3,6 +3,7 @@ extends Resource
 
 @export var blade_lock: BladeLockConfig
 @export var consequences: ConsequenceConfig
+@export var flow: FlowConfig
 
 @export_group("Arena")
 @export var arena_width: float = 1200.0

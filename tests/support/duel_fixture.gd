@@ -31,6 +31,24 @@ static func character(id: StringName) -> CharacterData:
 	return load("res://data/characters/%s/%s.tres" % [id, id]) as CharacterData
 
 
+func give_power(index: int, id: StringName, slot: int = 0) -> PowerData:
+	var power: PowerData = load("res://data/powers/%s.tres" % id)
+	fighter(index).powers[slot] = power
+	fighter(index).flow = 100.0
+	return power
+
+
+func set_level(index: int, level: int) -> void:
+	fighter(index).set_flow_level(level, sim.config)
+
+
+func cast(index: int, direction: int = 0) -> void:
+	intents[index].move_x = direction * fighter(index).facing
+	press(index, Intent.Command.POWER)
+	step(1)
+	intents[index].move_x = 0
+
+
 static func config_copy() -> CombatConfig:
 	return CONFIG.duplicate(true) as CombatConfig
 

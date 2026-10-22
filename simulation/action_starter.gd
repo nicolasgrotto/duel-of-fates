@@ -11,12 +11,30 @@ const GROUND_ACTIONS: int = (
 	| (1 << FighterState.Action.EVADE)
 	| (1 << FighterState.Action.DODGE)
 	| (1 << FighterState.Action.SPECIAL)
+	| (1 << FighterState.Action.POWER)
+	| (1 << FighterState.Action.FOURTH)
 )
 const AIR_ACTIONS: int = (
 	(1 << FighterState.Action.JUMP)
 	| (1 << FighterState.Action.LIGHT)
 	| (1 << FighterState.Action.HEAVY)
 	| (1 << FighterState.Action.DODGE)
+	| (1 << FighterState.Action.SPECIAL)
+)
+const BLADE_ACTIONS: int = (
+	(1 << FighterState.Action.LIGHT)
+	| (1 << FighterState.Action.HEAVY)
+	| (1 << FighterState.Action.SHOVE)
+	| (1 << FighterState.Action.BLOCK)
+	| (1 << FighterState.Action.SPECIAL)
+)
+const RAIN_BLOCKED_ACTIONS: int = (
+	(1 << FighterState.Action.LIGHT)
+	| (1 << FighterState.Action.HEAVY)
+	| (1 << FighterState.Action.SHOVE)
+	| (1 << FighterState.Action.SPECIAL)
+	| (1 << FighterState.Action.POWER)
+	| (1 << FighterState.Action.FOURTH)
 )
 const GUARD_ACTIONS: int = 1 << FighterState.Action.SHOVE
 const MAX_JUMPS: int = 2
@@ -27,10 +45,53 @@ static func update_buffer(sim: MatchSimulation, fighter: FighterState, intent: I
 		fighter.buffer_ticks -= 1
 		if fighter.buffer_ticks == 0:
 			fighter.buffered_action = FighterState.Action.NONE
+	var direction: int = relative_direction(fighter, intent)
+	if _uses_chord(sim, fighter) and _resolve_chord(sim, fighter, intent, direction):
+		return
 	var action: FighterState.Action = pressed_action(intent)
 	if action != FighterState.Action.NONE:
-		fighter.buffered_action = action
-		fighter.buffer_ticks = Ticks.from_seconds(sim.config.input_buffer)
+		_buffer(sim, fighter, action, direction)
+
+
+static func relative_direction(fighter: FighterState, intent: Intent) -> int:
+	return intent.move_x * fighter.facing
+
+
+static func _buffer(sim: MatchSimulation, fighter: FighterState, action: FighterState.Action, direction: int) -> void:
+	fighter.buffered_action = action
+	fighter.buffered_direction = direction
+	fighter.buffer_ticks = Ticks.from_seconds(sim.config.input_buffer)
+
+
+static func _uses_chord(sim: MatchSimulation, fighter: FighterState) -> bool:
+	return sim.rules.powers and fighter.powers[FighterState.FOURTH_SLOT] != null
+
+
+static func _resolve_chord(sim: MatchSimulation, fighter: FighterState, intent: Intent, direction: int) -> bool:
+	var power_pressed: bool = intent.was_pressed(Intent.Command.POWER)
+	var special_pressed: bool = intent.was_pressed(Intent.Command.SPECIAL)
+	if fighter.chord_command != 0:
+		var completes: bool = (fighter.chord_command == Intent.Command.POWER and special_pressed) or (fighter.chord_command == Intent.Command.SPECIAL and power_pressed)
+		if completes:
+			fighter.chord_command = 0
+			_buffer(sim, fighter, FighterState.Action.FOURTH, direction)
+			return true
+		fighter.chord_ticks -= 1
+		if fighter.chord_ticks <= 0:
+			var waited: FighterState.Action = FighterState.Action.POWER if fighter.chord_command == Intent.Command.POWER else FighterState.Action.SPECIAL
+			fighter.chord_command = 0
+			_buffer(sim, fighter, waited, fighter.chord_direction)
+		return false
+	if power_pressed and special_pressed:
+		_buffer(sim, fighter, FighterState.Action.FOURTH, direction)
+		return true
+	if power_pressed or special_pressed:
+		fighter.chord_command = Intent.Command.POWER if power_pressed else Intent.Command.SPECIAL
+		fighter.chord_ticks = maxi(Ticks.from_seconds(sim.config.flow.chord_window), 1)
+		fighter.chord_direction = direction
+		var other: int = intent.pressed & ~(Intent.Command.POWER | Intent.Command.SPECIAL)
+		return other == 0
+	return false
 
 
 static func pressed_action(intent: Intent) -> FighterState.Action:
@@ -44,6 +105,8 @@ static func pressed_action(intent: Intent) -> FighterState.Action:
 		return FighterState.Action.SHOVE
 	if intent.was_pressed(Intent.Command.SPECIAL):
 		return FighterState.Action.SPECIAL
+	if intent.was_pressed(Intent.Command.POWER):
+		return FighterState.Action.POWER
 	if intent.was_pressed(Intent.Command.HEAVY):
 		return FighterState.Action.HEAVY
 	if intent.was_pressed(Intent.Command.LIGHT):
@@ -63,6 +126,10 @@ static func consume(fighter: FighterState) -> void:
 static func try_buffered(sim: MatchSimulation, fighter: FighterState, intent: Intent, allowed: int) -> bool:
 	var action: FighterState.Action = fighter.buffered_action
 	if action == FighterState.Action.NONE or (allowed & (1 << action)) == 0:
+		return false
+	if fighter.blade_out and (BLADE_ACTIONS & (1 << action)) != 0:
+		return false
+	if fighter.rain_ticks > 0 and (RAIN_BLOCKED_ACTIONS & (1 << action)) != 0:
 		return false
 	var result: Result = _start(sim, fighter, intent, action)
 	if result == Result.NOT_POSSIBLE:
@@ -88,7 +155,11 @@ static func _start(sim: MatchSimulation, fighter: FighterState, intent: Intent, 
 		FighterState.Action.DODGE:
 			return _start_dodge(sim, fighter, intent)
 		FighterState.Action.SPECIAL:
-			return _start_ability(sim, fighter, intent)
+			return _start_special(sim, fighter, intent)
+		FighterState.Action.POWER:
+			return PowerStarter.try_cast(sim, fighter, fighter.buffered_direction, false)
+		FighterState.Action.FOURTH:
+			return PowerStarter.try_cast(sim, fighter, fighter.buffered_direction, true)
 	return Result.NOT_POSSIBLE
 
 
@@ -220,6 +291,28 @@ static func _start_evade(sim: MatchSimulation, fighter: FighterState) -> Result:
 	fighter.evade_window_ticks = maxi(Ticks.from_seconds(sim.config.evade_invulnerable * fighter.agility_multiplier), 1)
 	sim.change_state(fighter, FighterState.State.DODGING)
 	return Result.STARTED
+
+
+static func _start_special(sim: MatchSimulation, fighter: FighterState, intent: Intent) -> Result:
+	var technique: MoveData = technique_for(sim, fighter, fighter.buffered_direction)
+	if technique != null:
+		if technique.is_aerial() and not can_attack_in_air(fighter):
+			return Result.NOT_POSSIBLE
+		return start_attack(sim, fighter, technique)
+	return _start_ability(sim, fighter, intent)
+
+
+static func technique_for(sim: MatchSimulation, fighter: FighterState, direction: int) -> MoveData:
+	if not sim.rules.powers:
+		return null
+	var character: CharacterData = fighter.character
+	if fighter.is_airborne():
+		return character.technique_air
+	if direction > 0:
+		return character.technique_forward
+	if direction < 0:
+		return character.technique_back
+	return null
 
 
 static func _start_ability(sim: MatchSimulation, fighter: FighterState, intent: Intent) -> Result:

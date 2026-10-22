@@ -12,6 +12,12 @@
 [ext_resource type="Resource" path="res://assets/characters/echo/art.tres" id="10_art"]
 [ext_resource type="Resource" path="res://data/families/striker.tres" id="11_family"]
 [ext_resource type="Script" path="res://data/ability_data.gd" id="12_ability"]
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="14_power"]
+[ext_resource type="Resource" path="res://data/powers/lightning.tres" id="p_lightning"]
+[ext_resource type="Resource" path="res://data/powers/pull.tres" id="p_pull"]
+[ext_resource type="Resource" path="res://data/powers/throw.tres" id="p_throw"]
+[ext_resource type="Resource" path="res://data/techniques/flurry.tres" id="t_flurry"]
+[ext_resource type="Resource" path="res://data/techniques/sweep_low.tres" id="t_sweep_low"]
 
 [sub_resource type="Resource" id="echo_light_1"]
 script = ExtResource("2_move")
@@ -180,6 +186,9 @@ aerial_heavy = ExtResource("8_aerial_heavy")
 guard_break_stun = 1.4
 can_feint = true
 ability = SubResource("echo_ability")
+powers = Array[ExtResource("14_power")]([ExtResource("p_lightning"), ExtResource("p_pull"), ExtResource("p_throw")])
+technique_forward = ExtResource("t_flurry")
+technique_back = ExtResource("t_sweep_low")
 ai_profile = ExtResource("9_ai")
 path = 1
 style_key = "STYLE_ECHO"

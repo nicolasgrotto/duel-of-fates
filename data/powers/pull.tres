@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="PowerData" format=3]
+
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/powers/tables/basic.tres" id="2_table"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"pull"
+name_key = "POWER_PULL"
+description_key = "POWER_PULL_TEXT"
+path = 0
+kind = 1
+cost = 40.0
+startup = 0.3
+recovery = 0.35
+damage = 4.0
+stagger = 0.45
+tier_values = PackedFloat32Array(330.0, 380.0, 430.0, 480.0)
+guard_vigor = 8.0
+absorb_gain = 20.0
+interaction = ExtResource("2_table")

@@ -18,6 +18,20 @@ enum Type {
 	RESPONSE,
 	ARMOR_ABSORBED,
 	FEINT,
+	POWER_STARTED,
+	POWER_ACTIVE,
+	POWER_HIT,
+	POWER_BLOCKED,
+	POWER_RESISTED,
+	POWER_ABSORBED,
+	POWER_REJECTED,
+	POWER_ENDED,
+	PROJECTILE_SPAWNED,
+	PROJECTILE_REFLECTED,
+	PROJECTILE_ENDED,
+	HAZARD_MARKED,
+	HAZARD_TRIGGERED,
+	TECHNIQUE_CLASH,
 	ACTION_REJECTED,
 	EXHAUSTION,
 	EXHAUSTION_RECOVERED,
@@ -37,6 +51,7 @@ var type: Type = Type.HIT
 var source: int = NO_FIGHTER
 var target: int = NO_FIGHTER
 var move: MoveData
+var power: PowerData
 var amount: float = 0.0
 var heavy: bool = false
 var position: Vector2 = Vector2.ZERO
@@ -51,6 +66,7 @@ func reset() -> void:
 	source = NO_FIGHTER
 	target = NO_FIGHTER
 	move = null
+	power = null
 	amount = 0.0
 	heavy = false
 	position = Vector2.ZERO

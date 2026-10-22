@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="PowerData" format=3]
+
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"absorption"
+name_key = "POWER_ABSORPTION"
+description_key = "POWER_ABSORPTION_TEXT"
+path = 1
+kind = 9
+cost = 10.0
+cost_per_second = 20.0
+max_channel = 1.5
+startup = 0.1
+recovery = 0.25

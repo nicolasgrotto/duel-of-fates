@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="InteractionTable" format=3]
+
+[ext_resource type="Script" path="res://data/powers/interaction_table.gd" id="1_script"]
+[ext_resource type="Script" path="res://data/powers/interaction_band.gd" id="2_band"]
+
+[sub_resource type="Resource" id="band_0"]
+script = ExtResource("2_band")
+min_difference = -1
+resisted = false
+scale = 1.0
+moves_target = true
+pierces_guard = false
+guard_damage_ratio = 0.0
+guard_slide_ratio = 0.5
+guard_vigor_ratio = 1.0
+
+[sub_resource type="Resource" id="band_1"]
+script = ExtResource("2_band")
+min_difference = -2
+resisted = false
+scale = 0.5
+moves_target = true
+pierces_guard = false
+guard_damage_ratio = 0.0
+guard_slide_ratio = 0.5
+guard_vigor_ratio = 1.0
+
+[sub_resource type="Resource" id="band_2"]
+script = ExtResource("2_band")
+min_difference = -99
+resisted = true
+scale = 1.0
+moves_target = true
+pierces_guard = false
+guard_damage_ratio = 0.0
+guard_slide_ratio = 0.5
+guard_vigor_ratio = 1.0
+
+[resource]
+script = ExtResource("1_script")
+bands = Array[ExtResource("2_band")]([SubResource("band_0"), SubResource("band_1"), SubResource("band_2")])

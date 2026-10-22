@@ -8,7 +8,9 @@ static func resolve(sim: MatchSimulation) -> void:
 		return
 	var config: CombatConfig = sim.config
 	var gap: float = CombatGeometry.gap(config, a, b)
-	if _can_lock(sim, a, b, gap):
+	if a.move.is_technique() and b.move.is_technique():
+		_technique_clash(sim, a, b)
+	elif _can_lock(sim, a, b, gap):
 		BladeLockResolver.start(sim, a, b)
 	elif a.move.is_heavy() or b.move.is_heavy():
 		_heavy_clash(sim, a, b)
@@ -61,6 +63,19 @@ static func _heavy_clash(sim: MatchSimulation, a: FighterState, b: FighterState)
 		sim.change_state(fighter, FighterState.State.HIT)
 		fighter.stun_ticks = recoil_ticks
 	sim.push_apart(a, b, sim.config.clash_heavy_separation)
+	event.hitstop_ticks = sim.freeze_pair(a, b, sim.config.hitstop_clash)
+
+
+static func _technique_clash(sim: MatchSimulation, a: FighterState, b: FighterState) -> void:
+	var flow: FlowConfig = sim.config.flow
+	var event: CombatEvent = _emit(sim, a, b, true)
+	event.type = CombatEvent.Type.TECHNIQUE_CLASH
+	var stagger: int = Ticks.from_seconds(flow.technique_clash_stagger)
+	for fighter in [a, b]:
+		sim.change_state(fighter, FighterState.State.STAGGERED)
+		fighter.stun_ticks = stagger
+		sim.drain_vigor(fighter, flow.technique_clash_vigor)
+	sim.push_apart(a, b, flow.technique_clash_separation)
 	event.hitstop_ticks = sim.freeze_pair(a, b, sim.config.hitstop_clash)
 
 

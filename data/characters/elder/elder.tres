@@ -12,6 +12,12 @@
 [ext_resource type="Resource" path="res://assets/characters/elder/art.tres" id="10_art"]
 [ext_resource type="Resource" path="res://data/families/guardian.tres" id="11_family"]
 [ext_resource type="Script" path="res://data/ability_data.gd" id="12_ability"]
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="14_power"]
+[ext_resource type="Resource" path="res://data/powers/barrier.tres" id="p_barrier"]
+[ext_resource type="Resource" path="res://data/powers/heal.tres" id="p_heal"]
+[ext_resource type="Resource" path="res://data/powers/repulse.tres" id="p_repulse"]
+[ext_resource type="Resource" path="res://data/techniques/spin.tres" id="t_spin"]
+[ext_resource type="Resource" path="res://data/techniques/thrust.tres" id="t_thrust"]
 
 [sub_resource type="Resource" id="elder_light_1"]
 script = ExtResource("2_move")
@@ -246,6 +252,9 @@ aerial_heavy = SubResource("elder_aerial_heavy")
 guard_break_stun = 1.2
 wall_jump = true
 ability = SubResource("elder_ability")
+powers = Array[ExtResource("14_power")]([ExtResource("p_repulse"), ExtResource("p_heal"), ExtResource("p_barrier")])
+technique_forward = ExtResource("t_thrust")
+technique_back = ExtResource("t_spin")
 ai_profile = ExtResource("9_ai")
 path = 0
 style_key = "STYLE_ELDER"

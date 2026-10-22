@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="PowerData" format=3]
+
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/powers/tables/basic.tres" id="2_table"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"drain"
+name_key = "POWER_DRAIN"
+description_key = "POWER_DRAIN_TEXT"
+path = 2
+kind = 18
+cost = 15.0
+max_channel = 1.5
+startup = 0.2
+recovery = 0.3
+reach = 300.0
+strength = 30.0
+damage = 10.0
+absorb_gain = 10.0
+interaction = ExtResource("2_table")

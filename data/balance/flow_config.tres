@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="FlowConfig" format=3]
+
+[ext_resource type="Script" path="res://data/balance/flow_config.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/powers/tables/basic.tres" id="2_table"]
+
+[resource]
+script = ExtResource("1_script")
+basic_table = ExtResource("2_table")

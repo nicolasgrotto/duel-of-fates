@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="PowerData" format=3]
+
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/powers/tables/choke.tres" id="2_table"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"choke"
+name_key = "POWER_CHOKE"
+description_key = "POWER_CHOKE_TEXT"
+path = 2
+kind = 14
+cost = 45.0
+cost_per_second = 10.0
+max_channel = 1.8
+startup = 0.3
+recovery = 0.4
+reach = 240.0
+damage = 3.0
+absorb_gain = 20.0
+interaction = ExtResource("2_table")

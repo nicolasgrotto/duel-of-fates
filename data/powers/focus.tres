@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="PowerData" format=3]
+
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"focus"
+name_key = "POWER_FOCUS"
+description_key = "POWER_FOCUS_TEXT"
+path = 1
+kind = 8
+cost = 35.0
+startup = 0.25
+recovery = 0.25
+duration = 4.0

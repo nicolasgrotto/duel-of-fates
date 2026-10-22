@@ -11,7 +11,7 @@ func _scripted_intents(script_seed: int) -> PackedInt32Array:
 	for i in TICKS * 2:
 		intent.clear()
 		intent.move_x = rng.randi_range(-1, 1)
-		for button in [Intent.Command.LIGHT, Intent.Command.HEAVY, Intent.Command.BLOCK, Intent.Command.JUMP, Intent.Command.DODGE, Intent.Command.EVADE]:
+		for button in [Intent.Command.LIGHT, Intent.Command.HEAVY, Intent.Command.BLOCK, Intent.Command.JUMP, Intent.Command.DODGE, Intent.Command.EVADE, Intent.Command.POWER, Intent.Command.SPECIAL]:
 			if rng.randf() < 0.06:
 				intent.press(button)
 			elif rng.randf() < 0.2:

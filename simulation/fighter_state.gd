@@ -14,13 +14,18 @@ enum State {
 	STAGGERED,
 	STUNNED,
 	DEAD,
+	CASTING,
+	CHANNELING,
+	HELD,
 }
 enum Phase { NONE, STARTUP, ACTIVE, RECOVERY }
 enum DodgeKind { NONE, GROUND, AIR, EVADE, DASH }
-enum Action { NONE, JUMP, BLOCK, LIGHT, HEAVY, SHOVE, EVADE, DODGE, SPECIAL }
+enum Action { NONE, JUMP, BLOCK, LIGHT, HEAVY, SHOVE, EVADE, DODGE, SPECIAL, POWER, FOURTH }
 enum Wound { NONE, ARM, LEG }
 
 const NO_PARRY: int = -1
+const POWER_SLOTS: int = 4
+const FOURTH_SLOT: int = 3
 
 var index: int = 0
 var character: CharacterData
@@ -71,7 +76,12 @@ var parry_ticks: int = NO_PARRY
 var parry_lockout_ticks: int = 0
 
 var buffered_action: Action = Action.NONE
+var buffered_direction: int = 0
 var buffer_ticks: int = 0
+var chord_command: int = 0
+var chord_ticks: int = 0
+var chord_direction: int = 0
+var input_idle: bool = true
 
 var jumps_used: int = 0
 var air_dash_used: bool = false
@@ -96,6 +106,38 @@ var combo_taken: int = 0
 var ticks_since_damage: int = 0
 var round_wins: int = 0
 
+var recovery_cut: int = -1
+var multi_hit_ticks: int = 0
+
+var powers: Array[PowerData] = [null, null, null, null]
+var flow: float = 0.0
+var flow_level: int = 4
+var flow_tier: int = 1
+var flow_potency: float = 1.0
+var power: PowerData
+var power_phase: Phase = Phase.NONE
+var power_ticks: int = 0
+var power_slot: int = 0
+var power_escape: bool = false
+var power_cooldown: int = 0
+var power_cooldowns: PackedInt32Array = PackedInt32Array([0, 0, 0, 0])
+var pulse_ticks: int = 0
+var spawned: int = 0
+var heal_ticks: int = 0
+var heal_per_tick: float = 0.0
+var focus_ticks: int = 0
+var wrath_ticks: int = 0
+var wrath_armor: int = 0
+var sanctuary_ticks: int = 0
+var sanctuary_hp: float = 0.0
+var twisted_ticks: int = 0
+var held_ticks: int = 0
+var held_by_choke: bool = false
+var arsenal_count: int = 0
+var arsenal_ticks: int = 0
+var rain_ticks: int = 0
+var blade_out: bool = false
+
 var finisher_limb: MoveData.Limb = MoveData.Limb.NONE
 var finisher_from_front: bool = true
 
@@ -117,6 +159,28 @@ func setup(fighter_index: int, data: CharacterData, config: CombatConfig) -> voi
 	var perfect_window: float = base_perfect + (blade_multiplier - 1.0) * config.perfect_parry_blade_bonus
 	perfect_parry_ticks = Ticks.from_seconds(perfect_window)
 	parry_window_ticks = Ticks.from_seconds(data.parry_window if data.parry_window > 0.0 else config.parry_window)
+	flow_level = data.flow
+	flow_potency = config.attribute_multiplier(data.flow)
+	flow_tier = config.flow.tier_for(data.flow)
+	for slot in POWER_SLOTS:
+		powers[slot] = null
+	for slot in mini(data.powers.size(), FOURTH_SLOT):
+		powers[slot] = data.powers[slot]
+	powers[FOURTH_SLOT] = data.fourth_power
+
+
+func set_flow_level(level: int, config: CombatConfig) -> void:
+	flow_level = level
+	flow_potency = config.attribute_multiplier(level)
+	flow_tier = config.flow.tier_for(level)
+
+
+func is_casting() -> bool:
+	return state == State.CASTING or state == State.CHANNELING
+
+
+func power_kind_active(kind: PowerData.Kind) -> bool:
+	return state == State.CHANNELING and power != null and power.kind == kind
 
 
 func is_airborne() -> bool:
@@ -209,6 +273,32 @@ func reset_for_round(start_x: float, start_facing: int) -> void:
 	ticks_since_damage = 0
 	finisher_limb = MoveData.Limb.NONE
 	finisher_from_front = true
+	buffered_direction = 0
+	chord_command = 0
+	chord_ticks = 0
+	recovery_cut = -1
+	multi_hit_ticks = 0
+	power = null
+	power_phase = Phase.NONE
+	power_ticks = 0
+	power_cooldown = 0
+	power_cooldowns = PackedInt32Array([0, 0, 0, 0])
+	pulse_ticks = 0
+	spawned = 0
+	heal_ticks = 0
+	heal_per_tick = 0.0
+	focus_ticks = 0
+	wrath_ticks = 0
+	wrath_armor = 0
+	sanctuary_ticks = 0
+	sanctuary_hp = 0.0
+	twisted_ticks = 0
+	held_ticks = 0
+	held_by_choke = false
+	arsenal_count = 0
+	arsenal_ticks = 0
+	rain_ticks = 0
+	blade_out = false
 
 
 func clear_move() -> void:
@@ -220,6 +310,8 @@ func clear_move() -> void:
 	armor_used = 0
 	charge_ticks = 0
 	charge_level = 0
+	recovery_cut = -1
+	multi_hit_ticks = 0
 
 
 func capture() -> Dictionary:

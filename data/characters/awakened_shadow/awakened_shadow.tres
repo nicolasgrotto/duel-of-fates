@@ -12,6 +12,13 @@
 [ext_resource type="Resource" path="res://assets/characters/awakened_shadow/art.tres" id="10_art"]
 [ext_resource type="Resource" path="res://data/families/aggressor.tres" id="11_family"]
 [ext_resource type="Script" path="res://data/ability_data.gd" id="12_ability"]
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="14_power"]
+[ext_resource type="Resource" path="res://data/powers/choke.tres" id="p_choke"]
+[ext_resource type="Resource" path="res://data/powers/lightning.tres" id="p_lightning"]
+[ext_resource type="Resource" path="res://data/powers/pull.tres" id="p_pull"]
+[ext_resource type="Resource" path="res://data/techniques/dash_slash.tres" id="t_dash_slash"]
+[ext_resource type="Resource" path="res://data/techniques/plunge.tres" id="t_plunge"]
+[ext_resource type="Resource" path="res://data/techniques/spin.tres" id="t_spin"]
 
 [sub_resource type="Resource" id="awakened_shadow_light_1"]
 script = ExtResource("2_move")
@@ -212,6 +219,10 @@ guard_break_stun = 1.3
 vigor_on_hit = 6.0
 max_health_override = 150.0
 ability = SubResource("awakened_shadow_ability")
+powers = Array[ExtResource("14_power")]([ExtResource("p_lightning"), ExtResource("p_pull"), ExtResource("p_choke")])
+technique_forward = ExtResource("t_dash_slash")
+technique_back = ExtResource("t_spin")
+technique_air = ExtResource("t_plunge")
 ai_profile = ExtResource("9_ai")
 path = 1
 style_key = "STYLE_AWAKENED_SHADOW"

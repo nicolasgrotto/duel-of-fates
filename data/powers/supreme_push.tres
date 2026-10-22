@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="PowerData" format=3]
+
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/powers/tables/repulse.tres" id="2_table"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"supreme_push"
+name_key = "POWER_SUPREME_PUSH"
+description_key = "POWER_SUPREME_PUSH_TEXT"
+path = 0
+kind = 4
+cost = 60.0
+high_cost = true
+mark_color = Color(0.4980, 0.9412, 0.8784, 1)
+startup = 0.15
+recovery = 0.4
+reach = 240.0
+damage = 14.0
+escape_damage = 4.0
+stagger = 0.4
+tier_values = PackedFloat32Array(950.0, 1150.0, 1400.0, 1650.0)
+cooldown = 6.0
+castable_when_hit = true
+guard_vigor = 14.0
+absorb_gain = 30.0
+interaction = ExtResource("2_table")

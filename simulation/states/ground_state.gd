@@ -5,7 +5,7 @@ extends StateLogic
 func step(sim: MatchSimulation, fighter: FighterState, intent: Intent) -> void:
 	if ActionStarter.try_buffered(sim, fighter, intent, ActionStarter.GROUND_ACTIONS):
 		return
-	if intent.is_held(Intent.Command.BLOCK):
+	if intent.is_held(Intent.Command.BLOCK) and not fighter.blade_out:
 		sim.change_state(fighter, FighterState.State.BLOCKING)
 		return
 	_walk(sim, fighter, intent.move_x)

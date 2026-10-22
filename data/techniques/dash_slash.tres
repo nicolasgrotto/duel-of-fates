@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="MoveData" format=3]
+
+[ext_resource type="Script" path="res://data/move_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"dash_slash"
+kind = 10
+startup = 0.2
+active = 0.12
+recovery = 0.5
+damage = 15.0
+vigor_cost = 24.0
+block_vigor_cost = 18.0
+knockback = 80.0
+block_push = 40.0
+hitstun = 0.25
+blockstun = 0.3
+lunge = 220.0
+reach = 100.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 65.0
+finisher_limb = 2
+blade_angle_windup = -170.0
+blade_angle_strike = 50.0
+recovery_on_hit = 0.12

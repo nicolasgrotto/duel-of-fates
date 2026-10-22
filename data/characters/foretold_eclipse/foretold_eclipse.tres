@@ -12,6 +12,12 @@
 [ext_resource type="Resource" path="res://assets/characters/foretold_eclipse/art.tres" id="10_art"]
 [ext_resource type="Resource" path="res://data/families/guardian.tres" id="11_family"]
 [ext_resource type="Script" path="res://data/ability_data.gd" id="12_ability"]
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="14_power"]
+[ext_resource type="Resource" path="res://data/powers/arsenal.tres" id="p_arsenal"]
+[ext_resource type="Resource" path="res://data/powers/choke.tres" id="p_choke"]
+[ext_resource type="Resource" path="res://data/powers/lightning.tres" id="p_lightning"]
+[ext_resource type="Resource" path="res://data/powers/pull.tres" id="p_pull"]
+[ext_resource type="Resource" path="res://data/techniques/sweep_low.tres" id="t_sweep_low"]
 
 [sub_resource type="Resource" id="foretold_eclipse_light_1"]
 script = ExtResource("2_move")
@@ -162,6 +168,9 @@ aerial_heavy = ExtResource("8_aerial_heavy")
 guard_break_stun = 1.2
 can_feint = true
 ability = SubResource("foretold_eclipse_ability")
+powers = Array[ExtResource("14_power")]([ExtResource("p_lightning"), ExtResource("p_pull"), ExtResource("p_choke")])
+fourth_power = ExtResource("p_arsenal")
+technique_forward = ExtResource("t_sweep_low")
 ai_profile = ExtResource("9_ai")
 path = 1
 style_key = "STYLE_FORETOLD_ECLIPSE"

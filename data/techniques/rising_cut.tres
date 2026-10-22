@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="MoveData" format=3]
+
+[ext_resource type="Script" path="res://data/move_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"rising_cut"
+kind = 10
+startup = 0.3
+active = 0.14
+recovery = 0.55
+damage = 15.0
+vigor_cost = 26.0
+block_vigor_cost = 16.0
+knockback = 80.0
+block_push = 40.0
+hitstun = 0.45
+blockstun = 0.3
+lunge = 30.0
+reach = 110.0
+hitbox_bottom = 0.0
+hitbox_top = 180.0
+blade_reach = 65.0
+finisher_limb = 1
+blade_angle_windup = 130.0
+blade_angle_strike = -115.0
+airborne_bonus = 0.3
+launch_speed = 650.0

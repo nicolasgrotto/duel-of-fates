@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="MoveData" format=3]
+
+[ext_resource type="Script" path="res://data/move_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"blade_throw"
+kind = 10
+startup = 0.25
+active = 0.1
+recovery = 0.35
+damage = 12.0
+vigor_cost = 22.0
+block_vigor_cost = 14.0
+knockback = 70.0
+block_push = 40.0
+hitstun = 0.4
+blockstun = 0.25
+lunge = 10.0
+reach = 0.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 65.0
+finisher_limb = 1
+blade_angle_windup = -170.0
+blade_angle_strike = 10.0
+throws_blade = true

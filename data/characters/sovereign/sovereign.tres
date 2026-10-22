@@ -12,6 +12,12 @@
 [ext_resource type="Resource" path="res://assets/characters/sovereign/art.tres" id="10_art"]
 [ext_resource type="Resource" path="res://data/families/fencer.tres" id="11_family"]
 [ext_resource type="Script" path="res://data/ability_data.gd" id="12_ability"]
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="14_power"]
+[ext_resource type="Resource" path="res://data/powers/choke.tres" id="p_choke"]
+[ext_resource type="Resource" path="res://data/powers/lightning.tres" id="p_lightning"]
+[ext_resource type="Resource" path="res://data/powers/storm.tres" id="p_storm"]
+[ext_resource type="Resource" path="res://data/techniques/rising_cut.tres" id="t_rising_cut"]
+[ext_resource type="Resource" path="res://data/techniques/spin.tres" id="t_spin"]
 
 [sub_resource type="Resource" id="sovereign_light_1"]
 script = ExtResource("2_move")
@@ -193,6 +199,9 @@ aerial_heavy = ExtResource("8_aerial_heavy")
 guard_break_stun = 1.2
 sweet_spot = true
 ability = SubResource("sovereign_ability")
+powers = Array[ExtResource("14_power")]([ExtResource("p_lightning"), ExtResource("p_storm"), ExtResource("p_choke")])
+technique_forward = ExtResource("t_rising_cut")
+technique_back = ExtResource("t_spin")
 ai_profile = ExtResource("9_ai")
 path = 1
 style_key = "STYLE_SOVEREIGN"

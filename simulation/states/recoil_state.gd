@@ -4,6 +4,9 @@ extends StateLogic
 
 func step(sim: MatchSimulation, fighter: FighterState, _intent: Intent) -> void:
 	decelerate(sim, fighter)
+	if fighter.buffered_action == FighterState.Action.POWER and PowerStarter.castable_while_hit(fighter, fighter.buffered_direction):
+		if ActionStarter.try_buffered(sim, fighter, _intent, 1 << FighterState.Action.POWER):
+			return
 	fighter.stun_ticks -= 1
 	if fighter.stun_ticks <= 0:
 		finish_to_neutral(sim, fighter)

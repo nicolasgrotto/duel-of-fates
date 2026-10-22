@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="PowerData" format=3]
+
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/powers/tables/repulse.tres" id="2_table"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"repulse"
+name_key = "POWER_REPULSE"
+description_key = "POWER_REPULSE_TEXT"
+path = 0
+kind = 0
+cost = 40.0
+startup = 0.28
+recovery = 0.35
+reach = 320.0
+damage = 6.0
+stagger = 0.4
+tier_values = PackedFloat32Array(950.0, 1150.0, 1400.0, 1650.0)
+guard_vigor = 12.0
+absorb_gain = 20.0
+interaction = ExtResource("2_table")

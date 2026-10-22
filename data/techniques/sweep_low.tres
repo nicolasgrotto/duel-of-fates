@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="MoveData" format=3]
+
+[ext_resource type="Script" path="res://data/move_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"sweep_low"
+kind = 10
+startup = 0.42
+active = 0.12
+recovery = 0.5
+damage = 9.0
+vigor_cost = 26.0
+block_vigor_cost = 16.0
+knockback = 40.0
+block_push = 40.0
+hitstun = 0.45
+blockstun = 0.3
+lunge = 30.0
+reach = 120.0
+hitbox_bottom = 0.0
+hitbox_top = 50.0
+blade_reach = 65.0
+finisher_limb = 2
+blade_angle_windup = 165.0
+blade_angle_strike = 15.0
+stagger_on_guard = 0.55
