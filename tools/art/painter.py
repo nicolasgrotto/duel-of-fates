@@ -1,5 +1,7 @@
-"""Procedural painter for fighter parts.
+"""Procedural painter for fighter parts, drawn on the pixel grid of the world (1 pixel = 2 u).
 
+Shapes are painted at a fine scale and then reduced to the grid with hard edges: coverage becomes
+on or off, the shade snaps to four fixed tones and the outer border gets a darker one-pixel rim.
 Each part is written as two PNG files:
 - <part>.png: material map. R = shade (0.5 is the base tone), G = palette slot / 7,
   B = emission, A = coverage.
@@ -12,10 +14,13 @@ import zlib
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
-PIXELS_PER_UNIT = 4
-SUPERSAMPLE = 2
+PIXELS_PER_UNIT = 0.5
+SUPERSAMPLE = 8
+TONES = np.array([0.3, 0.42, 0.53, 0.68], np.float32)
+RIM_TONE = 0.2
+COVERAGE_THRESHOLD = 0.5
 SLOTS = {"cloak": 0, "body": 1, "trim": 2, "skin": 3, "hair": 4, "metal": 5, "leather": 6, "eyes": 7}
-NORMAL_STRENGTH = 2.4
+NORMAL_STRENGTH = 0.6
 
 
 class Part:
@@ -23,8 +28,8 @@ class Part:
         self.name = name
         self.left, self.top, self.right, self.bottom = left, top, right, bottom
         self.scale = PIXELS_PER_UNIT * SUPERSAMPLE
-        self.width = int(math.ceil((right - left) * self.scale))
-        self.height = int(math.ceil((bottom - top) * self.scale))
+        self.width = int(math.ceil((right - left) * PIXELS_PER_UNIT)) * SUPERSAMPLE
+        self.height = int(math.ceil((bottom - top) * PIXELS_PER_UNIT)) * SUPERSAMPLE
         shape = (self.height, self.width)
         self.alpha = np.zeros(shape, np.float32)
         self.shade = np.zeros(shape, np.float32)
@@ -65,7 +70,7 @@ class Part:
               grain=0.04, emission=0.0, top_light=0.12, seed=0):
         if mask.max() <= 0.0:
             return
-        blur_px = max(bevel * SUPERSAMPLE * PIXELS_PER_UNIT / 4.0, 1.0)
+        blur_px = max(bevel * self.scale / 4.0, 1.0)
         soft = np.asarray(Image.fromarray((mask * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(blur_px)), np.float32) / 255.0
         inner = np.clip(soft * mask * 1.6, 0.0, 1.0)
         rng = np.random.default_rng(seed + zlib.crc32(self.name.encode()) % 10000)
@@ -100,12 +105,15 @@ class Part:
             image = Image.fromarray((np.clip(array, 0, 1) * 255).astype(np.uint8))
             return np.asarray(image.resize(size, Image.Resampling.BOX), np.float32) / 255.0
 
-        alpha = down(self.alpha)
-        shade = down(self.shade * self.alpha) / np.maximum(alpha, 1e-3)
-        emission = down(self.emission)
+        coverage = down(self.alpha)
+        alpha = (coverage >= COVERAGE_THRESHOLD).astype(np.float32)
+        shade = down(self.shade * self.alpha) / np.maximum(coverage, 1e-3)
+        level = np.abs(shade[..., None] - TONES[None, None, :]).argmin(axis=-1)
+        shade = np.where(rim(alpha) > 0, RIM_TONE, TONES[level]) * alpha
+        emission = (down(self.emission) >= 0.5).astype(np.float32) * alpha
         slot = np.asarray(Image.fromarray((self.slot * 255).astype(np.uint8)).resize(size, Image.Resampling.NEAREST), np.float32) / 255.0
-        height = down((self.heightmap * self.alpha + 0.0) / 2.0) * 2.0
-        material = np.stack([np.clip(shade, 0, 1), slot, emission, alpha], axis=-1)
+        height = down(self.heightmap * self.alpha / 2.0) * 2.0
+        material = np.stack([shade, slot, emission, alpha], axis=-1)
         Image.fromarray((material * 255).astype(np.uint8), "RGBA").save(f"{folder}/{self.name}.png", optimize=True)
         gy, gx = np.gradient(height)
         nx = -gx * NORMAL_STRENGTH
@@ -116,3 +124,9 @@ class Part:
         normal_rgba = np.concatenate([normal, alpha[..., None]], axis=-1)
         Image.fromarray((normal_rgba * 255).astype(np.uint8), "RGBA").save(f"{folder}/{self.name}_n.png", optimize=True)
         return size
+
+
+def rim(alpha):
+    padded = np.pad(alpha, 1)
+    neighbours = np.minimum.reduce([padded[:-2, 1:-1], padded[2:, 1:-1], padded[1:-1, :-2], padded[1:-1, 2:]])
+    return ((alpha > 0) & (neighbours == 0)).astype(np.int64)

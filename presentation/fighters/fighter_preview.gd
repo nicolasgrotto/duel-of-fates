@@ -2,6 +2,13 @@ class_name FighterPreview
 extends Node2D
 
 const CONFIG: CombatConfig = preload("res://data/balance/combat_config.tres")
+const EFFECTS: EffectsConfig = preload("res://data/balance/effects_config.tres")
+const GRID: Vector2i = Vector2i(120, 130)
+const FLOOR_MARGIN: int = 6
+const PIXEL_SCALE: float = 4.0
+
+var _viewport: SubViewport
+var _display: Sprite2D
 
 var _rig: FighterRig
 var _blade: BladeView
@@ -21,18 +28,42 @@ func show_fighter(data: CharacterData, costume: CostumeData, blade_color: Color)
 		return
 	_fighter.setup(0, data, CONFIG)
 	_fighter.state = FighterState.State.IDLE
+	if _viewport == null:
+		_build_grid()
 	_rig = FighterRig.new()
-	add_child(_rig)
+	_viewport.add_child(_rig)
 	_rig.build(data, costume)
 	_solver.setup(data, data.art)
 	if _blade == null:
 		_blade = BladeView.new()
 		_blade.top_level = true
-		add_child(_blade)
+		_viewport.add_child(_blade)
 	_blade.color = blade_color
 	_blade.width_scale = data.weapon.blade_width
 	_blade.length_ratio = 1.0
 	_blade.eyes_color = costume.color(CostumeData.Slot.EYES)
+
+
+func _build_grid() -> void:
+	_viewport = SubViewport.new()
+	_viewport.size = GRID
+	_viewport.transparent_bg = true
+	_viewport.snap_2d_transforms_to_pixel = true
+	_viewport.snap_2d_vertices_to_pixel = true
+	_viewport.canvas_item_default_texture_filter = Viewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST
+	add_child(_viewport)
+	var camera: Camera2D = Camera2D.new()
+	camera.zoom = Vector2.ONE / EFFECTS.units_per_pixel
+	camera.position = Vector2(0.0, -(GRID.y * 0.5 - FLOOR_MARGIN) * EFFECTS.units_per_pixel)
+	_viewport.add_child(camera)
+	camera.make_current()
+	_display = Sprite2D.new()
+	_display.texture = _viewport.get_texture()
+	_display.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_display.centered = true
+	_display.scale = Vector2.ONE * PIXEL_SCALE
+	_display.position = Vector2(0.0, -(GRID.y * 0.5 - FLOOR_MARGIN) * PIXEL_SCALE)
+	add_child(_display)
 
 
 func _process(delta: float) -> void:
@@ -40,7 +71,7 @@ func _process(delta: float) -> void:
 		return
 	_solver.time += delta
 	_solver.solve(_fighter, _fighter, _pose)
-	_rig.floor_y = global_position.y
+	_rig.floor_y = 0.0
 	_rig.apply(_pose, 1, delta)
 	_geometry.compute(_character.weapon, _pose)
 	var to_global: Transform2D = _rig.get_global_transform()
