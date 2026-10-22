@@ -8,11 +8,15 @@ const BEAM_JITTER: float = 9.0
 const BEAM_REFRESH: float = 0.05
 const ROCK_POINTS: int = 7
 const SKY_HEIGHT: float = 900.0
-const CLEAVE_SPREAD: float = 1.05
 const ARSENAL_LENGTH: float = 30.0
 const STORM_DARKEN: float = 0.45
 const STORM_FADE: float = 3.0
 const FADE_STEPS: float = 3.0
+const GRID: float = 2.0
+const CLEAVE_SEGMENTS: int = 10
+const CLEAVE_GROW: float = 70.0
+const CLEAVE_LAYERS: Array[Vector2] = [Vector2(2.4, 0.28), Vector2(1.2, 0.8), Vector2(0.4, 1.0)]
+const METEOR_CRACKS: int = 5
 
 enum Burst { WAVE, RING_IN, RING_OUT, BOLT, FLASH, CHEVRONS }
 
@@ -21,6 +25,13 @@ var views: Array[FighterView] = []
 var blade_colors: Array[Color] = [Color.WHITE, Color.WHITE]
 var ambient: CanvasModulate
 var base_ambient: Color = Color.WHITE
+var vfx: PowerVfxConfig
+var debris: DebrisLayer
+var sky: StormSky
+
+var _sky_flash: float = 0.0
+var _meteor_seen: PackedFloat32Array = PackedFloat32Array([-1.0, -1.0])
+var _cleave_points: PackedVector2Array = []
 
 var _kinds: PackedInt32Array = []
 var _positions: PackedVector2Array = []
@@ -48,6 +59,10 @@ func _ready() -> void:
 	_sizes.resize(POOL)
 	_colors.resize(POOL)
 	_lives.fill(0.0)
+
+
+func on_sky_flash(strength: float) -> void:
+	_sky_flash = maxf(_sky_flash, strength)
 
 
 func tier_color(tier: int) -> Color:
@@ -132,7 +147,20 @@ func _process(delta: float) -> void:
 			if _ages[i] >= _lives[i]:
 				_lives[i] = 0.0
 	_update_storm(delta)
+	_update_meteors()
 	queue_redraw()
+
+
+func _update_meteors() -> void:
+	if debris == null:
+		return
+	for i in 2:
+		var progress: float = debris.meteor_progress(i)
+		if progress >= 1.0 and _meteor_seen[i] < 1.0:
+			var color: Color = tier_color(sim.fighters[i].flow_tier)
+			_burst(Burst.FLASH, debris.meteors[i], 0.0, 0.25, vfx.meteor_radius * 2.0, color)
+			_burst(Burst.RING_OUT, debris.meteors[i], 0.0, 0.3, vfx.meteor_radius * 3.0, color)
+		_meteor_seen[i] = progress
 
 
 func _update_storm(delta: float) -> void:
@@ -142,7 +170,14 @@ func _update_storm(delta: float) -> void:
 	for fighter in sim.fighters:
 		storming = storming or (fighter.power_kind_active(PowerData.Kind.STORM))
 	_storm = move_toward(_storm, 1.0 if storming else 0.0, delta * STORM_FADE)
-	var flash: float = 0.0
+	_sky_flash = maxf(_sky_flash - delta * 4.0, 0.0)
+	if sky != null:
+		sky.intensity = _storm
+		sky.focus_x = (sim.fighters[0].x + sim.fighters[1].x) * 0.5
+		for fighter in sim.fighters:
+			if fighter.power_kind_active(PowerData.Kind.STORM):
+				sky.color = tier_color(fighter.flow_tier)
+	var flash: float = _sky_flash
 	for i in POOL:
 		if _lives[i] > 0.0 and _kinds[i] == Burst.BOLT:
 			flash = maxf(flash, 1.0 - _ages[i] / _lives[i])
@@ -160,6 +195,9 @@ func _draw() -> void:
 	for hazard in sim.hazards:
 		if hazard.active:
 			_draw_hazard(hazard)
+	if debris != null:
+		for i in 2:
+			_draw_meteor(i)
 	_draw_bursts()
 
 
@@ -274,17 +312,16 @@ func _draw_projectile(projectile: Projectile) -> void:
 			var points: PackedVector2Array = []
 			for i in ROCK_POINTS:
 				var angle: float = i * TAU / ROCK_POINTS + _time * 6.0
-				var radius: float = projectile.size * (0.8 + 0.25 * sin(i * 2.3))
+				var radius: float = projectile.size * (0.95 + 0.25 * sin(i * 2.3))
 				points.append(at + Vector2(cos(angle), sin(angle)) * radius)
 			points.append(points[0])
-			draw_colored_polygon(points, Color(0.08, 0.08, 0.1, 0.9))
-			draw_polyline(points, Color(color, 0.9), 1.5)
+			draw_polyline(points, Color(color, 0.7), GRID)
+			var back: float = -signf(projectile.vx)
+			for streak in 3:
+				var offset: Vector2 = Vector2(back * (projectile.size + streak * 6.0), (streak - 1) * projectile.size * 0.6)
+				draw_line(at + offset, at + offset + Vector2(back * projectile.size * (2.2 - streak * 0.5), 0.0), Color(color, 0.5 - streak * 0.12), GRID)
 		Projectile.Kind.CLEAVE:
-			var heading: float = 0.0 if projectile.vx >= 0.0 else PI
-			var center: Vector2 = at - Vector2.from_angle(heading) * projectile.size
-			draw_arc(center, projectile.size * 1.4, heading - CLEAVE_SPREAD, heading + CLEAVE_SPREAD, 18, Color(blade_colors[projectile.owner], 0.35), 14.0)
-			draw_arc(center, projectile.size * 1.4, heading - CLEAVE_SPREAD, heading + CLEAVE_SPREAD, 18, Color(blade_colors[projectile.owner], 0.85), 6.0)
-			draw_arc(center, projectile.size * 1.4, heading - CLEAVE_SPREAD, heading + CLEAVE_SPREAD, 18, Color(Color.WHITE, 0.9), 2.0)
+			_draw_cleave(projectile, at)
 		Projectile.Kind.BLADE, Projectile.Kind.ARSENAL:
 			var spin: float = _time * 22.0
 			var half: float = 46.0 if projectile.kind == Projectile.Kind.BLADE else 12.0
@@ -293,6 +330,59 @@ func _draw_projectile(projectile: Projectile) -> void:
 			draw_line(at - direction, at + direction, Color(tint, 0.35), 12.0)
 			draw_line(at - direction, at + direction, Color(tint, 0.85), 4.5)
 			draw_line(at - direction, at + direction, Color.WHITE, 1.8)
+
+
+func _draw_cleave(projectile: Projectile, at: Vector2) -> void:
+	var direction: float = 1.0 if projectile.vx >= 0.0 else -1.0
+	var base_y: float = -(projectile.y - sim.config.flow.projectile_height)
+	var grow: float = clampf(projectile.travelled / CLEAVE_GROW, 0.35, 1.0)
+	var height: float = vfx.cleave_height * grow
+	var color: Color = blade_colors[projectile.owner]
+	for echo in 2:
+		var x: float = at.x - direction * echo * 26.0
+		for layer in CLEAVE_LAYERS:
+			_cleave_shape(x, base_y, height, direction, layer.x * (0.6 if echo == 1 else 1.0))
+			var tint: Color = color if layer.y < 1.0 else Color.WHITE
+			draw_colored_polygon(_cleave_points, Color(tint, layer.y * (0.35 if echo == 1 else 1.0) * (0.9 if layer.y < 1.0 else 0.85)))
+	for i in vfx.cleave_ground_sparks + 2:
+		var spark: Vector2 = Vector2(at.x - direction * (8.0 + i * 12.0 + randf() * 6.0), base_y - randf() * 6.0).snapped(Vector2(GRID, GRID))
+		draw_rect(Rect2(spark, Vector2(GRID, GRID)), Color(Color.WHITE, 0.9 - i * 0.18))
+		draw_rect(Rect2(spark + Vector2(0.0, -GRID), Vector2(GRID, GRID)), Color(color, 0.6 - i * 0.12))
+
+
+func _cleave_shape(x: float, base_y: float, height: float, direction: float, width_scale: float) -> void:
+	var count: int = CLEAVE_SEGMENTS + 1
+	_cleave_points.resize(count * 2)
+	for i in count:
+		var t: float = float(i) / CLEAVE_SEGMENTS
+		var center: float = x + direction * vfx.cleave_bow * sin(t * PI * 0.5) - direction * vfx.cleave_bow * 0.4 * t * t
+		var width: float = lerpf(vfx.cleave_base_width, vfx.cleave_tip_width, pow(t, 0.75)) * width_scale
+		var y: float = base_y - height * t
+		_cleave_points[i] = Vector2(center + direction * width * 0.5, y)
+		_cleave_points[count * 2 - 1 - i] = Vector2(center - direction * width * 0.5, y)
+
+
+func _draw_meteor(index: int) -> void:
+	var progress: float = debris.meteor_progress(index)
+	if progress < 0.0 or progress >= 1.0:
+		return
+	var color: Color = tier_color(sim.fighters[index].flow_tier)
+	var arrive: float = 1.0 - pow(1.0 - progress, 2.0)
+	var start: Vector2 = debris.meteors[index] + Vector2(-debris.meteor_facing[index] * vfx.meteor_pull, -vfx.meteor_pull * 0.6)
+	var at: Vector2 = start.lerp(debris.meteors[index], arrive)
+	var radius: float = vfx.meteor_radius * (0.7 + 0.3 * arrive)
+	draw_circle(at, radius * 1.6, Color(color, 0.08))
+	draw_circle(at, radius * 1.15, Color(color, 0.14))
+	draw_arc(at, radius + 2.0, 0.0, TAU, 24, Color(color, 0.8), GRID)
+	draw_arc(at + Vector2(-2.0, -2.0), radius - 2.0, PI * 0.9, PI * 1.6, 10, Color(Color.WHITE, 0.35), GRID)
+	draw_line(at, start.lerp(at, 0.2), Color(color, 0.2 * (1.0 - arrive)), radius)
+	var cracking: float = clampf((progress - 0.45) / 0.55, 0.0, 1.0)
+	for i in int(ceil(cracking * METEOR_CRACKS)):
+		var angle: float = i * TAU / METEOR_CRACKS + 0.4
+		var tip: Vector2 = at + Vector2.from_angle(angle) * radius * cracking
+		var bend: Vector2 = at.lerp(tip, 0.5) + Vector2.from_angle(angle + 1.2) * 5.0
+		draw_polyline(PackedVector2Array([at, bend, tip]), Color(Color.WHITE, 0.9), GRID)
+		draw_polyline(PackedVector2Array([at, bend, tip]), Color(color, 0.5), GRID * 2.5)
 
 
 func _draw_hazard(hazard: Hazard) -> void:
@@ -311,11 +401,10 @@ func _draw_hazard(hazard: Hazard) -> void:
 		Hazard.Kind.ROCK_DROP, Hazard.Kind.BOLT:
 			var radius: float = hazard.half_width * (1.6 - closing)
 			_draw_ellipse(Vector2(hazard.x, 2.0), Vector2(radius, radius * 0.25), Color(color, 0.5 + 0.4 * closing), 2.0)
-			if hazard.kind == Hazard.Kind.ROCK_DROP:
-				var fall: Vector2 = Vector2(hazard.x - 120.0 * (1.0 - closing), -SKY_HEIGHT * (1.0 - closing))
-				draw_circle(fall, 16.0, Color(0.1, 0.1, 0.12, 0.9))
-				draw_arc(fall, 16.0, 0.0, TAU, 14, Color(color, 0.8), 1.5)
-				draw_line(fall, fall + Vector2(-30.0, -60.0), Color(color, 0.25), 6.0)
+			if hazard.kind == Hazard.Kind.ROCK_DROP and debris != null and debris.meteor_progress(hazard.owner) >= 1.0:
+				var fall: Vector2 = debris.rain_position(hazard)
+				draw_line(fall, fall + Vector2(0.0, -46.0), Color(color, 0.22), 10.0)
+				draw_arc(fall, 13.0, 0.0, TAU, 12, Color(color, 0.75), GRID)
 			else:
 				draw_line(Vector2(hazard.x, 0.0), Vector2(hazard.x, -SKY_HEIGHT * closing * 0.3), Color(color, 0.12), 10.0)
 

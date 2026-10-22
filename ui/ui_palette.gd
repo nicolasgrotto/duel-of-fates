@@ -23,3 +23,7 @@ extends Resource
 @export var spark_warm: Color = Color("#fff1b8")
 @export var hit_flash: Color = Color("#ffffff")
 @export var ember: Color = Color("#ff7a2a")
+@export var dust: Color = Color("#8d8a86")
+@export var rock: Color = Color("#3a3d44")
+@export var rock_light: Color = Color("#6b6f78")
+@export var storm_cloud: Color = Color("#1b2233")

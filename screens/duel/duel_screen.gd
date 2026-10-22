@@ -3,6 +3,10 @@ extends Node2D
 const CONFIG: CombatConfig = preload("res://data/balance/combat_config.tres")
 const EFFECTS: EffectsConfig = preload("res://data/balance/effects_config.tres")
 const TRAINING: TrainingConfig = preload("res://data/balance/training_config.tres")
+const POWER_VFX: PowerVfxConfig = preload("res://data/balance/power_vfx_config.tres")
+const SKY_ANCHOR: NodePath = ^"SkyAnchor"
+const DEBRIS_DEPTH: int = 60
+const SKY_FALLBACK_DEPTH: int = -5
 const ENVIRONMENT: Environment = preload("res://presentation/duel_environment.tres")
 const PLAYER_INDEX: int = 0
 
@@ -16,6 +20,8 @@ var _world: Node2D
 var _views: Array[FighterView] = []
 var _effects: EffectsDirector
 var _powers: PowerView
+var _debris: DebrisLayer
+var _sky: StormSky
 var _camera: CameraRig
 var _hud: Hud
 var _screen: ScreenEffects
@@ -58,7 +64,16 @@ func _build_scene() -> void:
 	_stage.viewport.add_child(environment)
 	_world = Node2D.new()
 	_stage.viewport.add_child(_world)
-	_world.add_child(setup.arena.scene.instantiate())
+	var arena: Node = setup.arena.scene.instantiate()
+	_world.add_child(arena)
+	_sky = StormSky.new()
+	_sky.config = POWER_VFX
+	var anchor: Node = arena.get_node_or_null(SKY_ANCHOR)
+	if anchor != null:
+		anchor.add_child(_sky)
+	else:
+		_sky.z_index = SKY_FALLBACK_DEPTH
+		_world.add_child(_sky)
 	var ambient: CanvasModulate = CanvasModulate.new()
 	ambient.color = setup.arena.ambient
 	_world.add_child(ambient)
@@ -75,8 +90,16 @@ func _build_scene() -> void:
 		view.reduced_effects = Settings.reduced_effects
 		_world.add_child(view)
 		_views.append(view)
+	_debris = DebrisLayer.new()
+	_debris.config = POWER_VFX
+	_debris.z_index = DEBRIS_DEPTH
+	_world.add_child(_debris)
 	_powers = PowerView.new()
 	_powers.z_index = 10
+	_powers.vfx = POWER_VFX
+	_powers.debris = _debris
+	_powers.sky = _sky
+	_sky.flashed.connect(_powers.on_sky_flash)
 	_powers.ambient = ambient
 	_powers.base_ambient = setup.arena.ambient
 	_glow_layer.add_child(_powers)
@@ -142,6 +165,7 @@ func _bind_presentation(simulation: MatchSimulation) -> void:
 		_views[i].reset_round(simulation.phase == MatchSimulation.Phase.INTRO)
 	_effects.sim = simulation
 	_powers.sim = simulation
+	_debris.sim = simulation
 	_powers.views = _views
 	_powers.blade_colors = [setup.blade_colors[0], setup.blade_colors[1]]
 	_effects.blade_colors = [setup.blade_colors[0], setup.blade_colors[1]]
@@ -195,6 +219,7 @@ func _on_combat_event(event: CombatEvent) -> void:
 		view.on_event(event)
 	_effects.on_event(event)
 	_powers.on_event(event)
+	_debris.on_event(event)
 	_audio.on_event(event)
 	if _replaying:
 		return
@@ -206,10 +231,11 @@ func _on_combat_event(event: CombatEvent) -> void:
 		CombatEvent.Type.PERFECT_PARRY:
 			_screen.pulse_letterbox(EFFECTS.perfect_parry_letterbox)
 			_desaturation.pulse(EFFECTS.desaturation)
-		CombatEvent.Type.POWER_STARTED:
+		CombatEvent.Type.POWER_ACTIVE:
 			if event.power.kind == PowerData.Kind.MASS_TELEKINESIS:
 				_screen.pulse_letterbox(EFFECTS.mass_letterbox)
 				_camera.pull_back(EFFECTS.mass_pull_back, EFFECTS.mass_letterbox)
+				_camera.sky_shot(POWER_VFX.mass_sky_offset, POWER_VFX.mass_rise, POWER_VFX.mass_hold, POWER_VFX.mass_descend)
 		CombatEvent.Type.DEATH:
 			_death_index = _runner.recording.length()
 		CombatEvent.Type.MATCH_ENDED:

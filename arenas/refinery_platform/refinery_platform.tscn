@@ -31,6 +31,8 @@ script = ExtResource("1_layer")
 base_color = Color(0.02, 0.027, 0.047, 1)
 detail_color = Color(0.008, 0.01, 0.02, 1)
 
+[node name="SkyAnchor" type="Node2D" parent="."]
+
 [node name="FarPillars" type="Parallax2D" parent="."]
 scroll_scale = Vector2(0.25, 0.4)
 

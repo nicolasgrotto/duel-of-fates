@@ -15,6 +15,11 @@ var _zoom: float = 1.0
 var _pull_back: float = 0.0
 var _pull_back_left: float = 0.0
 var _pull_back_target: float = 0.0
+var _sky_offset: float = 0.0
+var _sky_time: float = -1.0
+var _sky_rise: float = 0.2
+var _sky_hold: float = 0.1
+var _sky_descend: float = 0.2
 
 
 func setup(simulation: MatchSimulation, effects_config: EffectsConfig) -> void:
@@ -38,9 +43,32 @@ func pull_back(amount: float, seconds: float) -> void:
 	_pull_back_target = amount
 
 
+func sky_shot(offset: float, rise: float, hold: float, descend: float) -> void:
+	_sky_offset = offset
+	_sky_rise = rise
+	_sky_hold = hold
+	_sky_descend = descend
+	_sky_time = 0.0
+
+
+func _sky_lift() -> float:
+	if _sky_time < 0.0:
+		return 0.0
+	if _sky_time < _sky_rise:
+		return _sky_offset * smoothstep(0.0, 1.0, _sky_time / _sky_rise)
+	var held: float = _sky_time - _sky_rise - _sky_hold
+	if held < 0.0:
+		return _sky_offset
+	return _sky_offset * (1.0 - smoothstep(0.0, 1.0, held / maxf(_sky_descend, 0.001)))
+
+
 func _process(delta: float) -> void:
 	if sim == null:
 		return
+	if _sky_time >= 0.0:
+		_sky_time += delta
+		if _sky_time > _sky_rise + _sky_hold + _sky_descend:
+			_sky_time = -1.0
 	_pull_back_left = maxf(_pull_back_left - delta, 0.0)
 	_pull_back = move_toward(_pull_back, _pull_back_target if _pull_back_left > 0.0 else 0.0, config.pull_back_speed * delta * 0.5)
 	_frame(false, delta)
@@ -73,7 +101,7 @@ func _frame(instant: bool, delta: float) -> void:
 	var limit: float = maxf(sim.config.half_width() + config.arena_margin - half_view, 0.0)
 	var center_x: float = clampf(_focus_x, -limit, limit)
 	var ground_offset: float = viewport_size.y * (config.ground_screen_ratio - 0.5) / final_zoom
-	var center: Vector2 = Vector2(center_x, -ground_offset - _focus_y)
+	var center: Vector2 = Vector2(center_x, -ground_offset - _focus_y - _sky_lift())
 	if _shake_left > 0.0:
 		var strength: float = _shake * (_shake_left / maxf(_shake_duration, 0.001))
 		center += Vector2(randf_range(-strength, strength), randf_range(-strength, strength))
