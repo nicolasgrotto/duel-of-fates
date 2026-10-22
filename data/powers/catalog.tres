@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="PowerCatalog" format=3]
+
+[ext_resource type="Script" path="res://data/powers/power_catalog.gd" id="1_script"]
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="2_power"]
+[ext_resource type="Resource" path="res://data/powers/repulse.tres" id="p_repulse"]
+[ext_resource type="Resource" path="res://data/powers/pull.tres" id="p_pull"]
+[ext_resource type="Resource" path="res://data/powers/throw.tres" id="p_throw"]
+[ext_resource type="Resource" path="res://data/powers/mind_twist.tres" id="p_mind_twist"]
+[ext_resource type="Resource" path="res://data/powers/supreme_push.tres" id="p_supreme_push"]
+[ext_resource type="Resource" path="res://data/powers/fracture.tres" id="p_fracture"]
+[ext_resource type="Resource" path="res://data/powers/barrier.tres" id="p_barrier"]
+[ext_resource type="Resource" path="res://data/powers/heal.tres" id="p_heal"]
+[ext_resource type="Resource" path="res://data/powers/focus.tres" id="p_focus"]
+[ext_resource type="Resource" path="res://data/powers/absorption.tres" id="p_absorption"]
+[ext_resource type="Resource" path="res://data/powers/sanctuary.tres" id="p_sanctuary"]
+[ext_resource type="Resource" path="res://data/powers/mass_telekinesis.tres" id="p_mass_telekinesis"]
+[ext_resource type="Resource" path="res://data/powers/flow_cleave.tres" id="p_flow_cleave"]
+[ext_resource type="Resource" path="res://data/powers/lightning.tres" id="p_lightning"]
+[ext_resource type="Resource" path="res://data/powers/choke.tres" id="p_choke"]
+[ext_resource type="Resource" path="res://data/powers/freeze.tres" id="p_freeze"]
+[ext_resource type="Resource" path="res://data/powers/storm.tres" id="p_storm"]
+[ext_resource type="Resource" path="res://data/powers/wrath.tres" id="p_wrath"]
+[ext_resource type="Resource" path="res://data/powers/drain.tres" id="p_drain"]
+[ext_resource type="Resource" path="res://data/powers/arsenal.tres" id="p_arsenal"]
+
+[resource]
+script = ExtResource("1_script")
+powers = Array[ExtResource("2_power")]([ExtResource("p_repulse"), ExtResource("p_pull"), ExtResource("p_throw"), ExtResource("p_mind_twist"), ExtResource("p_supreme_push"), ExtResource("p_fracture"), ExtResource("p_barrier"), ExtResource("p_heal"), ExtResource("p_focus"), ExtResource("p_absorption"), ExtResource("p_sanctuary"), ExtResource("p_mass_telekinesis"), ExtResource("p_flow_cleave"), ExtResource("p_lightning"), ExtResource("p_choke"), ExtResource("p_freeze"), ExtResource("p_storm"), ExtResource("p_wrath"), ExtResource("p_drain"), ExtResource("p_arsenal")])

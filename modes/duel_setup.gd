@@ -14,6 +14,7 @@ var rules: MatchRules
 var arena: ArenaData
 var match_seed: int = 0
 var training: bool = false
+var power_sets: Array = [[], []]
 
 
 func fill_default_looks() -> void:

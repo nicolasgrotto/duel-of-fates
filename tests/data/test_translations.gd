@@ -3,6 +3,8 @@ extends TestCase
 const TABLE: String = "res://localization/strings.csv"
 const CODE_ROOTS: Array[String] = ["res://screens", "res://presentation", "res://ui", "res://modes", "res://core"]
 const CHARACTERS_ROOT: String = "res://data/characters"
+const POWERS_ROOT: String = "res://data/powers"
+const TECHNIQUES_ROOT: String = "res://data/techniques"
 const KEY_PATTERN: String = "(?:tr\\(|hint\\([^,]+,\\s*)\"([A-Z][A-Z0-9_]+)\"\\)"
 
 var _keys: Dictionary = {}
@@ -65,3 +67,15 @@ func test_move_kinds_and_frame_results_have_names() -> void:
 		_assert_key("MOVE_KIND_" + kind_name, "move kind")
 	for type in TrainingPanel.FRAME_EVENTS:
 		_assert_key("FRAME_" + CombatEvent.Type.find_key(type), "frame data")
+
+
+func test_powers_and_techniques_have_names() -> void:
+	for file in DirAccess.get_files_at(POWERS_ROOT):
+		if file.ends_with(".tres") and file != "catalog.tres":
+			var power: PowerData = load(POWERS_ROOT.path_join(file))
+			_assert_key(power.name_key, String(power.id))
+			_assert_key(power.description_key, String(power.id))
+	for file in DirAccess.get_files_at(TECHNIQUES_ROOT):
+		if file.ends_with(".tres"):
+			var technique: MoveData = load(TECHNIQUES_ROOT.path_join(file))
+			_assert_key(PowerCatalog.technique_key(technique), String(technique.id))

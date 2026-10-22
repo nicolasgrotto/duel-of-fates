@@ -221,3 +221,65 @@ ARENA_REFINERY_PLATFORM,Plataforma de Refino,Refinery Platform
 ARENA_PHRASE_REFINERY_PLATFORM,Plataforma industrial suspensa sobre o fosso.,Industrial platform hanging over the pit.
 ARENA_PHRASE_TRAINING_PLATFORM,Plataforma neutra com marcas de distância.,Neutral platform with distance marks.
 ARENA_PHRASE_RANDOM,Uma arena sorteada.,A random arena.
+POWER_REPULSE,Repulsão,Repulse
+POWER_REPULSE_TEXT,Onda de choque à frente que empurra para longe.,A shockwave ahead that pushes the target away.
+POWER_PULL,Puxão,Pull
+POWER_PULL_TEXT,Puxa o oponente para perto e o desequilibra.,Drags the opponent close and throws them off balance.
+POWER_THROW,Arremesso,Throw
+POWER_THROW_TEXT,Arranca pedras do chão e as lança em linha reta.,Tears rocks from the ground and hurls them straight ahead.
+POWER_MIND_TWIST,Truque Mental,Mind Twist
+POWER_MIND_TWIST_TEXT,Inverte a direção do alvo por um instante.,Reverses the target's direction for a moment.
+POWER_SUPREME_PUSH,Repulsão Suprema,Supreme Push
+POWER_SUPREME_PUSH_TEXT,Onda em volta do corpo todo; serve de fuga mesmo apanhando.,A wave around the whole body; works as an escape even while being hit.
+POWER_FRACTURE,Fratura,Fracture
+POWER_FRACTURE_TEXT,Rachadura que corre pelo chão e explode. Só pulando para escapar.,A crack runs along the ground and bursts. Only a jump escapes it.
+POWER_BARRIER,Barreira,Barrier
+POWER_BARRIER_TEXT,Segurada: domo que segura lâminas e poderes enquanto houver medidor.,Held: a dome that stops blades and powers while the meter lasts.
+POWER_HEAL,Cura,Heal
+POWER_HEAL_TEXT,Devolve vida aos poucos. Ser atingido interrompe.,Restores health over time. Getting hit interrupts it.
+POWER_FOCUS,Foco,Focus
+POWER_FOCUS_TEXT,"Atacar, bloquear e esquivar custam metade do Vigor por um tempo.","Attacking, blocking and dodging cost half the Vigor for a while."
+POWER_ABSORPTION,Absorção,Absorption
+POWER_ABSORPTION_TEXT,Segurada: absorve poderes e converte a energia em medidor.,Held: absorbs powers and turns their energy into meter.
+POWER_SANCTUARY,Santuário,Sanctuary
+POWER_SANCTUARY_TEXT,Escudo colado ao corpo que absorve dano até se quebrar.,A shell around the body that absorbs damage until it breaks.
+POWER_MASS_TELEKINESIS,Telecinese em Massa,Mass Telekinesis
+POWER_MASS_TELEKINESIS_TEXT,Racha um asteroide e faz os pedaços caírem sobre marcas no chão.,Cracks an asteroid and drops its pieces onto marks on the ground.
+POWER_FLOW_CLEAVE,Corte de Fluxo,Flow Cleave
+POWER_FLOW_CLEAVE_TEXT,Corte que solta uma onda em meia-lua. Um parry perfeito a devolve.,A cut that releases a crescent wave. A perfect parry sends it back.
+POWER_LIGHTNING,Raio,Lightning
+POWER_LIGHTNING_TEXT,Segurado: raios da mão que ferem e prendem a cada pulso.,Held: bolts from the hand that hurt and hold on every pulse.
+POWER_CHOKE,Estrangular,Choke
+POWER_CHOKE_TEXT,"Segurado: ergue a vítima, que não age e perde vida.","Held: lifts the victim, who cannot act and loses health."
+POWER_FREEZE,Congelar,Freeze
+POWER_FREEZE_TEXT,Prende o alvo sem dano; o primeiro golpe quebra o gelo.,Holds the target without damage; the first strike breaks the ice.
+POWER_STORM,Tempestade,Storm
+POWER_STORM_TEXT,Invoca ondas de raios sobre marcas no chão; quem lança fica imóvel e protegido.,Calls waves of bolts onto marks on the ground; the caster stands still and shielded.
+POWER_WRATH,Ira,Wrath
+POWER_WRATH_TEXT,"Mais dano causado, menos recebido e armadura contra dois golpes.","More damage dealt, less taken, and armor against two strikes."
+POWER_DRAIN,Dreno,Drain
+POWER_DRAIN_TEXT,Segurado: rouba medidor e Vigor do alvo.,Held: steals meter and Vigor from the target.
+POWER_ARSENAL,Arsenal Telecinético,Telekinetic Arsenal
+POWER_ARSENAL_TEXT,Lâminas em órbita que seguram projéteis; repita o comando para lançá-las.,Orbiting blades that stop projectiles; repeat the command to launch them.
+TECHNIQUE_SPIN,Giro,Spin
+TECHNIQUE_DASH_SLASH,Avanço com corte,Dash slash
+TECHNIQUE_BLADE_THROW,Arremesso da lâmina,Blade throw
+TECHNIQUE_THRUST,Estocada,Thrust
+TECHNIQUE_RISING_CUT,Corte ascendente,Rising cut
+TECHNIQUE_FLURRY,Rajada,Flurry
+TECHNIQUE_SWEEP_LOW,Varredura,Sweep
+TECHNIQUE_PLUNGE,Investida descendente,Plunging strike
+SELECT_POWERS,Poderes,Powers
+SELECT_POWER_NEUTRAL,Poder · {name},Power · {name}
+SELECT_POWER_FORWARD,Frente + Poder · {name},Forward + Power · {name}
+SELECT_POWER_BACK,Trás + Poder · {name},Back + Power · {name}
+SELECT_POWER_FOURTH,Poder + Habilidade · {name},Power + Ability · {name}
+SELECT_TECHNIQUE_FORWARD,Frente + Habilidade · {name},Forward + Ability · {name}
+SELECT_TECHNIQUE_BACK,Trás + Habilidade · {name},Back + Ability · {name}
+SELECT_TECHNIQUE_AIR,No ar + Habilidade · {name},In the air + Ability · {name}
+SELECT_SET_BASE,Conjunto: Base,Set: Base
+SELECT_SET_CUSTOM,Conjunto: Personalizado,Set: Custom
+SELECT_EDIT_DONE,Pronto,Done
+SELECT_EDIT_RESET,Voltar ao conjunto base,Back to the base set
+HINT_POWERS,Poderes,Powers
+HINT_EDIT_POWER,Trocar poder,Change power

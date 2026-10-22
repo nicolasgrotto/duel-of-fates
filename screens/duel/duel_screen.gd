@@ -38,6 +38,10 @@ func open(params: Dictionary) -> void:
 	sim = MatchSimulation.new(CONFIG, setup.rules, setup.characters, setup.match_seed)
 	for i in sim.fighters.size():
 		sim.fighters[i].hold_to_lock = setup.hold_to_lock[i]
+		var custom: Array[PowerData] = []
+		custom.assign(setup.power_sets[i])
+		if not custom.is_empty():
+			sim.fighters[i].equip_powers(custom)
 	sim.start_match()
 	_build_scene()
 	_runner.start(sim, _build_controllers())

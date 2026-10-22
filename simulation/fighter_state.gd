@@ -169,6 +169,11 @@ func setup(fighter_index: int, data: CharacterData, config: CombatConfig) -> voi
 	powers[FOURTH_SLOT] = data.fourth_power
 
 
+func equip_powers(chosen: Array[PowerData]) -> void:
+	for slot in mini(chosen.size(), FOURTH_SLOT):
+		powers[slot] = chosen[slot]
+
+
 func set_flow_level(level: int, config: CombatConfig) -> void:
 	flow_level = level
 	flow_potency = config.attribute_multiplier(level)
