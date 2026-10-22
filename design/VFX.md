@@ -102,6 +102,8 @@ Sempre na cor do tier de quem lança. Tiers mais altos mudam a **forma** (mais f
 - **Resistido**: anel curto na cor do tier do **alvo**, como se o poder batesse numa parede.
 - **Bloqueado / absorvido**: partículas e anel na cor da Barreira.
 
+> Implementado na fase 5 em `PowerView` (ver ARCHITECTURE), com formas vetoriais na camada aditiva. Ainda não entraram: poeira, o asteroide da Telecinese em Massa (a cinemática tem letterbox e recuo de câmera, depois a chuva sobre as marcas), pedras subindo na preparação do Arremesso e fragmentos de impacto. Cores dos tiers: `#9cc4ff`, `#5d8dff`, `#b26bff`, `#ff2b45` (`UiPalette.flow_tiers`).
+
 ## Técnicas de lâmina
 
 Usam o rastro, o som e o impacto dos golpes fortes. O Giro desenha o círculo completo do rastro. O **choque entre técnicas** é o maior choque do jogo: clarão, tremor forte, anel e faíscas nas duas cores, os dois recuando visivelmente.

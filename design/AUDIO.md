@@ -49,6 +49,8 @@ Cada poder tem uma identidade sonora reconhecível e curta:
 - **Corte de Fluxo**: corte com zumbido subindo; devolução com tom metálico claro.
 - **Resistido**: impacto abafado numa "parede".
 
+> Implementado na fase 5: todos os sons acima sintetizados em `assets/audio/powers/` (Fratura, Tempestade e Telecinese têm som na invocação, nas marcas e nos impactos; a Barreira, o Raio e o Dreno são loops enquanto o canal dura). Prioridade de mixagem: poderes 3 dB abaixo dos golpes.
+
 ## Interface
 
 Tique curto ao navegar, tom curto ao confirmar, tom de voltar, som de ação recusada. Segredos da abertura: acorde grave (O Equilíbrio) e arpejo claro subindo (O Guarda-roupa).

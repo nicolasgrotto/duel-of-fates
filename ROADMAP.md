@@ -4,14 +4,16 @@ Ordem de construção do jogo. Cada fase termina jogável e testada. Marque `[x]
 
 ## Ponto de continuidade
 
-- **Fase atual**: 5 — O Fluxo. Fases 0 a 4 concluídas.
-- **Próximo passo**: medidor de Fluxo, tiers e comandos com direção; depois os poderes do Fluxo comum, as técnicas de lâmina (Habilidade com direção e no ar) e as linhas de Poderes na seleção.
+- **Fase atual**: 6 — Arenas e modos. Fases 0 a 5 concluídas.
+- **Próximo passo**: as dez arenas e a Plataforma de Treino completa; depois o menu completo com Opções (inclui ligar e desligar Poderes) e Configurar teclas.
 - **Pendências conhecidas**:
+  - Equilíbrio com Poderes: no Normal, Guardião 63% contra Sombra 37% (100 duelos), rounds de ~10,5 s; o Raio responde por boa parte dos acertos. Rodar a matriz com Poderes e ajustar custos, `power_chance` da IA e o Raio.
+  - Efeitos de poder simplificados em relação à VFX.md: sem poeira, sem o asteroide da Telecinese em Massa (só a chuva sobre as marcas), sem pedras subindo do chão na preparação do Arremesso e sem fragmentos no impacto.
+  - A IA não usa o Truque Mental de forma tática (lança quando está ao alcance) e não guarda medidor para o quarto poder.
   - Equilíbrio do elenco pela matriz (10 duelos por par, lados alternados): no Difícil, todos entre 38% e 65%; no Normal, entre 33% e 62%. Os personagens defensivos (Guardião, Espelho) rendem mais no Difícil, porque dependem da defesa reativa da IA. Rounds de ~10–11 s (alvo ~15 s).
   - Trajes, cores e secretos selecionáveis sem bloqueio até os saves da fase 6.
   - A IA quase não usa o empurrão contra IA (o oponente raramente fica parado em guarda); revisar junto com o equilíbrio.
   - Reserva de Defesa antes da quebra de guarda (GAME_DESIGN, seção 11) ainda não implementada.
-  - Habilidades de personagem (botão `special`) ficam para a fase 4; poderes (`power`) para a fase 5.
   - Preset de teclado de 2 jogadores e tela de Opções (inclui "segurar para disputar", hoje só no arquivo de configurações) na fase 6.
   - Mudar `application/config/name` desloca a pasta `user://`: depois disso o editor precisa ser reaberto para o addon MCP voltar a autenticar o runtime.
 
@@ -69,11 +71,11 @@ Arte provisória (formas simples), sensação final.
 
 ## Fase 5 — O Fluxo
 
-- [ ] Medidor, tiers, recarga, comandos com direção, tabela de interação
-- [ ] Poderes do Fluxo comum, Aurora e Eclipse; técnicas de lâmina; choque entre técnicas
-- [ ] Quarto poder do Predestinado
-- [ ] Conjuntos personalizados e Galeria de poderes
-- [ ] IA com poderes
+- [x] Medidor, tiers, recarga, comandos com direção, tabela de interação
+- [x] Poderes do Fluxo comum, Aurora e Eclipse; técnicas de lâmina; choque entre técnicas
+- [x] Quarto poder do Predestinado
+- [x] Conjuntos personalizados e Galeria de poderes
+- [x] IA com poderes
 
 ## Fase 6 — Arenas e modos
 

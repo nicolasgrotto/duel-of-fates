@@ -206,7 +206,7 @@ Os personagens em [content/CHARACTERS.md](content/CHARACTERS.md) não fixavam n�
 - **Ponto doce** (Haste, Soberano): a distância entre os corpos no acerto dividida pelo alcance do golpe; de 2/3 para cima, ×1,5; até 1/4, ×0,6.
 - **Pulo na parede**: encostado (até 6 u da parede) no ar, pular lança para o outro lado a 380 u/s. Uma vez por parede até tocar o chão.
 - **Mergulho** (forte no ar da Garça e do Ancião): no active, a velocidade vertical vira 900 u/s para baixo.
-- **Habilidade** entra na prioridade de entrada logo depois do empurrão. Só no chão; Habilidade com direção e no ar fica para as técnicas (fase 5).
+- **Habilidade** entra na prioridade de entrada logo depois do empurrão. Só no chão; Habilidade com direção e no ar dispara as técnicas (fase 5, content/POWERS.md).
 
 ### Ser atingido
 

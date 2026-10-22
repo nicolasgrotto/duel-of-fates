@@ -115,6 +115,26 @@ Decisões:
 - **Traços** são campos de `CharacterData` lidos pelos resolvedores: andar em guarda, imunidade ao empurrão no bloqueio, dreno extra do rápido bloqueado, janelas de parry próprias, ponto doce, bônus de punição, multiplicador de knockback, pulo na parede, esquiva que atravessa, número de aéreos por pulo, finta e vida fixa (chefe).
 - **Distâncias** de knockback, empurrão no bloqueio e separação são dados em u; a simulação converte em velocidade inicial que a desaceleração de chão consome (`CombatConfig.slide_speed_for`).
 
+### O Fluxo (fase 5)
+
+| Arquivo | Papel |
+| --- | --- |
+| `data/powers/power_data.gd` (`PowerData`) | um recurso por poder: caminho, `kind`, custo (fixo e por segundo), nível mínimo, recarga própria, tempos, alcance, dano, valores por tier, tabela de interação, marca de custo alto |
+| `data/powers/interaction_table.gd`, `interaction_band.gd`, `data/powers/tables/` | resultado pela diferença de Fluxo (escala, resistido, fura a guarda) |
+| `data/powers/catalog.tres` (`PowerCatalog`) | ordem do catálogo, técnicas, poderes permitidos por personagem (caminho e nível mínimo), conjunto base e troca de duplicados do editor |
+| `data/techniques/*.tres` | técnicas de lâmina como `MoveData` de tipo `TECHNIQUE` |
+| `data/balance/flow_config.gd` | medidor, ganhos, recarga compartilhada, janela do acorde, tiers, multiplicadores no ar, valores dos status |
+| `simulation/powers/` | `PowerStarter` (espaço pela direção, custo, recusa), `PowerEffects` (efeito de cada `kind` na ativação, no canal e na soltura), `PowerImpact` + `PowerHit` (resolução: resistido → Absorção → Barreira → guarda → acerto), `ProjectileSystem`/`Projectile`, `HazardSystem`/`Hazard` (marcas no chão com atraso), `FlowStatuses` (regeneração, recargas e status por tick) |
+| `simulation/states/power_state.gd`, `held_state.gd` | estados `CASTING`/`CHANNELING` de quem lança e `HELD` de quem está congelado ou estrangulado |
+
+Decisões:
+
+- **Espaços**: quatro por lutador (`neutral`, `forward`, `back`, quarto). O quarto sai do acorde Poder + Habilidade dentro de `chord_window`; o `ActionStarter` segura o toque de Poder por essa janela antes de decidir.
+- **Projéteis e marcas** vivem em pools fixos na simulação (16 projéteis, 48 marcas) e entram no snapshot. Marcas da mesma onda formam um grupo que acerta no máximo uma vez.
+- **Técnicas** reaproveitam o `AttackState`: `multi_hits`, `stagger_on_guard`, bônus e lançamento contra quem está no ar, arremesso da lâmina (`blade_out` bloqueia ações de lâmina até ela voltar), golpe aéreo que mantém a recovery depois de aterrissar. O choque entre técnicas é resolvido no `ClashResolver` (evento `TECHNIQUE_CLASH`).
+- **Conjunto personalizado**: `DuelSelection.power_sets` → `DuelSetup.power_sets` → `FighterState.equip_powers()` antes de `start_match()`. Conjunto vazio significa o base do personagem.
+- **Regras**: `MatchRules.powers` liga tudo; `free_powers` (Galeria) mantém o medidor cheio. `MatchSimulation.restage()` recoloca os lutadores e limpa projéteis e marcas sem mudar o round (início de round e Galeria).
+
 ## Dados
 
 Tudo o que é conteúdo é `Resource` editável no inspetor:
@@ -160,6 +180,8 @@ Implementação:
 - `AiController` (`controllers/ai/`): pensa a cada `reaction_time` com variação, por prioridade (defender → punir → empurrar → recuperar → atacar → posicionar), agenda o toque de parry pela fase do golpe visível do oponente, continua a sequência só quando o golpe conectou, pressiona na disputa depois do tempo de reação, e usa `AiHabitMemory` (memória de hábitos com janela em segundos) no Difícil e no Chefe. Perfis em `AiProfileData`, dificuldades em `AiDifficultyData`.
 - `DummyController`: parado, em guarda, atacando ou reproduzindo uma gravação (`IntentRecording` relativa à frente do lutador, então a gravação espelha no boneco).
 - `ReplayController`: reproduz uma `IntentRecording` absoluta.
+- `AiPowers` (`controllers/ai/ai_powers.gd`): funções puras que a IA consulta — espaço pronto (medidor, nível, recargas), poder desejável pela situação (zona, distância, auto-reforço, cura, fuga apanhando), defesa (Absorção/Barreira contra o poder que vem), ameaça de marca no chão e de projétil. O `AiController` agenda o toque com direção (`_press_direction`) e segura o canal (`_channel_ticks`). Chances em `AiDifficultyData` (`power_chance`, `power_defense_chance`) e preferências em `AiProfileData` (`power_bias`, `technique_bias`).
+- `GalleryCaster` e `GalleryTarget` (Galeria de poderes): o lançador repete o poder ou a técnica escolhida; o alvo fica parado, em guarda, com Barreira, com Absorção, no ar ou atacando com Raio.
 
 ## Apresentação
 
@@ -205,6 +227,14 @@ Implementação provisória (fases 1 e 2, arte de formas simples, substituída n
 - **Replay do golpe final**: a cada round o executor guarda o snapshot do início e as intenções. Depois do K.O. decisivo, `DuelScreen` cria uma nova simulação, restaura o snapshot, re-simula até 3,5 s antes do K.O. e passa a mostrar essa simulação a 45% com `ReplayController`. Nenhuma lógica é reaproveitada da partida original: o replay é a própria simulação de novo.
 - **Verificação técnica do renderer** (fase 0): no Compatibility, o glow do `WorldEnvironment` com fundo Canvas funciona em LDR (limiar abaixo de 1); com intensidade alta aparecem blocos de baixa resolução, por isso o glow fica sutil e a maior parte do brilho vem das camadas aditivas da lâmina. `PointLight2D` ilumina corpos e cenário. HDR 2D não é usado. Mapas de normal e reflexos (BackBufferCopy) ficam para o protótipo de arte da fase 3.
 
+### Poderes na apresentação (fase 5)
+
+- `PowerView` (`presentation/effects/power_view.gd`, camada aditiva do brilho): desenha a partir do estado — brilho de preparação, canais (domo, raios, fio do Dreno, escudo da Tempestade), status (Cura, Foco, Ira e armadura, Santuário rachando, Truque Mental, gelo, estrangulamento, Arsenal em órbita), projéteis e marcas — e rajadas curtas por evento (chevrons, anéis, flash, raio caindo), em pool fixo. A cor é a do tier de quem lança (`UiPalette.flow_tiers`); o resistido usa o tier do alvo. Escurece o `CanvasModulate` da arena durante a Tempestade, com clarão a cada raio.
+- `PoseSolver` tem poses de lançar (mão estendida, invocação para o alto, golpe no chão, sobre si) e de estrangulado; o congelado mantém a última pose. A lâmina some enquanto está arremessada.
+- `EffectsDirector`: receitas `power_hit`, `power_blocked`, `hazard`, `technique_clash` em `EffectsConfig`; faíscas de poder na cor do tier. A Telecinese em Massa liga letterbox e recuo de câmera (`CameraRig.pull_back`) desde a preparação.
+- `Hud`: barra de Fluxo (`FlowBar`) na cor do lado, com as marcas de custo alto e o piscar do poder recusado; `show_flow_only()` na Galeria.
+- `DuelAudio`: um som por ativação, acerto, marca e impacto; loops de canal (Barreira, Raio, Dreno) num player por lutador; quebras (gelo, Santuário, armadura da Ira) detectadas pela mudança de estado. Sons em `assets/audio/powers/`, gerados por `tools/audio/synth_audio.py`.
+
 **Validação lâmina × animação**: a colisão de lâmina vem da trilha em `MoveData`. Uma ferramenta de editor (ou teste) compara a trilha com a posição real da lâmina na animação, para o que se vê bater com o que acerta.
 
 ## Telas e fluxo
@@ -213,7 +243,9 @@ Implementação provisória (fases 1 e 2, arte de formas simples, substituída n
 - A pausa é uma tela empilhada sobre o duelo congelado.
 - Cada modo é um objeto de fluxo (`modes/`) que monta os parâmetros do duelo (lutadores, variantes, conjuntos, arena, dificuldade, capacidades, rounds, seed) e decide o que acontece no resultado.
 
-Seleção (fase 4): `screens/select/character_select.gd` percorre os passos do modo (`DuelMode.steps()`: Duelar = jogador, adversário, arena; Treino = jogador, boneco) e grava as escolhas em `DuelMode.selection` (`DuelSelection`: personagem, traje e cor de lâmina por lado, arena). `build_setup()` aplica a seleção; Revanche e Reiniciar reaproveitam a mesma seleção. Ações de menu próprias: `menu_costume` (C, botão Y) e `menu_variant` (V, botão X).
+Seleção (fase 4): `screens/select/character_select.gd` percorre os passos do modo (`DuelMode.steps()`: Duelar = jogador, adversário, arena; Treino = jogador, boneco) e grava as escolhas em `DuelMode.selection` (`DuelSelection`: personagem, traje e cor de lâmina por lado, arena). `build_setup()` aplica a seleção; Revanche e Reiniciar reaproveitam a mesma seleção. Ações de menu próprias: `menu_costume` (C, botão Y), `menu_variant` (V, botão X) e `menu_powers` (P, LB), que abre o editor de poderes no lugar da coluna central.
+
+Galeria de poderes (fase 5): `GalleryMode` monta um duelo sem rounds (`endless`, `free_powers`) com cópias do Guardião e da Sombra (as técnicas são trocadas na cópia, nunca no recurso original). O `DuelScreen` cria o `GalleryPanel` (`presentation/hud/gallery_panel.gd`), que fornece os dois controladores, recoloca a cena a cada demonstração (`restage`) e desenha o painel do topo. Ações: `gallery_target` (T), `gallery_repeat` (R), `gallery_swap` (X); ← → trocam o poder, ↑ ↓ o tier, Enter lança de novo.
 
 Implementação: `SceneRouter.change(id, params)` troca a tela com fade; `push`/`pop` empilham telas sobre a atual e pausam a árvore. Telas recebem os parâmetros em `open(params)`. Ids: `menu`, `duel`, `pause`, `result`. Modos: `DuelMode` (base: `build_setup()`, `result_options()`, `restart()`, `choose()`), `VersusMode` (Guardião contra Sombra na IA, dificuldade das configurações) e `TrainingMode` (boneco, regras `endless`, sem rounds). O menu atual é provisório (Duelar, Treino, Dificuldade, Sair) até o menu completo da fase 6.
 
