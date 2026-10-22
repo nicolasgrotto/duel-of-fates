@@ -88,6 +88,13 @@ Decisão do autor depois da fase 5: o jogo passa a ser pixel art sci-fi (ART_DIR
 - [x] Arenas na grade (Plataforma de Refino e Plataforma de Treino)
 - [ ] Revisão de desempenho e testes
 
+Segunda etapa da migração (pedido do autor depois da prova de conceito; a branch `pixel-art` segue até o fim do projeto e só então se decide entre ela e a `phase-5-hd`):
+
+- [ ] Modelos dos lutadores mais ricos na grade (rosto, mãos, dobras, armadura, cabelo, capuz) mantendo a silhueta; **as duas pernas visíveis no duelo** (hoje a perna de trás some atrás da da frente e do traje: rever `BACK_SHADE`, ordem de desenho, afastamento dos pés na guarda e no andar)
+- [ ] Animações naturais e bonitas: guarda, andar, pulo, rápidos, fortes, técnicas, esquiva, atingido, disputa (as duas lâminas em X, corpos se empurrando) e choque (hoje os ataques e o clash parecem estranhos)
+- [ ] Poderes com apresentação à altura da versão em alta definição ou melhor; Corte de Fluxo como onda em arco vertical que nasce do chão, grossa embaixo e fina em cima; Telecinese em Massa com cinemática (câmera sobe ao céu, o meteoro é puxado e rachado, a câmera desce para a arena e os pedaços caem); Tempestade eletrizando o céu do fundo. Cinemáticas e efeitos de invocação só começam quando o poder sai de fato (sem interrupção na janela de vulnerabilidade da preparação)
+- [ ] Menu principal com design final (ex.: duas lâminas colidindo como emblema ao fundo), coerente com UI_UX e ART_DIRECTION
+
 ## Fase 6 — Arenas e modos
 
 - [ ] As dez arenas e a Plataforma de Treino
