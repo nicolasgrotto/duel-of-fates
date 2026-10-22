@@ -4,6 +4,7 @@ extends Resource
 const SET_SIZE: int = 3
 
 @export var powers: Array[PowerData] = []
+@export var techniques: Array[MoveData] = []
 
 
 static func technique_key(technique: MoveData) -> String:
@@ -19,6 +20,13 @@ static func is_allowed(power: PowerData, character: CharacterData) -> bool:
 		PowerData.Path.ECLIPSE:
 			return character.path == CharacterData.Path.ECLIPSE
 	return true
+
+
+func find(id: StringName) -> PowerData:
+	for power in powers:
+		if power.id == id:
+			return power
+	return null
 
 
 func allowed_for(character: CharacterData) -> Array[PowerData]:

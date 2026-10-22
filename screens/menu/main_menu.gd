@@ -24,6 +24,7 @@ func _ready() -> void:
 	list_box.add_child(_list)
 	_list.add_item(&"duel", tr("MENU_DUEL"))
 	_list.add_item(&"training", tr("MENU_TRAINING"))
+	_list.add_item(&"gallery", tr("MENU_GALLERY"))
 	_list.add_item(&"difficulty", "")
 	_list.add_item(&"quit", tr("MENU_QUIT"))
 	_list.chosen.connect(_on_chosen)
@@ -47,6 +48,8 @@ func _on_chosen(id: StringName) -> void:
 			SceneRouter.change(&"select", {"mode": VersusMode.new()})
 		&"training":
 			SceneRouter.change(&"select", {"mode": TrainingMode.new()})
+		&"gallery":
+			GalleryMode.new().start()
 		&"difficulty":
 			_on_adjusted(id, 1)
 		&"quit":

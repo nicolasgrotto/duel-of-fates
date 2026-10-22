@@ -21,6 +21,7 @@ var _hud: Hud
 var _screen: ScreenEffects
 var _debug: DebugOverlay
 var _training: TrainingPanel
+var _gallery: GalleryPanel
 var _glow_layer: CanvasLayer
 var _desaturation: Desaturation
 var _audio: DuelAudio
@@ -105,6 +106,11 @@ func _build_scene() -> void:
 
 
 func _build_controllers() -> Array[FighterController]:
+	if setup.gallery:
+		_gallery = GalleryPanel.new()
+		add_child(_gallery)
+		_gallery.setup(_runner, TRAINING)
+		return _gallery.controllers()
 	var controllers: Array[FighterController] = []
 	for i in setup.controllers.size():
 		match setup.controllers[i]:
@@ -138,7 +144,10 @@ func _bind_presentation(simulation: MatchSimulation) -> void:
 	_camera.setup(simulation, EFFECTS)
 	_audio.setup(simulation, _views, PLAYER_INDEX)
 	_hud.setup(simulation, not setup.training)
-	_hud.set_footer(ControlHints.hint(&"p1_pause", "HINT_PAUSE"))
+	_hud.set_footer(ControlHints.hint(&"p1_pause", "HINT_PAUSE") if not setup.gallery else "")
+	if setup.gallery:
+		_hud.show_flow_only(_gallery.caster_index)
+		_gallery.caster_changed.connect(_hud.show_flow_only)
 	_debug.attach(_world, simulation, _runner)
 
 
@@ -173,6 +182,8 @@ func _on_ticked() -> void:
 	_screen.letterbox_target = 1.0 if cinematic and not setup.training else 0.0
 	if _training != null:
 		_training.on_ticked()
+	if _gallery != null:
+		_gallery.on_ticked()
 
 
 func _on_combat_event(event: CombatEvent) -> void:

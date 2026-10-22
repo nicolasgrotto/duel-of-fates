@@ -68,6 +68,13 @@ func _setup_flow(i: int) -> void:
 	bar.set_marks(ratios, colors)
 
 
+func show_flow_only(index: int) -> void:
+	for i in 2:
+		for control in [_names[i], _wounds[i], _health[i], _vigor[i], _marks[i]]:
+			control.visible = false
+		_flow[i].visible = i == index
+
+
 func set_footer(text: String) -> void:
 	_footer.text = text
 

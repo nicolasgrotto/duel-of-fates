@@ -1,7 +1,7 @@
 class_name DuelSetup
 extends RefCounted
 
-enum ControllerKind { PLAYER, AI, DUMMY }
+enum ControllerKind { PLAYER, AI, DUMMY, GALLERY }
 
 var characters: Array[CharacterData] = []
 var costumes: Array[CostumeData] = []
@@ -14,6 +14,7 @@ var rules: MatchRules
 var arena: ArenaData
 var match_seed: int = 0
 var training: bool = false
+var gallery: bool = false
 var power_sets: Array = [[], []]
 
 

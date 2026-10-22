@@ -42,12 +42,18 @@ const MENU_KEYS: Dictionary = {
 	"menu_costume": [KEY_C],
 	"menu_variant": [KEY_V],
 	"menu_powers": [KEY_P],
+	"gallery_target": [KEY_T],
+	"gallery_repeat": [KEY_R],
+	"gallery_swap": [KEY_X],
 }
 
 const MENU_BUTTONS: Dictionary = {
 	"menu_costume": [JOY_BUTTON_Y],
 	"menu_variant": [JOY_BUTTON_X],
 	"menu_powers": [JOY_BUTTON_LEFT_SHOULDER],
+	"gallery_target": [JOY_BUTTON_Y],
+	"gallery_repeat": [JOY_BUTTON_X],
+	"gallery_swap": [JOY_BUTTON_RIGHT_SHOULDER],
 }
 
 const ALL_DEVICES: int = -1

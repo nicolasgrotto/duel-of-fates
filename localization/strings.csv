@@ -283,3 +283,24 @@ SELECT_EDIT_DONE,Pronto,Done
 SELECT_EDIT_RESET,Voltar ao conjunto base,Back to the base set
 HINT_POWERS,poderes,powers
 HINT_EDIT_POWER,trocar poder,change power
+MENU_GALLERY,Galeria de poderes,Power gallery
+GALLERY_TIER,Tier {tier},Tier {tier}
+GALLERY_SIDE_COMMON,Fluxo comum · os dois caminhos,Common Flow · both paths
+GALLERY_SIDE_AURORA,Aurora · lado da luz,Aurora · side of light
+GALLERY_SIDE_ECLIPSE,Eclipse · lado sombrio,Eclipse · side of shadow
+GALLERY_SIDE_TECHNIQUE,Técnica de lâmina · os dois caminhos,Blade technique · both paths
+GALLERY_TARGET,Alvo · {target},Target · {target}
+GALLERY_TARGET_STAND,Parado,Standing
+GALLERY_TARGET_GUARD,Em guarda,Guarding
+GALLERY_TARGET_BARRIER,Com Barreira,With Barrier
+GALLERY_TARGET_ABSORPTION,Com Absorção,With Absorption
+GALLERY_TARGET_AIR,No ar,In the air
+GALLERY_TARGET_LIGHTNING,Atacando com Raio,Attacking with Lightning
+GALLERY_REPEAT_ON,Repetição · ligada,Repeat · on
+GALLERY_REPEAT_OFF,Repetição · desligada,Repeat · off
+HINT_GALLERY_ENTRY,poder,power
+HINT_GALLERY_TIER,tier,tier
+HINT_GALLERY_TARGET,alvo,target
+HINT_GALLERY_REPEAT,repetição,repeat
+HINT_GALLERY_SWAP,lançador,caster
+HINT_GALLERY_CAST,lançar,cast
