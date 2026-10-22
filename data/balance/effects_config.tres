@@ -121,6 +121,47 @@ lift_degrees = 5.0
 shake = 2.0
 shake_duration = 0.1
 
+[sub_resource type="Resource" id="power_hit"]
+script = ExtResource("2_recipe")
+sparks_min = 6
+sparks_max = 9
+spark_speed = 460.0
+spread_degrees = 110.0
+shake = 4.0
+shake_duration = 0.16
+punch_in = 0.02
+hit_flash = true
+
+[sub_resource type="Resource" id="power_blocked"]
+script = ExtResource("2_recipe")
+sparks_min = 4
+sparks_max = 6
+spark_speed = 380.0
+shake = 2.0
+shake_duration = 0.1
+
+[sub_resource type="Resource" id="hazard"]
+script = ExtResource("2_recipe")
+sparks_min = 6
+sparks_max = 10
+spark_speed = 520.0
+spread_degrees = 60.0
+lift_degrees = 90.0
+shake = 3.0
+shake_duration = 0.14
+
+[sub_resource type="Resource" id="technique_clash"]
+script = ExtResource("2_recipe")
+sparks_min = 34
+sparks_max = 44
+spark_speed = 880.0
+spread_degrees = 170.0
+shake = 14.0
+shake_duration = 0.32
+flash = 0.3
+punch_in = 0.05
+ring_radius = 130.0
+
 [resource]
 script = ExtResource("1_script")
 hit_light = SubResource("hit_light")
@@ -136,3 +177,7 @@ blade_lock_press = SubResource("blade_lock_press")
 blade_lock_end = SubResource("blade_lock_end")
 knockout = SubResource("knockout")
 evade = SubResource("evade")
+power_hit = SubResource("power_hit")
+power_blocked = SubResource("power_blocked")
+hazard = SubResource("hazard")
+technique_clash = SubResource("technique_clash")

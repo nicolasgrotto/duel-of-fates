@@ -12,6 +12,9 @@ var _punch_left: float = 0.0
 var _focus_x: float = 0.0
 var _focus_y: float = 0.0
 var _zoom: float = 1.0
+var _pull_back: float = 0.0
+var _pull_back_left: float = 0.0
+var _pull_back_target: float = 0.0
 
 
 func setup(simulation: MatchSimulation, effects_config: EffectsConfig) -> void:
@@ -30,9 +33,16 @@ func impulse(shake: float, duration: float, punch_in: float, _focus: Vector2) ->
 		_punch_left = config.punch_in_return
 
 
+func pull_back(amount: float, seconds: float) -> void:
+	_pull_back_left = maxf(_pull_back_left, seconds)
+	_pull_back_target = amount
+
+
 func _process(delta: float) -> void:
 	if sim == null:
 		return
+	_pull_back_left = maxf(_pull_back_left - delta, 0.0)
+	_pull_back = move_toward(_pull_back, _pull_back_target if _pull_back_left > 0.0 else 0.0, config.pull_back_speed * delta * 0.5)
 	_frame(false, delta)
 	_shake_left = maxf(_shake_left - delta, 0.0)
 	_punch_left = maxf(_punch_left - delta, 0.0)
@@ -57,7 +67,7 @@ func _frame(instant: bool, delta: float) -> void:
 		_zoom = lerpf(_zoom, target_zoom, clampf(config.zoom_speed * delta, 0.0, 1.0))
 		_focus_x = lerpf(_focus_x, target_x, clampf(config.follow_speed * delta, 0.0, 1.0))
 		_focus_y = lerpf(_focus_y, lift, clampf(config.follow_speed * delta, 0.0, 1.0))
-	var final_zoom: float = _zoom * (1.0 + _punch * (_punch_left / maxf(config.punch_in_return, 0.001)))
+	var final_zoom: float = _zoom * (1.0 - _pull_back) * (1.0 + _punch * (_punch_left / maxf(config.punch_in_return, 0.001)))
 	zoom = Vector2(final_zoom, final_zoom)
 	var half_view: float = viewport_size.x * 0.5 / final_zoom
 	var limit: float = maxf(sim.config.half_width() + config.arena_margin - half_view, 0.0)

@@ -15,6 +15,10 @@ extends Resource
 @export var blade_lock_end: EffectRecipe
 @export var knockout: EffectRecipe
 @export var evade: EffectRecipe
+@export var power_hit: EffectRecipe
+@export var power_blocked: EffectRecipe
+@export var hazard: EffectRecipe
+@export var technique_clash: EffectRecipe
 
 @export_group("Sparks")
 @export var spark_life: float = 0.32
@@ -52,3 +56,8 @@ extends Resource
 
 @export_group("Signature")
 @export var desaturation: float = 0.15
+
+@export_group("Flow")
+@export var mass_letterbox: float = 1.6
+@export var mass_pull_back: float = 0.18
+@export var pull_back_speed: float = 2.5

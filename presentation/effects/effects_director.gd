@@ -83,6 +83,16 @@ func _recipe_for(event: CombatEvent) -> EffectRecipe:
 			return config.blade_lock_end
 		CombatEvent.Type.DEATH:
 			return config.knockout
+		CombatEvent.Type.POWER_HIT:
+			return config.power_hit
+		CombatEvent.Type.POWER_BLOCKED:
+			return config.power_blocked
+		CombatEvent.Type.HAZARD_TRIGGERED:
+			return config.hazard
+		CombatEvent.Type.TECHNIQUE_CLASH:
+			return config.technique_clash
+		CombatEvent.Type.PROJECTILE_REFLECTED:
+			return config.parry
 	return null
 
 
@@ -106,13 +116,25 @@ func _burst(recipe: EffectRecipe, origin: Vector2, direction: float, event: Comb
 	if direction < 0.0:
 		base_angle = PI - base_angle
 	var spread: float = deg_to_rad(recipe.spread_degrees)
-	var tint: Color = blade_colors[event.source] if event.type == CombatEvent.Type.BLADE_LOCK_PRESSED and event.source >= 0 else PALETTE.spark_warm
+	var tint: Color = _spark_tint(event)
 	for i in count:
 		var angle: float = base_angle + randf_range(-spread, spread) * 0.5
 		if direction == 0.0:
 			angle = -PI * 0.5 + randf_range(-spread, spread)
 		var speed: float = recipe.spark_speed * randf_range(0.5, 1.1)
 		_spawn_spark(origin, Vector2.from_angle(angle) * speed, PALETTE.spark_hot if i % 2 == 0 else tint)
+
+
+func _spark_tint(event: CombatEvent) -> Color:
+	if event.source < 0 or sim == null:
+		return PALETTE.spark_warm
+	match event.type:
+		CombatEvent.Type.BLADE_LOCK_PRESSED:
+			return blade_colors[event.source]
+		CombatEvent.Type.POWER_HIT, CombatEvent.Type.POWER_BLOCKED, CombatEvent.Type.HAZARD_TRIGGERED:
+			var tiers: PackedColorArray = PALETTE.flow_tiers
+			return tiers[clampi(sim.fighters[event.source].flow_tier, 0, tiers.size() - 1)]
+	return PALETTE.spark_warm
 
 
 func _spawn_spark(origin: Vector2, velocity: Vector2, color: Color) -> void:

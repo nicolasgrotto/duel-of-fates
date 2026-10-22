@@ -187,6 +187,10 @@ func _on_combat_event(event: CombatEvent) -> void:
 		CombatEvent.Type.PERFECT_PARRY:
 			_screen.pulse_letterbox(EFFECTS.perfect_parry_letterbox)
 			_desaturation.pulse(EFFECTS.desaturation)
+		CombatEvent.Type.POWER_STARTED:
+			if event.power.kind == PowerData.Kind.MASS_TELEKINESIS:
+				_screen.pulse_letterbox(EFFECTS.mass_letterbox)
+				_camera.pull_back(EFFECTS.mass_pull_back, EFFECTS.mass_letterbox)
 		CombatEvent.Type.DEATH:
 			_death_index = _runner.recording.length()
 		CombatEvent.Type.MATCH_ENDED:
