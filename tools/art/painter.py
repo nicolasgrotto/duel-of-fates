@@ -21,6 +21,7 @@ RIM_TONE = 0.2
 COVERAGE_THRESHOLD = 0.5
 SLOTS = {"cloak": 0, "body": 1, "trim": 2, "skin": 3, "hair": 4, "metal": 5, "leather": 6, "eyes": 7}
 NORMAL_STRENGTH = 0.6
+FORM_LIGHT = (0.85, -0.55)
 
 
 class Part:
@@ -28,6 +29,7 @@ class Part:
         self.name = name
         self.left, self.top, self.right, self.bottom = left, top, right, bottom
         self.scale = PIXELS_PER_UNIT * SUPERSAMPLE
+        self.light = FORM_LIGHT
         self.width = int(math.ceil((right - left) * PIXELS_PER_UNIT)) * SUPERSAMPLE
         self.height = int(math.ceil((bottom - top) * PIXELS_PER_UNIT)) * SUPERSAMPLE
         shape = (self.height, self.width)
@@ -67,7 +69,7 @@ class Part:
                                      [d.ellipse([p[0] - w / 2, p[1] - w / 2, p[0] + w / 2, p[1] + w / 2], fill=255) for p in (pixels[0], pixels[-1])]))
 
     def paint(self, mask, slot, tone=0.5, bevel=3.0, relief=1.0, folds=0.0, fold_axis="y", fold_period=4.0,
-              grain=0.04, emission=0.0, top_light=0.12, seed=0):
+              grain=0.04, emission=0.0, top_light=0.12, seed=0, form=0.3, light=None):
         if mask.max() <= 0.0:
             return
         blur_px = max(bevel * self.scale / 4.0, 1.0)
@@ -85,7 +87,10 @@ class Part:
             vertical = (np.arange(mask.shape[0])[:, None] - ys[0]) / span
         else:
             vertical = np.zeros((mask.shape[0], 1))
-        tone_map = tone * (0.8 + 0.2 * inner) * (1.0 + top_light * (0.5 - vertical)) + folds * 0.025 * wave + grain * noise
+        gy, gx = np.gradient(soft)
+        lx, ly = light if light is not None else self.light
+        lit = np.clip(-(gx * lx + gy * ly) * blur_px * 2.2, -1.0, 1.0)
+        tone_map = tone * (0.8 + 0.2 * inner) * (1.0 + top_light * (0.5 - vertical)) * (1.0 + form * lit) + folds * 0.025 * wave + grain * noise
         height_map = relief * (0.6 * inner + 0.4) + folds * 0.18 * wave + grain * 0.6 * noise
         a = mask
         self.shade = self.shade * (1 - a) + tone_map * a
@@ -98,6 +103,10 @@ class Part:
         self.shade = self.shade * (1 - mask * amount)
         self.heightmap = self.heightmap - mask * amount * 0.8
 
+    def lighten(self, mask, amount):
+        self.shade = self.shade * (1 + mask * amount)
+        self.heightmap = self.heightmap + mask * amount * 0.5
+
     def save(self, folder):
         size = (self.width // SUPERSAMPLE, self.height // SUPERSAMPLE)
 
@@ -109,7 +118,9 @@ class Part:
         alpha = (coverage >= COVERAGE_THRESHOLD).astype(np.float32)
         shade = down(self.shade * self.alpha) / np.maximum(coverage, 1e-3)
         level = np.abs(shade[..., None] - TONES[None, None, :]).argmin(axis=-1)
-        shade = np.where(rim(alpha) > 0, RIM_TONE, TONES[level]) * alpha
+        dark_edge, lit_edge = rim_sides(alpha, self.light)
+        level = np.where(lit_edge > 0, np.minimum(level + 1, len(TONES) - 1), level)
+        shade = np.where(dark_edge > 0, RIM_TONE, TONES[level]) * alpha
         emission = (down(self.emission) >= 0.5).astype(np.float32) * alpha
         slot = np.asarray(Image.fromarray((self.slot * 255).astype(np.uint8)).resize(size, Image.Resampling.NEAREST), np.float32) / 255.0
         height = down(self.heightmap * self.alpha / 2.0) * 2.0
@@ -124,6 +135,23 @@ class Part:
         normal_rgba = np.concatenate([normal, alpha[..., None]], axis=-1)
         Image.fromarray((normal_rgba * 255).astype(np.uint8), "RGBA").save(f"{folder}/{self.name}_n.png", optimize=True)
         return size
+
+
+def rim_sides(alpha, light):
+    padded = np.pad(alpha, 1)
+    lx, ly = light
+    length = max(math.hypot(lx, ly), 1e-3)
+    lx, ly = lx / length, ly / length
+    solid = alpha > 0
+    dark = np.zeros(alpha.shape, bool)
+    lit = np.zeros(alpha.shape, bool)
+    for dx, dy, neighbour in ((1, 0, padded[1:-1, 2:]), (-1, 0, padded[1:-1, :-2]), (0, 1, padded[2:, 1:-1]), (0, -1, padded[:-2, 1:-1])):
+        open_side = solid & (neighbour == 0)
+        if dx * lx + dy * ly > 0.35:
+            lit |= open_side
+        else:
+            dark |= open_side
+    return dark.astype(np.int64), (lit & ~dark).astype(np.int64)
 
 
 def rim(alpha):

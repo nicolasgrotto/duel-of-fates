@@ -29,7 +29,7 @@ SPECS = {
     "guardian": dict(
         torso=dict(tunic="wrap", belt="wide"),
         head=dict(hair="short"),
-        arms=dict(bracer=True),
+        arms=dict(bracer=True, sleeve_slot="cloak"),
         legs=dict(boot="mid"),
         cloth=[skirt(32.0)],
     ),
@@ -140,7 +140,7 @@ SPECS = {
     "foretold": dict(
         torso=dict(tunic="wrap", belt="wide"),
         head=dict(hair="wavy"),
-        arms=dict(bracer=True),
+        arms=dict(bracer=True, sleeve_slot="cloak"),
         legs=dict(boot="mid"),
         cloth=[skirt(30.0)],
     ),
