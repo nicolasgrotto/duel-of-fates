@@ -26,6 +26,51 @@ const SOUNDS: Dictionary = {
 	CombatEvent.Type.WOUND: &"wound",
 }
 
+const POWER_DB: float = -3.0
+const CHANNEL_DB: float = -8.0
+const SANCTUARY_EXPIRY_TICKS: int = 4
+const POWER_STARTS: Dictionary = {
+	PowerData.Kind.STORM: &"power_storm_rise",
+	PowerData.Kind.MASS_TELEKINESIS: &"power_mass_rumble",
+	PowerData.Kind.ARSENAL: &"power_mass_rumble",
+	PowerData.Kind.WRATH: &"power_wrath",
+}
+const POWER_ACTIVES: Dictionary = {
+	PowerData.Kind.REPULSE: &"power_repulse",
+	PowerData.Kind.SUPREME_PUSH: &"power_supreme_push",
+	PowerData.Kind.PULL: &"power_pull",
+	PowerData.Kind.THROW: &"power_rock_lift",
+	PowerData.Kind.FRACTURE: &"power_fracture",
+	PowerData.Kind.MIND_TWIST: &"power_mind_twist",
+	PowerData.Kind.SANCTUARY: &"power_sanctuary",
+	PowerData.Kind.ABSORPTION: &"power_absorption",
+	PowerData.Kind.HEAL: &"power_heal",
+	PowerData.Kind.FOCUS: &"power_focus",
+	PowerData.Kind.CHOKE: &"power_choke",
+	PowerData.Kind.FREEZE: &"power_freeze",
+	PowerData.Kind.STORM: &"power_thunder",
+	PowerData.Kind.FLOW_CLEAVE: &"power_cleave",
+}
+const CHANNEL_LOOPS: Dictionary = {
+	PowerData.Kind.BARRIER: &"power_barrier_loop",
+	PowerData.Kind.LIGHTNING: &"power_lightning_loop",
+	PowerData.Kind.DRAIN: &"power_drain_loop",
+}
+const POWER_HITS: Dictionary = {
+	PowerData.Kind.LIGHTNING: &"power_lightning_snap",
+	PowerData.Kind.THROW: &"power_rock_impact",
+	PowerData.Kind.MASS_TELEKINESIS: &"power_rock_impact",
+	PowerData.Kind.FRACTURE: &"power_fracture_burst",
+}
+const HAZARD_STRIKES: Dictionary = {
+	Hazard.Kind.BOLT: &"power_bolt_strike",
+	Hazard.Kind.ROCK_DROP: &"power_rock_impact",
+}
+const HAZARD_MARKS: Dictionary = {
+	Hazard.Kind.BOLT: &"power_mark_tick",
+	Hazard.Kind.ROCK_DROP: &"power_whistle",
+}
+
 var sim: MatchSimulation
 var views: Array[FighterView] = []
 var player_index: int = 0
@@ -36,6 +81,11 @@ var _lock_loop: AudioStreamPlayer2D
 var _was_active: Array[bool] = [false, false]
 var _step_timers: PackedFloat32Array = [0.0, 0.0]
 var _heartbeat_timer: float = 0.0
+var _channels: Array[AudioStreamPlayer2D] = []
+var _channel_ids: Array[StringName] = [&"", &""]
+var _was_frozen: Array[bool] = [false, false]
+var _sanctuary_ticks: PackedInt32Array = [0, 0]
+var _wrath_armor: PackedInt32Array = [0, 0]
 
 
 func setup(simulation: MatchSimulation, fighter_views: Array[FighterView], local_player: int) -> void:
@@ -55,6 +105,12 @@ func setup(simulation: MatchSimulation, fighter_views: Array[FighterView], local
 		_lock_loop.stream = AudioDirector.stream(&"lock_loop")
 		_lock_loop.bus = &"Effects"
 		add_child(_lock_loop)
+		for i in 2:
+			var channel: AudioStreamPlayer2D = AudioStreamPlayer2D.new()
+			channel.bus = &"Effects"
+			channel.volume_db = CHANNEL_DB
+			add_child(channel)
+			_channels.append(channel)
 	_hum_pitch.resize(2)
 	for i in 2:
 		var weapon: WeaponData = sim.fighters[i].character.weapon
@@ -76,6 +132,9 @@ func stop() -> void:
 	if _lock_loop != null:
 		_lock_loop.stop()
 		_lock_loop.stream = null
+	for channel in _channels:
+		channel.stop()
+		channel.stream = null
 
 
 func on_ticked() -> void:
@@ -123,6 +182,45 @@ func on_event(event: CombatEvent) -> void:
 			AudioDirector.play(&"swing_light", views[event.source].global_position, -8.0, 0.8)
 		CombatEvent.Type.EXHAUSTION:
 			AudioDirector.play(&"exhaustion", views[event.source].global_position)
+	_on_flow_event(event, at)
+
+
+func _on_flow_event(event: CombatEvent, at: Vector2) -> void:
+	match event.type:
+		CombatEvent.Type.POWER_STARTED:
+			AudioDirector.play(POWER_STARTS.get(event.power.kind, &"power_cast"), views[event.source].global_position, POWER_DB)
+		CombatEvent.Type.POWER_ACTIVE:
+			if POWER_ACTIVES.has(event.power.kind):
+				AudioDirector.play(POWER_ACTIVES[event.power.kind], views[event.source].global_position, POWER_DB)
+		CombatEvent.Type.POWER_HIT:
+			var kind: PowerData.Kind = event.power.kind if event.power != null else PowerData.Kind.REPULSE
+			AudioDirector.play(POWER_HITS.get(kind, &"hit_light"), at, POWER_DB, randf_range(0.95, 1.05))
+		CombatEvent.Type.POWER_BLOCKED:
+			var barrier: bool = sim.fighters[event.target].power_kind_active(PowerData.Kind.BARRIER)
+			AudioDirector.play(&"power_barrier_absorb" if barrier else &"block", at, POWER_DB)
+		CombatEvent.Type.POWER_RESISTED:
+			AudioDirector.play(&"power_resisted", at)
+		CombatEvent.Type.POWER_ABSORBED:
+			AudioDirector.play(&"power_absorption", at, POWER_DB, 1.2)
+		CombatEvent.Type.POWER_REJECTED:
+			AudioDirector.play(&"rejected", views[event.source].global_position, -2.0, 1.0, &"Interface")
+		CombatEvent.Type.HAZARD_MARKED:
+			if HAZARD_MARKS.has(int(event.amount)):
+				AudioDirector.play(HAZARD_MARKS[int(event.amount)], at, -8.0)
+		CombatEvent.Type.HAZARD_TRIGGERED:
+			if HAZARD_STRIKES.has(int(event.amount)):
+				AudioDirector.play(HAZARD_STRIKES[int(event.amount)], at, POWER_DB, randf_range(0.9, 1.1))
+		CombatEvent.Type.PROJECTILE_SPAWNED:
+			match int(event.amount):
+				Projectile.Kind.ARSENAL:
+					AudioDirector.play(&"power_arsenal_launch", views[event.source].global_position, POWER_DB, randf_range(0.9, 1.1))
+				Projectile.Kind.BLADE:
+					AudioDirector.play(&"swing_heavy", views[event.source].global_position, 0.0, 1.2, &"Blades")
+		CombatEvent.Type.PROJECTILE_REFLECTED:
+			AudioDirector.play(&"power_cleave_return", at)
+		CombatEvent.Type.TECHNIQUE_CLASH:
+			AudioDirector.play(&"clash", at, 2.0, 0.8)
+			AudioDirector.play(&"power_supreme_push", at, -4.0, 1.4)
 
 
 func _process(delta: float) -> void:
@@ -133,6 +231,7 @@ func _process(delta: float) -> void:
 		var fighter: FighterState = sim.fighters[i]
 		_update_hum(i, fighter, delta)
 		_update_steps(i, fighter, delta)
+		_update_flow(i, fighter)
 		lowest = minf(lowest, fighter.health_ratio())
 	if BladeLockResolver.is_active(sim):
 		AudioDirector.duck_music(LOCK_DUCK)
@@ -151,6 +250,31 @@ func _update_hum(i: int, fighter: FighterState, delta: float) -> void:
 	var weight: float = 1.0 - exp(-HUM_FOLLOW * delta)
 	hum.volume_db = lerpf(hum.volume_db, target_db, weight)
 	hum.pitch_scale = maxf(lerpf(hum.pitch_scale, target_pitch, weight), 0.05)
+
+
+func _update_flow(i: int, fighter: FighterState) -> void:
+	var loop: StringName = &""
+	if fighter.state == FighterState.State.CHANNELING and fighter.power != null:
+		loop = CHANNEL_LOOPS.get(fighter.power.kind, &"")
+	var channel: AudioStreamPlayer2D = _channels[i]
+	if loop != _channel_ids[i]:
+		_channel_ids[i] = loop
+		channel.stop()
+		if loop != &"":
+			channel.stream = AudioDirector.stream(loop)
+			channel.play()
+	channel.global_position = views[i].global_position
+	var at: Vector2 = views[i].global_position
+	var frozen: bool = fighter.state == FighterState.State.HELD and not fighter.held_by_choke
+	if _was_frozen[i] and not frozen:
+		AudioDirector.play(&"power_freeze_break", at, POWER_DB)
+	_was_frozen[i] = frozen
+	if _sanctuary_ticks[i] > SANCTUARY_EXPIRY_TICKS and fighter.sanctuary_ticks == 0:
+		AudioDirector.play(&"power_sanctuary_break", at, POWER_DB)
+	_sanctuary_ticks[i] = fighter.sanctuary_ticks
+	if fighter.wrath_armor < _wrath_armor[i]:
+		AudioDirector.play(&"power_wrath_armor", at, POWER_DB)
+	_wrath_armor[i] = fighter.wrath_armor
 
 
 func _update_steps(i: int, fighter: FighterState, delta: float) -> void:
