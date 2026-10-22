@@ -9,3 +9,4 @@ extends Resource
 @export var endless: bool = false
 @export var powers: bool = true
 @export var focus_evade: bool = true
+@export var free_powers: bool = false

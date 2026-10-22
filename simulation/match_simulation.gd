@@ -370,6 +370,12 @@ func _start_round() -> void:
 	round_winner = NO_WINNER
 	lock_cooldown_ticks = 0
 	lock_ticks = 0
+	restage()
+	_set_phase(Phase.INTRO)
+	emit(CombatEvent.Type.ROUND_STARTED, CombatEvent.NO_FIGHTER, CombatEvent.NO_FIGHTER).amount = round_number
+
+
+func restage() -> void:
 	var half_distance: float = config.round_start_distance * 0.5
 	fighters[0].reset_for_round(-half_distance, 1)
 	fighters[1].reset_for_round(half_distance, -1)
@@ -380,8 +386,6 @@ func _start_round() -> void:
 	for hazard in hazards:
 		hazard.active = false
 	hazard_groups_hit = [PackedInt32Array(), PackedInt32Array()]
-	_set_phase(Phase.INTRO)
-	emit(CombatEvent.Type.ROUND_STARTED, CombatEvent.NO_FIGHTER, CombatEvent.NO_FIGHTER).amount = round_number
 
 
 func _set_phase(new_phase: Phase) -> void:

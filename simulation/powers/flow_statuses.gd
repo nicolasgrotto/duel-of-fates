@@ -6,6 +6,8 @@ static func step(sim: MatchSimulation, fighter: FighterState) -> void:
 		return
 	if sim.rules.powers and not fighter.is_casting():
 		sim.gain_flow(fighter, sim.config.flow.regen * Ticks.DELTA)
+		if sim.rules.free_powers:
+			fighter.flow = sim.config.flow.maximum
 	if fighter.power_cooldown > 0:
 		fighter.power_cooldown -= 1
 	for slot in FighterState.POWER_SLOTS:
