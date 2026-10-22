@@ -200,6 +200,10 @@ func reset_cloths() -> void:
 		cloth.reset()
 
 
+func set_blade_out(out: bool) -> void:
+	_hilt.hidden_main = out
+
+
 func set_flash(amount: float) -> void:
 	shader_material.set_shader_parameter(&"flash", amount)
 

@@ -15,6 +15,16 @@ const HEAVY_WINDUP_GRIP: Vector2 = Vector2(-8.0, -54.0)
 const STRIKE_GRIP: Vector2 = Vector2(24.0, -28.0)
 const STANCE_GRIP: Vector2 = Vector2(20.0, -30.0)
 const STANCE_ANGLE: float = -35.0
+const CAST_GRIP: Vector2 = Vector2(-8.0, -28.0)
+const CAST_ANGLE: float = 150.0
+const CAST_HAND: Vector2 = Vector2(32.0, -42.0)
+const INVOKE_HAND: Vector2 = Vector2(10.0, -88.0)
+const INVOKE_ANGLE: float = 100.0
+const GROUND_HAND: Vector2 = Vector2(26.0, 6.0)
+const SELF_HAND: Vector2 = Vector2(14.0, -38.0)
+const CHOKED_GRIP: Vector2 = Vector2(8.0, -50.0)
+const CHOKED_HAND: Vector2 = Vector2(4.0, -54.0)
+const TREMOR: float = 1.2
 const RELAXED_HAND: Vector2 = Vector2(-4.0, -30.0)
 const SHOVE_HAND: Vector2 = Vector2(34.0, -38.0)
 const TUCK_FRONT: Vector2 = Vector2(14.0, -20.0)
@@ -110,6 +120,18 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 			pose.grip = HIT_GRIP
 			pose.blade_angle = HIT_ANGLE
 			off_free = true
+		FighterState.State.CASTING, FighterState.State.CHANNELING:
+			var cast: Vector2 = _cast(fighter, pose)
+			crouch += cast.x
+			lean += cast.y
+		FighterState.State.HELD:
+			if fighter.held_by_choke:
+				pose.grip = CHOKED_GRIP
+				pose.off_hand = CHOKED_HAND
+				pose.blade_angle = STUN_ANGLE
+				pose.front_foot = Vector2(6.0, 8.0)
+				pose.back_foot = Vector2(-4.0, 12.0)
+				lean = -10.0
 	if fighter.is_airborne() and fighter.state != FighterState.State.JUMPING:
 		_tuck(pose, 0.7)
 	pose.pelvis = Vector2(0.0, -hip_height + crouch)
@@ -190,6 +212,42 @@ func _attack(fighter: FighterState, pose: RigPose, guard_angle: float, guard_gri
 	if move.is_aerial():
 		_tuck(pose, 0.8)
 	return Vector2(crouch, lean)
+
+
+func _cast(fighter: FighterState, pose: RigPose) -> Vector2:
+	var power: PowerData = fighter.power
+	if power == null:
+		return Vector2.ZERO
+	var progress: float = clampf(float(fighter.power_ticks) / maxf(power.startup_ticks(), 1.0), 0.0, 1.0)
+	if fighter.power_phase == FighterState.Phase.RECOVERY:
+		progress = 1.0 - clampf(float(fighter.power_ticks) / maxf(power.recovery_ticks(), 1.0), 0.0, 1.0)
+	elif fighter.power_phase == FighterState.Phase.ACTIVE:
+		progress = 1.0
+	var tremor: Vector2 = Vector2(sin(time * 41.0), cos(time * 37.0)) * TREMOR if fighter.state == FighterState.State.CHANNELING else Vector2.ZERO
+	match power.kind:
+		PowerData.Kind.STORM, PowerData.Kind.MASS_TELEKINESIS:
+			pose.off_hand = RELAXED_HAND.lerp(INVOKE_HAND, progress) + tremor
+			pose.grip = pose.grip.lerp(Vector2(10.0, -10.0), progress)
+			pose.blade_angle = lerpf(pose.blade_angle, INVOKE_ANGLE, progress)
+			return Vector2(0.0, -6.0 * progress)
+		PowerData.Kind.FRACTURE:
+			pose.off_hand = RELAXED_HAND.lerp(GROUND_HAND, progress)
+			pose.grip = pose.grip.lerp(CAST_GRIP, progress)
+			pose.blade_angle = lerpf(pose.blade_angle, CAST_ANGLE, progress)
+			return Vector2(26.0 * progress, 30.0 * progress)
+		PowerData.Kind.HEAL, PowerData.Kind.FOCUS, PowerData.Kind.WRATH, PowerData.Kind.SANCTUARY, PowerData.Kind.ARSENAL:
+			pose.off_hand = RELAXED_HAND.lerp(SELF_HAND, progress)
+			pose.blade_angle = lerpf(pose.blade_angle, INVOKE_ANGLE, progress * 0.6)
+			return Vector2(4.0 * progress, 0.0)
+		PowerData.Kind.FLOW_CLEAVE:
+			pose.blade_angle = lerpf(-170.0, 60.0, ease(progress, 2.0))
+			pose.grip = STRIKE_GRIP if progress > 0.5 else HEAVY_WINDUP_GRIP
+			pose.trail = progress > 0.4 and fighter.power_phase == FighterState.Phase.STARTUP
+			return Vector2(6.0, 12.0 * progress)
+	pose.off_hand = RELAXED_HAND.lerp(CAST_HAND, progress) + tremor
+	pose.grip = pose.grip.lerp(CAST_GRIP, progress)
+	pose.blade_angle = lerpf(pose.blade_angle, CAST_ANGLE, progress)
+	return Vector2(4.0 * progress, 10.0 * progress)
 
 
 func _is_last_chain(fighter: FighterState) -> bool:

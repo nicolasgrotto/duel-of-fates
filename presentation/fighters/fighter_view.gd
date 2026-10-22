@@ -160,13 +160,15 @@ func _process(delta: float) -> void:
 	position = _previous.lerp(_current, alpha) + Vector2(shake, 0.0)
 	scale.x = fighter.facing
 	_advance_solver(delta)
-	_solver.solve(fighter, opponent, _target)
-	var follow: float = ATTACK_FOLLOW if fighter.is_attacking() else POSE_FOLLOW
-	if _snap_pose:
-		_pose.copy_from(_target)
-		_snap_pose = false
-	else:
-		_pose.blend_toward(_target, 1.0 - exp(-follow * delta))
+	var frozen: bool = fighter.state == FighterState.State.HELD and not fighter.held_by_choke
+	if not frozen:
+		_solver.solve(fighter, opponent, _target)
+		var follow: float = ATTACK_FOLLOW if fighter.is_attacking() else POSE_FOLLOW
+		if _snap_pose:
+			_pose.copy_from(_target)
+			_snap_pose = false
+		else:
+			_pose.blend_toward(_target, 1.0 - exp(-follow * delta))
 	_update_death(delta)
 	_ignition = minf(_ignition + delta / effects.ignition, 1.0)
 	rig.rotation = _pose.spin
@@ -174,6 +176,7 @@ func _process(delta: float) -> void:
 	rig.apply(_pose, fighter.facing, delta)
 	rig.set_flash(1.0 if _flash_left > 0.0 else 0.0)
 	rig.set_wound(fighter.wound)
+	rig.set_blade_out(fighter.blade_out)
 	_update_blade()
 	if fighter.state == FighterState.State.DODGING and not reduced_effects:
 		afterimages.capture(rig, delta)
@@ -205,7 +208,7 @@ func _update_blade() -> void:
 	_geometry.second_direction = (global_pose.basis_xform(_geometry.second_direction)).normalized()
 	_geometry.blade_length *= rig.scale.x
 	_geometry.second_length *= rig.scale.x
-	blade.length_ratio = 0.0 if _lost_blade else _ignition * (1.0 - _extinguish)
+	blade.length_ratio = 0.0 if _lost_blade or fighter.blade_out else _ignition * (1.0 - _extinguish)
 	blade.tremble = _pose.tremble
 	if fighter.charge_level > 1:
 		blade.flare = maxf(blade.flare, CHARGE_FLARE * (fighter.charge_level - 1))
@@ -228,3 +231,19 @@ func _light_gradient() -> GradientTexture2D:
 	texture.width = LIGHT_TEXTURE_SIZE
 	texture.height = LIGHT_TEXTURE_SIZE
 	return texture
+
+
+func hand_position(front: bool) -> Vector2:
+	return rig.to_global(rig.front_hand if front else rig.back_hand)
+
+
+func chest_position() -> Vector2:
+	return rig.to_global(rig.chest)
+
+
+func head_position() -> Vector2:
+	return rig.to_global(rig.head_base + Vector2(0.0, -14.0))
+
+
+func body_center() -> Vector2:
+	return global_position + Vector2(0.0, -75.0)

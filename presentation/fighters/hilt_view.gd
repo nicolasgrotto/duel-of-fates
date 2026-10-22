@@ -11,6 +11,7 @@ var weapon: WeaponData
 var metal: Color = Color.GRAY
 var grip_color: Color = Color.DIM_GRAY
 var geometry: WeaponPose = WeaponPose.new()
+var hidden_main: bool = false
 
 
 func setup(weapon_data: WeaponData, costume: CostumeData) -> void:
@@ -25,7 +26,7 @@ func update_pose(pose: RigPose, _front_hand: Vector2, _back_hand: Vector2) -> vo
 
 
 func _draw() -> void:
-	if weapon == null:
+	if weapon == null or hidden_main:
 		return
 	var long_haft: bool = weapon.kind == WeaponData.Kind.LANCE or weapon.kind == WeaponData.Kind.STAFF
 	draw_line(geometry.hilt_from, geometry.hilt_to, metal, HAFT_WIDTH if long_haft else HILT_WIDTH)

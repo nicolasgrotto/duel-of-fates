@@ -15,6 +15,7 @@ var _runner: TickRunner
 var _world: Node2D
 var _views: Array[FighterView] = []
 var _effects: EffectsDirector
+var _powers: PowerView
 var _camera: CameraRig
 var _hud: Hud
 var _screen: ScreenEffects
@@ -66,6 +67,11 @@ func _build_scene() -> void:
 		view.reduced_effects = Settings.reduced_effects
 		_world.add_child(view)
 		_views.append(view)
+	_powers = PowerView.new()
+	_powers.z_index = 10
+	_powers.ambient = ambient
+	_powers.base_ambient = setup.arena.ambient
+	_glow_layer.add_child(_powers)
 	_effects = EffectsDirector.new()
 	_effects.config = EFFECTS
 	_effects.reduced = Settings.reduced_effects
@@ -121,6 +127,9 @@ func _bind_presentation(simulation: MatchSimulation) -> void:
 		_views[i].set_blade_color(setup.blade_colors[i])
 		_views[i].reset_round(simulation.phase == MatchSimulation.Phase.INTRO)
 	_effects.sim = simulation
+	_powers.sim = simulation
+	_powers.views = _views
+	_powers.blade_colors = [setup.blade_colors[0], setup.blade_colors[1]]
 	_effects.blade_colors = [setup.blade_colors[0], setup.blade_colors[1]]
 	_camera.setup(simulation, EFFECTS)
 	_audio.setup(simulation, _views, PLAYER_INDEX)
@@ -166,6 +175,7 @@ func _on_combat_event(event: CombatEvent) -> void:
 	for view in _views:
 		view.on_event(event)
 	_effects.on_event(event)
+	_powers.on_event(event)
 	_audio.on_event(event)
 	if _replaying:
 		return
