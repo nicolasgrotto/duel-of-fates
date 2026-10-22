@@ -37,6 +37,8 @@ Referências de **sensação** (nunca de assets): os duelos de sabre da trilogia
 
 Preto profundo, azul escuro, cinza, metais frios. Saturação baixa. Cada arena tem sua paleta-base (ver [content/ARENAS.md](../content/ARENAS.md)).
 
+Na grade de pixels, céus e fossos são **faixas** de cor (sem degradê contínuo), feixes de luz são fatias com opacidade em degraus, detalhes (costuras, rebites, janelas, parafusos, luzes de aviso âmbar) têm 1–4 px e todo desenho de cenário usa medidas múltiplas de 2 u.
+
 ### Personagens
 
 Roupas em tons dessaturados (terrosos, cinzas, oliva, vinho, ardósia) para a lâmina manter o contraste. Só o Espelho é claro. Cores por personagem em CHARACTERS.

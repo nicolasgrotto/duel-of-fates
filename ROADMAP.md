@@ -5,7 +5,7 @@ Ordem de construção do jogo. Cada fase termina jogável e testada. Marque `[x]
 ## Ponto de continuidade
 
 - **Fase atual**: migração para pixel art (branch `pixel-art`). Fases 0 a 5 concluídas.
-- **Próximo passo**: grade de pixels do mundo e prova de conceito com o Guardião; depois a fase 6 já em pixel art.
+- **Próximo passo**: avaliação do autor sobre a pixel art (branch `pixel-art`). Aprovada, a branch entra na `main` e a fase 6 segue em pixel art; reprovada, volta-se à tag `phase-5-hd`. Falta medir o desempenho na grade.
 - **Pendências conhecidas**:
   - Equilíbrio com Poderes: no Normal, Guardião 63% contra Sombra 37% (100 duelos), rounds de ~10,5 s; o Raio responde por boa parte dos acertos. Rodar a matriz com Poderes e ajustar custos, `power_chance` da IA e o Raio.
   - Efeitos de poder simplificados em relação à VFX.md: sem poeira, sem o asteroide da Telecinese em Massa (só a chuva sobre as marcas), sem pedras subindo do chão na preparação do Arremesso e sem fragmentos no impacto.
@@ -82,10 +82,10 @@ Arte provisória (formas simples), sensação final.
 Decisão do autor depois da fase 5: o jogo passa a ser pixel art sci-fi (ART_DIRECTION, "Técnica de apresentação"). A versão em alta definição fica na tag `phase-5-hd`; se o resultado não agradar, o desenvolvimento volta a partir dela. A simulação, as regras e os testes não mudam.
 
 - [x] Grade de pixels do mundo (`PixelStage`): mundo renderizado em baixa resolução, zoom uniforme, câmera em pixels inteiros com deslize suave
-- [ ] Prova de conceito: Guardião pintado na grade, golpe com rastro e impacto, Plataforma de Refino
+- [x] Prova de conceito: Guardião pintado na grade, golpe com rastro e impacto, Plataforma de Refino
 - [x] Todos os lutadores pintados na grade; prévia da seleção na grade
 - [x] Lâminas, rastros, faíscas, poderes e disputa ajustados à grade
-- [ ] Arenas na grade
+- [x] Arenas na grade (Plataforma de Refino e Plataforma de Treino)
 - [ ] Revisão de desempenho e testes
 
 ## Fase 6 — Arenas e modos
