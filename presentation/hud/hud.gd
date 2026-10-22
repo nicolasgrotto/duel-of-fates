@@ -7,6 +7,7 @@ const TOP_MARGIN: float = 30.0
 const BAR_WIDTH_RATIO: float = 0.36
 const HEALTH_HEIGHT: float = 10.0
 const VIGOR_HEIGHT: float = 5.0
+const FLOW_HEIGHT: float = 3.0
 const BAR_GAP: float = 6.0
 const NAME_HEIGHT: float = 28.0
 const LOW_HEALTH_RATIO: float = 0.25
@@ -25,6 +26,8 @@ var _names: Array[Label] = []
 var _wounds: Array[Label] = []
 var _health: Array[HudBar] = []
 var _vigor: Array[HudBar] = []
+var _flow: Array[FlowBar] = []
+var _flow_reject_left: Array[float] = [0.0, 0.0]
 var _marks: Array[RoundMarks] = []
 var _ghost: Array[float] = [1.0, 1.0]
 var _ghost_delay: Array[float] = [0.0, 0.0]
@@ -46,8 +49,23 @@ func setup(simulation: MatchSimulation, rounds_visible: bool) -> void:
 		_marks[i].total = sim.rules.rounds_to_win
 		_marks[i].visible = show_rounds
 		_ghost[i] = sim.fighters[i].health_ratio()
+		_setup_flow(i)
 	if show_rounds and sim.phase == MatchSimulation.Phase.INTRO:
 		_show_message(_round_title(), Ticks.to_seconds(Ticks.from_seconds(sim.config.round_intro) - sim.phase_ticks))
+
+
+func _setup_flow(i: int) -> void:
+	var fighter: FighterState = sim.fighters[i]
+	var bar: FlowBar = _flow[i]
+	bar.visible = sim.rules.powers
+	bar.fill_color = PALETTE.aurora if fighter.character.path == CharacterData.Path.AURORA else PALETTE.eclipse
+	var ratios: PackedFloat32Array = []
+	var colors: PackedColorArray = []
+	for power in fighter.powers:
+		if power != null and power.high_cost:
+			ratios.append(power.cost_for(fighter.flow_level) / sim.config.flow.maximum)
+			colors.append(power.mark_color)
+	bar.set_marks(ratios, colors)
 
 
 func set_footer(text: String) -> void:
@@ -68,6 +86,8 @@ func on_event(event: CombatEvent) -> void:
 				_ghost_delay[event.target] = GHOST_DELAY
 		CombatEvent.Type.ACTION_REJECTED:
 			_reject_left[event.source] = REJECT_FLASH
+		CombatEvent.Type.POWER_REJECTED:
+			_flow_reject_left[event.source] = REJECT_FLASH
 
 
 func _round_title() -> String:
@@ -121,9 +141,21 @@ func _update_side(i: int, delta: float) -> void:
 		vigor.fill_color = PALETTE.accent
 		vigor.modulate.a = 1.0
 	vigor.queue_redraw()
+	_update_flow(i, fighter, delta)
 	_wounds[i].text = _wound_text(fighter)
 	_marks[i].won = fighter.round_wins
 	_marks[i].queue_redraw()
+
+
+func _update_flow(i: int, fighter: FighterState, delta: float) -> void:
+	var bar: FlowBar = _flow[i]
+	if not bar.visible:
+		return
+	_flow_reject_left[i] = maxf(_flow_reject_left[i] - delta, 0.0)
+	bar.ratio = fighter.flow / sim.config.flow.maximum
+	bar.modulate.a = (1.0 if fmod(_flow_reject_left[i], 0.1) > 0.05 else 0.3) if _flow_reject_left[i] > 0.0 else 1.0
+	bar.update_marks(delta)
+	bar.queue_redraw()
 
 
 func _wound_text(fighter: FighterState) -> String:
@@ -186,7 +218,13 @@ func _build_side(right: bool) -> void:
 	vigor.back_color = PALETTE.bar_back
 	_place(vigor, anchor, right, top, VIGOR_HEIGHT)
 	_vigor.append(vigor)
-	top += VIGOR_HEIGHT + BAR_GAP * 2.0
+	top += VIGOR_HEIGHT + BAR_GAP
+	var flow: FlowBar = FlowBar.new()
+	flow.anchored_right = right
+	flow.back_color = PALETTE.bar_back
+	_place(flow, anchor, right, top, FLOW_HEIGHT)
+	_flow.append(flow)
+	top += FLOW_HEIGHT + BAR_GAP * 2.0
 	var marks: RoundMarks = RoundMarks.new()
 	marks.anchored_right = right
 	marks.color = PALETTE.text
