@@ -4,8 +4,8 @@ Ordem de construção do jogo. Cada fase termina jogável e testada. Marque `[x]
 
 ## Ponto de continuidade
 
-- **Fase atual**: 6 — Arenas e modos. Fases 0 a 5 concluídas.
-- **Próximo passo**: as dez arenas e a Plataforma de Treino completa; depois o menu completo com Opções (inclui ligar e desligar Poderes) e Configurar teclas.
+- **Fase atual**: migração para pixel art (branch `pixel-art`). Fases 0 a 5 concluídas.
+- **Próximo passo**: grade de pixels do mundo e prova de conceito com o Guardião; depois a fase 6 já em pixel art.
 - **Pendências conhecidas**:
   - Equilíbrio com Poderes: no Normal, Guardião 63% contra Sombra 37% (100 duelos), rounds de ~10,5 s; o Raio responde por boa parte dos acertos. Rodar a matriz com Poderes e ajustar custos, `power_chance` da IA e o Raio.
   - Efeitos de poder simplificados em relação à VFX.md: sem poeira, sem o asteroide da Telecinese em Massa (só a chuva sobre as marcas), sem pedras subindo do chão na preparação do Arremesso e sem fragmentos no impacto.
@@ -77,6 +77,17 @@ Arte provisória (formas simples), sensação final.
 - [x] Conjuntos personalizados e Galeria de poderes
 - [x] IA com poderes
 
+## Migração para pixel art (branch `pixel-art`)
+
+Decisão do autor depois da fase 5: o jogo passa a ser pixel art sci-fi (ART_DIRECTION, "Técnica de apresentação"). A versão em alta definição fica na tag `phase-5-hd`; se o resultado não agradar, o desenvolvimento volta a partir dela. A simulação, as regras e os testes não mudam.
+
+- [ ] Grade de pixels do mundo (`PixelStage`): mundo renderizado em baixa resolução, zoom uniforme, câmera em pixels inteiros com deslize suave
+- [ ] Prova de conceito: Guardião pintado na grade, golpe com rastro e impacto, Plataforma de Refino
+- [ ] Todos os lutadores pintados na grade; prévia da seleção na grade
+- [ ] Lâminas, rastros, faíscas, poderes e disputa ajustados à grade
+- [ ] Arenas na grade
+- [ ] Revisão de desempenho e testes
+
 ## Fase 6 — Arenas e modos
 
 - [ ] As dez arenas e a Plataforma de Treino
@@ -104,7 +115,7 @@ Arte provisória (formas simples), sensação final.
 
 | Decisão | Resultado |
 | --- | --- |
-| Técnica de apresentação | 2D em alta definição com esqueleto e mapas de normal |
+| Técnica de apresentação | pixel art com esqueleto: mundo numa grade de 1 px = 2 u, peças pintadas na grade com mapas de normal (antes: 2D em alta definição, tag `phase-5-hd`) |
 | Testes | automatizados, executor mínimo próprio |
 | Lâmina do Predestinado do Eclipse | vermelho do Ápice `#ff2b45` |
 | InputMap | montado em tempo de execução por `Settings` a partir de `core/input_bindings.gd` (ARCHITECTURE) |

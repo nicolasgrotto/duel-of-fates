@@ -11,10 +11,13 @@ Referências de **sensação** (nunca de assets): os duelos de sabre da trilogia
 ## Técnica de apresentação
 
 - O **combate acontece num plano 2D lateral**. A câmera é lateral; profundidade é cenário.
-- Os personagens são **detalhados**: rostos com feições (exceto onde há máscara ou sombra de capuz), tecidos com dobras e peso, armaduras, couro, metal, cabos de lâmina com acabamento, cabelo com movimento secundário.
-- **Pipeline fechado na fase 3** (detalhes em ARCHITECTURE.md): peças pintadas proceduralmente em alta resolução com mapa de material (tom + slot de cor) e mapa de normal, rig com `Skeleton2D`, IK de braços e pernas, tecidos com física e pose calculada da simulação por família de movimento. A primeira versão de cada personagem é a pintura procedural; peças pintadas à mão entram no mesmo formato sem mudar o código.
-- **Técnica decidida: 2D em alta definição com esqueleto.** Peças pintadas animadas por ossos (`Skeleton2D`, `Polygon2D` ou equivalente), com **mapas de normal** para a luz das lâminas iluminar o corpo. Combina com o renderer Compatibility e com animações fluidas e editáveis. O pipeline (ferramentas de pintura, rig, formato das peças) é fechado na fase 3 do ROADMAP com o protótipo de um personagem completo.
-- Descartados: 2.5D com modelos 3D (custo e troca de renderer) e sprites quadro a quadro (caros de produzir e iterar).
+- **Técnica decidida: pixel art sci-fi com esqueleto** (decisão da migração para pixel art; a versão em alta definição está na tag `phase-5-hd`). O mundo inteiro (arena, lutadores, lâminas, poderes e efeitos) é desenhado **nativamente numa grade de pixels baixa** e ampliado sem suavização. Não é um filtro sobre a arte em alta definição: cada peça é pintada direto na grade, com tons e contornos definidos.
+- **Grade**: 1 pixel do mundo = **2 u** (0,5 px/u). Um lutador tem ~75 px de altura; no enquadramento neutro a grade tem ~480×270 e cada pixel ocupa ~4 px de uma tela 1080p. O zoom da câmera muda o tamanho de **todos** os pixels por igual (entre ~2,5 e ~4,5 px de tela), nunca reamostra uma peça isolada. A câmera anda em pixels inteiros da grade; o deslize suave vem do deslocamento da imagem final.
+- **Peças**: o mesmo esqueleto (`Skeleton2D`, IK, tecidos com física, pose calculada da simulação por família de movimento). As peças são pintadas na grade sem antialias: borda dura, **4 tons por cor** (sombra, base, luz, brilho), contorno interno escuro de 1 px na borda externa de cada peça, detalhe interno só onde ele lê em 1–2 px (faixas, cinto, fivelas viram blocos). Os trajes trocam a paleta (8 slots), como num jogo de pixel art clássico. O mapa de normal é pintado na mesma grade: a luz das lâminas ilumina o corpo em degraus de pixel.
+- **Rotação**: peças giram com o osso e são rasterizadas na grade (sem subpixel); por isso as peças são pequenas e com formas simples, que continuam limpas em qualquer ângulo.
+- **Interface**: continua em alta resolução, com a Oxanium; só o mundo é pixel art.
+- Descartados: filtro de pixelização sobre a arte em alta definição (proibido), sprites quadro a quadro (volume de arte enorme com 15 lutadores, 4 armas e variantes, e perderia a sincronia automática com a simulação) e 2.5D com modelos 3D.
+- O pipeline anterior (alta definição, 4 px/u, fase 3) fica registrado em ARCHITECTURE.md; o formato das peças (mapa de material + mapa de normal) é o mesmo.
 
 ## Escala e enquadramento
 
@@ -54,8 +57,8 @@ Fundo `#05070d`, texto `#e8ecf5`, texto secundário `#8a94ab`, destaque `#9fb4d9
 
 A lâmina é a protagonista visual e a principal fonte de luz.
 
-- **Camadas**: núcleo branco fino, glow interno forte na cor da lâmina, glow externo largo e suave, bloom.
-- **Rastro** (trail) durante o active dos golpes, na cor da lâmina, curto (~0,12 s), que mostra o arco exato do corte.
+- **Camadas**: núcleo branco fino, glow interno forte na cor da lâmina, glow externo largo e suave, bloom. Na grade: núcleo de 1 px, glow interno de 2–3 px e externo de 5–6 px, sem antialias.
+- **Rastro** (trail) durante o active dos golpes, na cor da lâmina, curto (~0,12 s), que mostra o arco exato do corte. Na grade, o rastro é desenhado em faixas de opacidade (do mais novo, quase opaco, ao mais velho, tênue), sem gradiente contínuo.
 - **Luz**: ilumina o próprio corpo (borda do lado da lâmina), o oponente quando perto, o chão (mancha de luz abaixo), as partículas e o ambiente (cristais, fungos, água, metal). Em impactos, o ambiente ganha por um instante o tom da lâmina.
 - **Zumbido visual**: em guarda, a lâmina balança levemente com a respiração; o glow pulsa de leve.
 - **Ignição**: no começo de cada round, acende da base à ponta. **Apagar**: no K.O., a lâmina do derrotado se apaga da ponta à base.
