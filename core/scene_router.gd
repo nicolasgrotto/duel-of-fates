@@ -10,6 +10,7 @@ const SCREENS: Dictionary = {
 const FADE_SECONDS: float = 0.18
 const SETTLE_FRAMES: int = 2
 const REQUIRED_RESOURCES: StringName = &"required_resources"
+const SINGLE_THREAD_FEATURE: String = "nothreads"
 const OVERLAY_LAYER: int = 50
 const FADE_LAYER: int = 100
 const PALETTE: UiPalette = preload("res://ui/palette.tres")
@@ -41,8 +42,12 @@ func change(screen: StringName, params: Dictionary = {}) -> void:
 		return
 	_busy = true
 	var path: String = SCREENS[screen]
-	ResourceLoader.load_threaded_request(path)
+	var background_loading: bool = not OS.has_feature(SINGLE_THREAD_FEATURE)
+	if background_loading:
+		ResourceLoader.load_threaded_request(path)
 	await _fade_to(1.0)
+	if not background_loading:
+		ResourceLoader.load_threaded_request(path)
 	var scene: PackedScene = await _finish_loading(path)
 	var node: Node = scene.instantiate()
 	var held: Array[Resource] = []
