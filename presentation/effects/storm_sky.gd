@@ -26,6 +26,7 @@ var _ages: PackedFloat32Array = []
 
 
 func _ready() -> void:
+	light_mask = 0
 	for i in MAX_BOLTS:
 		var bolt: PackedVector2Array = []
 		bolt.resize(BOLT_SEGMENTS + 1)

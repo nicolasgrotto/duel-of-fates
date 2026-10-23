@@ -26,6 +26,12 @@ const TRUSS_SPACING: float = 120.0
 @export var level: float = -300.0
 @export var arena_width: float = 1200.0
 @export var seed_value: int = 3
+@export var lit_by_blades: bool = true
+
+
+func _ready() -> void:
+	if not lit_by_blades:
+		light_mask = 0
 
 
 func _draw() -> void:

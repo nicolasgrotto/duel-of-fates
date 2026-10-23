@@ -5,7 +5,7 @@ Ordem de construção do jogo. Cada fase termina jogável e testada. Marque `[x]
 ## Ponto de continuidade
 
 - **Fase atual**: migração para pixel art (branch `pixel-art`). Fases 0 a 5 concluídas.
-- **Próximo passo**: segunda etapa da migração concluída (modelos, animações, poderes, menu). Falta a revisão do autor jogando, os refinamentos de arte listados no checklist e medir o desempenho na grade. A branch `pixel-art` segue até o fim do projeto; só então o autor escolhe entre ela e a `phase-5-hd`.
+- **Próximo passo**: segunda etapa da migração concluída (modelos, animações, poderes, menu). Falta a revisão do autor jogando e medir a GPU numa máquina de referência com o editor fechado (a CPU já está medida). A branch `pixel-art` segue até o fim do projeto; só então o autor escolhe entre ela e a `phase-5-hd`.
 - **Pendências conhecidas**:
   - Equilíbrio com Poderes: no Normal, Guardião 63% contra Sombra 37% (100 duelos), rounds de ~10,5 s; o Raio responde por boa parte dos acertos. Rodar a matriz com Poderes e ajustar custos, `power_chance` da IA e o Raio.
   - A IA não usa o Truque Mental de forma tática (lança quando está ao alcance) e não guarda medidor para o quarto poder.
@@ -85,7 +85,7 @@ Decisão do autor depois da fase 5: o jogo passa a ser pixel art sci-fi (ART_DIR
 - [x] Todos os lutadores pintados na grade; prévia da seleção na grade
 - [x] Lâminas, rastros, faíscas, poderes e disputa ajustados à grade
 - [x] Arenas na grade (Plataforma de Refino e Plataforma de Treino)
-- [ ] Revisão de desempenho e testes
+- [ ] Revisão de desempenho e testes (CPU medida: ~7,6 ms por quadro; GPU medida só numa GT 730 com o editor aberto, 28–55 FPS, inconclusivo; ver ARCHITECTURE, Desempenho)
 
 Segunda etapa da migração (pedido do autor depois da prova de conceito; a branch `pixel-art` segue até o fim do projeto e só então se decide entre ela e a `phase-5-hd`):
 

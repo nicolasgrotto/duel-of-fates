@@ -30,6 +30,7 @@ scroll_scale = Vector2(0, 0.05)
 script = ExtResource("1_layer")
 base_color = Color(0.02, 0.027, 0.047, 1)
 detail_color = Color(0.008, 0.01, 0.02, 1)
+lit_by_blades = false
 
 [node name="SkyAnchor" type="Node2D" parent="."]
 
@@ -47,6 +48,7 @@ spacing = 520.0
 height = 2200.0
 element_width = 120.0
 level = -150.0
+lit_by_blades = false
 
 [node name="Beams" type="Parallax2D" parent="."]
 scroll_scale = Vector2(0.35, 0.5)
@@ -61,6 +63,7 @@ height = 2600.0
 element_width = 150.0
 level = -100.0
 seed_value = 11
+lit_by_blades = false
 
 [node name="Catwalks" type="Parallax2D" parent="."]
 scroll_scale = Vector2(0.55, 0.7)
