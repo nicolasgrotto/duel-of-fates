@@ -5,6 +5,7 @@ const LIST_TOP: float = 220.0
 const FOOTER_MARGIN: float = 36.0
 const WEB_FEATURE: String = "web"
 const LOCALE_KEYS: Dictionary = {"pt_BR": "LANGUAGE_PT_BR", "en": "LANGUAGE_EN"}
+const PRESET_KEYS: Dictionary = {&"default": "PRESET_DEFAULT", &"arrows": "PRESET_ARROWS", &"custom": "PRESET_CUSTOM"}
 
 var _list: MenuList
 var _title: Label
@@ -14,6 +15,8 @@ var _return_focus: StringName = &"options"
 
 func open(params: Dictionary) -> void:
 	_return_focus = params.get("focus", &"options")
+	if params.has("select"):
+		_list.select_id(params["select"])
 
 
 func _ready() -> void:
@@ -47,7 +50,7 @@ func _ready() -> void:
 
 func _ids() -> Array[StringName]:
 	var ids: Array[StringName] = [&"language", &"difficulty", &"effects", &"replay", &"finishers", &"powers", &"hold_p1", &"hold_p2",
-		&"master", &"music", &"sfx", &"fullscreen"]
+		&"key_preset", &"keys", &"vibration", &"master", &"music", &"sfx", &"fullscreen"]
 	if not OS.has_feature(WEB_FEATURE):
 		ids.append(&"vsync")
 	ids.append(&"back")
@@ -63,6 +66,8 @@ func _unhandled_input(event: InputEvent) -> void:
 func _on_chosen(id: StringName) -> void:
 	if id == &"back":
 		_leave()
+	elif id == &"keys":
+		SceneRouter.change(&"keys")
 	else:
 		_on_adjusted(id, 1)
 
@@ -95,6 +100,10 @@ func _on_adjusted(id: StringName, step: int) -> void:
 			Settings.fullscreen = not Settings.fullscreen
 		&"vsync":
 			Settings.vsync = not Settings.vsync
+		&"key_preset":
+			Settings.cycle_key_preset(step)
+		&"vibration":
+			Settings.vibration = not Settings.vibration
 		_:
 			return
 	Settings.apply()
@@ -117,6 +126,9 @@ func _refresh() -> void:
 	_list.set_item_text(&"sfx", tr("OPTION_EFFECTS_VOLUME").format({"value": _volume(Settings.effects_volume)}))
 	_list.set_item_text(&"fullscreen", tr("OPTION_FULLSCREEN").format({"value": _on_off(Settings.fullscreen)}))
 	_list.set_item_text(&"vsync", tr("OPTION_VSYNC").format({"value": _on_off(Settings.vsync)}))
+	_list.set_item_text(&"key_preset", tr("OPTION_KEY_PRESET").format({"value": tr(PRESET_KEYS[Settings.key_preset])}))
+	_list.set_item_text(&"keys", tr("OPTION_KEYS"))
+	_list.set_item_text(&"vibration", tr("OPTION_VIBRATION").format({"value": _on_off(Settings.vibration)}))
 	_list.set_item_text(&"back", tr("MENU_BACK"))
 	_footer.text = ControlHints.line(PackedStringArray([
 		"↑ ↓  " + tr("HINT_CHANGE"), "← →  " + tr("HINT_ADJUST"),

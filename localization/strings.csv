@@ -328,3 +328,39 @@ OPTION_VSYNC,V-Sync · {value},V-Sync · {value}
 VALUE_ON,Ligado,On
 VALUE_OFF,Desligado,Off
 HINT_ADJUST,ajustar,adjust
+ACTION_MOVE_LEFT,Andar para a esquerda,Move left
+ACTION_MOVE_RIGHT,Andar para a direita,Move right
+ACTION_JUMP,Pular,Jump
+ACTION_LIGHT_ATTACK,Ataque rápido,Light attack
+ACTION_HEAVY_ATTACK,Ataque forte,Heavy attack
+ACTION_BLOCK,Guarda,Guard
+ACTION_DODGE,Esquiva,Dodge
+ACTION_EVADE,Esquiva de precisão,Precision evade
+ACTION_SPECIAL,Habilidade,Ability
+ACTION_POWER,Poder,Power
+ACTION_PAUSE,Pausar,Pause
+KEYS_TITLE,CONFIGURAR TECLAS,KEY BINDINGS
+KEYS_ROW,{action} · {keys},{action} · {keys}
+KEYS_WAITING,Pressione a nova tecla · {action},Press the new key · {action}
+KEYS_RESERVED,{key} é reservada,{key} is reserved
+KEYS_RESTORE,Restaurar padrão,Restore defaults
+OPTION_KEY_PRESET,Teclado · {value},Keyboard · {value}
+PRESET_DEFAULT,Padrão,Default
+PRESET_ARROWS,Setas,Arrows
+PRESET_CUSTOM,Personalizado,Custom
+OPTION_KEYS,Configurar teclas,Key bindings
+OPTION_VIBRATION,Vibração · {value},Vibration · {value}
+MENU_CONTROLS,Controles,Controls
+CONTROLS_TITLE,CONTROLES,CONTROLS
+CONTROL_MOVE,Mover,Move
+CONTROL_JUMP,Pular (duas vezes no ar),Jump (twice in the air)
+CONTROL_GUARD,Guarda (segurar),Guard (hold)
+CONTROL_PARRY,Aparar,Parry
+CONTROL_PARRY_KEYS,tocar {block},tap {block}
+CONTROL_SHOVE,Empurrão,Shove
+CONTROL_DODGE,Esquiva (no ar: dash aéreo),Dodge (in the air: air dash)
+CONTROL_TECHNIQUES,Técnicas de lâmina,Blade techniques
+CONTROL_POWER,Poder (segurar canaliza),Power (hold to channel)
+CONTROL_OTHER_POWERS,Outros poderes,Other powers
+CONTROL_FOURTH_POWER,Quarto poder,Fourth power
+CONTROL_DIRECTION_PLUS,frente ou trás + {key},forward or back + {key}

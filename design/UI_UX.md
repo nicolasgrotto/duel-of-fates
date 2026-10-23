@@ -123,9 +123,13 @@ Idioma, dificuldade, efeitos, som, música, volumes, teclado (preset e Configura
 
 Lista "Ação: teclas", Restaurar padrão, Voltar. Confirmar escolhe a ação e pede a nova tecla; tecla repetida troca de lugar; teclas reservadas avisam. Qualquer mudança ativa o preset Personalizado.
 
+> Implementada na fase 6 (`screens/controls/key_config_screen.gd`), para o teclado do J1: linhas `Ação · teclas` (a nova tecla vira a principal e as secundárias ficam), `Esc` cancela a espera, Enter, `Esc` e F3/F5/F6/F7 são reservadas (aviso em vermelho de perigo). Presets nas Opções: Padrão, Setas (setas + `Z X C V`, habilidade `A`, poder `S`) e Personalizado (só aparece depois de uma troca). Gamepad e teclado do J2 ficam com o modo 2 Jogadores.
+
 ### Controles
 
 Tabela de duas colunas (ação e teclas atuais). Combinações com `+`; ações que usam a mesma tecla de outro jeito (aparar = tocar a guarda) em linha própria.
+
+> Implementada na fase 6 (`screens/controls/controls_screen.gd`, em Aprender › Controles), lida do InputMap atual: ações à direita alinhadas em cor secundária, teclas à esquerda em cor principal, com Aparar (tocar), Empurrão, Técnicas e Outros poderes (frente ou trás +), Quarto poder.
 
 ## Acessibilidade
 

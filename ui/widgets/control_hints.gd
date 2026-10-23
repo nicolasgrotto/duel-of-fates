@@ -5,17 +5,27 @@ const WEB_FEATURE: String = "web"
 
 
 static func key_label(action: StringName) -> String:
+	var keys: PackedStringArray = key_names(action)
+	return keys[0] if not keys.is_empty() else ""
+
+
+static func key_names(action: StringName) -> PackedStringArray:
+	var names: PackedStringArray = []
 	if not InputMap.has_action(action):
-		return ""
+		return names
 	for event in InputMap.action_get_events(action):
 		var key: InputEventKey = event as InputEventKey
 		if key == null:
 			continue
-		var code: Key = key.physical_keycode if key.physical_keycode != KEY_NONE else key.keycode
-		if not OS.has_feature(WEB_FEATURE):
-			code = DisplayServer.keyboard_get_keycode_from_physical(code)
-		return OS.get_keycode_string(code)
-	return ""
+		names.append(key_name(key.physical_keycode if key.physical_keycode != KEY_NONE else key.keycode))
+	return names
+
+
+static func key_name(physical: Key) -> String:
+	var code: Key = physical
+	if not OS.has_feature(WEB_FEATURE):
+		code = DisplayServer.keyboard_get_keycode_from_physical(code)
+	return OS.get_keycode_string(code)
 
 
 static func hint(action: StringName, text_key: String) -> String:

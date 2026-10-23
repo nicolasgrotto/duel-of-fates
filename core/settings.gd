@@ -20,6 +20,9 @@ var music_volume: int = 8
 var effects_volume: int = VOLUME_STEPS
 var fullscreen: bool = false
 var vsync: bool = true
+var vibration: bool = true
+var key_preset: StringName = &"default"
+var custom_keys: Dictionary = {}
 
 
 func _ready() -> void:
@@ -34,6 +37,7 @@ func difficulty_data() -> AiDifficultyData:
 
 func apply() -> void:
 	TranslationServer.set_locale(locale)
+	InputBindings.apply_keyboard(custom_keys if key_preset == &"custom" and not custom_keys.is_empty() else InputBindings.preset_keys(key_preset))
 	_set_volume(&"Master", master_volume)
 	_set_volume(&"Music", music_volume)
 	for bus in EFFECT_BUSES:
@@ -45,6 +49,18 @@ func apply() -> void:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 	elif not fullscreen and not windowed:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+
+
+func cycle_key_preset(step: int) -> void:
+	var presets: Array[StringName] = InputBindings.PRESETS.duplicate()
+	if custom_keys.is_empty():
+		presets.erase(&"custom")
+	key_preset = presets[posmod(presets.find(key_preset) + step, presets.size())]
+
+
+func set_custom_keys(keys: Dictionary) -> void:
+	custom_keys = keys
+	key_preset = &"custom"
 
 
 func cycle_locale(step: int) -> void:
@@ -82,6 +98,11 @@ func load_settings() -> void:
 	effects_volume = clampi(file.get_value("audio", "effects", effects_volume), 0, VOLUME_STEPS)
 	fullscreen = file.get_value("video", "fullscreen", fullscreen)
 	vsync = file.get_value("video", "vsync", vsync)
+	vibration = file.get_value("input", "vibration", vibration)
+	key_preset = StringName(file.get_value("input", "key_preset", String(key_preset)))
+	custom_keys = file.get_value("input", "custom_keys", {})
+	if not InputBindings.PRESETS.has(key_preset):
+		key_preset = &"default"
 	if not LOCALES.has(locale):
 		locale = LOCALES[0]
 	for slot in hold_to_lock.size():
@@ -101,6 +122,9 @@ func save_settings() -> void:
 	file.set_value("audio", "effects", effects_volume)
 	file.set_value("video", "fullscreen", fullscreen)
 	file.set_value("video", "vsync", vsync)
+	file.set_value("input", "vibration", vibration)
+	file.set_value("input", "key_preset", String(key_preset))
+	file.set_value("input", "custom_keys", custom_keys)
 	for slot in hold_to_lock.size():
 		file.set_value("accessibility", "hold_to_lock_p%d" % (slot + 1), hold_to_lock[slot])
 	file.save(SETTINGS_PATH)

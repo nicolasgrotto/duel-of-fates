@@ -12,7 +12,7 @@ const COLUMN_TOP: float = 215.0
 const ROOT: StringName = &"root"
 const GROUPS: Dictionary = {
 	&"play": {"title": "MENU_PLAY", "items": [[&"duel", "MENU_DUEL"]]},
-	&"learn": {"title": "MENU_LEARN", "items": [[&"training", "MENU_TRAINING"]]},
+	&"learn": {"title": "MENU_LEARN", "items": [[&"training", "MENU_TRAINING"], [&"controls", "MENU_CONTROLS"]]},
 	&"extras": {"title": "MENU_EXTRAS", "items": [[&"gallery", "MENU_GALLERY"]]},
 }
 
@@ -124,6 +124,8 @@ func _on_chosen(id: StringName) -> void:
 			SceneRouter.change(&"select", {"mode": TrainingMode.new()})
 		&"gallery":
 			GalleryMode.new().start()
+		&"controls":
+			SceneRouter.change(&"controls")
 		&"quit":
 			get_tree().quit()
 

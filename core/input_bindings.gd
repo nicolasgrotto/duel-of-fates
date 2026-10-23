@@ -17,6 +17,24 @@ const COMBAT_KEYS: Dictionary = {
 	"pause": [KEY_ESCAPE, KEY_P],
 }
 
+const ARROW_KEYS: Dictionary = {
+	"move_left": [KEY_LEFT],
+	"move_right": [KEY_RIGHT],
+	"jump": [KEY_UP, KEY_SPACE],
+	"light_attack": [KEY_Z],
+	"heavy_attack": [KEY_X],
+	"block": [KEY_C],
+	"dodge": [KEY_V],
+	"evade": [KEY_DOWN],
+	"special": [KEY_A],
+	"power": [KEY_S],
+	"pause": [KEY_ESCAPE, KEY_P],
+}
+
+const PRESETS: Array[StringName] = [&"default", &"arrows", &"custom"]
+const REBINDABLE: Array[String] = ["move_left", "move_right", "jump", "light_attack", "heavy_attack", "block", "dodge", "evade", "special", "power"]
+const RESERVED_KEYS: Array[Key] = [KEY_ESCAPE, KEY_ENTER, KEY_KP_ENTER, KEY_F3, KEY_F5, KEY_F6, KEY_F7]
+
 const COMBAT_BUTTONS: Dictionary = {
 	"move_left": [JOY_BUTTON_DPAD_LEFT],
 	"move_right": [JOY_BUTTON_DPAD_RIGHT],
@@ -92,6 +110,62 @@ static func apply_defaults() -> void:
 		_reset_action(action)
 		for keycode in TOOL_KEYS[action]:
 			_add_key(action, keycode)
+
+
+static func preset_keys(preset: StringName) -> Dictionary:
+	var source: Dictionary = ARROW_KEYS if preset == &"arrows" else COMBAT_KEYS
+	var keys: Dictionary = {}
+	for action in source:
+		keys[action] = source[action].duplicate()
+	return keys
+
+
+static func apply_keyboard(keys: Dictionary) -> void:
+	var prefix: String = player_prefix(0)
+	for action in COMBAT_KEYS:
+		var full: String = prefix + action
+		for event in InputMap.action_get_events(full):
+			if event is InputEventKey:
+				InputMap.action_erase_event(full, event)
+		for keycode in keys.get(action, COMBAT_KEYS[action]):
+			_add_key(full, keycode)
+
+
+static func keyboard_map() -> Dictionary:
+	var keys: Dictionary = {}
+	var prefix: String = player_prefix(0)
+	for action in COMBAT_KEYS:
+		var codes: Array = []
+		for event in InputMap.action_get_events(prefix + action):
+			if event is InputEventKey:
+				codes.append((event as InputEventKey).physical_keycode)
+		keys[action] = codes
+	return keys
+
+
+static func rebind(keys: Dictionary, action: String, keycode: Key) -> Dictionary:
+	var result: Dictionary = keys.duplicate(true)
+	var own: Array = result.get(action, []).duplicate()
+	var previous: int = own[0] if not own.is_empty() else KEY_NONE
+	own.erase(keycode)
+	own.push_front(keycode)
+	result[action] = own
+	for other in result:
+		if other == action:
+			continue
+		var codes: Array = result[other]
+		var index: int = codes.find(keycode)
+		if index < 0:
+			continue
+		if previous != KEY_NONE and not codes.has(previous):
+			codes[index] = previous
+		else:
+			codes.remove_at(index)
+	return result
+
+
+static func is_reserved(keycode: Key) -> bool:
+	return RESERVED_KEYS.has(keycode)
 
 
 static func _reset_action(action: String) -> void:
