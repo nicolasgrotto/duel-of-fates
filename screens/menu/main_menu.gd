@@ -3,17 +3,25 @@ extends Control
 const TITLE_GAP: float = 12.0
 const LIST_GAP: float = 72.0
 const FOOTER_MARGIN: float = 36.0
+const EMBLEM_SPACE: float = 250.0
+const EMBLEM_LIFT: float = 178.0
 
 var _list: MenuList
+var _emblem: MenuEmblem
+var _emblem_space: Control
 
 
 func _ready() -> void:
+	_emblem = MenuEmblem.new()
+	add_child(_emblem)
 	var column: VBoxContainer = VBoxContainer.new()
 	column.set_anchors_preset(Control.PRESET_CENTER)
 	column.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	column.grow_vertical = Control.GROW_DIRECTION_BOTH
 	column.alignment = BoxContainer.ALIGNMENT_CENTER
 	add_child(column)
+	_emblem_space = _spacer(EMBLEM_SPACE)
+	column.add_child(_emblem_space)
 	column.add_child(_label("GAME_TITLE", &"TitleLabel"))
 	column.add_child(_spacer(TITLE_GAP))
 	column.add_child(_label("GAME_TAGLINE", &"SubtitleLabel"))
@@ -40,6 +48,11 @@ func _ready() -> void:
 	footer.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	footer.offset_bottom = -FOOTER_MARGIN
 	add_child(footer)
+
+
+func _process(_delta: float) -> void:
+	var space: Rect2 = _emblem_space.get_global_rect()
+	_emblem.cross_point = Vector2(space.get_center().x, space.end.y - EMBLEM_LIFT)
 
 
 func _on_chosen(id: StringName) -> void:

@@ -30,7 +30,9 @@ Fundo preto; uma lâmina horizontal acende do centro para as pontas (ciano-gelo)
 
 ### Menu
 
-> Provisório até a fase 6: uma lista única com Duelar, Treino, Dificuldade (← → muda) e Sair, no mesmo estilo descrito abaixo.
+> Até a fase 6, uma lista única: Duelar, Treino, Galeria de poderes, Dificuldade (← → muda) e Sair.
+
+**Visual final (decidido na segunda etapa da pixel art, explorado no Claude Design entre três direções: emblema, choque no horizonte e letterbox):** o **emblema das lâminas cruzadas**. Ao fundo, acima do título, duas lâminas em X (ciano-gelo `#7fe4ff` e âmbar `#ffb34a`, cores sem moral, do `UiPalette`) com os cabos nas pontas de baixo, desenhadas em **pixel art na mesma grade do mundo** e ampliadas sem suavização; no cruzamento, uma estrela de faíscas de 4 pontas que pulsa, e faíscas soltas que caem de vez em quando. Ao abrir o menu, as lâminas acendem do cabo à ponta (como a ignição do round) e o cruzamento dá um clarão curto. O glow tremula de leve, como o zumbido. Duas linhas finas de horizonte (a plataforma) cruzam a tela abaixo do emblema, e poeira fina sobe devagar. Título, frase e lista ficam em alta resolução (Oxanium), centralizados sob o cruzamento: título com letras bem espaçadas, frase no destaque, lista com o traço curto de destaque à esquerda da opção selecionada. Nada de painéis, molduras ou botões: o emblema é a única imagem.
 
 Título centralizado, maiúsculas espaçadas, frase de apoio em destaque. Dois níveis na mesma tela: **Jogar** (Duelar, História, Arcade, Sobrevivência, 2 Jogadores), **Aprender** (Tutorial, Treinos guiados, Treino, Desafio de parry, Controles), **Extras** (Desafios, Galeria de poderes, Galeria da História), **Opções**. O nome do grupo aparece entre a frase e a lista; Voltar ou `Esc` volta à raiz.
 
