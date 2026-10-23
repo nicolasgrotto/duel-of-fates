@@ -6,6 +6,7 @@ const SCREENS: Dictionary = {
 	&"duel": "res://screens/duel/duel_screen.tscn",
 	&"pause": "res://screens/pause/pause_screen.tscn",
 	&"result": "res://screens/result/result_screen.tscn",
+	&"options": "res://screens/options/options_screen.tscn",
 }
 const FADE_SECONDS: float = 0.18
 const SETTLE_FRAMES: int = 2

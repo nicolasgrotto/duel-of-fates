@@ -9,6 +9,7 @@ func build_setup() -> DuelSetup:
 	setup.hold_to_lock = [Settings.hold_to_lock[0], false]
 	setup.difficulty = Settings.difficulty_data()
 	setup.rules = MatchRules.new()
+	setup.rules.powers = Settings.powers
 	setup.arena = DEFAULT_ARENA
 	setup.match_seed = _new_seed()
 	return _finish_setup(setup)

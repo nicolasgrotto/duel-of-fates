@@ -304,3 +304,27 @@ HINT_GALLERY_TARGET,alvo,target
 HINT_GALLERY_REPEAT,repetição,repeat
 HINT_GALLERY_SWAP,lançador,caster
 HINT_GALLERY_CAST,lançar,cast
+MENU_PLAY,Jogar,Play
+MENU_LEARN,Aprender,Learn
+MENU_EXTRAS,Extras,Extras
+MENU_OPTIONS,Opções,Options
+MENU_BACK,Voltar,Back
+OPTIONS_TITLE,OPÇÕES,OPTIONS
+OPTION_LANGUAGE,Idioma · {value},Language · {value}
+LANGUAGE_PT_BR,Português,Português
+LANGUAGE_EN,English,English
+OPTION_EFFECTS,Efeitos · {value},Effects · {value}
+EFFECTS_FULL,Completos,Full
+EFFECTS_REDUCED,Reduzidos,Reduced
+OPTION_REPLAY,Replay do golpe final · {value},Final blow replay · {value}
+OPTION_FINISHERS,Finalizações · {value},Finishers · {value}
+OPTION_POWERS,Poderes · {value},Powers · {value}
+OPTION_HOLD_LOCK,Segurar para disputar · J{player} · {value},Hold to lock · P{player} · {value}
+OPTION_MASTER_VOLUME,Volume geral · {value},Master volume · {value}
+OPTION_MUSIC_VOLUME,Música · {value},Music · {value}
+OPTION_EFFECTS_VOLUME,Efeitos sonoros · {value},Sound effects · {value}
+OPTION_FULLSCREEN,Tela cheia · {value},Fullscreen · {value}
+OPTION_VSYNC,V-Sync · {value},V-Sync · {value}
+VALUE_ON,Ligado,On
+VALUE_OFF,Desligado,Off
+HINT_ADJUST,ajustar,adjust
