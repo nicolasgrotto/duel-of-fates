@@ -24,4 +24,5 @@ blade_reach = 65.0
 finisher_limb = 2
 blade_angle_windup = -60.0
 blade_angle_strike = 300.0
+technique_style = 1
 hits_behind = true

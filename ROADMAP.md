@@ -94,7 +94,7 @@ Segunda etapa da migração (pedido do autor depois da prova de conceito; a bran
 - [x] Poderes com apresentação à altura da versão em alta definição ou melhor; Corte de Fluxo como onda em arco vertical que nasce do chão, grossa embaixo e fina em cima; Telecinese em Massa com cinemática (câmera sobe ao céu, o meteoro é puxado e rachado, a câmera desce para a arena e os pedaços caem); Tempestade eletrizando o céu do fundo. Cinemáticas e efeitos de invocação só começam quando o poder sai de fato (sem interrupção na janela de vulnerabilidade da preparação)
 - [x] Menu principal com design final (emblema das lâminas cruzadas em pixel art, escolhido no Claude Design entre três direções; ver UI_UX)
 - [ ] Revisão do autor jogando: ajustar tempos e amplitudes das famílias (`data/families/*.tres`), poses de técnicas e esquiva, e os números de `power_vfx_config.tres`
-- [ ] Próximos refinamentos de arte: armaduras e capuzes com mais leitura nos personagens escuros (Sombra, Soberano), mãos abertas para os poderes, técnicas com poses próprias (Giro, Estocada, Varredura)
+- [x] Refinamentos de arte: mão aberta nos poderes e no empurrão; técnicas com poses próprias (todas as oito); personagens escuros conferidos no duelo (leem pela luz das lâminas; paletas mantidas)
 
 ## Fase 6 — Arenas e modos
 

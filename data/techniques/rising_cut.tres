@@ -24,5 +24,6 @@ blade_reach = 65.0
 finisher_limb = 1
 blade_angle_windup = 130.0
 blade_angle_strike = -115.0
+technique_style = 5
 airborne_bonus = 0.3
 launch_speed = 650.0

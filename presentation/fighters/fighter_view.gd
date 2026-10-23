@@ -14,6 +14,7 @@ const LIGHT_HEIGHT: float = 40.0
 const LIGHT_TEXTURE_SIZE: int = 256
 const CHARGE_FLARE: float = 0.08
 const TELEPORT_DISTANCE: float = 150.0
+const MIN_TURN_WIDTH: float = 0.2
 
 var fighter: FighterState
 var opponent: FighterState
@@ -185,6 +186,7 @@ func _process(delta: float) -> void:
 	_update_death(delta)
 	_ignition = minf(_ignition + delta / effects.ignition, 1.0)
 	rig.rotation = _pose.spin
+	rig.scale.x = fighter.character.art.dim("scale") * _turn_factor(_pose.turn)
 	rig.position = _pose.pelvis - _pose.pelvis.rotated(_pose.spin) if _pose.spin != 0.0 else Vector2.ZERO
 	rig.apply(_pose, fighter.facing, delta)
 	rig.set_flash(1.0 if _flash_left > 0.0 else 0.0)
@@ -193,6 +195,13 @@ func _process(delta: float) -> void:
 	_update_blade()
 	if fighter.state == FighterState.State.DODGING and not reduced_effects:
 		afterimages.capture(rig, delta)
+
+
+static func _turn_factor(turn: float) -> float:
+	if turn == 0.0:
+		return 1.0
+	var factor: float = cos(turn)
+	return signf(factor) * maxf(absf(factor), MIN_TURN_WIDTH) if factor != 0.0 else MIN_TURN_WIDTH
 
 
 func _advance_solver(delta: float) -> void:
@@ -215,11 +224,13 @@ func _update_blade() -> void:
 	_geometry.compute(fighter.character.weapon, _pose)
 	var global_pose: Transform2D = rig.get_global_transform()
 	_geometry.blade_base = global_pose * _geometry.blade_base
-	_geometry.blade_direction = (global_pose.basis_xform(_geometry.blade_direction)).normalized()
+	var main_span: Vector2 = global_pose.basis_xform(_geometry.blade_direction)
+	var second_span: Vector2 = global_pose.basis_xform(_geometry.second_direction)
+	_geometry.blade_direction = main_span.normalized()
 	_geometry.second_base = global_pose * _geometry.second_base
-	_geometry.second_direction = (global_pose.basis_xform(_geometry.second_direction)).normalized()
-	_geometry.blade_length *= rig.scale.x
-	_geometry.second_length *= rig.scale.x
+	_geometry.second_direction = second_span.normalized()
+	_geometry.blade_length *= main_span.length()
+	_geometry.second_length *= second_span.length()
 	blade.length_ratio = 0.0 if _lost_blade or fighter.blade_out else _ignition * (1.0 - _extinguish)
 	blade.tremble = _pose.tremble
 	if fighter.charge_level > 1:

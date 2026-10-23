@@ -26,6 +26,7 @@ var _hilt: HiltView
 var _stumps: Node2D
 var _missing: MoveData.Limb = MoveData.Limb.NONE
 var _wound: FighterState.Wound = FighterState.Wound.NONE
+var _open_hand: bool = false
 
 var chest: Vector2 = Vector2.ZERO
 var head_base: Vector2 = Vector2.ZERO
@@ -147,9 +148,20 @@ func apply(pose: RigPose, facing: int, delta: float) -> void:
 	var hip_back: Vector2 = pelvis + Vector2(-3.0, 0.0)
 	front_knee = _leg("front", hip_front, pose.front_foot)
 	_leg("back", hip_back, pose.back_foot)
+	_set_open_hand(pose.open_hand)
 	_hilt.update_pose(pose, front_hand, back_hand)
 	_simulate_cloths(pose, pelvis, facing, delta)
 	_stumps.queue_redraw()
+
+
+func _set_open_hand(open: bool) -> void:
+	if open == _open_hand or not art.has_part("hand_open") or not _sprites.has("hand_back:hand"):
+		return
+	_open_hand = open
+	var part: String = "hand_open" if open else "hand"
+	var sprite: Sprite2D = _sprites["hand_back:hand"]
+	sprite.texture = art.canvas_texture(part)
+	sprite.offset = -art.pivot(part)
 
 
 func _place(bone_name: String, at: Vector2, angle: float) -> void:

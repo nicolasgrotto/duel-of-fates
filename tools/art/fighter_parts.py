@@ -104,6 +104,7 @@ def arm_parts(spec, dims):
         torn = [fabric("skin", 0.5, 0.0), band(arms.get("sleeve_slot", "body"), 0.0, 0.3, tone=0.45), stripes("body", 0.25, 0.4, 2, tone=0.4)]
         parts.append(limb("forearm_front", dims["forearm"], dims["arm_width"] * 0.9, dims["arm_width"] * 0.75, torn))
     parts.append(fist(arms.get("hand_slot", "skin")))
+    parts.append(open_hand(arms.get("hand_slot", "skin")))
     return parts
 
 
@@ -115,6 +116,16 @@ def fist(slot):
     thumb = hand.line_mask([(-1.0, -3.0), (2.2, -4.4)], 2.0)
     hand.paint(thumb, slot, tone=0.6, bevel=0.8, relief=1.6, form=0.2)
     hand.darken(hand.line_mask([(2.4, -2.6), (2.8, 2.8)], 0.8), 0.3)
+    return hand
+
+
+def open_hand(slot):
+    hand = Part("hand_open", -4, -7, 11, 6)
+    hand.light = LIMB_LIGHT
+    palm = hand.polygon_mask([(-2.4, -3.2), (3.2, -3.6), (4.2, 3.0), (-2.2, 3.2)])
+    fingers = hand.line_mask([(3.0, -2.6), (8.4, -3.4)], 1.5) + hand.line_mask([(3.4, -0.6), (9.4, -0.8)], 1.5) + hand.line_mask([(3.4, 1.4), (8.8, 1.8)], 1.5)
+    hand.paint((palm + fingers).clip(0, 1), slot, tone=0.52, bevel=1.0, relief=1.4, form=0.3)
+    hand.paint(hand.line_mask([(0.0, -3.4), (3.0, -6.2)], 1.6), slot, tone=0.6, bevel=0.8, relief=1.6, form=0.2)
     return hand
 
 

@@ -11,6 +11,8 @@ var off_blade_angle: float = 120.0
 var front_foot: Vector2 = Vector2(15.0, 0.0)
 var back_foot: Vector2 = Vector2(-15.0, 0.0)
 var spin: float = 0.0
+var turn: float = 0.0
+var open_hand: bool = false
 var tremble: bool = false
 var trail: bool = false
 var off_trail: bool = false
@@ -27,6 +29,8 @@ func copy_from(other: RigPose) -> void:
 	front_foot = other.front_foot
 	back_foot = other.back_foot
 	spin = other.spin
+	turn = other.turn
+	open_hand = other.open_hand
 	tremble = other.tremble
 	trail = other.trail
 	off_trail = other.off_trail
@@ -43,6 +47,8 @@ func blend_toward(target: RigPose, weight: float) -> void:
 	front_foot = front_foot.lerp(target.front_foot, weight)
 	back_foot = back_foot.lerp(target.back_foot, weight)
 	spin = target.spin
+	turn = target.turn
+	open_hand = target.open_hand
 	tremble = target.tremble
 	trail = target.trail
 	off_trail = target.off_trail

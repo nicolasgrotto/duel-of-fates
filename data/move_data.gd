@@ -3,6 +3,7 @@ extends Resource
 
 enum Kind { LIGHT, HEAVY, FORWARD_HEAVY, COUNTER, SHOVE, AERIAL_LIGHT, AERIAL_HEAVY, LOCK_FINISH, ABILITY, STANCE, TECHNIQUE }
 enum Limb { NONE, ARM, LEG, HEAD }
+enum TechniqueStyle { ARC, SPIN, DASH, THROW, THRUST, RISING, FLURRY, SWEEP, PLUNGE }
 
 @export var id: StringName
 @export var kind: Kind = Kind.LIGHT
@@ -54,6 +55,7 @@ enum Limb { NONE, ARM, LEG, HEAD }
 @export_group("Presentation")
 @export var blade_angle_windup: float = -120.0
 @export var blade_angle_strike: float = 30.0
+@export var technique_style: TechniqueStyle = TechniqueStyle.ARC
 
 
 func startup_ticks() -> int:

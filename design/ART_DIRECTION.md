@@ -139,6 +139,7 @@ Personagens com o mesmo jeito de lutar compartilham a base de animação.
 - **Varredura**: corpo baixo, joelho da frente dobrado, lâmina rente ao chão.
 - **Investida descendente**: no ar, joelhos encolhidos, lâmina para baixo e para a frente até o chão.
 - **Contraguarda (Guardião)**: desvio para cima com faíscas, meio passo atrás, estocada curta.
+- Na grade, o Giro é feito achatando o corpo na horizontal (frente → perfil fino → costas → frente) enquanto a lâmina encurta em escorço ao passar por trás; a mão livre abre a palma em poderes, empurrão e estrangulamento (peça `hand_open`).
 
 ### Disputa de lâminas
 

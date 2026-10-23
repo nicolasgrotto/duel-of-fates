@@ -3,6 +3,7 @@ extends TestCase
 const CHARACTERS_ROOT: String = "res://data/characters"
 const SAMPLES: int = 24
 const TOLERANCE: float = 12.0
+const UNSYNCED_STYLES: Array[MoveData.TechniqueStyle] = [MoveData.TechniqueStyle.THROW, MoveData.TechniqueStyle.SPIN]
 
 
 func _characters() -> Array[CharacterData]:
@@ -24,6 +25,9 @@ func _blade_moves(data: CharacterData) -> Array[MoveData]:
 			moves.append(move)
 	if data.ability != null and data.ability.move != null and data.ability.kind != AbilityData.Kind.STANCE:
 		moves.append(data.ability.move)
+	for technique in [data.technique_forward, data.technique_back, data.technique_air]:
+		if technique != null and not technique.technique_style in UNSYNCED_STYLES and not moves.has(technique):
+			moves.append(technique)
 	return moves
 
 

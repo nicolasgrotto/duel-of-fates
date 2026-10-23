@@ -24,4 +24,5 @@ blade_reach = 65.0
 finisher_limb = 2
 blade_angle_windup = 165.0
 blade_angle_strike = 15.0
+technique_style = 7
 stagger_on_guard = 0.55

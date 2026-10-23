@@ -42,6 +42,23 @@ const FOLLOW_SHARE: float = 0.35
 const ARC_CENTER: Vector2 = Vector2(-2.0, -34.0)
 const MAX_FROM_REACH: float = 60.0
 const HIT_DECAY: float = 9.0
+const SPIN_GRIP: Vector2 = Vector2(22.0, -36.0)
+const SPIN_ANGLE: float = -6.0
+const DASH_WINDUP_GRIP: Vector2 = Vector2(-10.0, -40.0)
+const DASH_STRIKE_GRIP: Vector2 = Vector2(30.0, -22.0)
+const THROW_WINDUP_GRIP: Vector2 = Vector2(-14.0, -44.0)
+const THROW_RELEASE_GRIP: Vector2 = Vector2(40.0, -42.0)
+const THROW_CATCH_HAND: Vector2 = Vector2(30.0, -44.0)
+const THRUST_CHAMBER_GRIP: Vector2 = Vector2(2.0, -36.0)
+const THRUST_EXTEND_GRIP: Vector2 = Vector2(46.0, -34.0)
+const THRUST_ANGLE: float = 0.0
+const RISING_LOW_GRIP: Vector2 = Vector2(-12.0, -2.0)
+const RISING_HIGH_GRIP: Vector2 = Vector2(14.0, -74.0)
+const FLURRY_REACH: float = 36.0
+const FLURRY_RISE: float = 14.0
+const SWEEP_BACK_GRIP: Vector2 = Vector2(-10.0, 22.0)
+const SWEEP_FRONT_GRIP: Vector2 = Vector2(32.0, 24.0)
+const PLUNGE_GRIP: Vector2 = Vector2(14.0, -14.0)
 const REBOUND_GRIP: Vector2 = Vector2(4.0, -50.0)
 const REBOUND_ANGLE: float = -125.0
 const HIT_LEAN: float = -26.0
@@ -103,6 +120,8 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 	var crouch: float = family.crouch + breath + LANDING_CROUCH * clampf(landing_left / LANDING_TIME, 0.0, 1.0)
 	var lean: float = family.lean + (6.0 if fighter.exhausted else 0.0)
 	pose.spin = 0.0
+	pose.turn = 0.0
+	pose.open_hand = false
 	pose.tremble = false
 	pose.trail = false
 	pose.off_trail = false
@@ -179,6 +198,7 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 			if fighter.held_by_choke:
 				pose.grip = CHOKED_GRIP
 				pose.off_hand = CHOKED_HAND
+				pose.open_hand = true
 				pose.blade_angle = STUN_ANGLE
 				pose.front_foot = Vector2(6.0, 8.0)
 				pose.back_foot = Vector2(-4.0, 12.0)
@@ -263,10 +283,13 @@ func _attack(fighter: FighterState, pose: RigPose, guard_angle: float, guard_gri
 		if fighter.move_phase == FighterState.Phase.ACTIVE:
 			amount = 1.0
 		pose.off_hand = RELAXED_HAND.lerp(SHOVE_HAND, amount)
+		pose.open_hand = amount > 0.3
 		pose.grip = guard_grip + Vector2(-8.0, 4.0) * amount
 		pose.front_foot.x += family.heavy_step * amount
 		_body_shift = family.lunge * amount
 		return Vector2(4.0 * amount, 16.0 * amount)
+	if move.kind == MoveData.Kind.TECHNIQUE and move.technique_style != MoveData.TechniqueStyle.ARC:
+		return _technique(fighter, pose, move, guard_angle, guard_grip)
 	var heavy: bool = move.is_heavy()
 	var power: float = HEAVY_SCALE if heavy else 1.0
 	var windup_grip: Vector2 = (HEAVY_WINDUP_GRIP if heavy else WINDUP_GRIP) * Vector2(family.windup_pull, 1.0)
@@ -314,6 +337,103 @@ func _attack(fighter: FighterState, pose: RigPose, guard_angle: float, guard_gri
 	return Vector2(crouch, lean)
 
 
+func _technique(fighter: FighterState, pose: RigPose, move: MoveData, guard_angle: float, guard_grip: Vector2) -> Vector2:
+	var progress: float = _progress(fighter, move)
+	var ramp: float = 1.0
+	var swing: float = 1.0
+	match fighter.move_phase:
+		FighterState.Phase.STARTUP:
+			ramp = 1.0 - pow(1.0 - progress, ANTICIPATION_EASE)
+			swing = 0.0
+		FighterState.Phase.ACTIVE:
+			swing = progress
+		FighterState.Phase.RECOVERY:
+			ramp = 1.0 - smoothstep(FOLLOW_SHARE * 0.6, 1.0, progress)
+	var active: bool = fighter.move_phase == FighterState.Phase.ACTIVE
+	var start_grip: Vector2 = _from_grip
+	var start_angle: float = _from_angle
+	var crouch: float = 0.0
+	var lean: float = 0.0
+	var windup_grip: Vector2 = guard_grip
+	var strike_grip: Vector2 = guard_grip
+	var angle: float = guard_angle
+	match move.technique_style:
+		MoveData.TechniqueStyle.SPIN:
+			windup_grip = SPIN_GRIP
+			strike_grip = SPIN_GRIP
+			angle = SPIN_ANGLE + sin(swing * TAU) * 8.0
+			pose.turn = TAU * smoothstep(0.0, 1.0, swing) if active else 0.0
+			crouch = 8.0 * ramp
+			lean = 4.0 * ramp
+		MoveData.TechniqueStyle.DASH:
+			windup_grip = DASH_WINDUP_GRIP
+			strike_grip = DASH_STRIKE_GRIP
+			angle = lerpf(move.blade_angle_windup, move.blade_angle_strike, swing)
+			crouch = 16.0 * ramp
+			lean = 26.0 * ramp
+			pose.front_foot.x += 14.0 * ramp
+			pose.back_foot.x -= 12.0 * ramp
+			_body_shift = 10.0 * ramp
+		MoveData.TechniqueStyle.THROW:
+			windup_grip = THROW_WINDUP_GRIP
+			strike_grip = THROW_RELEASE_GRIP
+			angle = lerpf(move.blade_angle_windup, move.blade_angle_strike, swing)
+			pose.off_hand = RELAXED_HAND.lerp(THROW_CATCH_HAND, ramp * swing)
+			pose.open_hand = swing > 0.0
+			lean = lerpf(-8.0, 16.0, swing) * ramp
+			pose.front_foot.x += 10.0 * swing * ramp
+		MoveData.TechniqueStyle.THRUST:
+			windup_grip = THRUST_CHAMBER_GRIP
+			strike_grip = THRUST_EXTEND_GRIP
+			angle = lerpf(THRUST_ANGLE - 6.0, THRUST_ANGLE, swing)
+			crouch = 6.0 * ramp
+			lean = lerpf(-4.0, 18.0, swing) * ramp
+			pose.front_foot.x += 18.0 * swing * ramp
+			pose.back_foot.x -= 6.0 * ramp
+			_body_shift = 12.0 * swing * ramp
+		MoveData.TechniqueStyle.RISING:
+			windup_grip = RISING_LOW_GRIP
+			strike_grip = RISING_HIGH_GRIP
+			angle = lerpf(move.blade_angle_windup, move.blade_angle_strike, swing)
+			crouch = lerpf(18.0, -6.0, swing) * ramp
+			lean = lerpf(12.0, -8.0, swing) * ramp
+		MoveData.TechniqueStyle.FLURRY:
+			var stab: int = mini(int(swing * float(maxi(move.multi_hits, 1))), maxi(move.multi_hits, 1) - 1)
+			var reach: float = sin(fposmod(swing * maxi(move.multi_hits, 1), 1.0) * PI) if active else 0.0
+			windup_grip = THRUST_CHAMBER_GRIP
+			strike_grip = THRUST_CHAMBER_GRIP + Vector2(FLURRY_REACH * reach, -FLURRY_RISE * float(stab % 2))
+			angle = THRUST_ANGLE + (-14.0 if stab % 2 == 1 else 6.0)
+			lean = 14.0 * ramp
+			pose.front_foot.x += 8.0 * ramp
+			swing = 1.0 if active else swing
+		MoveData.TechniqueStyle.SWEEP:
+			windup_grip = SWEEP_BACK_GRIP
+			strike_grip = SWEEP_FRONT_GRIP
+			angle = lerpf(move.blade_angle_windup, move.blade_angle_strike, swing)
+			crouch = 22.0 * ramp
+			lean = 24.0 * ramp
+			pose.front_foot.x += 16.0 * ramp
+			pose.back_foot.x -= 16.0 * ramp
+		MoveData.TechniqueStyle.PLUNGE:
+			windup_grip = PLUNGE_GRIP + Vector2(-6.0, -12.0)
+			strike_grip = PLUNGE_GRIP
+			angle = lerpf(move.blade_angle_windup, move.blade_angle_strike, swing)
+			lean = 20.0 * ramp
+			_tuck(pose, 1.0)
+	match fighter.move_phase:
+		FighterState.Phase.STARTUP:
+			pose.grip = _arc(start_grip, windup_grip, ramp)
+			pose.blade_angle = rad_to_deg(lerp_angle(deg_to_rad(start_angle), deg_to_rad(angle), ramp))
+		FighterState.Phase.ACTIVE:
+			pose.grip = _arc(windup_grip, strike_grip, swing)
+			pose.blade_angle = angle
+			pose.trail = true
+		FighterState.Phase.RECOVERY:
+			pose.grip = _arc(guard_grip, strike_grip, ramp)
+			pose.blade_angle = rad_to_deg(lerp_angle(deg_to_rad(guard_angle), deg_to_rad(angle), ramp))
+	return Vector2(crouch, lean)
+
+
 func _arc(from: Vector2, to: Vector2, weight: float) -> Vector2:
 	var chord: Vector2 = to - from
 	var middle: Vector2 = (from + to) * 0.5
@@ -349,6 +469,7 @@ func _cast(fighter: FighterState, pose: RigPose) -> Vector2:
 		progress = 1.0 - clampf(float(fighter.power_ticks) / maxf(power.recovery_ticks(), 1.0), 0.0, 1.0)
 	elif fighter.power_phase == FighterState.Phase.ACTIVE:
 		progress = 1.0
+	pose.open_hand = power.kind != PowerData.Kind.FLOW_CLEAVE
 	var tremor: Vector2 = Vector2(sin(time * 41.0), cos(time * 37.0)) * TREMOR if fighter.state == FighterState.State.CHANNELING else Vector2.ZERO
 	match power.kind:
 		PowerData.Kind.STORM, PowerData.Kind.MASS_TELEKINESIS:
