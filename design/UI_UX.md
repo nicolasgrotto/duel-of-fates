@@ -8,7 +8,7 @@ Segue [ART_DIRECTION.md](ART_DIRECTION.md). Regras de jogo em [GAME_DESIGN.md](.
 - **Cinematográfica**: muito espaço vazio, texto centralizado, letras espaçadas nos títulos, transições suaves (fades curtos, letterbox).
 - **Legível**: contraste alto, texto de dica com no mínimo ~18 px em 720p.
 - **Pouco intrusiva**: durante o duelo, a UI fica nas bordas e nunca cobre a área de luta. HUD com no máximo ~10% da altura da tela.
-- **Uma fonte**: Oxanium. Cores do tema: fundo `#05070d`, texto `#e8ecf5`, secundário `#8a94ab`, destaque `#9fb4d9`, perigo `#e5484d`, Aurora `#5aa2ff`, Eclipse `#ff4458`.
+- **Uma fonte**: Oxanium. As setas das dicas (← ↑ → ↓), que a Oxanium não tem, vêm de `DuelArrows`, fallback mínimo desenhado no traço e nas medidas dela (não é uma segunda família: só quatro glifos). Cores do tema: fundo `#05070d`, texto `#e8ecf5`, secundário `#8a94ab`, destaque `#9fb4d9`, perigo `#e5484d`, Aurora `#5aa2ff`, Eclipse `#ff4458`.
 - **Sem números de dano** na tela. Números ficam no debug (F3).
 
 ## Idiomas
