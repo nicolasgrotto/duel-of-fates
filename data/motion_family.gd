@@ -31,7 +31,11 @@ enum Grip { TWO_HANDED, ONE_HANDED, DUAL, STAFF }
 @export var windup_lean: float = -7.0
 
 @export_group("Air and dodges")
-@export var flip_on_double_jump: bool = false
+@export var flip_on_double_jump: bool = true
+@export var double_jump_turns: float = 1.0
+@export var double_jump_time: float = 0.42
+@export var double_jump_corkscrew: bool = false
+@export var air_twirl: bool = false
 @export var roll_on_dodge: bool = false
 
 @export_group("Blade lock")

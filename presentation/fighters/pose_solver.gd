@@ -71,6 +71,9 @@ const LOCK_SLIDE: float = 7.0
 const LOCK_PUSH: float = 5.0
 const LOCK_PULSE_DECAY: float = 10.0
 const JUMP_APEX_SPEED: float = 260.0
+const FLIP_EASE: float = 0.6
+const FLIP_GRIP: Vector2 = Vector2(20.0, -30.0)
+const FLIP_BLADE_ANGLE: float = -10.0
 
 var character: CharacterData
 var family: MotionFamily
@@ -259,8 +262,16 @@ func _jump_pose(fighter: FighterState, pose: RigPose) -> void:
 	else:
 		_tuck(pose, 1.0 + rise * 0.45)
 		pose.front_foot += Vector2(4.0, 6.0) * -rise
-	if flip_progress >= 0.0 and family.flip_on_double_jump:
-		pose.spin = TAU * ease(flip_progress, 0.6)
+	if flip_progress >= 0.0 and flip_progress < 1.0 and family.flip_on_double_jump:
+		var turn: float = ease(flip_progress, FLIP_EASE)
+		_tuck(pose, 1.0)
+		pose.grip = FLIP_GRIP
+		pose.blade_angle = FLIP_BLADE_ANGLE
+		pose.spin = TAU * family.double_jump_turns * turn
+		if family.double_jump_corkscrew:
+			pose.turn = TAU * turn
+		if family.air_twirl:
+			pose.blade_angle += 720.0 * turn
 
 
 func _tuck(pose: RigPose, amount: float) -> void:

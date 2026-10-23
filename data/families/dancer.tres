@@ -23,3 +23,6 @@ finisher_twirl = true
 flip_on_double_jump = true
 roll_on_dodge = true
 lock_lean = 14.0
+double_jump_turns = 2.0
+double_jump_time = 0.55
+double_jump_corkscrew = true

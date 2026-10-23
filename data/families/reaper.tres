@@ -22,3 +22,4 @@ heavy_step = 12.0
 finisher_twirl = true
 flip_on_double_jump = true
 roll_on_dodge = true
+air_twirl = true

@@ -7,7 +7,6 @@ const HIT_SHAKE: float = 2.5
 const WALK_PHASE_PER_UNIT: float = 0.06
 const ATTACK_FOLLOW: float = 60.0
 const POSE_FOLLOW: float = 16.0
-const FLIP_DURATION: float = 0.42
 const LIGHT_ENERGY: float = 1.1
 const LIGHT_SCALE: float = 2.8
 const LIGHT_HEIGHT: float = 40.0
@@ -207,7 +206,7 @@ static func _turn_factor(turn: float) -> float:
 func _advance_solver(delta: float) -> void:
 	_solver.advance(delta)
 	if _solver.flip_progress >= 0.0:
-		_solver.flip_progress = minf(_solver.flip_progress + delta / FLIP_DURATION, 1.0)
+		_solver.flip_progress = minf(_solver.flip_progress + delta / fighter.character.family.double_jump_time, 1.0)
 	if fighter.state == FighterState.State.WALKING:
 		_solver.walk_phase += absf(fighter.vx) * delta * WALK_PHASE_PER_UNIT
 

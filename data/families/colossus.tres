@@ -20,3 +20,4 @@ follow_through = 6.0
 heavy_crouch = 14.0
 heavy_step = 6.0
 lock_crouch = 14.0
+double_jump_time = 0.5

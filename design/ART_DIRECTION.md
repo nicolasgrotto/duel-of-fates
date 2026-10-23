@@ -92,7 +92,7 @@ A lâmina é a protagonista visual e a principal fonte de luz.
 
 - **Idle**: respiração lenta, a lâmina balança levemente. Nunca totalmente parado. Exausto: respiração mais funda e guarda pendendo.
 - **Caminhada**: passos curtos de base de luta (os pés não se cruzam), corpo sobe e desce, roupa arrasta para trás. Andar para trás é mais cauteloso.
-- **Pulo**: impulso, pernas recolhidas, giros e cambalhotas conforme o personagem (a Garça e o Ceifador são os mais acrobáticos); pulo duplo com rotação; aterrissagem com peso.
+- **Pulo**: impulso, pernas recolhidas, giros e cambalhotas conforme o personagem; aterrissagem com peso. **Pulo duplo**: todos dão uma cambalhota completa encolhidos, com a lâmina esticada à frente desenhando uma roda. Por família (`MotionFamily`: `double_jump_turns`, `double_jump_time`, `double_jump_corkscrew`, `air_twirl`): a Dançarina (Garça) dá duas voltas em parafuso, a Vespa uma volta em parafuso, o Ceifador gira o bastão na mão durante o salto, o Colosso gira mais devagar e o Golpeador mais rápido.
 
 ### Famílias de movimento
 
