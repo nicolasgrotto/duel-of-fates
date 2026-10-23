@@ -42,6 +42,10 @@ const FOLLOW_SHARE: float = 0.35
 const ARC_CENTER: Vector2 = Vector2(-2.0, -34.0)
 const MAX_FROM_REACH: float = 60.0
 const HIT_DECAY: float = 9.0
+const KNEEL_DROP: float = 30.0
+const WOUNDED_ARM_DROP: float = 18.0
+const LIMP_DIP: float = 5.0
+const LIMP_STRIDE: float = 0.45
 const SPIN_GRIP: Vector2 = Vector2(22.0, -36.0)
 const SPIN_ANGLE: float = -6.0
 const DASH_WINDUP_GRIP: Vector2 = Vector2(-10.0, -40.0)
@@ -114,6 +118,9 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 	if fighter.exhausted:
 		guard_angle += EXHAUSTED_DROP
 		guard_grip.y += EXHAUSTED_DROP * 0.5
+	if fighter.wound == FighterState.Wound.ARM:
+		guard_angle += WOUNDED_ARM_DROP
+		guard_grip += Vector2(-3.0, WOUNDED_ARM_DROP * 0.45)
 	_track_attack(fighter, pose, guard_angle, guard_grip)
 	if fighter.state != FighterState.State.HIT and clash_left == 0.0:
 		rebounding = false
@@ -138,6 +145,8 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 		FighterState.State.WALKING:
 			_walk(fighter, pose)
 			crouch += absf(sin(walk_phase)) * family.bob
+			if fighter.wound == FighterState.Wound.LEG:
+				crouch += maxf(sin(walk_phase), 0.0) * LIMP_DIP
 		FighterState.State.JUMPING:
 			_jump_pose(fighter, pose)
 		FighterState.State.ATTACKING, FighterState.State.HEAVY_ATTACK:
@@ -193,6 +202,17 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 			pose.grip = HIT_GRIP
 			pose.blade_angle = HIT_ANGLE
 			off_free = true
+			match fighter.finisher_limb:
+				MoveData.Limb.HEAD:
+					crouch += KNEEL_DROP
+					lean = 16.0
+					pose.front_foot = Vector2(14.0, 0.0)
+					pose.back_foot = Vector2(-20.0, 0.0)
+					pose.grip = STUN_GRIP
+					pose.blade_angle = STUN_ANGLE
+				MoveData.Limb.LEG:
+					crouch += KNEEL_DROP * 0.6
+					lean = -12.0
 		FighterState.State.CASTING, FighterState.State.CHANNELING:
 			var cast: Vector2 = _cast(fighter, pose)
 			crouch += cast.x
@@ -230,7 +250,8 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 func _walk(fighter: FighterState, pose: RigPose) -> void:
 	var backward: bool = signf(fighter.vx) != float(fighter.facing) and fighter.vx != 0.0
 	var phase: float = walk_phase * (-1.0 if backward else 1.0)
-	pose.front_foot.x += sin(phase) * family.stride
+	var front_stride: float = family.stride * (LIMP_STRIDE if fighter.wound == FighterState.Wound.LEG else 1.0)
+	pose.front_foot.x += sin(phase) * front_stride
 	pose.front_foot.y = -maxf(cos(phase), 0.0) * 5.0
 	pose.back_foot.x -= sin(phase) * family.stride
 	pose.back_foot.y = -maxf(-cos(phase), 0.0) * 5.0

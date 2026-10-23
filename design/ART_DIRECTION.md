@@ -154,7 +154,10 @@ Personagens com o mesmo jeito de lutar compartilham a base de animação.
 - **Perna**: fica a coxa; canela e pé saem girando.
 - **Cabeça**: o corpo cai sem a cabeça, com brasa no pescoço; a cabeça rola com capuz, máscara ou cabelo, sem rosto visível, e para no chão.
 - A peça sai para longe de quem cortou, gira, pousa e fica no chão até o round acabar. Pontas cortadas em brasa que esfria em ~1,2 s. **Sem sangue**.
-- Ferimento (braço/perna) durante o round: sombra discreta sobre o membro até a Cura terminar ou o round acabar.
+- A peça sai do lado certo: pela frente, o membro da frente; pelas costas, o de trás. A Varredura leva as duas canelas.
+- **Queda pelo corte**: sem cabeça, o corpo cai de joelhos e depois tomba para a frente; sem perna, desaba rápido para trás; sem braço (ou sem finalização), cai para trás.
+- **Brasa**: no coto, uma tampa em brasa (núcleo amarelo-quente `#ffd27a`, borda laranja `#ff7a2a`) esfria até cicatriz escura `#3a1a10` em ~1,6 s, pinga faíscas no primeiro 0,7 s e solta fumaça por ~3 s. A peça voa com rastro de brasa, solta fumaça ao pousar, e a cabeça rola pelo chão.
+- **Ferimento** (braço/perna) durante o round: talho cauterizado diagonal sobre o membro (borda vermelho-escura `#5a1410`, núcleo em brasa pulsando devagar), brasas subindo de vez em quando e sombra leve no membro, até a Cura terminar ou o round acabar. Braço ferido: guarda mais baixa. Perna ferida: manca (passada curta e o corpo afunda quando o peso cai nela).
 
 ## Interface
 

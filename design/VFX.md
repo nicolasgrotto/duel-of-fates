@@ -72,7 +72,8 @@ Sem câmera lenta, sem dessaturação, sem tela sobreposta. A tensão vem da pos
 - **Ferimento**: impacto pesado mais faíscas baixas extras na direção do golpe; sombra sobre o membro ferido.
 - **Finalização**: 10–14 faíscas na cor da lâmina de quem cortou, saindo do corte, brilho curto, brasa no coto e na peça. Usa a câmera lenta do K.O. A brasa é laranja `#ff7a2a` e esfria até a cor do corpo em ~1,2 s.
 - Cores de faísca: branco `#ffffff` e amarelo-claro `#fff1b8`, alternadas. Na disputa, metade das faíscas de cada pressão vem na cor da lâmina de quem apertou.
-- **Cura que fecha ferimento**: luz suave na cor do tier sobre o corpo; a sombra do membro some.
+- **Cura que fecha ferimento**: luz suave na cor do tier sobre o corpo; o talho e a sombra do membro somem.
+- Detalhe do corte, da brasa, da fumaça e do talho em ART_DIRECTION ("Finalizações"); desenho em `CutMarks` (coto e talho, no rig) e `SeveredPiece` (peça).
 
 ## Poderes
 

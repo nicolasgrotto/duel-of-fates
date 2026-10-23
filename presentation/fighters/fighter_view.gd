@@ -3,6 +3,8 @@ extends Node2D
 
 const FALL_DURATION: float = 0.6
 const FALL_ANGLE: float = 1.45
+const KNEEL_TIME: float = 0.45
+const LEG_FALL_SPEED: float = 0.7
 const HIT_SHAKE: float = 2.5
 const WALK_PHASE_PER_UNIT: float = 0.06
 const ATTACK_FOLLOW: float = 60.0
@@ -39,7 +41,8 @@ var _death_time: float = -1.0
 var _ignition: float = 1.0
 var _extinguish: float = 0.0
 var _snap_pose: bool = true
-var _severed: SeveredPiece
+var _severed: Array[SeveredPiece] = []
+var _fall_limb: MoveData.Limb = MoveData.Limb.NONE
 var _lost_blade: bool = false
 
 
@@ -109,9 +112,10 @@ func reset_round(ignite: bool) -> void:
 	rotation = 0.0
 	rig.restore()
 	rig.reset_cloths()
-	if _severed != null:
-		_severed.queue_free()
-		_severed = null
+	for piece in _severed:
+		piece.queue_free()
+	_severed.clear()
+	_fall_limb = MoveData.Limb.NONE
 	snap()
 
 
@@ -156,12 +160,22 @@ func _start_death(event: CombatEvent) -> void:
 	_death_time = 0.0
 	if not reduced_effects:
 		_flash_left = effects.hit_flash_duration
+	_fall_limb = event.limb if show_finishers else MoveData.Limb.NONE
 	if show_finishers and event.limb != MoveData.Limb.NONE:
-		_severed = SeveredPiece.new()
-		get_parent().add_child(_severed)
-		_severed.setup(rig, event.limb, -fighter.facing if event.from_front else fighter.facing)
-		rig.sever(event.limb)
-		_lost_blade = event.limb == MoveData.Limb.ARM
+		var away: int = -fighter.facing if event.from_front else fighter.facing
+		var both_legs: bool = event.limb == MoveData.Limb.LEG and event.move != null and event.move.technique_style == MoveData.TechniqueStyle.SWEEP
+		_spawn_piece(event.limb, event.from_front, away)
+		if both_legs:
+			_spawn_piece(event.limb, not event.from_front, away)
+		rig.sever(event.limb, event.from_front, both_legs)
+		_lost_blade = rig.lost_main_hand()
+
+
+func _spawn_piece(limb: MoveData.Limb, front: bool, away: int) -> void:
+	var piece: SeveredPiece = SeveredPiece.new()
+	get_parent().add_child(piece)
+	piece.setup(rig, limb, away, front)
+	_severed.append(piece)
 
 
 func _process(delta: float) -> void:
@@ -217,7 +231,14 @@ func _update_death(delta: float) -> void:
 	if _death_time < 0.0:
 		return
 	_death_time += delta
-	rotation = -FALL_ANGLE * ease(minf(_death_time / FALL_DURATION, 1.0), 0.4) * fighter.facing
+	match _fall_limb:
+		MoveData.Limb.HEAD:
+			var topple: float = clampf((_death_time - KNEEL_TIME) / FALL_DURATION, 0.0, 1.0)
+			rotation = FALL_ANGLE * ease(topple, 2.2) * fighter.facing
+		MoveData.Limb.LEG:
+			rotation = -FALL_ANGLE * ease(minf(_death_time / (FALL_DURATION * LEG_FALL_SPEED), 1.0), 1.8) * fighter.facing
+		_:
+			rotation = -FALL_ANGLE * ease(minf(_death_time / FALL_DURATION, 1.0), 0.4) * fighter.facing
 	_extinguish = minf(_death_time / effects.extinguish, 1.0)
 
 

@@ -4,7 +4,7 @@ extends Node2D
 const MATERIAL_SHADER: Shader = preload("res://presentation/fighters/fighter_material.gdshader")
 const BACK_SHADE: Color = Color(0.68, 0.68, 0.72)
 const BODY_DEPTH: int = 32
-const WOUND_SHADE: Color = Color(0.55, 0.5, 0.5)
+const WOUND_SHADE: Color = Color(0.78, 0.72, 0.72)
 const ARM_PREFER: Vector2 = Vector2(-0.35, 1.0)
 const LEG_PREFER: Vector2 = Vector2(1.0, 0.1)
 const HEAD_PARTS: Array[String] = ["head", "hair", "beard", "hood", "mask"]
@@ -23,7 +23,9 @@ var _sprites: Dictionary = {}
 var _cloths: Array[ClothStrip] = []
 var _cloth_anchors: Array[String] = []
 var _hilt: HiltView
-var _stumps: Node2D
+var _marks: CutMarks
+var _cuts: Array[String] = []
+var _lost_main_hand: bool = false
 var _missing: MoveData.Limb = MoveData.Limb.NONE
 var _wound: FighterState.Wound = FighterState.Wound.NONE
 var _open_hand: bool = false
@@ -34,6 +36,8 @@ var front_hand: Vector2 = Vector2.ZERO
 var back_hand: Vector2 = Vector2.ZERO
 var front_elbow: Vector2 = Vector2.ZERO
 var front_knee: Vector2 = Vector2.ZERO
+var back_elbow: Vector2 = Vector2.ZERO
+var back_knee: Vector2 = Vector2.ZERO
 var head_rotation: float = 0.0
 
 
@@ -87,10 +91,9 @@ func build(data: CharacterData, look: CostumeData) -> void:
 	_hilt.z_index = 14
 	_hilt.setup(data.weapon, costume)
 	add_child(_hilt)
-	_stumps = Node2D.new()
-	_stumps.z_index = 16
-	_stumps.draw.connect(_draw_stumps)
-	add_child(_stumps)
+	_marks = CutMarks.new()
+	_marks.z_index = 16
+	add_child(_marks)
 
 
 func _add_sprite(bone_name: String, part: String, z: int, shade: Color) -> void:
@@ -143,15 +146,15 @@ func apply(pose: RigPose, facing: int, delta: float) -> void:
 	front_hand = pose.grip
 	back_hand = pose.off_hand
 	front_elbow = _arm("front", front_shoulder, front_hand)
-	_arm("back", back_shoulder, back_hand)
+	back_elbow = _arm("back", back_shoulder, back_hand)
 	var hip_front: Vector2 = pelvis + Vector2(3.0, 0.0)
 	var hip_back: Vector2 = pelvis + Vector2(-3.0, 0.0)
 	front_knee = _leg("front", hip_front, pose.front_foot)
-	_leg("back", hip_back, pose.back_foot)
+	back_knee = _leg("back", hip_back, pose.back_foot)
 	_set_open_hand(pose.open_hand)
 	_hilt.update_pose(pose, front_hand, back_hand)
 	_simulate_cloths(pose, pelvis, facing, delta)
-	_stumps.queue_redraw()
+	_update_marks(delta)
 
 
 func _set_open_hand(open: bool) -> void:
@@ -242,28 +245,74 @@ func set_wound(wound: FighterState.Wound) -> void:
 			sprite.self_modulate = Color.WHITE
 
 
-func sever(limb: MoveData.Limb) -> void:
+func sever(limb: MoveData.Limb, front: bool, both_legs: bool) -> void:
 	_missing = limb
-	var hidden: Array[String] = []
+	_cuts.clear()
+	var side: String = "front" if front else "back"
 	match limb:
 		MoveData.Limb.ARM:
-			hidden = ["forearm_front", "hand_front"]
+			_cuts.append("arm_" + side)
 		MoveData.Limb.LEG:
-			hidden = ["shin_front", "boot_front"]
+			_cuts.append("leg_" + side)
+			if both_legs:
+				_cuts.append("leg_" + ("back" if front else "front"))
 		MoveData.Limb.HEAD:
-			hidden = ["head"]
+			_cuts.append("head")
+	var hidden: Array[String] = []
+	for cut in _cuts:
+		match cut:
+			"arm_front", "arm_back":
+				var arm_side: String = cut.trim_prefix("arm_")
+				hidden.append_array(["forearm_" + arm_side, "hand_" + arm_side])
+			"leg_front", "leg_back":
+				var leg_side: String = cut.trim_prefix("leg_")
+				hidden.append_array(["shin_" + leg_side, "boot_" + leg_side])
+			"head":
+				hidden.append("head")
 	for key in _sprites:
 		for bone_name in hidden:
 			if key.begins_with(bone_name + ":"):
 				_sprites[key].visible = false
-	_hilt.visible = limb != MoveData.Limb.ARM
+	_lost_main_hand = _cuts.has("arm_front")
+	_hilt.visible = not _lost_main_hand
+	_marks.start_cut()
+
+
+func lost_main_hand() -> bool:
+	return _lost_main_hand
 
 
 func restore() -> void:
 	_missing = MoveData.Limb.NONE
+	_cuts.clear()
+	_lost_main_hand = false
+	_marks.clear()
 	for key in _sprites:
 		_sprites[key].visible = true
 	_hilt.visible = true
+
+
+func _update_marks(delta: float) -> void:
+	_marks.cuts.clear()
+	for cut in _cuts:
+		match cut:
+			"arm_front":
+				_marks.cuts.append(PackedVector2Array([front_elbow, front_hand - front_elbow]))
+			"arm_back":
+				_marks.cuts.append(PackedVector2Array([back_elbow, back_hand - back_elbow]))
+			"leg_front":
+				_marks.cuts.append(PackedVector2Array([front_knee, Vector2.DOWN]))
+			"leg_back":
+				_marks.cuts.append(PackedVector2Array([back_knee, Vector2.DOWN]))
+			"head":
+				_marks.cuts.append(PackedVector2Array([head_base, head_base - chest]))
+	_marks.wound.clear()
+	match _wound:
+		FighterState.Wound.ARM:
+			_marks.wound.append_array([front_elbow, front_hand])
+		FighterState.Wound.LEG:
+			_marks.wound.append_array([front_knee, _bones["boot_front"].position])
+	_marks.advance(delta)
 
 
 func severed_parts(limb: MoveData.Limb) -> Array[String]:
@@ -281,12 +330,12 @@ func severed_parts(limb: MoveData.Limb) -> Array[String]:
 	return []
 
 
-func limb_anchor(limb: MoveData.Limb) -> Vector2:
+func limb_anchor(limb: MoveData.Limb, front: bool = true) -> Vector2:
 	match limb:
 		MoveData.Limb.ARM:
-			return front_elbow
+			return front_elbow if front else back_elbow
 		MoveData.Limb.LEG:
-			return front_knee
+			return front_knee if front else back_knee
 	return head_base
 
 
@@ -296,13 +345,6 @@ func eye_position() -> Vector2:
 
 func shows_eyes() -> bool:
 	return character.eclipse_eyes and not visible_parts.has("mask") and _missing != MoveData.Limb.HEAD
-
-
-func _draw_stumps() -> void:
-	if _missing == MoveData.Limb.NONE:
-		return
-	var ember: Color = costume.color(CostumeData.Slot.EYES).lerp(Color("#ff7a2a"), 0.7)
-	_stumps.draw_circle(limb_anchor(_missing), 3.5, ember)
 
 
 func sprite_snapshots() -> Array:
