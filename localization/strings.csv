@@ -380,3 +380,21 @@ SURVIVAL_WINS_RECORD,{wins} vitórias · novo recorde,{wins} wins · new record
 HUD_BOSS_AWAKENS,A SOMBRA DESPERTA,THE SHADOW AWAKENS
 RESULT_NEXT,Próxima luta,Next fight
 RESULT_RETRY,Tentar de novo,Try again
+ARENA_FLOODED_SANCTUARY,Santuário Alagado,Flooded Sanctuary
+ARENA_PHRASE_FLOODED_SANCTUARY,Templo em ruínas sob a lua sobre a água.,A ruined temple under the moon over the water.
+ARENA_CRYSTAL_MINE,Mina de Cristal,Crystal Mine
+ARENA_PHRASE_CRYSTAL_MINE,Caverna onde os cristais pegam a cor das lâminas.,A cave where the crystals take the color of the blades.
+ARENA_NEON_ROOFTOP,Telhado Neon,Neon Rooftop
+ARENA_PHRASE_NEON_ROOFTOP,Topo de prédio na chuva entre letreiros de glifos.,A rooftop in the rain among glyph signs.
+ARENA_ORBITAL_RING,Anel Orbital,Orbital Ring
+ARENA_PHRASE_ORBITAL_RING,Plataforma presa a um anel acima de um planeta.,A platform bound to a ring above a planet.
+ARENA_LUMINOUS_FOREST,Floresta Lumínica,Luminous Forest
+ARENA_PHRASE_LUMINOUS_FOREST,Clareira onde os fungos acendem com as lâminas.,A clearing where the fungi glow with the blades.
+ARENA_GLASS_SALT_FLATS,Salinas de Vidro,Glass Salt Flats
+ARENA_PHRASE_GLASS_SALT_FLATS,Deserto de sal ao entardecer entre miragens.,A salt desert at dusk among mirages.
+ARENA_SKYBORNE_DECK,Convés em Voo,Skyborne Deck
+ARENA_PHRASE_SKYBORNE_DECK,Convés de um cargueiro atravessando as nuvens.,The deck of a freighter crossing the clouds.
+ARENA_SNOWBOUND_PEAK,Cume Nevado,Snowbound Peak
+ARENA_PHRASE_SNOWBOUND_PEAK,Mosteiro no alto da montanha em plena nevasca.,A monastery high on the mountain in a blizzard.
+ARENA_ECLIPSE_CITADEL,Cidadela do Eclipse,Eclipse Citadel
+ARENA_PHRASE_ECLIPSE_CITADEL,Salão de pedra onde o eclipse apaga tudo menos as lâminas.,A stone hall where the eclipse darkens all but the blades.

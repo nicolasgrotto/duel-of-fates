@@ -5,6 +5,8 @@ const GRAVITY: float = 1300.0
 const DAMPING: float = 0.9
 const ITERATIONS: int = 3
 const BACK_TILT: float = 0.18
+const WIND_FORCE: float = -900.0
+const WIND_FLUTTER: float = 9.0
 
 var texture: Texture2D
 var length: float = 40.0
@@ -14,6 +16,7 @@ var stiffness: float = 0.5
 var segments: int = 5
 var back_layer: bool = false
 var floor_y: float = 0.0
+var wind: float = 0.0
 
 var _points: PackedVector2Array = []
 var _previous: PackedVector2Array = []
@@ -22,6 +25,7 @@ var _polygon: PackedVector2Array = []
 var _uvs: PackedVector2Array = []
 var _colors: PackedColorArray = []
 var _initialized: bool = false
+var _wind_clock: float = 0.0
 
 
 func configure(spec: Dictionary, cloth_texture: Texture2D) -> void:
@@ -57,13 +61,15 @@ func simulate(anchor: Vector2, body_angle: float, facing: int, delta: float) -> 
 			_previous[i] = _rest[i]
 		_initialized = true
 	var step: float = minf(delta, 1.0 / 30.0)
+	_wind_clock += delta
 	_points[0] = anchor
 	_previous[0] = anchor
 	for i in range(1, segments + 1):
 		var current: Vector2 = _points[i]
 		var velocity: Vector2 = (current - _previous[i]) * DAMPING
 		_previous[i] = current
-		var next: Vector2 = current + velocity + Vector2(0.0, GRAVITY) * step * step
+		var gust: float = wind * WIND_FORCE * (0.7 + 0.3 * sin(_wind_clock * WIND_FLUTTER + i))
+		var next: Vector2 = current + velocity + Vector2(gust, GRAVITY) * step * step
 		_points[i] = next.lerp(_rest[i], stiffness * 0.35)
 	for iteration in ITERATIONS:
 		for i in segments:

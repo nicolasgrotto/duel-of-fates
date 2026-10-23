@@ -177,6 +177,7 @@ func _bind_presentation(simulation: MatchSimulation) -> void:
 	for i in 2:
 		_views[i].setup(simulation.fighters[i], simulation.fighters[1 - i], _runner, EFFECTS, _glow_layer, setup.costumes[i], setup.arena.reflective_floor)
 		_views[i].set_blade_color(setup.blade_colors[i])
+		_views[i].rig.wind = setup.arena.wind
 		_views[i].reset_round(simulation.phase == MatchSimulation.Phase.INTRO)
 	_effects.sim = simulation
 	_powers.sim = simulation

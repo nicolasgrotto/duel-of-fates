@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ArenaData" format=3]
+
+[ext_resource type="Script" path="res://data/arena_data.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/audio/duel_music.tres" id="3_music"]
+[ext_resource type="AudioStream" path="res://assets/audio/ambience/refinery.wav" id="4_ambience"]
+[ext_resource type="PackedScene" path="res://arenas/orbital_ring/orbital_ring.tscn" id="2_scene"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"orbital_ring"
+name_key = "ARENA_ORBITAL_RING"
+phrase_key = "ARENA_PHRASE_ORBITAL_RING"
+scene = ExtResource("2_scene")
+ambient = Color(0.55, 0.58, 0.68, 1)
+reflective_floor = true
+wind = 0.0
+music = ExtResource("3_music")
+ambience = ExtResource("4_ambience")

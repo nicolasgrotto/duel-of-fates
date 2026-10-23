@@ -107,6 +107,12 @@ Arena neutra do Treino, do Tutorial, dos Treinos guiados e da Galeria de poderes
 
 ---
 
+## Implementação
+
+As nove arenas novas são cenas montadas com `SceneryLayer` (`arenas/common/scenery_layer.gd`), um pintor de cenário em pixel art com tipos de camada (céu em faixas, lua, sol, planeta, eclipse, cordilheira, torres com letreiros de glifos, colunas, troncos com fungos, cristais, teto de caverna, nuvens que correm, navio, mosteiro, salão brutalista com janela, anel, chão por estilo) e partículas de clima (`CPUParticles2D`: chuva inclinada, neve em dois planos, esporos, poeira, brilhos, riscos de vento). As cenas e os `ArenaData` são gerados por `tools/art/make_arenas.py`; céu, discos, anel e nuvens ficam presos à tela na vertical, e o que fica no chão rola com ele. Cristais e fungos estão na máscara de luz das lâminas, então pegam a cor delas. O Convés tem `ArenaData.wind`, que empurra capas, túnicas, cachecóis e faixas. A Cidadela usa um ambiente bem escuro (as lâminas e efeitos ficam por cima com cor total).
+
+Ainda faltam: reflexo dos lutadores na água (hoje só as lâminas refletem), miragem e poeira de sal no knockback, pegadas na neve, vapor da chuva nas lâminas, ondulações nos passos, miniatura da arena na seleção, e música e ambiência próprias (fase 8; até lá todas usam a música e a ambiência da Plataforma de Refino).
+
 ## Rodízio
 
 Duelar começa na Plataforma de Refino. Arcade e Sobrevivência fazem rodízio na ordem: Plataforma de Refino, Santuário Alagado, Mina de Cristal, Telhado Neon, Anel Orbital, Floresta Lumínica, Salinas de Vidro, Convés em Voo, Cume Nevado, Cidadela do Eclipse. A seleção de arena começa com **Aleatória**.

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ArenaData" format=3]
+
+[ext_resource type="Script" path="res://data/arena_data.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/audio/duel_music.tres" id="3_music"]
+[ext_resource type="AudioStream" path="res://assets/audio/ambience/refinery.wav" id="4_ambience"]
+[ext_resource type="PackedScene" path="res://arenas/crystal_mine/crystal_mine.tscn" id="2_scene"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"crystal_mine"
+name_key = "ARENA_CRYSTAL_MINE"
+phrase_key = "ARENA_PHRASE_CRYSTAL_MINE"
+scene = ExtResource("2_scene")
+ambient = Color(0.45, 0.42, 0.55, 1)
+reflective_floor = false
+wind = 0.0
+music = ExtResource("3_music")
+ambience = ExtResource("4_ambience")

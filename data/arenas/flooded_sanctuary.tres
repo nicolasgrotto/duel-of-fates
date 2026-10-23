@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ArenaData" format=3]
+
+[ext_resource type="Script" path="res://data/arena_data.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/audio/duel_music.tres" id="3_music"]
+[ext_resource type="AudioStream" path="res://assets/audio/ambience/refinery.wav" id="4_ambience"]
+[ext_resource type="PackedScene" path="res://arenas/flooded_sanctuary/flooded_sanctuary.tscn" id="2_scene"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"flooded_sanctuary"
+name_key = "ARENA_FLOODED_SANCTUARY"
+phrase_key = "ARENA_PHRASE_FLOODED_SANCTUARY"
+scene = ExtResource("2_scene")
+ambient = Color(0.5, 0.55, 0.66, 1)
+reflective_floor = true
+wind = 0.0
+music = ExtResource("3_music")
+ambience = ExtResource("4_ambience")

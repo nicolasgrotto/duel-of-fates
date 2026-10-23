@@ -6,7 +6,20 @@ const GUARDIAN: CharacterData = preload("res://data/characters/guardian/guardian
 const SHADOW: CharacterData = preload("res://data/characters/shadow/shadow.tres")
 const DEFAULT_ARENA: ArenaData = preload("res://data/arenas/refinery_platform.tres")
 const TRAINING_ARENA: ArenaData = preload("res://data/arenas/training_platform.tres")
-const ARENAS: Array[ArenaData] = [DEFAULT_ARENA, TRAINING_ARENA]
+const ARENAS: Array[ArenaData] = [
+	DEFAULT_ARENA,
+	preload("res://data/arenas/flooded_sanctuary.tres"),
+	preload("res://data/arenas/crystal_mine.tres"),
+	preload("res://data/arenas/neon_rooftop.tres"),
+	preload("res://data/arenas/orbital_ring.tres"),
+	preload("res://data/arenas/luminous_forest.tres"),
+	preload("res://data/arenas/glass_salt_flats.tres"),
+	preload("res://data/arenas/skyborne_deck.tres"),
+	preload("res://data/arenas/snowbound_peak.tres"),
+	preload("res://data/arenas/eclipse_citadel.tres"),
+	TRAINING_ARENA,
+]
+const ROTATION_SIZE: int = 10
 const MODES: ModesConfig = preload("res://data/balance/modes_config.tres")
 const BOSS_PATH: String = "res://data/characters/awakened_shadow/awakened_shadow.tres"
 const BOSS_DIFFICULTY: AiDifficultyData = preload("res://data/balance/ai/difficulty_boss.tres")

@@ -1,0 +1,75 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://arenas/common/scenery_layer.gd" id="1_layer"]
+
+[node name="OrbitalRing" type="Node2D"]
+z_index = -10
+
+[node name="L0_sky" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.0, 0.0)
+
+[node name="Layer" type="Node2D" parent="L0_sky"]
+script = ExtResource("1_layer")
+kind = 0
+base_color = Color(0.0000, 0.0000, 0.0000, 1.0)
+detail_color = Color(0.0118, 0.0196, 0.0392, 1.0)
+accent_color = Color(0.9098, 0.9255, 0.9608, 1.0)
+level = 200
+height = 500
+bands = 3
+stars = true
+lit_by_blades = false
+
+[node name="SkyAnchor" type="Node2D" parent="."]
+
+[node name="L1_disc" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.03, 0.0)
+
+[node name="Layer" type="Node2D" parent="L1_disc"]
+script = ExtResource("1_layer")
+kind = 1
+base_color = Color(0.1098, 0.1725, 0.2824, 1.0)
+detail_color = Color(0.0510, 0.0863, 0.1490, 1.0)
+accent_color = Color(0.3098, 0.4980, 0.7216, 1.0)
+level = 1560
+radius = 1500
+disc = 2
+lit_by_blades = false
+
+[node name="L2_ring" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.08, 0.0)
+
+[node name="Layer" type="Node2D" parent="L2_ring"]
+script = ExtResource("1_layer")
+kind = 12
+base_color = Color(0.1647, 0.2039, 0.2824, 1.0)
+detail_color = Color(0.2275, 0.2745, 0.3765, 1.0)
+accent_color = Color(0.5608, 0.7137, 0.9020, 1.0)
+level = -200
+radius = 2800
+lit_by_blades = false
+
+[node name="L3_floor" type="Node2D" parent="."]
+script = ExtResource("1_layer")
+kind = 13
+base_color = Color(0.0824, 0.1020, 0.1412, 1.0)
+detail_color = Color(0.1333, 0.1647, 0.2196, 1.0)
+accent_color = Color(0.7216, 0.7843, 0.8784, 1.0)
+height = 200
+floor_style = 3
+
+[node name="Weather0" type="CPUParticles2D" parent="."]
+position = Vector2(0, -300)
+amount = 18
+lifetime = 12.0
+preprocess = 12.0
+emission_shape = 3
+emission_rect_extents = Vector2(900, 280)
+direction = Vector2(1, 0)
+spread = 10
+gravity = Vector2(0, 0)
+initial_velocity_min = 2
+initial_velocity_max = 5
+scale_amount_min = 1
+scale_amount_max = 2
+color = Color(0.8118, 0.8471, 0.9020, 0.25)

@@ -1,0 +1,91 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://arenas/common/scenery_layer.gd" id="1_layer"]
+
+[node name="CrystalMine" type="Node2D"]
+z_index = -10
+
+[node name="L0_ceiling" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.2, 1.0)
+
+[node name="Layer" type="Node2D" parent="L0_ceiling"]
+script = ExtResource("1_layer")
+kind = 7
+base_color = Color(0.0431, 0.0353, 0.0627, 1.0)
+detail_color = Color(0.0863, 0.0706, 0.1176, 1.0)
+level = -250
+height = 110
+spacing = 120
+element_width = 70
+lit_by_blades = false
+
+[node name="SkyAnchor" type="Node2D" parent="."]
+
+[node name="L1_ridge" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.25, 1.0)
+
+[node name="Layer" type="Node2D" parent="L1_ridge"]
+script = ExtResource("1_layer")
+kind = 2
+base_color = Color(0.0549, 0.0431, 0.0784, 1.0)
+detail_color = Color(0.0824, 0.0627, 0.1255, 1.0)
+level = 0
+height = 320
+spacing = 200
+seed_value = 6
+lit_by_blades = false
+
+[node name="L2_crystals" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.45, 1.0)
+
+[node name="Layer" type="Node2D" parent="L2_crystals"]
+script = ExtResource("1_layer")
+kind = 6
+base_color = Color(0.1647, 0.1294, 0.2510, 1.0)
+detail_color = Color(0.1098, 0.0863, 0.1882, 1.0)
+accent_color = Color(0.3020, 0.2392, 0.4392, 1.0)
+level = -10
+height = 260
+spacing = 340
+element_width = 70
+seed_value = 2
+
+[node name="L3_crystals" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.8, 1.0)
+
+[node name="Layer" type="Node2D" parent="L3_crystals"]
+script = ExtResource("1_layer")
+kind = 6
+base_color = Color(0.2000, 0.1569, 0.3529, 1.0)
+detail_color = Color(0.1333, 0.1020, 0.2275, 1.0)
+accent_color = Color(0.4157, 0.3373, 0.6275, 1.0)
+level = 0
+height = 150
+spacing = 520
+element_width = 50
+seed_value = 8
+
+[node name="L4_floor" type="Node2D" parent="."]
+script = ExtResource("1_layer")
+kind = 13
+base_color = Color(0.0667, 0.0510, 0.0863, 1.0)
+detail_color = Color(0.1137, 0.0902, 0.1490, 1.0)
+accent_color = Color(0.2275, 0.1804, 0.3216, 1.0)
+height = 200
+floor_style = 0
+
+[node name="Weather0" type="CPUParticles2D" parent="."]
+position = Vector2(0, -200)
+amount = 24
+lifetime = 6.0
+preprocess = 6.0
+emission_shape = 3
+emission_rect_extents = Vector2(900, 220)
+direction = Vector2(0, -1)
+spread = 10
+gravity = Vector2(0, 0)
+initial_velocity_min = 4
+initial_velocity_max = 10
+scale_amount_min = 1
+scale_amount_max = 2
+color = Color(0.7255, 0.6510, 1.0000, 0.35)

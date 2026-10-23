@@ -104,7 +104,8 @@ Segunda etapa da migração (pedido do autor depois da prova de conceito; a bran
 
 ## Fase 6 — Arenas e modos
 
-- [ ] As dez arenas e a Plataforma de Treino
+- [x] As dez arenas (nove novas com `SceneryLayer`) e a Plataforma de Treino
+- [ ] Assinaturas restantes das arenas (reflexo dos lutadores na água, miragem, poeira de sal, pegadas na neve, vapor da chuva) e miniatura na seleção
 - [x] Menu completo (grupos Jogar, Aprender, Extras, Opções) e tela de Opções
 - [x] Configurar teclas (presets Padrão, Setas, Personalizado), Controles e vibração do gamepad
 - [x] 2 Jogadores (teclado dividido e gamepads)

@@ -216,6 +216,13 @@ Implementação:
 - **Reflexo**: em arenas com `reflective_floor`, cada lâmina é desenhada de novo, espelhada e achatada sobre o chão, como mancha de luz (decisão da verificação técnica: sem `BackBufferCopy`, barato no Compatibility).
 - **Validação lâmina × hitbox**: `tests/presentation/test_blade_sync.gd` percorre todos os golpes de todos os personagens com arte e exige que a lâmina desenhada cruze a hitbox real em algum tick do active.
 
+### Arenas (fase 6)
+
+- `SceneryLayer` (`arenas/common/scenery_layer.gd`): pintor de cenário genérico por tipo de camada, desenhado uma vez em `_draw` (as nuvens redesenham com `drift`); medidas em múltiplos de 2 u. `lit_by_blades = false` tira as camadas distantes da luz das lâminas.
+- Cenas e `ArenaData` gerados por `tools/art/make_arenas.py` (paletas do content/ARENAS.md). Cada cena tem o nó `SkyAnchor` logo depois do céu, para o céu da Tempestade.
+- `DuelMode.ARENAS` lista as dez arenas na ordem do rodízio mais a Plataforma de Treino; Arcade e Sobrevivência usam as `ROTATION_SIZE` primeiras.
+- `ArenaData.wind` é repassado ao `FighterRig` e aos `ClothStrip` (rajada com tremulação).
+
 ### Áudio (fase 3)
 
 - `tools/audio/synth_audio.py` sintetiza todos os sons, a música e a ambiência (WAV em `assets/audio/`). Loops (zumbido, atrito da disputa, música, ambiência) são importados com `loop_mode` Forward.

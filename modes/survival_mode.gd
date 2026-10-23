@@ -37,7 +37,7 @@ func build_setup() -> DuelSetup:
 	setup.rules.powers = Settings.powers
 	setup.rules.rounds_to_win = 1
 	setup.rules.start_health = PackedFloat32Array([health, 1.0])
-	setup.arena = ARENAS[wins % ARENAS.size()]
+	setup.arena = ARENAS[wins % ROTATION_SIZE]
 	setup.match_seed = _new_seed()
 	setup.banner = TranslationServer.translate("SURVIVAL_BANNER").format({"wins": wins, "best": SaveService.survival_best})
 	return _finish_setup(setup)

@@ -36,7 +36,7 @@ func build_setup() -> DuelSetup:
 		setup.awakening = [null, BOSS_DIFFICULTY]
 	setup.rules = MatchRules.new()
 	setup.rules.powers = Settings.powers
-	setup.arena = ARENAS[fight % ARENAS.size()]
+	setup.arena = ARENAS[fight % ROTATION_SIZE]
 	setup.match_seed = _new_seed()
 	setup.banner = TranslationServer.translate("ARCADE_BANNER").format({
 		"fight": fight + 1, "total": total_fights(), "name": TranslationServer.translate(opponent.name_key).to_upper(),

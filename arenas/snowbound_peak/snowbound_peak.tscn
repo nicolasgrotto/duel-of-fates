@@ -1,0 +1,101 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://arenas/common/scenery_layer.gd" id="1_layer"]
+
+[node name="SnowboundPeak" type="Node2D"]
+z_index = -10
+
+[node name="L0_sky" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.0, 0.0)
+
+[node name="Layer" type="Node2D" parent="L0_sky"]
+script = ExtResource("1_layer")
+kind = 0
+base_color = Color(0.1804, 0.2118, 0.2667, 1.0)
+detail_color = Color(0.4314, 0.4706, 0.5333, 1.0)
+level = 160
+height = 520
+bands = 6
+lit_by_blades = false
+
+[node name="SkyAnchor" type="Node2D" parent="."]
+
+[node name="L1_ridge" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.08, 1.0)
+
+[node name="Layer" type="Node2D" parent="L1_ridge"]
+script = ExtResource("1_layer")
+kind = 2
+base_color = Color(0.3373, 0.3765, 0.4353, 1.0)
+detail_color = Color(0.6039, 0.6471, 0.7137, 1.0)
+level = 0
+height = 420
+spacing = 420
+seed_value = 2
+lit_by_blades = false
+
+[node name="L2_ridge" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.25, 1.0)
+
+[node name="Layer" type="Node2D" parent="L2_ridge"]
+script = ExtResource("1_layer")
+kind = 2
+base_color = Color(0.1725, 0.2039, 0.2588, 1.0)
+detail_color = Color(0.7843, 0.8235, 0.8706, 1.0)
+level = 0
+height = 260
+spacing = 320
+seed_value = 11
+lit_by_blades = false
+
+[node name="L3_monastery" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.65, 1.0)
+
+[node name="Layer" type="Node2D" parent="L3_monastery"]
+script = ExtResource("1_layer")
+kind = 10
+base_color = Color(0.1020, 0.1255, 0.1608, 1.0)
+detail_color = Color(0.1451, 0.1765, 0.2235, 1.0)
+accent_color = Color(0.8784, 0.7843, 0.5647, 1.0)
+level = 0
+
+[node name="L4_floor" type="Node2D" parent="."]
+script = ExtResource("1_layer")
+kind = 13
+base_color = Color(0.2275, 0.2588, 0.3137, 1.0)
+detail_color = Color(0.3373, 0.3765, 0.4392, 1.0)
+accent_color = Color(0.5412, 0.5882, 0.6588, 1.0)
+height = 200
+floor_style = 7
+
+[node name="Weather0" type="CPUParticles2D" parent="."]
+position = Vector2(-900, -600)
+amount = 140
+lifetime = 2.2
+preprocess = 2.2
+emission_shape = 3
+emission_rect_extents = Vector2(300, 600)
+direction = Vector2(1, 0.35)
+spread = 8
+gravity = Vector2(0, 0)
+initial_velocity_min = 420
+initial_velocity_max = 560
+scale_amount_min = 1
+scale_amount_max = 1
+color = Color(0.9098, 0.9255, 0.9608, 0.45)
+
+[node name="Weather1" type="CPUParticles2D" parent="."]
+position = Vector2(-900, -500)
+amount = 20
+lifetime = 6.0
+preprocess = 6.0
+emission_shape = 3
+emission_rect_extents = Vector2(300, 500)
+direction = Vector2(1, 0.4)
+spread = 10
+gravity = Vector2(0, 0)
+initial_velocity_min = 120
+initial_velocity_max = 200
+scale_amount_min = 2
+scale_amount_max = 3
+color = Color(0.9098, 0.9255, 0.9608, 0.6)

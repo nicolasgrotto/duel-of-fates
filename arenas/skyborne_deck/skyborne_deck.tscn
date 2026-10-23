@@ -1,0 +1,103 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://arenas/common/scenery_layer.gd" id="1_layer"]
+
+[sub_resource type="Gradient" id="streak_gradient"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="streak"]
+gradient = SubResource("streak_gradient")
+width = 2
+height = 10
+
+[node name="SkyborneDeck" type="Node2D"]
+z_index = -10
+
+[node name="L0_sky" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.0, 0.0)
+
+[node name="Layer" type="Node2D" parent="L0_sky"]
+script = ExtResource("1_layer")
+kind = 0
+base_color = Color(0.0118, 0.0235, 0.0510, 1.0)
+detail_color = Color(0.0863, 0.1294, 0.2275, 1.0)
+accent_color = Color(0.8118, 0.8471, 0.9020, 1.0)
+level = 160
+height = 520
+bands = 5
+stars = true
+lit_by_blades = false
+
+[node name="SkyAnchor" type="Node2D" parent="."]
+
+[node name="L1_clouds" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.1, 0.0)
+
+[node name="Layer" type="Node2D" parent="L1_clouds"]
+script = ExtResource("1_layer")
+kind = 8
+base_color = Color(0.1098, 0.1490, 0.2353, 1.0)
+detail_color = Color(0.2000, 0.2549, 0.3608, 1.0)
+level = 160
+height = 90
+spacing = 200
+element_width = 220
+drift = -40.0
+seed_value = 3
+lit_by_blades = false
+
+[node name="L2_clouds" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.5, 0.0)
+
+[node name="Layer" type="Node2D" parent="L2_clouds"]
+script = ExtResource("1_layer")
+kind = 8
+base_color = Color(0.1490, 0.1961, 0.2980, 1.0)
+detail_color = Color(0.2627, 0.3216, 0.4314, 1.0)
+level = 230
+height = 80
+spacing = 260
+element_width = 260
+drift = -180.0
+seed_value = 9
+lit_by_blades = false
+
+[node name="L3_ship" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.85, 1.0)
+
+[node name="Layer" type="Node2D" parent="L3_ship"]
+script = ExtResource("1_layer")
+kind = 9
+base_color = Color(0.0549, 0.0745, 0.1176, 1.0)
+detail_color = Color(0.1020, 0.1333, 0.1961, 1.0)
+accent_color = Color(0.3725, 0.8314, 0.9020, 1.0)
+level = 0
+height = 260
+
+[node name="L4_floor" type="Node2D" parent="."]
+script = ExtResource("1_layer")
+kind = 13
+base_color = Color(0.0784, 0.0980, 0.1333, 1.0)
+detail_color = Color(0.1216, 0.1490, 0.2000, 1.0)
+accent_color = Color(0.5569, 0.6431, 0.7608, 1.0)
+height = 200
+floor_style = 6
+
+[node name="Weather0" type="CPUParticles2D" parent="."]
+position = Vector2(1300, -300)
+amount = 40
+lifetime = 0.9
+preprocess = 0.9
+texture = SubResource("streak")
+emission_shape = 3
+emission_rect_extents = Vector2(200, 400)
+direction = Vector2(-1, 0)
+spread = 1
+gravity = Vector2(0, 0)
+initial_velocity_min = 1300
+initial_velocity_max = 1600
+particle_flag_align_y = true
+scale_amount_min = 1
+scale_amount_max = 1
+color = Color(0.8118, 0.8471, 0.9020, 0.18)
