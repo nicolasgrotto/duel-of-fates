@@ -1,6 +1,7 @@
 class_name FighterPreview
 extends Node2D
 
+const UPSCALE_SHADER: Shader = preload("res://presentation/camera/pixel_upscale.gdshader")
 const CONFIG: CombatConfig = preload("res://data/balance/combat_config.tres")
 const EFFECTS: EffectsConfig = preload("res://data/balance/effects_config.tres")
 const GRID: Vector2i = Vector2i(120, 130)
@@ -59,7 +60,10 @@ func _build_grid() -> void:
 	camera.make_current()
 	_display = Sprite2D.new()
 	_display.texture = _viewport.get_texture()
-	_display.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_display.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	var upscale: ShaderMaterial = ShaderMaterial.new()
+	upscale.shader = UPSCALE_SHADER
+	_display.material = upscale
 	_display.centered = true
 	_display.scale = Vector2.ONE * PIXEL_SCALE
 	_display.position = Vector2(0.0, -(GRID.y * 0.5 - FLOOR_MARGIN) * PIXEL_SCALE)

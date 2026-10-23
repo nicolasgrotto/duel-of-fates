@@ -11,6 +11,7 @@ const ROW_SEPARATION: int = 18
 const DASH_GAP: int = 14
 
 var selected: int = 0
+var centered: bool = false
 var _ids: Array[StringName] = []
 var _labels: Array[Label] = []
 var _dashes: Array[ColorRect] = []
@@ -33,6 +34,11 @@ func add_item(id: StringName, text: String) -> void:
 	var label: Label = Label.new()
 	label.text = text
 	row.add_child(label)
+	if centered:
+		row.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		var balance: Control = Control.new()
+		balance.custom_minimum_size = DASH_SIZE
+		row.add_child(balance)
 	var index: int = _ids.size()
 	row.gui_input.connect(_on_row_input.bind(index))
 	add_child(row)

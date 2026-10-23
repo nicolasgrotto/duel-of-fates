@@ -26,10 +26,9 @@ func _ready() -> void:
 	column.add_child(_spacer(TITLE_GAP))
 	column.add_child(_label("GAME_TAGLINE", &"SubtitleLabel"))
 	column.add_child(_spacer(LIST_GAP))
-	var list_box: CenterContainer = CenterContainer.new()
-	column.add_child(list_box)
 	_list = MenuList.new()
-	list_box.add_child(_list)
+	_list.centered = true
+	column.add_child(_list)
 	_list.add_item(&"duel", tr("MENU_DUEL"))
 	_list.add_item(&"training", tr("MENU_TRAINING"))
 	_list.add_item(&"gallery", tr("MENU_GALLERY"))

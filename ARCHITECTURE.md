@@ -237,7 +237,7 @@ Implementação provisória (fases 1 e 2, arte de formas simples, substituída n
 - `PixelStage` (`presentation/camera/pixel_stage.gd`): o mundo do duelo (arena, lutadores, camada de brilho, dessaturação, `WorldEnvironment`) vive num `SubViewport` com filtro nearest e transformações presas a pixels. Uma `Camera2D` interna com zoom fixo `1 / units_per_pixel` (`EffectsConfig.units_per_pixel` = 2 u por pixel) segue o `CameraRig`, que continua no viewport principal calculando o enquadramento (e servindo de ouvinte do áudio 2D).
 - A cada quadro o tamanho do `SubViewport` é a tela dividida pela escala de pixel (`zoom do CameraRig × units_per_pixel`), então o zoom muda o tamanho de todos os pixels por igual. A câmera interna anda em pixels inteiros; a sobra fracionária desloca a imagem final, para a câmera deslizar suave sem os pixels tremerem.
 - A imagem é ampliada por `pixel_upscale.gdshader` (sharp bilinear: cada pixel é um bloco sólido, com transição de 1 pixel de tela entre blocos), o que mantém os pixels do mesmo tamanho mesmo em escalas não inteiras. HUD, telas e textos ficam fora da grade, em alta resolução.
-- `FighterPreview` (seleção) desenha o lutador num `SubViewport` próprio na mesma grade e o mostra ampliado 4×.
+- `FighterPreview` (seleção) e `MenuEmblem` (menu) desenham num `SubViewport` próprio na mesma grade e o mostram ampliado 4× com o mesmo `pixel_upscale.gdshader` do duelo: com `canvas_items`, a escala real na janela padrão (1600×900) é 3,33 px por pixel, e o filtro nearest puro deixaria colunas de pixel com larguras diferentes.
 
 ### Poderes na apresentação (fase 5)
 

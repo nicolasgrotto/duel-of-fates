@@ -1,6 +1,7 @@
 class_name MenuEmblem
 extends Control
 
+const UPSCALE_SHADER: Shader = preload("res://presentation/camera/pixel_upscale.gdshader")
 const PALETTE: UiPalette = preload("res://ui/palette.tres")
 const PIXEL_SCALE: float = 4.0
 const BLADE_HALF: Vector2 = Vector2(78.0, 44.0)
@@ -53,7 +54,10 @@ func _ready() -> void:
 	_viewport.add_child(_glow)
 	_display = TextureRect.new()
 	_display.texture = _viewport.get_texture()
-	_display.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_display.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	var upscale: ShaderMaterial = ShaderMaterial.new()
+	upscale.shader = UPSCALE_SHADER
+	_display.material = upscale
 	_display.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_display.stretch_mode = TextureRect.STRETCH_SCALE
 	_display.mouse_filter = Control.MOUSE_FILTER_IGNORE
