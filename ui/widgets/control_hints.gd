@@ -1,6 +1,7 @@
 class_name ControlHints
 
 const SEPARATOR: String = "  ·  "
+const WEB_FEATURE: String = "web"
 
 
 static func key_label(action: StringName) -> String:
@@ -11,7 +12,7 @@ static func key_label(action: StringName) -> String:
 		if key == null:
 			continue
 		var code: Key = key.physical_keycode if key.physical_keycode != KEY_NONE else key.keycode
-		if DisplayServer.has_feature(DisplayServer.FEATURE_KEYBOARD_LAYOUT):
+		if not OS.has_feature(WEB_FEATURE):
 			code = DisplayServer.keyboard_get_keycode_from_physical(code)
 		return OS.get_keycode_string(code)
 	return ""

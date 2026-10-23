@@ -293,7 +293,7 @@ godot --headless --path . --script res://tools/simulate.gd -- --duels 100 --diff
 
 - Testes ficam em `tests/` (arquivos `test_*.gd`, classe base `TestCase`, métodos `test_*`, `before_each`). `tests/support/duel_fixture.gd` monta um duelo Guardião × Sombra, posiciona os lutadores e registra os eventos.
 - O executor resolve `class_name` pelo cache global da Godot. Com o editor aberto, não rode `--import` por fora: o editor e o processo headless disputam o cache e o editor deixa de enxergar as classes novas (e o addon MCP perde o registro). Com o editor aberto, basta ele reescanear os arquivos.
-- O executor registra um `Logger` (Godot 4.5+): qualquer erro de script durante um teste faz o teste falhar, mesmo que nenhuma asserção tenha falhado.
+- O executor registra um `Logger` (Godot 4.5+): qualquer erro de script durante um teste faz o teste falhar, mesmo que nenhuma asserção tenha falhado. Um arquivo de teste que não compila (ou que depende de um script quebrado) conta como falha, e `tests/data/test_scripts_compile.gd` compila todo script do jogo (fora o addon), para uma quebra de compilação nunca passar despercebida.
 - `tests/data/test_translations.gd` garante que todo texto de personagem e toda chave usada pelo código existe em português e em inglês.
 - Matriz de equilíbrio: `godot --headless --path . --script res://tools/simulate.gd -- --matrix all --duels 10 --difficulty hard` imprime a taxa de vitória de cada personagem contra cada outro (lados alternados) e o total.
 - `tools/headless_duel.gd` (`HeadlessDuel`) roda um duelo IA × IA sem tela; serve ao simulador e aos testes de IA.
@@ -308,7 +308,7 @@ godot --headless --path . --script res://tools/simulate.gd -- --duels 100 --diff
 - Tamanho: `index.wasm` ~39 MB (motor), `index.pck` ~2,7 MB (jogo).
 - **Perfil gráfico da Web** (`EffectsConfig`, grupo Web): sem o glow do `WorldEnvironment` (`web_glow = false`) e luzes das lâminas com alcance menor (`web_light_scale` 1,6 em vez de 2,8). Medido no Chrome (puppeteer, contagem de `requestAnimationFrame`, GT 730): Galeria de poderes de 14–21 para 45–58 FPS; duelo a 1280×720 de 14–34 para ~48 FPS. O GDScript da apresentação gasta menos de 1 ms por quadro no desktop (simulação e IA 0,14 ms, os dois lutadores 0,37 ms), então o custo na Web é de GPU/WebGL. No desktop nada muda.
 - **Replay sem pico**: a re-simulação do replay do golpe final avança `replay_ticks_per_frame` (240) ticks por quadro em vez de tudo de uma vez.
-- `ControlHints` só converte tecla física para o layout quando o `DisplayServer` tem `FEATURE_KEYBOARD_LAYOUT` (a Web não tem e registrava erro a cada dica).
+- `ControlHints` não converte tecla física para o layout na Web (o `DisplayServer` da Web não suporta e registrava erro a cada dica).
 - **Recursos em texto na exportação** (`editor/export/convert_text_resources_to_binary=false`): com a conversão para binário ligada (padrão da Godot), a build exportada da 4.7.2 perdia as propriedades `PackedStringArray`/`PackedColorArray` dos recursos (`FighterArt.default_parts` vazio, `UiPalette.flow_tiers` nulo): sumiam capas, cabelos, capuzes, ombreiras e as cores de tier. Os `.tres` vão em texto; o pacote fica do mesmo tamanho. Para conferir uma build, rode o pacote com `godot --main-pack build/check/game.pck` (ver README).
 
 ## Desempenho

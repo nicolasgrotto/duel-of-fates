@@ -37,9 +37,11 @@ func _initialize() -> void:
 	var failed: int = 0
 	var report: PackedStringArray = []
 	for path in paths:
+		_errors.take()
 		var script: GDScript = load(path) as GDScript
-		if script == null:
-			report.append("%s: could not load" % path)
+		var load_errors: PackedStringArray = _errors.take()
+		if script == null or not script.can_instantiate() or not load_errors.is_empty():
+			report.append("%s: could not load %s" % [path, " | ".join(load_errors)])
 			failed += 1
 			continue
 		for method in script.get_script_method_list():
