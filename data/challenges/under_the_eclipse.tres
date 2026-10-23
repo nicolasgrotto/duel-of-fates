@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ChallengeData" format=3]
+
+[ext_resource type="Script" path="res://data/challenges/challenge_data.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/arenas/eclipse_citadel.tres" id="2_arena"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"under_the_eclipse"
+title_key = "CHALLENGE_ECLIPSE"
+description_key = "CHALLENGE_ECLIPSE_DESC"
+player = &"reaper"
+opponent = &"mirror"
+arena = ExtResource("2_arena")
+difficulty = &"hard"
+powers = true
+start_health = 1.0

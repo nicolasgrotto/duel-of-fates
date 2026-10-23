@@ -68,7 +68,7 @@ static func ladder(player_id: StringName, count: int) -> Array[CharacterData]:
 	return list
 
 
-func finish(winner: int, _sim: MatchSimulation) -> void:
+func finish(winner: int, _sim: MatchSimulation, _seconds: float) -> void:
 	won_last = winner == 0
 	if won_last and is_boss_fight():
 		cleared = true

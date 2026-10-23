@@ -42,8 +42,12 @@ func result_options() -> Array[StringName]:
 	return [&"rematch", &"menu"]
 
 
-func finish(_winner: int, _sim: MatchSimulation) -> void:
+func finish(_winner: int, _sim: MatchSimulation, _seconds: float) -> void:
 	pass
+
+
+func create_objective(_dummy: DummyController) -> DuelObjective:
+	return null
 
 
 func result_title() -> String:

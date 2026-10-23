@@ -57,7 +57,7 @@ func _pick_opponent(player_id: StringName) -> CharacterData:
 	return character(pool[_rng.randi_range(0, pool.size() - 1)])
 
 
-func finish(winner: int, sim: MatchSimulation) -> void:
+func finish(winner: int, sim: MatchSimulation, _seconds: float) -> void:
 	won_last = winner == 0
 	if won_last:
 		wins += 1

@@ -24,7 +24,7 @@ func test_survival_heals_and_schedules_the_boss() -> void:
 	var fixture: DuelFixture = DuelFixture.create()
 	fixture.fighter(0).health = fixture.fighter(0).max_health * 0.4
 	var mode: SurvivalMode = SurvivalMode.new()
-	mode.finish(0, fixture.sim)
+	mode.finish(0, fixture.sim, 30.0)
 	assert_eq(mode.wins, 1)
 	assert_almost(mode.health, 0.7, 0.01)
 	assert_false(mode.is_boss_fight())

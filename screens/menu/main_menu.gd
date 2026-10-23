@@ -10,10 +10,14 @@ const EMBLEM_LIFT: float = 178.0
 const GROUP_GAP: float = 18.0
 const COLUMN_TOP: float = 215.0
 const ROOT: StringName = &"root"
+const LESSON_PATH: String = "res://data/lessons/%s.tres"
+const CHALLENGE_PATH: String = "res://data/challenges/%s.tres"
 const GROUPS: Dictionary = {
 	&"play": {"title": "MENU_PLAY", "items": [[&"duel", "MENU_DUEL"], [&"arcade", "MENU_ARCADE"], [&"survival", "MENU_SURVIVAL"], [&"two_players", "MENU_TWO_PLAYERS"]]},
-	&"learn": {"title": "MENU_LEARN", "items": [[&"training", "MENU_TRAINING"], [&"controls", "MENU_CONTROLS"]]},
-	&"extras": {"title": "MENU_EXTRAS", "items": [[&"gallery", "MENU_GALLERY"]]},
+	&"learn": {"title": "MENU_LEARN", "items": [[&"tutorial", "MENU_TUTORIAL"], [&"guided", "MENU_GUIDED"], [&"training", "MENU_TRAINING"], [&"parry_challenge", "MENU_PARRY_CHALLENGE"], [&"controls", "MENU_CONTROLS"]]},
+	&"extras": {"title": "MENU_EXTRAS", "items": [[&"challenges", "MENU_CHALLENGES"], [&"gallery", "MENU_GALLERY"]]},
+	&"guided": {"title": "MENU_GUIDED", "parent": &"learn", "items": [[&"guided_evade", "LESSON_GUIDED_EVADE"], [&"guided_exhaustion", "LESSON_GUIDED_EXHAUSTION"], [&"guided_lock", "LESSON_GUIDED_LOCK"]]},
+	&"challenges": {"title": "MENU_CHALLENGES", "parent": &"extras", "items": [[&"salt_flats_bladework", "CHALLENGE_SALT"], [&"storm_on_deck", "CHALLENGE_STORM"], [&"last_breath", "CHALLENGE_LAST_BREATH"], [&"under_the_eclipse", "CHALLENGE_ECLIPSE"]]},
 }
 
 static var _last_group: StringName = ROOT
@@ -82,7 +86,8 @@ func _show_group(group: StringName) -> void:
 	if _group == ROOT:
 		_group_label.text = ""
 		for id in GROUPS:
-			_list.add_item(id, tr(GROUPS[id]["title"]))
+			if not GROUPS[id].has("parent"):
+				_list.add_item(id, tr(GROUPS[id]["title"]))
 		_list.add_item(&"options", tr("MENU_OPTIONS"))
 		if not OS.has_feature(WEB_FEATURE):
 			_list.add_item(&"quit", tr("MENU_QUIT"))
@@ -97,10 +102,14 @@ func _show_group(group: StringName) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"ui_cancel") and _group != ROOT:
-		var group: StringName = _group
-		_show_group(ROOT)
-		_list.select_id(group)
+		_go_back()
 		get_viewport().set_input_as_handled()
+
+
+func _go_back() -> void:
+	var group: StringName = _group
+	_show_group(GROUPS[group].get("parent", ROOT))
+	_list.select_id(group)
 
 
 func _on_highlighted(id: StringName) -> void:
@@ -113,9 +122,13 @@ func _on_chosen(id: StringName) -> void:
 		return
 	match id:
 		&"back":
-			var group: StringName = _group
-			_show_group(ROOT)
-			_list.select_id(group)
+			_go_back()
+		&"tutorial", &"guided_evade", &"guided_exhaustion", &"guided_lock":
+			LessonMode.new(load(LESSON_PATH % id)).start()
+		&"parry_challenge":
+			ParryChallengeMode.new().start()
+		&"salt_flats_bladework", &"storm_on_deck", &"last_breath", &"under_the_eclipse":
+			ChallengeMode.new(load(CHALLENGE_PATH % id)).start()
 		&"options":
 			SceneRouter.change(&"options", {"focus": &"options"})
 		&"duel":

@@ -1,0 +1,95 @@
+[gd_resource type="Resource" script_class="LessonData" format=3]
+
+[ext_resource type="Script" path="res://data/lessons/lesson_data.gd" id="1_lesson"]
+[ext_resource type="Script" path="res://data/lessons/lesson_step.gd" id="2_step"]
+
+[sub_resource type="Resource" id="step_0"]
+script = ExtResource("2_step")
+text_key = "TUT_WALK"
+goal = 0
+count = 1
+dummy = 0
+
+[sub_resource type="Resource" id="step_1"]
+script = ExtResource("2_step")
+text_key = "TUT_LIGHT"
+goal = 1
+count = 2
+dummy = 0
+
+[sub_resource type="Resource" id="step_2"]
+script = ExtResource("2_step")
+text_key = "TUT_CHAIN"
+goal = 2
+count = 1
+dummy = 0
+
+[sub_resource type="Resource" id="step_3"]
+script = ExtResource("2_step")
+text_key = "TUT_HEAVY"
+goal = 3
+count = 1
+dummy = 0
+
+[sub_resource type="Resource" id="step_4"]
+script = ExtResource("2_step")
+text_key = "TUT_GUARD"
+goal = 4
+count = 2
+dummy = 2
+
+[sub_resource type="Resource" id="step_5"]
+script = ExtResource("2_step")
+text_key = "TUT_PARRY"
+goal = 5
+count = 2
+dummy = 4
+
+[sub_resource type="Resource" id="step_6"]
+script = ExtResource("2_step")
+text_key = "TUT_COUNTER"
+goal = 6
+count = 1
+dummy = 4
+
+[sub_resource type="Resource" id="step_7"]
+script = ExtResource("2_step")
+text_key = "TUT_SHOVE"
+goal = 7
+count = 1
+dummy = 1
+
+[sub_resource type="Resource" id="step_8"]
+script = ExtResource("2_step")
+text_key = "TUT_GUARD_BREAK"
+goal = 8
+count = 1
+dummy = 1
+
+[sub_resource type="Resource" id="step_9"]
+script = ExtResource("2_step")
+text_key = "TUT_WOUND"
+goal = 9
+count = 1
+dummy = 1
+
+[sub_resource type="Resource" id="step_10"]
+script = ExtResource("2_step")
+text_key = "TUT_LOCK"
+goal = 10
+count = 1
+dummy = 5
+
+[sub_resource type="Resource" id="step_11"]
+script = ExtResource("2_step")
+text_key = "TUT_ABILITY"
+goal = 11
+count = 1
+dummy = 0
+
+[resource]
+script = ExtResource("1_lesson")
+id = &"tutorial"
+title_key = "LESSON_TUTORIAL"
+done_key = "LESSON_TUTORIAL_DONE"
+steps = Array[ExtResource("2_step")]([SubResource("step_0"), SubResource("step_1"), SubResource("step_2"), SubResource("step_3"), SubResource("step_4"), SubResource("step_5"), SubResource("step_6"), SubResource("step_7"), SubResource("step_8"), SubResource("step_9"), SubResource("step_10"), SubResource("step_11")])

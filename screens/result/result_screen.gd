@@ -20,6 +20,7 @@ const OPTION_LABELS: Dictionary = {
 	&"menu": "RESULT_MENU",
 	&"next": "RESULT_NEXT",
 	&"retry": "RESULT_RETRY",
+	&"parry_challenge": "MENU_PARRY_CHALLENGE",
 }
 
 var mode: DuelMode

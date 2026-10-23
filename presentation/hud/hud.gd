@@ -1,6 +1,7 @@
 class_name Hud
 extends CanvasLayer
 
+const PROGRESS_LIFT: float = 40.0
 const PALETTE: UiPalette = preload("res://ui/palette.tres")
 const SIDE_MARGIN: float = 56.0
 const TOP_MARGIN: float = 30.0
@@ -34,6 +35,7 @@ var _ghost_delay: Array[float] = [0.0, 0.0]
 var _reject_left: Array[float] = [0.0, 0.0]
 var _message: Label
 var _banner: Label
+var _progress: Label
 var _message_left: float = 0.0
 var _footer: Label
 var _time: float = 0.0
@@ -112,6 +114,10 @@ func _round_title() -> String:
 
 func set_banner(text: String) -> void:
 	_banner.text = text
+
+
+func set_progress(text: String) -> void:
+	_progress.text = text
 
 
 func announce(text: String, seconds: float) -> void:
@@ -211,6 +217,14 @@ func _build() -> void:
 	_banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_banner.offset_top = TOP_MARGIN
 	_root.add_child(_banner)
+	_progress = Label.new()
+	_progress.theme_type_variation = &"HintLabel"
+	_progress.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
+	_progress.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	_progress.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	_progress.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_progress.offset_bottom = -FOOTER_MARGIN - PROGRESS_LIFT
+	_root.add_child(_progress)
 	_footer = Label.new()
 	_footer.theme_type_variation = &"HintLabel"
 	_footer.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)

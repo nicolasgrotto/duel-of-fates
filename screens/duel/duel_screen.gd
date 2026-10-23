@@ -36,6 +36,8 @@ var _desaturation: Desaturation
 var _audio: DuelAudio
 var _rumble: DuelRumble
 var _ai: Array[AiController] = []
+var _dummy: DummyController
+var _objective: DuelObjective
 var _awakened: Array[bool] = [false, false]
 var _death_index: int = -1
 var _replaying: bool = false
@@ -60,6 +62,9 @@ func open(params: Dictionary) -> void:
 		InputBindings.apply_two_player_keyboard()
 	_build_scene()
 	_runner.start(sim, _build_controllers())
+	_objective = mode.create_objective(_dummy)
+	if _objective != null:
+		_objective.finished.connect(_on_objective_finished)
 	_bind_presentation(sim)
 
 
@@ -161,9 +166,11 @@ func _build_controllers() -> Array[FighterController]:
 				controllers.append(ai)
 				_ai.append(ai)
 			DuelSetup.ControllerKind.DUMMY:
-				var dummy: DummyController = DummyController.new(TRAINING)
+				var dummy: DummyController = DummyController.new(TRAINING, setup.match_seed)
 				controllers.append(dummy)
-				_add_training_panel(dummy)
+				_dummy = dummy
+				if not setup.objective:
+					_add_training_panel(dummy)
 	return controllers
 
 
@@ -228,12 +235,21 @@ func _on_ticked() -> void:
 		return
 	stats.on_tick(sim)
 	_check_awakening()
+	if _objective != null:
+		_objective.on_tick(sim)
+		_hud.set_banner(_objective.instruction())
+		_hud.set_progress(_objective.progress_line())
 	var cinematic: bool = sim.phase == MatchSimulation.Phase.INTRO or sim.phase == MatchSimulation.Phase.KO
 	_screen.letterbox_target = 1.0 if cinematic and not setup.training else 0.0
 	if _training != null:
 		_training.on_ticked()
 	if _gallery != null:
 		_gallery.on_ticked()
+
+
+func _on_objective_finished() -> void:
+	if not _finished:
+		_show_result.call_deferred()
 
 
 func _check_awakening() -> void:
@@ -255,6 +271,8 @@ func _on_combat_event(event: CombatEvent) -> void:
 		return
 	_hud.on_event(event)
 	stats.on_event(event)
+	if _objective != null:
+		_objective.on_event(event, sim)
 	if _training != null:
 		_training.on_event(event)
 	match event.type:
@@ -318,7 +336,7 @@ func _finish_replay() -> void:
 
 func _show_result() -> void:
 	_finished = true
-	mode.finish(sim.match_winner, sim)
+	mode.finish(sim.match_winner, sim, Ticks.to_seconds(stats.fight_ticks))
 	_runner.set_process(false)
 	SceneRouter.push(&"result", {
 		"mode": mode,

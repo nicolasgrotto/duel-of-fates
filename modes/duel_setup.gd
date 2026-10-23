@@ -18,6 +18,7 @@ var gallery: bool = false
 var two_players: bool = false
 var awakening: Array = [null, null]
 var banner: String = ""
+var objective: bool = false
 var power_sets: Array = [[], []]
 
 

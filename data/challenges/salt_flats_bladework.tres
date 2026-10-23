@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ChallengeData" format=3]
+
+[ext_resource type="Script" path="res://data/challenges/challenge_data.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/arenas/glass_salt_flats.tres" id="2_arena"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"salt_flats_bladework"
+title_key = "CHALLENGE_SALT"
+description_key = "CHALLENGE_SALT_DESC"
+player = &"guardian"
+opponent = &"shadow"
+arena = ExtResource("2_arena")
+difficulty = &"hard"
+powers = false
+start_health = 1.0

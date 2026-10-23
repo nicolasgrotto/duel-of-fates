@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ChallengeData" format=3]
+
+[ext_resource type="Script" path="res://data/challenges/challenge_data.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/arenas/snowbound_peak.tres" id="2_arena"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"last_breath"
+title_key = "CHALLENGE_LAST_BREATH"
+description_key = "CHALLENGE_LAST_BREATH_DESC"
+player = &"bastion"
+opponent = &"forge"
+arena = ExtResource("2_arena")
+difficulty = &"normal"
+powers = false
+start_health = 0.35

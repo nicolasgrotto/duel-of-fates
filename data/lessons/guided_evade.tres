@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="LessonData" format=3]
+
+[ext_resource type="Script" path="res://data/lessons/lesson_data.gd" id="1_lesson"]
+[ext_resource type="Script" path="res://data/lessons/lesson_step.gd" id="2_step"]
+
+[sub_resource type="Resource" id="step_0"]
+script = ExtResource("2_step")
+text_key = "GUIDE_EVADE_ONE"
+goal = 12
+count = 1
+dummy = 2
+
+[sub_resource type="Resource" id="step_1"]
+script = ExtResource("2_step")
+text_key = "GUIDE_EVADE_STREAK"
+goal = 13
+count = 1
+dummy = 2
+
+[sub_resource type="Resource" id="step_2"]
+script = ExtResource("2_step")
+text_key = "GUIDE_EVADE_PUNISH"
+goal = 14
+count = 1
+dummy = 2
+
+[resource]
+script = ExtResource("1_lesson")
+id = &"guided_evade"
+title_key = "LESSON_GUIDED_EVADE"
+done_key = "LESSON_GUIDED_DONE"
+steps = Array[ExtResource("2_step")]([SubResource("step_0"), SubResource("step_1"), SubResource("step_2")])

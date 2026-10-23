@@ -398,3 +398,52 @@ ARENA_SNOWBOUND_PEAK,Cume Nevado,Snowbound Peak
 ARENA_PHRASE_SNOWBOUND_PEAK,Mosteiro no alto da montanha em plena nevasca.,A monastery high on the mountain in a blizzard.
 ARENA_ECLIPSE_CITADEL,Cidadela do Eclipse,Eclipse Citadel
 ARENA_PHRASE_ECLIPSE_CITADEL,Salão de pedra onde o eclipse apaga tudo menos as lâminas.,A stone hall where the eclipse darkens all but the blades.
+MENU_TUTORIAL,Tutorial,Tutorial
+MENU_GUIDED,Treinos guiados,Guided training
+MENU_PARRY_CHALLENGE,Desafio de parry,Parry challenge
+MENU_CHALLENGES,Desafios,Challenges
+LESSON_TUTORIAL,Tutorial,Tutorial
+LESSON_TUTORIAL_DONE,TUTORIAL CONCLUÍDO,TUTORIAL COMPLETE
+LESSON_GUIDED_EVADE,Esquiva em sequência,Evade in sequence
+LESSON_GUIDED_EXHAUSTION,Exaustão e ferimento,Exhaustion and wounds
+LESSON_GUIDED_LOCK,Disputa de lâminas,Blade lock
+LESSON_GUIDED_DONE,TREINO CONCLUÍDO,TRAINING COMPLETE
+LESSON_PROGRESS,Passo {step} de {total} · {done} / {count},Step {step} of {total} · {done} / {count}
+TUT_WALK,"Ande com {move_left} e {move_right}","Walk with {move_left} and {move_right}"
+TUT_LIGHT,Acerte dois ataques rápidos com {light_attack},Land two light attacks with {light_attack}
+TUT_CHAIN,Toque {light_attack} em ritmo e feche a sequência de três golpes,Tap {light_attack} in rhythm and finish the three hit chain
+TUT_HEAVY,Acerte um ataque forte com {heavy_attack},Land a heavy attack with {heavy_attack}
+TUT_GUARD,Segure {block} e bloqueie dois ataques do boneco,Hold {block} and block two of the dummy's attacks
+TUT_PARRY,Toque {block} no instante em que o forte chega: aparar,Tap {block} right as the heavy lands: parry
+TUT_COUNTER,Apare um forte e responda logo com {light_attack}: contra-ataque,Parry a heavy and answer at once with {light_attack}: counterattack
+TUT_SHOVE,O boneco se defende: {block} + {light_attack} empurra através da guarda,The dummy guards: {block} + {light_attack} shoves through the guard
+TUT_GUARD_BREAK,Ataque a guarda até ela quebrar,Attack the guard until it breaks
+TUT_WOUND,Com o boneco exausto acerte um golpe para feri-lo,With the dummy exhausted land a blow to wound it
+TUT_LOCK,Ataque forte junto com o boneco para travar as lâminas e toque {light_attack} rápido,Heavy attack together with the dummy to lock blades and tap {light_attack} fast
+TUT_ABILITY,Use a habilidade do lutador com {special},Use your fighter's ability with {special}
+GUIDE_EVADE_ONE,Toque {evade} no instante do golpe: esquiva de precisão,Tap {evade} right as the blow lands: precision evade
+GUIDE_EVADE_STREAK,Faça três esquivas de precisão seguidas,Chain three precision evades
+GUIDE_EVADE_PUNISH,Esquive e acerte o boneco logo em seguida,Evade and hit the dummy right after
+GUIDE_EXHAUST,Ataque sem parar até o Vigor acabar e você ficar exausto,Keep attacking until your Stamina runs out and you are exhausted
+GUIDE_RECOVER,Recue e espere o Vigor voltar,Back off and wait for your Stamina to return
+GUIDE_GUARD_BREAK,Quebre a guarda do boneco,Break the dummy's guard
+GUIDE_WOUND,Fira o boneco exausto,Wound the exhausted dummy
+GUIDE_LOCK,Vença três disputas de lâminas,Win three blade locks
+PARRY_CHALLENGE_BANNER,DESAFIO DE PARRY · RECORDE {best},PARRY CHALLENGE · BEST {best}
+PARRY_CHALLENGE_HINT,Apare os fortes com {block}: parry vale 1 · perfeito vale 2,Parry the heavies with {block}: parry is worth 1 · perfect is worth 2
+PARRY_CHALLENGE_LINE,{time} s · {points} pontos,{time} s · {points} points
+PARRY_CHALLENGE_DONE,DESAFIO DE PARRY,PARRY CHALLENGE
+PARRY_CHALLENGE_POINTS,{points} pontos,{points} points
+PARRY_CHALLENGE_RECORD,{points} pontos · novo recorde,{points} points · new record
+CHALLENGE_BANNER,DESAFIO · {name} · RECORDE {best},CHALLENGE · {name} · BEST {best}
+CHALLENGE_DONE,DESAFIO VENCIDO,CHALLENGE WON
+CHALLENGE_TIME,Tempo · {time},Time · {time}
+CHALLENGE_TIME_RECORD,Tempo · {time} · novo recorde,Time · {time} · new record
+CHALLENGE_SALT,Salinas sem Fluxo,Salt flats without the Flow
+CHALLENGE_SALT_DESC,Vença só com a lâmina.,Win with the blade alone.
+CHALLENGE_STORM,Tempestade no convés,Storm on the deck
+CHALLENGE_STORM_DESC,Sobreviva à Tempestade e vença.,Survive the Storm and win.
+CHALLENGE_LAST_BREATH,Último fôlego,Last breath
+CHALLENGE_LAST_BREATH_DESC,Comece com 35% da vida e vença.,Start with 35% health and win.
+CHALLENGE_ECLIPSE,Sob o eclipse,Under the eclipse
+CHALLENGE_ECLIPSE_DESC,"Duas lâminas contra o reflexo, no escuro.","Two blades against the reflection, in the dark."
