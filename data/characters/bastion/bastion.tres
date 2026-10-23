@@ -230,3 +230,6 @@ blade_color_keys = PackedStringArray("BLADE_BASTION_0", "BLADE_BASTION_1", "BLAD
 guard_angle = -10.0
 guard_grip = Vector2(16.0, -22.0)
 eclipse_eyes = false
+challenge_stat = &"blocks"
+challenge_target = 12
+challenge_key = "CHALLENGE_COLOR_BASTION"

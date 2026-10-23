@@ -231,3 +231,6 @@ blade_color_keys = PackedStringArray("BLADE_FORGE_0", "BLADE_FORGE_1", "BLADE_FO
 guard_angle = -40.0
 guard_grip = Vector2(16.0, -22.0)
 eclipse_eyes = false
+challenge_stat = &"guard_breaks"
+challenge_target = 2
+challenge_key = "CHALLENGE_COLOR_FORGE"

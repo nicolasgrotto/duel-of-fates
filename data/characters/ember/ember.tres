@@ -254,3 +254,6 @@ blade_color_keys = PackedStringArray("BLADE_EMBER_0", "BLADE_EMBER_1", "BLADE_EM
 guard_angle = 140.0
 guard_grip = Vector2(12.0, -18.0)
 eclipse_eyes = true
+challenge_stat = &"responses"
+challenge_target = 3
+challenge_key = "CHALLENGE_COLOR_EMBER"

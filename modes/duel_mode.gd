@@ -50,6 +50,10 @@ func create_objective(_dummy: DummyController) -> DuelObjective:
 	return null
 
 
+func unlock_messages() -> PackedStringArray:
+	return PackedStringArray()
+
+
 func result_title() -> String:
 	return ""
 

@@ -10,7 +10,6 @@ Ordem de construção do jogo. Cada fase termina jogável e testada. Marque `[x]
   - Equilíbrio com Poderes: no Normal, Guardião 63% contra Sombra 37% (100 duelos), rounds de ~10,5 s; o Raio responde por boa parte dos acertos. Rodar a matriz com Poderes e ajustar custos, `power_chance` da IA e o Raio.
   - A IA não usa o Truque Mental de forma tática (lança quando está ao alcance) e não guarda medidor para o quarto poder.
   - Equilíbrio do elenco pela matriz (10 duelos por par, lados alternados): no Difícil, todos entre 38% e 65%; no Normal, entre 33% e 62%. Os personagens defensivos (Guardião, Espelho) rendem mais no Difícil, porque dependem da defesa reativa da IA. Rounds de ~10–11 s (alvo ~15 s).
-  - Trajes, cores e secretos selecionáveis sem bloqueio até os saves da fase 6.
   - A IA quase não usa o empurrão contra IA (o oponente raramente fica parado em guarda); revisar junto com o equilíbrio.
   - Reserva de Defesa antes da quebra de guarda (GAME_DESIGN, seção 11) ainda não implementada.
   - Mudar `application/config/name` desloca a pasta `user://`: depois disso o editor precisa ser reaberto para o addon MCP voltar a autenticar o runtime.
@@ -111,7 +110,7 @@ Segunda etapa da migração (pedido do autor depois da prova de conceito; a bran
 - [x] 2 Jogadores (teclado dividido e gamepads)
 - [x] Arcade (escada de 6 com dificuldade crescente e o chefe que desperta) e Sobrevivência (um round, 30% de vida de volta, chefe a cada 5 vitórias, recorde)
 - [x] Tutorial (12 passos), Treinos guiados (esquiva, exaustão e ferimento, disputa), Desafio de parry e os quatro Desafios, com recordes
-- [ ] Desbloqueios, segredos da abertura, saves (o `SaveService` já guarda Arcade concluído e recordes)
+- [x] Desbloqueios (cores do Arcade e do desafio, traje Viajante, secretos), tela de abertura com os segredos Equilíbrio e Guarda-roupa, saves versionados
 
 ## Fase 7 — História
 

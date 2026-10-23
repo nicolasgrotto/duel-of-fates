@@ -62,6 +62,9 @@ enum Path { AURORA, ECLIPSE }
 @export var trait_key: String
 @export var ability_key: String
 @export var secret: bool = false
+@export var challenge_stat: StringName
+@export var challenge_target: int = 0
+@export var challenge_key: String
 @export var selectable: bool = true
 
 @export_group("Look")

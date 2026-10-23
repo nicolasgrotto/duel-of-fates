@@ -5,6 +5,7 @@ var fight: int = 0
 var opponents: Array[CharacterData] = []
 var won_last: bool = false
 var cleared: bool = false
+var _unlocks: PackedStringArray = []
 
 
 func steps() -> Array[StringName]:
@@ -73,6 +74,11 @@ func finish(winner: int, _sim: MatchSimulation, _seconds: float) -> void:
 	if won_last and is_boss_fight():
 		cleared = true
 		SaveService.clear_arcade(player().id)
+		_unlocks = Unlocks.after_arcade(player())
+
+
+func unlock_messages() -> PackedStringArray:
+	return _unlocks
 
 
 func result_options() -> Array[StringName]:

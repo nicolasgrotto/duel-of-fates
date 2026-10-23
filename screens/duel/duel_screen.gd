@@ -337,6 +337,10 @@ func _finish_replay() -> void:
 func _show_result() -> void:
 	_finished = true
 	mode.finish(sim.match_winner, sim, Ticks.to_seconds(stats.fight_ticks))
+	var unlocked: PackedStringArray = mode.unlock_messages()
+	var against_ai: bool = setup.controllers.size() > 1 and setup.controllers[1] == DuelSetup.ControllerKind.AI
+	if against_ai and sim.match_winner == PLAYER_INDEX:
+		unlocked.append_array(Unlocks.after_duel_against_ai(setup.characters[PLAYER_INDEX], stats.stats[PLAYER_INDEX]))
 	_runner.set_process(false)
 	SceneRouter.push(&"result", {
 		"mode": mode,
@@ -347,4 +351,5 @@ func _show_result() -> void:
 		"duration": Ticks.to_seconds(stats.fight_ticks),
 		"title": mode.result_title(),
 		"note": mode.result_note(),
+		"unlocks": unlocked,
 	})

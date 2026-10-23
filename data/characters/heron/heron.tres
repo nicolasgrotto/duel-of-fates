@@ -255,3 +255,6 @@ blade_color_keys = PackedStringArray("BLADE_HERON_0", "BLADE_HERON_1", "BLADE_HE
 guard_angle = -140.0
 guard_grip = Vector2(8.0, -34.0)
 eclipse_eyes = false
+challenge_stat = &"aerial_hits"
+challenge_target = 4
+challenge_key = "CHALLENGE_COLOR_HERON"

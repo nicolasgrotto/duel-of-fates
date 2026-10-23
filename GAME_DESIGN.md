@@ -394,6 +394,7 @@ Progressão cosmética nos modos de duelo; nada muda os atributos do elenco.
   - *O Equilíbrio*: ← ← → → ↑ ↓ ↑ ↓ libera os três secretos e as duas variantes do Predestinado, com som grave e a frase "O EQUILÍBRIO DESPERTA".
   - *O Guarda-roupa*: ↓ ↓ ↑ ↑ → ← → ←, ou cinco toques na frase abaixo do título, libera todos os trajes e cores, com um arpejo claro e a frase "TODOS OS TRAJES REVELADOS".
 - Tudo salvo localmente.
+- Implementado na fase 6 (`core/unlocks.gd` sobre o `SaveService`): cor do Arcade e traje Viajante ao vencer o Arcade; cor do desafio pelo `CharacterData.challenge_stat`/`challenge_target` (lido das estatísticas do duelo contra a IA); secretos pelo Equilíbrio; tudo pelo Guarda-roupa. Sentinela e os trajes de final só existem com a História (fase 7); até lá, só o Guarda-roupa os libera.
 
 ## 18. Opções
 

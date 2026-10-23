@@ -53,6 +53,10 @@ func open(params: Dictionary) -> void:
 	_column.add_child(_label(title, &"TitleLabel"))
 	if params.get("note", "") != "":
 		_column.add_child(_label(params["note"], &"SubtitleLabel"))
+	for message in params.get("unlocks", PackedStringArray()):
+		var unlock: Label = _label(message, &"SubtitleLabel")
+		unlock.add_theme_color_override(&"font_color", PALETTE.potential)
+		_column.add_child(unlock)
 	if winner >= 0:
 		_column.add_child(_label(tr("RESULT_WINNER").format({"name": names[winner]}), &"SubtitleLabel"))
 	_column.add_child(_label(tr("RESULT_DURATION").format({"time": _time_text(params["duration"])}), &"HintLabel"))

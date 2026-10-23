@@ -255,3 +255,6 @@ blade_color_keys = PackedStringArray("BLADE_REAPER_0", "BLADE_REAPER_1", "BLADE_
 guard_angle = -25.0
 guard_grip = Vector2(12.0, -22.0)
 eclipse_eyes = true
+challenge_stat = &"best_combo"
+challenge_target = 5
+challenge_key = "CHALLENGE_COLOR_REAPER"

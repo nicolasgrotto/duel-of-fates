@@ -161,7 +161,7 @@ func _show_step() -> void:
 		_show_arena_step()
 		return
 	_list.add_item(RANDOM, tr("SELECT_RANDOM"))
-	for id in ROSTER:
+	for id in _available():
 		_list.add_item(id, tr(_characters[id].name_key))
 	var previous: CharacterData = mode.selection.characters[_slot()]
 	_list.select_id(previous.id if previous != null else ROSTER[0])
@@ -245,7 +245,8 @@ func _refresh_character() -> void:
 	var blade_key: String = data.blade_color_keys[_blade_index % data.blade_colors.size()]
 	_blade.text = tr("SELECT_BLADE").format({"name": tr(blade_key), "index": _blade_index % data.blade_colors.size() + 1, "count": data.blade_colors.size()})
 	_variant.text = tr("SELECT_VARIANT").format({"name": tr("VARIANT_ECLIPSE" if _use_variant else "VARIANT_AURORA")}) if base.variant != null else ""
-	_requirement.text = tr("SELECT_REQUIREMENT").format({"requirement": tr(costume.requirement_key)}) if costume.requirement_key != "" else ""
+	var requirement: String = _next_requirement(base, data)
+	_requirement.text = tr("SELECT_REQUIREMENT").format({"requirement": tr(requirement)}) if requirement != "" else ""
 
 
 func _clear_power_lines() -> void:
@@ -325,8 +326,30 @@ func _on_power_chosen(id: StringName) -> void:
 func _on_adjusted(_id: StringName, step: int) -> void:
 	if _step() == &"arena" or _current_character() == null:
 		return
-	_blade_index = posmod(_blade_index + step, _current_character().blade_colors.size())
+	var data: CharacterData = _current_character()
+	for attempt in data.blade_colors.size():
+		_blade_index = posmod(_blade_index + step, data.blade_colors.size())
+		if Unlocks.is_color_unlocked(data, _blade_index):
+			break
 	_refresh_character()
+
+
+func _available() -> Array[StringName]:
+	var ids: Array[StringName] = []
+	for id in ROSTER:
+		if Unlocks.is_character_unlocked(_characters[id]):
+			ids.append(id)
+	return ids
+
+
+func _next_requirement(base: CharacterData, data: CharacterData) -> String:
+	for costume in base.costumes:
+		if not Unlocks.is_costume_unlocked(base, costume) and costume.requirement_key != "":
+			return costume.requirement_key
+	for index in data.blade_colors.size():
+		if not Unlocks.is_color_unlocked(data, index):
+			return Unlocks.color_requirement(data, index)
+	return ""
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -345,7 +368,11 @@ func _unhandled_input(event: InputEvent) -> void:
 		AudioDirector.play_ui(&"ui_back")
 		_go_back()
 	elif _step() != &"arena" and event.is_action_pressed(&"menu_costume") and _current_character() != null:
-		_costume_index += 1
+		var base: CharacterData = _characters[_list.current_id()]
+		for attempt in base.costumes.size():
+			_costume_index += 1
+			if Unlocks.is_costume_unlocked(base, base.costumes[_costume_index % base.costumes.size()]):
+				break
 		AudioDirector.play_ui(&"ui_move")
 		_refresh_character()
 	elif _step() != &"arena" and event.is_action_pressed(&"menu_variant") and _current_character() != null:
@@ -367,7 +394,7 @@ func _go_back() -> void:
 
 func _on_chosen(id: StringName) -> void:
 	if _step() == &"arena":
-		mode.selection.arena = _arena(id) if id != RANDOM else DuelMode.ARENAS[randi() % DuelMode.ARENAS.size()]
+		mode.selection.arena = _arena(id) if id != RANDOM else DuelMode.ARENAS[randi() % DuelMode.ROTATION_SIZE]
 	else:
 		_store_character(id)
 	if _step_index + 1 >= mode.steps().size():
@@ -382,7 +409,8 @@ func _store_character(id: StringName) -> void:
 	var data: CharacterData = _current_character()
 	var costume_source: CharacterData = _characters[id] if id != RANDOM else null
 	if data == null:
-		var picked: StringName = ROSTER[randi() % ROSTER.size()]
+		var pool: Array[StringName] = _available()
+		var picked: StringName = pool[randi() % pool.size()]
 		data = _characters[picked]
 		costume_source = data
 		_costume_index = 0

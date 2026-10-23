@@ -283,3 +283,6 @@ blade_color_keys = PackedStringArray("BLADE_WASP_0", "BLADE_WASP_1", "BLADE_WASP
 guard_angle = -20.0
 guard_grip = Vector2(16.0, -20.0)
 eclipse_eyes = false
+challenge_stat = &"best_combo"
+challenge_target = 5
+challenge_key = "CHALLENGE_COLOR_WASP"

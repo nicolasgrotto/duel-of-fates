@@ -447,3 +447,19 @@ CHALLENGE_LAST_BREATH,Último fôlego,Last breath
 CHALLENGE_LAST_BREATH_DESC,Comece com 35% da vida e vença.,Start with 35% health and win.
 CHALLENGE_ECLIPSE,Sob o eclipse,Under the eclipse
 CHALLENGE_ECLIPSE_DESC,"Duas lâminas contra o reflexo, no escuro.","Two blades against the reflection, in the dark."
+CHALLENGE_COLOR_GUARDIAN,Vencer com 3 parries perfeitos,Win with 3 perfect parries
+CHALLENGE_COLOR_SHADOW,Vencer causando 200 de dano,Win dealing 200 damage
+CHALLENGE_COLOR_BASTION,Vencer com 12 defesas,Win with 12 blocks
+CHALLENGE_COLOR_WASP,Vencer com uma sequência de 5 acertos,Win with a 5 hit sequence
+CHALLENGE_COLOR_MIRROR,Vencer com 4 parries perfeitos,Win with 4 perfect parries
+CHALLENGE_COLOR_LANCE,Vencer com 15 golpes acertados,Win landing 15 hits
+CHALLENGE_COLOR_EMBER,Vencer com 3 golpes de resposta da postura,Win with 3 stance response strikes
+CHALLENGE_COLOR_FORGE,Vencer quebrando a guarda 2 vezes,Win breaking the guard 2 times
+CHALLENGE_COLOR_HERON,Vencer acertando 4 ataques aéreos,Win landing 4 aerial attacks
+CHALLENGE_COLOR_REAPER,Vencer com uma sequência de 5 acertos,Win with a 5 hit sequence
+CHALLENGE_COLOR_ECHO,Vencer fintando 5 vezes,Win feinting 5 times
+UNLOCK_COLOR,Nova cor de lâmina · {name} · {color},New blade color · {name} · {color}
+UNLOCK_COSTUME,Novo visual · {name} · {costume},New look · {name} · {costume}
+OPENING_PRESS,Pressione {key},Press {key}
+SECRET_BALANCE,O EQUILÍBRIO DESPERTA,THE BALANCE AWAKENS
+SECRET_WARDROBE,TODOS OS TRAJES REVELADOS,ALL LOOKS REVEALED

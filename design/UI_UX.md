@@ -28,6 +28,8 @@ Português (padrão) e inglês, escolhidos nas Opções e salvos. Todo texto de 
 
 Fundo preto; uma lâmina horizontal acende do centro para as pontas (ciano-gelo), com núcleo branco e glow; o título **DUEL OF FATES** e a frase **UM DUELO DE LÂMINAS DE ENERGIA** entram em fade; depois "Pressione Enter" piscando devagar. Confirmar pula a animação. Direcionais não pulam nada: ali se digitam os segredos. Ao revelar um segredo, um brilho grande vermelho-Ápice atrás da lâmina e a frase do segredo por ~3 s.
 
+> Implementada na fase 6 (`screens/opening/`, cena inicial do projeto): a lâmina em pixel art na mesma grade do emblema do menu, título e frase abaixo dela, segredos com janela de 2,5 s entre entradas e cinco cliques na frase para o Guarda-roupa.
+
 ### Menu
 
 > Implementado na fase 6 com os dois níveis: raiz Jogar, Aprender, Extras, Opções e Sair; cada grupo lista só o que já existe (hoje Jogar › Duelar, Aprender › Treino, Extras › Galeria de poderes) e termina em Voltar. A Dificuldade foi para as Opções. O menu lembra o grupo e a opção de onde o jogador saiu. Na build Web não existe Sair: fechar o jogo congelaria a página, e a aba do navegador já cumpre esse papel.
@@ -38,7 +40,7 @@ Título centralizado, maiúsculas espaçadas, frase de apoio em destaque. Dois n
 
 ### Seleção de personagem
 
-> Implementada na fase 4 (`screens/select/`): lista com Aleatório e os secretos no fim, coluna central com estilo, caminho na cor do lado, traço, habilidade e as seis barras (potencial em dourado `#d9b45a`), lutador animado à direita com Visual, Lâmina e Variante. ← → trocam a cor da lâmina, `C` troca o visual, `V` a variante. Na fase 5 entraram as linhas de **Poderes** e técnicas, `Conjunto: Base/Personalizado` e o editor de poderes (`P`): três linhas `‹ Poder ›`, Voltar ao conjunto base e Pronto; Voltar ou `P` fecham. A Galeria de poderes segue a descrição abaixo, com o painel no topo e a barra de Fluxo só de quem lança. Ainda faltam: o bloqueio real de trajes, cores e secretos (fase 6, com os saves; até lá tudo é selecionável e o requisito aparece como informação) e a miniatura da arena.
+> Implementada na fase 4 (`screens/select/`): lista com Aleatório e os secretos no fim, coluna central com estilo, caminho na cor do lado, traço, habilidade e as seis barras (potencial em dourado `#d9b45a`), lutador animado à direita com Visual, Lâmina e Variante. ← → trocam a cor da lâmina, `C` troca o visual, `V` a variante. Na fase 5 entraram as linhas de **Poderes** e técnicas, `Conjunto: Base/Personalizado` e o editor de poderes (`P`): três linhas `‹ Poder ›`, Voltar ao conjunto base e Pronto; Voltar ou `P` fecham. A Galeria de poderes segue a descrição abaixo, com o painel no topo e a barra de Fluxo só de quem lança. Bloqueio real (fase 6): os secretos só entram na lista depois de liberados; ← → e `C` percorrem só cores e visuais liberados; a linha "Libera:" mostra o próximo requisito pendente (traje ou cor). Avisos de desbloqueio aparecem no resultado em dourado. Ainda falta a miniatura da arena.
 
 Três colunas:
 

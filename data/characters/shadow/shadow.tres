@@ -256,3 +256,6 @@ blade_color_keys = PackedStringArray("BLADE_SHADOW_0", "BLADE_SHADOW_1", "BLADE_
 guard_angle = 28.0
 guard_grip = Vector2(18.0, -14.0)
 eclipse_eyes = true
+challenge_stat = &"damage"
+challenge_target = 200
+challenge_key = "CHALLENGE_COLOR_SHADOW"

@@ -205,3 +205,6 @@ blade_color_keys = PackedStringArray("BLADE_ECHO_0", "BLADE_ECHO_1", "BLADE_ECHO
 guard_angle = 20.0
 guard_grip = Vector2(18.0, -12.0)
 eclipse_eyes = false
+challenge_stat = &"feints"
+challenge_target = 5
+challenge_key = "CHALLENGE_COLOR_ECHO"
