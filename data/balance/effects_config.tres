@@ -12,6 +12,9 @@ shake = 6.0
 shake_duration = 0.18
 flash = 0.12
 hit_flash = true
+rumble_weak = 0.4
+rumble_strong = 0.6
+rumble_duration = 0.15
 
 [sub_resource type="Resource" id="blade_lock_press"]
 script = ExtResource("2_recipe")
@@ -19,6 +22,9 @@ sparks_min = 3
 sparks_max = 5
 spark_speed = 420.0
 spread_degrees = 60.0
+rumble_weak = 0.25
+rumble_strong = 0.0
+rumble_duration = 0.06
 
 [sub_resource type="Resource" id="blade_lock_start"]
 script = ExtResource("2_recipe")
@@ -30,6 +36,9 @@ shake = 6.0
 shake_duration = 0.18
 flash = 0.12
 punch_in = 0.02
+rumble_weak = 0.4
+rumble_strong = 0.5
+rumble_duration = 0.15
 
 [sub_resource type="Resource" id="block"]
 script = ExtResource("2_recipe")
@@ -48,6 +57,9 @@ spread_degrees = 150.0
 shake = 10.0
 shake_duration = 0.25
 flash = 0.22
+rumble_weak = 0.6
+rumble_strong = 0.8
+rumble_duration = 0.25
 
 [sub_resource type="Resource" id="evade"]
 script = ExtResource("2_recipe")
@@ -63,6 +75,9 @@ shake = 8.0
 shake_duration = 0.22
 flash = 0.12
 punch_in = 0.04
+rumble_weak = 0.5
+rumble_strong = 0.7
+rumble_duration = 0.2
 
 [sub_resource type="Resource" id="hit_heavy"]
 script = ExtResource("2_recipe")
@@ -74,6 +89,9 @@ shake_duration = 0.18
 flash = 0.12
 punch_in = 0.03
 hit_flash = true
+rumble_weak = 0.3
+rumble_strong = 0.5
+rumble_duration = 0.15
 
 [sub_resource type="Resource" id="hit_light"]
 script = ExtResource("2_recipe")
@@ -89,6 +107,9 @@ shake_duration = 0.3
 flash = 0.35
 punch_in = 0.06
 hit_flash = true
+rumble_weak = 0.8
+rumble_strong = 1.0
+rumble_duration = 0.4
 
 [sub_resource type="Resource" id="parry"]
 script = ExtResource("2_recipe")
@@ -111,6 +132,9 @@ shake_duration = 0.18
 flash = 0.12
 punch_in = 0.05
 ring_radius = 95.0
+rumble_weak = 0.4
+rumble_strong = 0.6
+rumble_duration = 0.15
 
 [sub_resource type="Resource" id="shove"]
 script = ExtResource("2_recipe")
@@ -161,6 +185,9 @@ shake_duration = 0.32
 flash = 0.3
 punch_in = 0.05
 ring_radius = 130.0
+rumble_weak = 0.7
+rumble_strong = 0.9
+rumble_duration = 0.3
 
 [resource]
 script = ExtResource("1_script")

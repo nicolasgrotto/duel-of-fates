@@ -107,7 +107,7 @@ Segunda etapa da migração (pedido do autor depois da prova de conceito; a bran
 
 - [ ] As dez arenas e a Plataforma de Treino
 - [x] Menu completo (grupos Jogar, Aprender, Extras, Opções) e tela de Opções
-- [ ] Configurar teclas, Controles e vibração do gamepad
+- [x] Configurar teclas (presets Padrão, Setas, Personalizado), Controles e vibração do gamepad
 - [ ] Arcade (com o chefe), Sobrevivência, 2 Jogadores
 - [ ] Tutorial, Treinos guiados, Desafio de parry, Desafios
 - [ ] Desbloqueios, segredos da abertura, saves

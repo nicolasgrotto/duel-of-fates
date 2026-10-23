@@ -33,6 +33,7 @@ var _glow_layer: CanvasLayer
 var _stage: PixelStage
 var _desaturation: Desaturation
 var _audio: DuelAudio
+var _rumble: DuelRumble
 var _death_index: int = -1
 var _replaying: bool = false
 var _replay_controllers: Array[FighterController] = []
@@ -132,6 +133,10 @@ func _build_scene() -> void:
 	_runner.combat_event.connect(_on_combat_event)
 	_effects.camera_impulse.connect(_camera.impulse)
 	_effects.screen_flash.connect(_screen.flash)
+	_rumble = DuelRumble.new()
+	add_child(_rumble)
+	_rumble.setup(setup.controllers, setup.player_slots)
+	_effects.rumbled.connect(_rumble.on_rumbled)
 
 
 func _build_controllers() -> Array[FighterController]:
@@ -269,6 +274,7 @@ func _start_replay() -> void:
 	_replay_controllers = [ReplayController.new(recording, 0, start), ReplayController.new(recording, 1, start)]
 	_replay_end = mini(_death_index + Ticks.from_seconds(CONFIG.replay_tail), recording.length())
 	_replaying = true
+	_rumble.setup([], [])
 	_runner.records = false
 	_runner.allows_slow_motion = false
 	_runner.time_scale = CONFIG.replay_speed

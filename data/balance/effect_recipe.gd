@@ -12,3 +12,6 @@ extends Resource
 @export_range(0.0, 0.06) var punch_in: float = 0.0
 @export var ring_radius: float = 0.0
 @export var hit_flash: bool = false
+@export_range(0.0, 1.0) var rumble_weak: float = 0.0
+@export_range(0.0, 1.0) var rumble_strong: float = 0.0
+@export var rumble_duration: float = 0.0

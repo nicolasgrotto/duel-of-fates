@@ -3,6 +3,7 @@ extends Node2D
 
 signal camera_impulse(shake: float, duration: float, punch_in: float, focus: Vector2)
 signal screen_flash(alpha: float)
+signal rumbled(weak: float, strong: float, duration: float, source: int, target: int)
 
 const PALETTE: UiPalette = preload("res://ui/palette.tres")
 const SPARK_POOL: int = 256
@@ -61,6 +62,8 @@ func on_event(event: CombatEvent) -> void:
 	camera_impulse.emit(recipe.shake * motion, recipe.shake_duration, recipe.punch_in * motion, contact)
 	if recipe.flash > 0.0 and not reduced:
 		screen_flash.emit(recipe.flash)
+	if recipe.rumble_duration > 0.0:
+		rumbled.emit(recipe.rumble_weak, recipe.rumble_strong, recipe.rumble_duration, event.source, event.target)
 
 
 func _recipe_for(event: CombatEvent) -> EffectRecipe:
