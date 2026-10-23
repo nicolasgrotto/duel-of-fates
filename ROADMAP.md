@@ -4,7 +4,7 @@ Ordem de construção do jogo. Cada fase termina jogável e testada. Marque `[x]
 
 ## Ponto de continuidade
 
-- **Fase atual**: migração para pixel art (branch `pixel-art`). Fases 0 a 5 concluídas.
+- **Fase atual**: fase 6 (arenas e modos) na branch `pixel-art`. Fases 0 a 5 e as duas etapas da migração para pixel art concluídas.
 - **Próximo passo**: segunda etapa da migração concluída (modelos, animações, poderes, menu). Falta a revisão do autor jogando e medir a GPU numa máquina de referência com o editor fechado (a CPU já está medida). A branch `pixel-art` segue até o fim do projeto; só então o autor escolhe entre ela e a `phase-5-hd`.
 - **Pendências conhecidas**:
   - Equilíbrio com Poderes: no Normal, Guardião 63% contra Sombra 37% (100 duelos), rounds de ~10,5 s; o Raio responde por boa parte dos acertos. Rodar a matriz com Poderes e ajustar custos, `power_chance` da IA e o Raio.
@@ -106,7 +106,8 @@ Segunda etapa da migração (pedido do autor depois da prova de conceito; a bran
 ## Fase 6 — Arenas e modos
 
 - [ ] As dez arenas e a Plataforma de Treino
-- [ ] Menu completo, Opções, Configurar teclas, Controles
+- [x] Menu completo (grupos Jogar, Aprender, Extras, Opções) e tela de Opções
+- [ ] Configurar teclas, Controles e vibração do gamepad
 - [ ] Arcade (com o chefe), Sobrevivência, 2 Jogadores
 - [ ] Tutorial, Treinos guiados, Desafio de parry, Desafios
 - [ ] Desbloqueios, segredos da abertura, saves
