@@ -40,6 +40,14 @@ static func finisher_limb(sim: MatchSimulation, move: MoveData, deciding: bool) 
 		return MoveData.Limb.NONE
 	if move.finisher_limb == MoveData.Limb.NONE:
 		return MoveData.Limb.NONE
+	if deciding and sim.config.consequences.head_on_deciding_heavy and _takes_head(move):
+		return MoveData.Limb.HEAD
 	if deciding and sim.rng.randf() < sim.config.consequences.head_finisher_chance:
 		return MoveData.Limb.HEAD
 	return move.finisher_limb
+
+
+static func _takes_head(move: MoveData) -> bool:
+	if move.is_heavy():
+		return true
+	return move.is_technique() and move.technique_style in [MoveData.TechniqueStyle.SPIN, MoveData.TechniqueStyle.RISING]

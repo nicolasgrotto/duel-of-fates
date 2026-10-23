@@ -107,3 +107,16 @@ func test_shove_knockout_has_no_finisher() -> void:
 	var move: MoveData = DuelFixture.GUARDIAN.shove
 	assert_eq(Consequences.finisher_limb(duel.sim, move, true), MoveData.Limb.NONE)
 	assert_eq(Consequences.finisher_limb(duel.sim, DuelFixture.GUARDIAN.aerial_light, true), MoveData.Limb.NONE)
+
+
+func test_deciding_heavy_always_takes_the_head() -> void:
+	var config: CombatConfig = DuelFixture.config_copy()
+	config.consequences.head_finisher_chance = 0.0
+	duel = DuelFixture.create(null, config)
+	var heavy: MoveData = DuelFixture.GUARDIAN.heavy
+	assert_eq(Consequences.finisher_limb(duel.sim, heavy, true), MoveData.Limb.HEAD)
+	assert_eq(Consequences.finisher_limb(duel.sim, heavy, false), heavy.finisher_limb)
+	var spin: MoveData = load("res://data/techniques/spin.tres")
+	assert_eq(Consequences.finisher_limb(duel.sim, spin, true), MoveData.Limb.HEAD)
+	var light: MoveData = DuelFixture.GUARDIAN.light_chain[0]
+	assert_eq(Consequences.finisher_limb(duel.sim, light, true), light.finisher_limb)

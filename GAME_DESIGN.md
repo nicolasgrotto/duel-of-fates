@@ -264,7 +264,8 @@ Com o poder Foco ativo, um lutador **parado em guarda, sem nenhum comando**, esq
 
 - Um K.O. por **golpe de lâmina corpo a corpo** separa um membro do derrotado.
 - O golpe decide o membro: **perna** no 3º rápido, forte de avanço, Giro, Avanço com corte e Varredura; **braço** nos demais (inclusive na disputa). A orientação decide o lado (pela frente, o membro da frente; pelas costas, o de trás).
-- No K.O. que decide a partida (último round; em modos de um round, qualquer K.O.), **30%** de chance de a cabeça sair no lugar do membro.
+- No K.O. que decide a partida (último round; em modos de um round, qualquer K.O.): **forte, forte de avanço, Giro e Corte ascendente sempre levam a cabeça** (golpe final legível, `ConsequenceConfig.head_on_deciding_heavy`); os demais golpes de lâmina têm **30%** de chance de a cabeça sair no lugar do membro.
+- Apresentação (não muda o resultado): a Varredura leva as duas pernas; pelas costas sai o membro de trás.
 - Golpe aéreo, lâmina arremessada, empurrão, poderes e dano periódico terminam num K.O. normal.
 - Sempre estilizado: sem sangue, corte cauterizado em brasa, cabeça sem rosto visível. A opção Finalizações desliga o desenho sem mudar nenhum resultado; o replay mostra o mesmo corte.
 
