@@ -25,6 +25,7 @@ MCPRuntimeServer="*res://addons/godot_mcp_toolkit/runtime/mcp_runtime_server.gd"
 Settings="*res://core/settings.gd"
 SceneRouter="*res://core/scene_router.gd"
 AudioDirector="*res://core/audio_director.gd"
+SaveService="*res://core/save_service.gd"
 
 [display]
 
