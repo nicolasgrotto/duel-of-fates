@@ -10,3 +10,6 @@ AGENTS.md
 
 # Python bytecode from the offline art and audio tools
 __pycache__/
+
+# Local export output (Web build for GitHub Pages is generated, not committed)
+build/

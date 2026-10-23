@@ -298,6 +298,15 @@ godot --headless --path . --script res://tools/simulate.gd -- --duels 100 --diff
 - Matriz de equilíbrio: `godot --headless --path . --script res://tools/simulate.gd -- --matrix all --duels 10 --difficulty hard` imprime a taxa de vitória de cada personagem contra cada outro (lados alternados) e o total.
 - `tools/headless_duel.gd` (`HeadlessDuel`) roda um duelo IA × IA sem tela; serve ao simulador e aos testes de IA.
 
+## Exportação Web (GitHub Pages)
+
+- Preset **Web** em `export_presets.cfg`, saída em `build/web/` (fora do git). **Sem threads** (`variant/thread_support=false`): o GitHub Pages não permite os cabeçalhos COOP/COEP que o `SharedArrayBuffer` exige; o PWA fica desligado.
+- **Exclusões**: `addons/godot_mcp_toolkit/*`, `.mcp.json`, `tests/*`, `tools/*`, `.preview/*`, `build/*`. O plugin de exportação do próprio addon (`core/export_strip.gd`) anula o autoload `MCPRuntimeServer` durante a exportação e o restaura depois; o autoload também se desliga sozinho fora do editor. Nada do jogo referencia o addon, os testes ou as ferramentas. No pacote fica só o texto da configuração `editor_plugins/enabled`, ignorado em runtime.
+- **Carregamento**: sem threads, `load_threaded_request` carrega na thread principal; o `SceneRouter` detecta a feature `nothreads` e só pede a cena depois que a tela escurece, para a espera ficar sob o fade.
+- **Áudio**: `audio/general/default_playback_type.web=0` (Stream). O modo Sample, padrão da Web, não toca a música em camadas (`AudioStreamSynchronized`) nem aplica os filtros de abafar dos barramentos. Em build sem threads o mixer roda na thread principal: pode chiar se o quadro pesar.
+- **Gráficos**: tudo roda no Compatibility (WebGL 2): `pixel_upscale.gdshader` usa `fwidth` (GLSL ES 3.0), o material dos lutadores usa um array de 8 cores, a dessaturação lê a tela (`hint_screen_texture`), as lâminas usam `PointLight2D` com mapas de normal e o duelo usa o glow do `WorldEnvironment`. As luzes são o maior custo de GPU.
+- Tamanho: `index.wasm` ~39 MB (motor), `index.pck` ~2,7 MB (jogo).
+
 ## Desempenho
 
 - 60 FPS estáveis. Nada de alocação por tick na simulação; pools na apresentação.

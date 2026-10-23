@@ -36,6 +36,15 @@ godot --headless --path . --script res://tools/simulate.gd -- --duels 100 --diff
 godot --headless --path . --script res://tools/simulate.gd -- --matrix all --duels 10 --difficulty hard
 ```
 
+Build Web (GitHub Pages), ver [ARCHITECTURE.md](ARCHITECTURE.md#exportação-web-github-pages):
+
+```
+godot --headless --path . --export-release "Web" build/web/index.html
+python -m http.server 8000 --directory build/web
+```
+
+Depois abra `http://localhost:8000` no navegador. A build é sem threads e não precisa de cabeçalhos especiais.
+
 Arte e áudio são gerados por ferramentas offline (Python 3 com numpy e Pillow): `python tools/art/paint_fighters.py` e `python tools/audio/synth_audio.py`. O jogo não depende delas.
 
 ## Documentação
