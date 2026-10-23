@@ -57,6 +57,13 @@ var _requirement: Label
 var _footer: Label
 
 
+func required_resources(_params: Dictionary) -> PackedStringArray:
+	var paths: PackedStringArray = []
+	for id in ROSTER:
+		paths.append(CHARACTER_PATH % [id, id])
+	return paths
+
+
 func open(params: Dictionary) -> void:
 	mode = params["mode"]
 	for id in ROSTER:

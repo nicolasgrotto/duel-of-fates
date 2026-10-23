@@ -8,6 +8,8 @@ const SCREENS: Dictionary = {
 	&"result": "res://screens/result/result_screen.tscn",
 }
 const FADE_SECONDS: float = 0.18
+const SETTLE_FRAMES: int = 2
+const REQUIRED_RESOURCES: StringName = &"required_resources"
 const OVERLAY_LAYER: int = 50
 const FADE_LAYER: int = 100
 const PALETTE: UiPalette = preload("res://ui/palette.tres")
@@ -38,18 +40,37 @@ func change(screen: StringName, params: Dictionary = {}) -> void:
 	if _busy:
 		return
 	_busy = true
+	var path: String = SCREENS[screen]
+	ResourceLoader.load_threaded_request(path)
 	await _fade_to(1.0)
+	var scene: PackedScene = await _finish_loading(path)
+	var node: Node = scene.instantiate()
+	var held: Array[Resource] = []
+	if node.has_method(REQUIRED_RESOURCES):
+		var required: PackedStringArray = node.call(REQUIRED_RESOURCES, params)
+		for resource_path in required:
+			ResourceLoader.load_threaded_request(resource_path)
+		for resource_path in required:
+			held.append(await _finish_loading(resource_path))
 	_clear_stack()
 	get_tree().paused = false
 	var old_scene: Node = get_tree().current_scene
-	var node: Node = _instantiate(screen)
 	get_tree().root.add_child(node)
 	get_tree().current_scene = node
 	if old_scene != null:
 		old_scene.queue_free()
 	_open(node, params)
+	held.clear()
+	for i in SETTLE_FRAMES:
+		await RenderingServer.frame_post_draw
 	await _fade_to(0.0)
 	_busy = false
+
+
+func _finish_loading(path: String) -> Resource:
+	while ResourceLoader.load_threaded_get_status(path) == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
+		await get_tree().process_frame
+	return ResourceLoader.load_threaded_get(path)
 
 
 func push(screen: StringName, params: Dictionary = {}) -> void:
