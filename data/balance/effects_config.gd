@@ -69,3 +69,8 @@ extends Resource
 @export var lock_spark_interval: float = 0.07
 @export var lock_pulse_interval: float = 0.45
 @export var lock_pulse_radius: float = 30.0
+
+@export_group("Web")
+@export var web_glow: bool = false
+@export var web_light_scale: float = 1.6
+@export var replay_ticks_per_frame: int = 240

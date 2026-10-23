@@ -9,6 +9,7 @@ const ATTACK_FOLLOW: float = 60.0
 const POSE_FOLLOW: float = 16.0
 const LIGHT_ENERGY: float = 1.1
 const LIGHT_SCALE: float = 2.8
+const WEB_FEATURE: String = "web"
 const LIGHT_HEIGHT: float = 40.0
 const LIGHT_TEXTURE_SIZE: int = 256
 const CHARGE_FLARE: float = 0.08
@@ -76,7 +77,7 @@ func _build(glow_layer: Node) -> void:
 		glow_layer.add_child(afterimages)
 		_light = PointLight2D.new()
 		_light.texture = _light_gradient()
-		_light.texture_scale = LIGHT_SCALE
+		_light.texture_scale = effects.web_light_scale if OS.has_feature(WEB_FEATURE) else LIGHT_SCALE
 		_light.height = LIGHT_HEIGHT
 		add_child(_light)
 	blade.trail_duration = effects.trail_duration

@@ -9,6 +9,7 @@ const DEBRIS_DEPTH: int = 60
 const SKY_FALLBACK_DEPTH: int = -5
 const ENVIRONMENT: Environment = preload("res://presentation/duel_environment.tres")
 const PLAYER_INDEX: int = 0
+const WEB_FEATURE: String = "web"
 
 var mode: DuelMode
 var setup: DuelSetup
@@ -59,9 +60,10 @@ func open(params: Dictionary) -> void:
 func _build_scene() -> void:
 	_stage = PixelStage.new(EFFECTS.units_per_pixel)
 	add_child(_stage)
-	var environment: WorldEnvironment = WorldEnvironment.new()
-	environment.environment = ENVIRONMENT
-	_stage.viewport.add_child(environment)
+	if EFFECTS.web_glow or not OS.has_feature(WEB_FEATURE):
+		var environment: WorldEnvironment = WorldEnvironment.new()
+		environment.environment = ENVIRONMENT
+		_stage.viewport.add_child(environment)
 	_world = Node2D.new()
 	_stage.viewport.add_child(_world)
 	var arena: Node = setup.arena.scene.instantiate()
@@ -260,6 +262,10 @@ func _start_replay() -> void:
 		intents[0].unpack(recording.packed_at(tick, 0))
 		intents[1].unpack(recording.packed_at(tick, 1))
 		replay_sim.step(intents[0], intents[1])
+		if tick % EFFECTS.replay_ticks_per_frame == EFFECTS.replay_ticks_per_frame - 1:
+			await get_tree().process_frame
+			if not is_inside_tree():
+				return
 	_replay_controllers = [ReplayController.new(recording, 0, start), ReplayController.new(recording, 1, start)]
 	_replay_end = mini(_death_index + Ticks.from_seconds(CONFIG.replay_tail), recording.length())
 	_replaying = true
