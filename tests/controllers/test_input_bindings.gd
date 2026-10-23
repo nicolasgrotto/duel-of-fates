@@ -28,3 +28,21 @@ func test_presets_cover_every_combat_action() -> void:
 		var keys: Dictionary = InputBindings.preset_keys(preset)
 		for action in InputBindings.COMBAT_KEYS:
 			assert_false(keys.get(action, []).is_empty(), "%s %s" % [preset, action])
+
+
+func _key_codes(action: String) -> Array:
+	var codes: Array = []
+	for event in InputMap.action_get_events(action):
+		if event is InputEventKey:
+			codes.append((event as InputEventKey).physical_keycode)
+	return codes
+
+
+func test_two_player_keyboard_splits_and_restores() -> void:
+	InputBindings.apply_defaults()
+	InputBindings.apply_two_player_keyboard()
+	assert_eq(_key_codes("p1_light_attack"), [KEY_F])
+	assert_eq(_key_codes("p2_light_attack"), [KEY_J])
+	InputBindings.apply_keyboard(InputBindings.preset_keys(&"default"))
+	assert_eq(_key_codes("p1_light_attack"), [KEY_J])
+	assert_true(_key_codes("p2_light_attack").is_empty())

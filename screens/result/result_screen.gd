@@ -42,8 +42,10 @@ func open(params: Dictionary) -> void:
 	var names: Array = params["names"]
 	var winner: int = params["winner"]
 	var player: int = params["player_index"]
-	var title_key: String = "RESULT_VICTORY" if winner == player else "RESULT_DEFEAT"
-	_column.add_child(_label(tr(title_key), &"TitleLabel"))
+	var title: String = tr("RESULT_VICTORY") if winner == player else tr("RESULT_DEFEAT")
+	if player < 0 and winner >= 0:
+		title = tr("RESULT_PLAYER_WINS").format({"player": winner + 1})
+	_column.add_child(_label(title, &"TitleLabel"))
 	if winner >= 0:
 		_column.add_child(_label(tr("RESULT_WINNER").format({"name": names[winner]}), &"SubtitleLabel"))
 	_column.add_child(_label(tr("RESULT_DURATION").format({"time": _time_text(params["duration"])}), &"HintLabel"))

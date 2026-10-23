@@ -11,7 +11,7 @@ const GROUP_GAP: float = 18.0
 const COLUMN_TOP: float = 215.0
 const ROOT: StringName = &"root"
 const GROUPS: Dictionary = {
-	&"play": {"title": "MENU_PLAY", "items": [[&"duel", "MENU_DUEL"]]},
+	&"play": {"title": "MENU_PLAY", "items": [[&"duel", "MENU_DUEL"], [&"two_players", "MENU_TWO_PLAYERS"]]},
 	&"learn": {"title": "MENU_LEARN", "items": [[&"training", "MENU_TRAINING"], [&"controls", "MENU_CONTROLS"]]},
 	&"extras": {"title": "MENU_EXTRAS", "items": [[&"gallery", "MENU_GALLERY"]]},
 }
@@ -122,6 +122,8 @@ func _on_chosen(id: StringName) -> void:
 			SceneRouter.change(&"select", {"mode": VersusMode.new()})
 		&"training":
 			SceneRouter.change(&"select", {"mode": TrainingMode.new()})
+		&"two_players":
+			SceneRouter.change(&"select", {"mode": TwoPlayerMode.new()})
 		&"gallery":
 			GalleryMode.new().start()
 		&"controls":

@@ -13,7 +13,6 @@ Ordem de construção do jogo. Cada fase termina jogável e testada. Marque `[x]
   - Trajes, cores e secretos selecionáveis sem bloqueio até os saves da fase 6.
   - A IA quase não usa o empurrão contra IA (o oponente raramente fica parado em guarda); revisar junto com o equilíbrio.
   - Reserva de Defesa antes da quebra de guarda (GAME_DESIGN, seção 11) ainda não implementada.
-  - Preset de teclado de 2 jogadores e tela de Opções (inclui "segurar para disputar", hoje só no arquivo de configurações) na fase 6.
   - Mudar `application/config/name` desloca a pasta `user://`: depois disso o editor precisa ser reaberto para o addon MCP voltar a autenticar o runtime.
 
 ## Fase 0 — Fundação
@@ -108,7 +107,8 @@ Segunda etapa da migração (pedido do autor depois da prova de conceito; a bran
 - [ ] As dez arenas e a Plataforma de Treino
 - [x] Menu completo (grupos Jogar, Aprender, Extras, Opções) e tela de Opções
 - [x] Configurar teclas (presets Padrão, Setas, Personalizado), Controles e vibração do gamepad
-- [ ] Arcade (com o chefe), Sobrevivência, 2 Jogadores
+- [x] 2 Jogadores (teclado dividido e gamepads)
+- [ ] Arcade (com o chefe) e Sobrevivência
 - [ ] Tutorial, Treinos guiados, Desafio de parry, Desafios
 - [ ] Desbloqueios, segredos da abertura, saves
 

@@ -15,6 +15,7 @@ var arena: ArenaData
 var match_seed: int = 0
 var training: bool = false
 var gallery: bool = false
+var two_players: bool = false
 var power_sets: Array = [[], []]
 
 

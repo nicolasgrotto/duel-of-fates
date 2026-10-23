@@ -31,6 +31,19 @@ const ARROW_KEYS: Dictionary = {
 	"pause": [KEY_ESCAPE, KEY_P],
 }
 
+const TWO_PLAYER_KEYS: Array[Dictionary] = [
+	{
+		"move_left": [KEY_A], "move_right": [KEY_D], "jump": [KEY_W], "light_attack": [KEY_F], "heavy_attack": [KEY_G],
+		"block": [KEY_H], "dodge": [[KEY_SHIFT, KEY_LOCATION_LEFT]], "evade": [KEY_S], "special": [KEY_T], "power": [KEY_R],
+		"pause": [KEY_ESCAPE],
+	},
+	{
+		"move_left": [KEY_LEFT], "move_right": [KEY_RIGHT], "jump": [KEY_UP], "light_attack": [KEY_J], "heavy_attack": [KEY_K],
+		"block": [KEY_L], "dodge": [[KEY_SHIFT, KEY_LOCATION_RIGHT], KEY_KP_0], "evade": [KEY_DOWN], "special": [KEY_I], "power": [KEY_O],
+		"pause": [KEY_P],
+	},
+]
+
 const PRESETS: Array[StringName] = [&"default", &"arrows", &"custom"]
 const REBINDABLE: Array[String] = ["move_left", "move_right", "jump", "light_attack", "heavy_attack", "block", "dodge", "evade", "special", "power"]
 const RESERVED_KEYS: Array[Key] = [KEY_ESCAPE, KEY_ENTER, KEY_KP_ENTER, KEY_F3, KEY_F5, KEY_F6, KEY_F7]
@@ -121,14 +134,32 @@ static func preset_keys(preset: StringName) -> Dictionary:
 
 
 static func apply_keyboard(keys: Dictionary) -> void:
-	var prefix: String = player_prefix(0)
+	_clear_keys(1)
+	_set_keys(0, keys)
+
+
+static func apply_two_player_keyboard() -> void:
+	for slot in PLAYER_COUNT:
+		_set_keys(slot, TWO_PLAYER_KEYS[slot])
+
+
+static func _clear_keys(slot: int) -> void:
+	var prefix: String = player_prefix(slot)
 	for action in COMBAT_KEYS:
-		var full: String = prefix + action
-		for event in InputMap.action_get_events(full):
+		for event in InputMap.action_get_events(prefix + action):
 			if event is InputEventKey:
-				InputMap.action_erase_event(full, event)
-		for keycode in keys.get(action, COMBAT_KEYS[action]):
-			_add_key(full, keycode)
+				InputMap.action_erase_event(prefix + action, event)
+
+
+static func _set_keys(slot: int, keys: Dictionary) -> void:
+	_clear_keys(slot)
+	var prefix: String = player_prefix(slot)
+	for action in COMBAT_KEYS:
+		for entry in keys.get(action, COMBAT_KEYS[action] if slot == 0 else []):
+			if entry is Array:
+				_add_key(prefix + action, entry[0], entry[1])
+			else:
+				_add_key(prefix + action, entry)
 
 
 static func keyboard_map() -> Dictionary:
@@ -175,9 +206,10 @@ static func _reset_action(action: String) -> void:
 		InputMap.add_action(action, AXIS_DEADZONE)
 
 
-static func _add_key(action: String, keycode: Key) -> void:
+static func _add_key(action: String, keycode: Key, location: KeyLocation = KEY_LOCATION_UNSPECIFIED) -> void:
 	var event: InputEventKey = InputEventKey.new()
 	event.physical_keycode = keycode
+	event.location = location
 	InputMap.action_add_event(action, event)
 
 

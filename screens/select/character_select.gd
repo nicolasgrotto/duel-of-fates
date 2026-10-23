@@ -14,6 +14,7 @@ const ROSTER: Array[StringName] = [
 const RANDOM: StringName = &"random"
 const STEP_TITLES: Dictionary = {
 	&"player": "SELECT_PLAYER", &"opponent": "SELECT_OPPONENT", &"dummy": "SELECT_DUMMY", &"arena": "SELECT_ARENA",
+	&"player_one": "SELECT_PLAYER_ONE", &"player_two": "SELECT_PLAYER_TWO",
 }
 const LEFT: float = 120.0
 const CENTER: float = 620.0
@@ -150,7 +151,7 @@ func _step() -> StringName:
 
 
 func _slot() -> int:
-	return 0 if _step() == &"player" else 1
+	return 0 if _step() == &"player" or _step() == &"player_one" else 1
 
 
 func _show_step() -> void:

@@ -364,3 +364,8 @@ CONTROL_POWER,Poder (segurar canaliza),Power (hold to channel)
 CONTROL_OTHER_POWERS,Outros poderes,Other powers
 CONTROL_FOURTH_POWER,Quarto poder,Fourth power
 CONTROL_DIRECTION_PLUS,frente ou trás + {key},forward or back + {key}
+MENU_TWO_PLAYERS,2 Jogadores,2 Players
+SELECT_PLAYER_ONE,JOGADOR 1 · ESCOLHA,PLAYER 1 · CHOOSE
+SELECT_PLAYER_TWO,JOGADOR 2 · ESCOLHA,PLAYER 2 · CHOOSE
+HUD_PLAYER_TAG,J{player} · {name},P{player} · {name}
+RESULT_PLAYER_WINS,JOGADOR {player} VENCE,PLAYER {player} WINS

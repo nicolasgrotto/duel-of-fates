@@ -53,6 +53,8 @@ func open(params: Dictionary) -> void:
 		if not custom.is_empty():
 			sim.fighters[i].equip_powers(custom)
 	sim.start_match()
+	if setup.two_players:
+		InputBindings.apply_two_player_keyboard()
 	_build_scene()
 	_runner.start(sim, _build_controllers())
 	_bind_presentation(sim)
@@ -179,6 +181,8 @@ func _bind_presentation(simulation: MatchSimulation) -> void:
 	_camera.setup(simulation, EFFECTS)
 	_audio.setup(simulation, _views, PLAYER_INDEX)
 	_hud.setup(simulation, not setup.training)
+	if setup.two_players:
+		_hud.tag_players()
 	_hud.set_footer(ControlHints.hint(&"p1_pause", "HINT_PAUSE") if not setup.gallery else "")
 	if setup.gallery:
 		_hud.show_flow_only(_gallery.caster_index)
@@ -200,6 +204,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _exit_tree() -> void:
+	if setup != null and setup.two_players:
+		Settings.apply()
 	AudioDirector.stop_music()
 	AudioDirector.stop_ambience()
 
@@ -301,6 +307,6 @@ func _show_result() -> void:
 		"stats": stats.stats,
 		"names": [tr(setup.characters[0].name_key), tr(setup.characters[1].name_key)],
 		"winner": sim.match_winner,
-		"player_index": PLAYER_INDEX,
+		"player_index": -1 if setup.two_players else PLAYER_INDEX,
 		"duration": Ticks.to_seconds(stats.fight_ticks),
 	})

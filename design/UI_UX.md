@@ -50,6 +50,8 @@ Três colunas:
 - Duelar segue: **ESCOLHA SEU LUTADOR → ESCOLHA O ADVERSÁRIO → ESCOLHA A ARENA** (arena com frase e miniatura). Voltar recua uma etapa. Cada modo lembra a última escolha.
 - 2 Jogadores: "JOGADOR 1 · ESCOLHA" e "JOGADOR 2 · ESCOLHA", cada um com seus controles.
 
+> 2 Jogadores implementado na fase 6: Jogar › 2 Jogadores, seleção em três passos (J1, J2, arena) navegada pelos controles de menu, HUD `J1 · Nome` e `J2 · Nome`, resultado **JOGADOR N VENCE**.
+
 ### HUD do duelo
 
 ```

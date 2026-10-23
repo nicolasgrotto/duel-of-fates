@@ -38,6 +38,11 @@ var _footer: Label
 var _time: float = 0.0
 
 
+func tag_players() -> void:
+	for i in 2:
+		_names[i].text = tr("HUD_PLAYER_TAG").format({"player": i + 1, "name": tr(sim.fighters[i].character.name_key)})
+
+
 func setup(simulation: MatchSimulation, rounds_visible: bool) -> void:
 	layer = 10
 	sim = simulation
