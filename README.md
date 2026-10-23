@@ -45,6 +45,8 @@ python -m http.server 8000 --directory build/web
 
 Depois abra `http://localhost:8000` no navegador. A build é sem threads e não precisa de cabeçalhos especiais.
 
+Publicação: o workflow `.github/workflows/web.yml` (disparo manual em Actions › Web build › Run workflow) importa, roda os testes, exporta e publica `build/web` no GitHub Pages. No repositório, ative Settings › Pages › Source: GitHub Actions.
+
 Arte e áudio são gerados por ferramentas offline (Python 3 com numpy e Pillow): `python tools/art/paint_fighters.py` e `python tools/audio/synth_audio.py`. O jogo não depende delas.
 
 ## Documentação

@@ -1,0 +1,57 @@
+name: Web build (GitHub Pages)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+env:
+  GODOT_VERSION: 4.7.2
+  GODOT_RELEASE: stable
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Godot and the export templates
+        run: |
+          base="https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-${GODOT_RELEASE}"
+          wget -q "$base/Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64.zip"
+          wget -q "$base/Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_export_templates.tpz"
+          unzip -q "Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64.zip"
+          mv "Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64" godot
+          templates="$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}"
+          mkdir -p "$templates"
+          unzip -q "Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_export_templates.tpz"
+          mv templates/* "$templates/"
+
+      - name: Import, test and export
+        run: |
+          ./godot --headless --path . --import
+          ./godot --headless --path . --script res://tools/run_tests.gd
+          mkdir -p build/web
+          ./godot --headless --path . --export-release "Web" build/web/index.html
+          touch build/web/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

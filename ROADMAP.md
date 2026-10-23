@@ -98,7 +98,8 @@ Segunda etapa da migração (pedido do autor depois da prova de conceito; a bran
 - [x] Build Web corrigida e medida no Chrome: capas, cabelos e capuzes voltaram (recursos em texto na exportação), setas das dicas (fonte `DuelArrows`), perfil gráfico da Web (sem glow, luzes com alcance menor): duelo ~53 FPS e Galeria ~60 FPS a 1280×720 numa GT 730
 - [x] Finalizações e ferimentos: cabeça garantida em forte/Giro/Corte ascendente no K.O. decisivo, corte do lado certo, duas pernas na Varredura, coto em brasa com fumaça, cabeça rolando, queda de joelhos; talho cauterizado no ferimento, mancar e guarda baixa
 - [ ] Testar a build Web em outras máquinas e navegadores: áudio em modo Stream (chiado), gamepad, saves em `user://` (IndexedDB), opção Sair (na Web `quit()` congela a página; proposta: esconder a opção na Web)
-- [ ] Publicar no GitHub Pages (workflow que gera `build/web` e publica; decidir entre repositório público ou branch `gh-pages`)
+- [x] Workflow de publicação no GitHub Pages (`.github/workflows/web.yml`, disparo manual)
+- [ ] Publicar: criar o repositório remoto, ativar Pages com fonte GitHub Actions e rodar o workflow (decisão do autor: o repositório ainda não tem remoto)
 - [ ] Revisão do autor jogando: ajustar tempos e amplitudes das famílias (`data/families/*.tres`), poses de técnicas e esquiva, e os números de `power_vfx_config.tres`
 - [x] Refinamentos de arte: mão aberta nos poderes e no empurrão; técnicas com poses próprias (todas as oito); personagens escuros conferidos no duelo (leem pela luz das lâminas; paletas mantidas)
 
