@@ -59,7 +59,7 @@ Fundo `#05070d`, texto `#e8ecf5`, texto secundário `#8a94ab`, destaque `#9fb4d9
 
 A lâmina é a protagonista visual e a principal fonte de luz.
 
-- **Camadas**: núcleo branco fino, glow interno forte na cor da lâmina, glow externo largo e suave, bloom. Na grade: núcleo de 1 px, glow interno de 2–3 px e externo de 5–6 px, sem antialias.
+- **Camadas**: núcleo branco fino, glow interno forte na cor da lâmina, glow externo largo e suave, bloom. Na grade: cada camada é um único polígono com a ponta afinada (núcleo de ~1,5 px, que nunca se quebra na diagonal; cor de 3 px; halo em dois degraus de 5 e 7 px), sem antialias e sem sobrepor transparências; um bloco branco de 2×2 px marca o emissor.
 - **Rastro** (trail) durante o active dos golpes, na cor da lâmina, curto (~0,12 s), que mostra o arco exato do corte. Na grade, o rastro é desenhado em faixas de opacidade (do mais novo, quase opaco, ao mais velho, tênue), sem gradiente contínuo.
 - **Luz**: ilumina o próprio corpo (borda do lado da lâmina), o oponente quando perto, o chão (mancha de luz abaixo), as partículas e o ambiente (cristais, fungos, água, metal). Em impactos, o ambiente ganha por um instante o tom da lâmina.
 - **Zumbido visual**: em guarda, a lâmina balança levemente com a respiração; o glow pulsa de leve.
@@ -67,7 +67,7 @@ A lâmina é a protagonista visual e a principal fonte de luz.
 - **Desequilíbrio**: em `STAGGERED`, o glow tremula (o núcleo continua aceso). O jogador lê que o oponente está aberto sem texto.
 - **Parry**: a lâmina de quem aparou clareia (flare branco curto).
 - **Carga (Forja)**: o flare cresce a cada nível de carga.
-- **Cabos**: desenho próprio por personagem, em metal com empunhadura escura: com anel no emissor (Guardião, Garça, Ancião, Soberano, Predestinado Aurora), pomo curvado (Sombra, Sombra Desperta, Predestinado Eclipse), empunhadura (Bastião, Vespa, Brasa, Eco), guarda atravessada (Forja), haste com faixas (Haste), cabo duplo marcado no centro (Ceifador), liso (Espelho).
+- **Cabos**: todos têm emissor mais largo e claro, pomo escuro, um fio de brilho lateral e um botão de 1 px na cor da lâmina; além disso, desenho próprio por personagem, em metal com empunhadura escura: com anel no emissor (Guardião, Garça, Ancião, Soberano, Predestinado Aurora), pomo curvado (Sombra, Sombra Desperta, Predestinado Eclipse), empunhadura (Bastião, Vespa, Brasa, Eco), guarda atravessada (Forja), haste com faixas (Haste), cabo duplo marcado no centro (Ceifador), liso (Espelho).
 - Lâminas especiais: mais grossa (Bastião, Sombra Desperta), muito larga (Forja), finas e curtas (Vespa), em haste (Haste), dupla de cabo único (Ceifador).
 
 ## Luz

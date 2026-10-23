@@ -56,6 +56,7 @@ func setup(state: FighterState, other: FighterState, tick_runner: TickRunner, ef
 
 func set_blade_color(color: Color) -> void:
 	blade.color = color
+	rig.set_hilt_button(color)
 	_light.color = color
 	afterimages.color = color
 

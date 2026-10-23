@@ -2,9 +2,13 @@ class_name BladeView
 extends Node2D
 
 const OUTER_WIDTH: float = 11.0
-const INNER_WIDTH: float = 4.6
-const CORE_WIDTH: float = 2.0
-const OUTER_ALPHA: float = 0.22
+const GRID: float = 2.0
+const OUTER_PIXELS: float = 7.0
+const GLOW_PIXELS: float = 5.0
+const INNER_PIXELS: float = 3.0
+const CORE_PIXELS: float = 1.5
+const TIP_WIDTH: float = 0.35
+const OUTER_ALPHA: float = 0.16
 const INNER_ALPHA: float = 0.78
 const TRAIL_ALPHA: float = 0.32
 const REFLECTION_ALPHA: float = 0.16
@@ -36,6 +40,7 @@ var _blade_count: int = 0
 var _trails: Array[BladeTrail] = [BladeTrail.new(), BladeTrail.new()]
 var _trail_active: Array[bool] = [false, false]
 var _time: float = 0.0
+var _beam: PackedVector2Array = PackedVector2Array([Vector2.ZERO, Vector2.ZERO, Vector2.ZERO, Vector2.ZERO, Vector2.ZERO, Vector2.ZERO])
 
 
 func _ready() -> void:
@@ -94,9 +99,36 @@ func _draw_glint(at: Vector2) -> void:
 func _draw_blade(base: Vector2, tip: Vector2) -> void:
 	var outer_alpha: float = OUTER_ALPHA * (randf_range(0.3, 1.0) if tremble else 1.0)
 	var boost: float = 1.0 + flare * 3.0
-	draw_line(base, tip, Color(color, outer_alpha * boost), OUTER_WIDTH * width_scale * boost)
-	draw_line(base, tip, Color(color, INNER_ALPHA), INNER_WIDTH * width_scale)
-	draw_line(base, tip, Color.WHITE, CORE_WIDTH * width_scale)
+	var thickness: float = maxf(width_scale, 0.6)
+	_pixel_beam(base, tip, _odd(OUTER_PIXELS * thickness * boost), Color(color, outer_alpha * 0.6 * boost), 0)
+	_pixel_beam(base, tip, _odd(GLOW_PIXELS * thickness * boost), Color(color, outer_alpha * boost), 1)
+	_pixel_beam(base, tip, _odd(INNER_PIXELS * thickness), Color(color, INNER_ALPHA), 1)
+	_pixel_beam(base, tip, CORE_PIXELS * thickness, Color.WHITE, 2)
+	var emitter: Vector2 = base.snapped(Vector2(GRID, GRID))
+	draw_rect(Rect2(emitter - Vector2(GRID, GRID), Vector2(GRID, GRID) * 2.0), Color(Color.WHITE, 0.9))
+
+
+func _pixel_beam(base: Vector2, tip: Vector2, pixels: float, tint: Color, taper: int) -> void:
+	var span: Vector2 = tip - base
+	var length: float = span.length()
+	if length < GRID:
+		return
+	var direction: Vector2 = span / length
+	var side: Vector2 = direction.orthogonal() * pixels * GRID * 0.5
+	var shoulder: Vector2 = base + direction * maxf(length - taper * GRID * 2.0, 0.0)
+	var point: Vector2 = side * TIP_WIDTH
+	_beam[0] = base - side
+	_beam[1] = shoulder - side
+	_beam[2] = tip - point
+	_beam[3] = tip + point
+	_beam[4] = shoulder + side
+	_beam[5] = base + side
+	draw_colored_polygon(_beam, tint)
+
+
+static func _odd(pixels: float) -> float:
+	var whole: int = maxi(int(round(pixels)), 1)
+	return float(whole if whole % 2 == 1 else whole + 1)
 
 
 func _draw_reflection(base: Vector2, tip: Vector2) -> void:

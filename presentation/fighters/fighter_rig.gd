@@ -214,6 +214,10 @@ func reset_cloths() -> void:
 		cloth.reset()
 
 
+func set_hilt_button(color: Color) -> void:
+	_hilt.button_color = color
+
+
 func set_blade_out(out: bool) -> void:
 	_hilt.hidden_main = out
 
