@@ -5,10 +5,9 @@ Ordem de construção do jogo. Cada fase termina jogável e testada. Marque `[x]
 ## Ponto de continuidade
 
 - **Fase atual**: migração para pixel art (branch `pixel-art`). Fases 0 a 5 concluídas.
-- **Próximo passo**: avaliação do autor sobre a pixel art (branch `pixel-art`). Aprovada, a branch entra na `main` e a fase 6 segue em pixel art; reprovada, volta-se à tag `phase-5-hd`. Falta medir o desempenho na grade.
+- **Próximo passo**: segunda etapa da migração concluída (modelos, animações, poderes, menu). Falta a revisão do autor jogando, os refinamentos de arte listados no checklist e medir o desempenho na grade. A branch `pixel-art` segue até o fim do projeto; só então o autor escolhe entre ela e a `phase-5-hd`.
 - **Pendências conhecidas**:
   - Equilíbrio com Poderes: no Normal, Guardião 63% contra Sombra 37% (100 duelos), rounds de ~10,5 s; o Raio responde por boa parte dos acertos. Rodar a matriz com Poderes e ajustar custos, `power_chance` da IA e o Raio.
-  - Efeitos de poder simplificados em relação à VFX.md: sem poeira, sem o asteroide da Telecinese em Massa (só a chuva sobre as marcas), sem pedras subindo do chão na preparação do Arremesso e sem fragmentos no impacto.
   - A IA não usa o Truque Mental de forma tática (lança quando está ao alcance) e não guarda medidor para o quarto poder.
   - Equilíbrio do elenco pela matriz (10 duelos por par, lados alternados): no Difícil, todos entre 38% e 65%; no Normal, entre 33% e 62%. Os personagens defensivos (Guardião, Espelho) rendem mais no Difícil, porque dependem da defesa reativa da IA. Rounds de ~10–11 s (alvo ~15 s).
   - Trajes, cores e secretos selecionáveis sem bloqueio até os saves da fase 6.
@@ -90,10 +89,12 @@ Decisão do autor depois da fase 5: o jogo passa a ser pixel art sci-fi (ART_DIR
 
 Segunda etapa da migração (pedido do autor depois da prova de conceito; a branch `pixel-art` segue até o fim do projeto e só então se decide entre ela e a `phase-5-hd`):
 
-- [ ] Modelos dos lutadores mais ricos na grade (rosto, mãos, dobras, armadura, cabelo, capuz) mantendo a silhueta; **as duas pernas visíveis no duelo** (hoje a perna de trás some atrás da da frente e do traje: rever `BACK_SHADE`, ordem de desenho, afastamento dos pés na guarda e no andar)
-- [ ] Animações naturais e bonitas: guarda, andar, pulo, rápidos, fortes, técnicas, esquiva, atingido, disputa (as duas lâminas em X, corpos se empurrando) e choque (hoje os ataques e o clash parecem estranhos)
-- [ ] Poderes com apresentação à altura da versão em alta definição ou melhor; Corte de Fluxo como onda em arco vertical que nasce do chão, grossa embaixo e fina em cima; Telecinese em Massa com cinemática (câmera sobe ao céu, o meteoro é puxado e rachado, a câmera desce para a arena e os pedaços caem); Tempestade eletrizando o céu do fundo. Cinemáticas e efeitos de invocação só começam quando o poder sai de fato (sem interrupção na janela de vulnerabilidade da preparação)
-- [ ] Menu principal com design final (ex.: duas lâminas colidindo como emblema ao fundo), coerente com UI_UX e ART_DIRECTION
+- [x] Modelos dos lutadores mais ricos na grade (rosto, mãos, dobras, armadura, cabelo, capuz) mantendo a silhueta; **as duas pernas visíveis no duelo** (causa: perna, braço e capa de trás tinham z negativo e eram desenhados atrás do cenário, z −10; o rig agora fica acima do cenário). Contorno seletivo, luz de forma, cabeça maior com rosto, punhos, dobras, botas com sola e biqueira
+- [x] Animações naturais e bonitas: golpes em arco com antecipação, avanço do quadril, passo e follow-through, continuidade na sequência; disputa com as lâminas em X entre os rostos e empurrão a cada pressão; ricochete no choque; tranco ao ser atingido; pulo por fase (subida, ápice, queda)
+- [x] Poderes com apresentação à altura da versão em alta definição ou melhor; Corte de Fluxo como onda em arco vertical que nasce do chão, grossa embaixo e fina em cima; Telecinese em Massa com cinemática (câmera sobe ao céu, o meteoro é puxado e rachado, a câmera desce para a arena e os pedaços caem); Tempestade eletrizando o céu do fundo. Cinemáticas e efeitos de invocação só começam quando o poder sai de fato (sem interrupção na janela de vulnerabilidade da preparação)
+- [x] Menu principal com design final (emblema das lâminas cruzadas em pixel art, escolhido no Claude Design entre três direções; ver UI_UX)
+- [ ] Revisão do autor jogando: ajustar tempos e amplitudes das famílias (`data/families/*.tres`), poses de técnicas e esquiva, e os números de `power_vfx_config.tres`
+- [ ] Próximos refinamentos de arte: armaduras e capuzes com mais leitura nos personagens escuros (Sombra, Soberano), mãos abertas para os poderes, técnicas com poses próprias (Giro, Estocada, Varredura)
 
 ## Fase 6 — Arenas e modos
 
