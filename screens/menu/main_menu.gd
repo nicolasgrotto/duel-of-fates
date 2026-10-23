@@ -3,6 +3,7 @@ extends Control
 const TITLE_GAP: float = 12.0
 const LIST_GAP: float = 72.0
 const FOOTER_MARGIN: float = 36.0
+const WEB_FEATURE: String = "web"
 const EMBLEM_SPACE: float = 250.0
 const EMBLEM_LIFT: float = 178.0
 
@@ -33,7 +34,8 @@ func _ready() -> void:
 	_list.add_item(&"training", tr("MENU_TRAINING"))
 	_list.add_item(&"gallery", tr("MENU_GALLERY"))
 	_list.add_item(&"difficulty", "")
-	_list.add_item(&"quit", tr("MENU_QUIT"))
+	if not OS.has_feature(WEB_FEATURE):
+		_list.add_item(&"quit", tr("MENU_QUIT"))
 	_list.chosen.connect(_on_chosen)
 	_list.adjusted.connect(_on_adjusted)
 	_refresh_difficulty()

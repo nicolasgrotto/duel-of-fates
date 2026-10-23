@@ -30,7 +30,7 @@ Fundo preto; uma lâmina horizontal acende do centro para as pontas (ciano-gelo)
 
 ### Menu
 
-> Até a fase 6, uma lista única: Duelar, Treino, Galeria de poderes, Dificuldade (← → muda) e Sair.
+> Até a fase 6, uma lista única: Duelar, Treino, Galeria de poderes, Dificuldade (← → muda) e Sair. Na build Web não existe Sair: fechar o jogo congelaria a página, e a aba do navegador já cumpre esse papel.
 
 **Visual final (decidido na segunda etapa da pixel art, explorado no Claude Design entre três direções: emblema, choque no horizonte e letterbox):** o **emblema das lâminas cruzadas**. Ao fundo, acima do título, duas lâminas em X (ciano-gelo `#7fe4ff` e âmbar `#ffb34a`, cores sem moral, do `UiPalette`) com os cabos nas pontas de baixo, desenhadas em **pixel art na mesma grade do mundo** e ampliadas sem suavização; no cruzamento, uma estrela de faíscas de 4 pontas que pulsa, e faíscas soltas que caem de vez em quando. Ao abrir o menu, as lâminas acendem do cabo à ponta (como a ignição do round) e o cruzamento dá um clarão curto. O glow tremula de leve, como o zumbido. Duas linhas finas de horizonte (a plataforma) cruzam a tela abaixo do emblema, e poeira fina sobe devagar. Título, frase e lista ficam em alta resolução (Oxanium), centralizados sob o cruzamento: título com letras bem espaçadas, frase no destaque, lista com o traço curto de destaque à esquerda da opção selecionada. Nada de painéis, molduras ou botões: o emblema é a única imagem. No menu principal cada linha da lista é centralizada (com um espaço à direita do tamanho do traço, para o traço não empurrar o texto); nas listas das outras telas o texto continua alinhado à esquerda do bloco.
 
