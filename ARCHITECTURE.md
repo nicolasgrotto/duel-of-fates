@@ -306,6 +306,7 @@ godot --headless --path . --script res://tools/simulate.gd -- --duels 100 --diff
 - **Áudio**: `audio/general/default_playback_type.web=0` (Stream). O modo Sample, padrão da Web, não toca a música em camadas (`AudioStreamSynchronized`) nem aplica os filtros de abafar dos barramentos. Em build sem threads o mixer roda na thread principal: pode chiar se o quadro pesar.
 - **Gráficos**: tudo roda no Compatibility (WebGL 2): `pixel_upscale.gdshader` usa `fwidth` (GLSL ES 3.0), o material dos lutadores usa um array de 8 cores, a dessaturação lê a tela (`hint_screen_texture`), as lâminas usam `PointLight2D` com mapas de normal e o duelo usa o glow do `WorldEnvironment`. As luzes são o maior custo de GPU.
 - Tamanho: `index.wasm` ~39 MB (motor), `index.pck` ~2,7 MB (jogo).
+- **Recursos em texto na exportação** (`editor/export/convert_text_resources_to_binary=false`): com a conversão para binário ligada (padrão da Godot), a build exportada da 4.7.2 perdia as propriedades `PackedStringArray`/`PackedColorArray` dos recursos (`FighterArt.default_parts` vazio, `UiPalette.flow_tiers` nulo): sumiam capas, cabelos, capuzes, ombreiras e as cores de tier. Os `.tres` vão em texto; o pacote fica do mesmo tamanho. Para conferir uma build, rode o pacote com `godot --main-pack build/check/game.pck` (ver README).
 
 ## Desempenho
 
