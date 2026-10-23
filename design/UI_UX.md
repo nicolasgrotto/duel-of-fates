@@ -70,7 +70,7 @@ NOME ESQUERDA                                          NOME DIREITA
 - **Ferimento**: marca curta ao lado do nome ("Braço ferido" / "Perna ferida") em vermelho.
 - **Rounds**: quadrados pequenos, cheios para rounds vencidos.
 - Centro da tela vazio, exceto mensagens curtas: **ROUND 1 / ROUND 2 / ROUND FINAL**, **K.O.**, "A SOMBRA DESPERTA" (até 1,5 s).
-- Faixa do modo no topo quando há (Arcade `ARCADE · LUTA 2 DE 4 · BASTIÃO`, Sobrevivência, História `CAPÍTULO N · TÍTULO`, Desafios com o tempo).
+- Faixa do modo no topo quando há (Arcade `ARCADE · LUTA 2 DE 7 · BASTIÃO`, Sobrevivência `SOBREVIVÊNCIA · VITÓRIAS 3 · RECORDE 7`, História `CAPÍTULO N · TÍTULO`, Desafios com o tempo). Implementada na fase 6 para Arcade e Sobrevivência.
 - 2 Jogadores: "J1 · Nome" e "J2 · Nome".
 - Rodapé discreto com a dica de pausa.
 

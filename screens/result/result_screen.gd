@@ -18,6 +18,8 @@ const STAT_LABELS: Dictionary = {
 const OPTION_LABELS: Dictionary = {
 	&"rematch": "RESULT_REMATCH",
 	&"menu": "RESULT_MENU",
+	&"next": "RESULT_NEXT",
+	&"retry": "RESULT_RETRY",
 }
 
 var mode: DuelMode
@@ -45,7 +47,11 @@ func open(params: Dictionary) -> void:
 	var title: String = tr("RESULT_VICTORY") if winner == player else tr("RESULT_DEFEAT")
 	if player < 0 and winner >= 0:
 		title = tr("RESULT_PLAYER_WINS").format({"player": winner + 1})
+	if params.get("title", "") != "":
+		title = params["title"]
 	_column.add_child(_label(title, &"TitleLabel"))
+	if params.get("note", "") != "":
+		_column.add_child(_label(params["note"], &"SubtitleLabel"))
 	if winner >= 0:
 		_column.add_child(_label(tr("RESULT_WINNER").format({"name": names[winner]}), &"SubtitleLabel"))
 	_column.add_child(_label(tr("RESULT_DURATION").format({"time": _time_text(params["duration"])}), &"HintLabel"))

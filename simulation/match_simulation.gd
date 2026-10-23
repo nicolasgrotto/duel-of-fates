@@ -379,6 +379,9 @@ func restage() -> void:
 	var half_distance: float = config.round_start_distance * 0.5
 	fighters[0].reset_for_round(-half_distance, 1)
 	fighters[1].reset_for_round(half_distance, -1)
+	for i in fighters.size():
+		if i < rules.start_health.size() and rules.start_health[i] < 1.0:
+			fighters[i].health = maxf(fighters[i].max_health * rules.start_health[i], 1.0)
 	for fighter in fighters:
 		fighter.flow = config.flow.round_start if rules.powers else 0.0
 	for projectile in projectiles:

@@ -16,6 +16,8 @@ var match_seed: int = 0
 var training: bool = false
 var gallery: bool = false
 var two_players: bool = false
+var awakening: Array = [null, null]
+var banner: String = ""
 var power_sets: Array = [[], []]
 
 

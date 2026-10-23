@@ -9,6 +9,8 @@ const EVADE_TARGET: int = 2
 const REACH_MARGIN: float = 20.0
 
 var difficulty: AiDifficultyData
+var awakening: AiDifficultyData
+var awakened: bool = false
 var profile: AiProfileData
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var memory: AiHabitMemory
@@ -43,6 +45,9 @@ func produce(sim: MatchSimulation, fighter_index: int, intent: Intent) -> void:
 	intent.clear()
 	var me: FighterState = sim.fighters[fighter_index]
 	var opponent: FighterState = sim.opponent_of(me)
+	if awakening != null and not awakened and me.health < me.max_health * awakening.awaken_below:
+		difficulty = awakening
+		awakened = true
 	if difficulty.habit_weight > 0.0:
 		memory.observe(opponent)
 	if sim.phase != MatchSimulation.Phase.FIGHT or not me.is_alive():

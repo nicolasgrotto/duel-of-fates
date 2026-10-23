@@ -33,6 +33,7 @@ var _ghost: Array[float] = [1.0, 1.0]
 var _ghost_delay: Array[float] = [0.0, 0.0]
 var _reject_left: Array[float] = [0.0, 0.0]
 var _message: Label
+var _banner: Label
 var _message_left: float = 0.0
 var _footer: Label
 var _time: float = 0.0
@@ -107,6 +108,14 @@ func _round_title() -> String:
 	if sim.fighters[0].round_wins == last and sim.fighters[1].round_wins == last:
 		return tr("HUD_ROUND_FINAL")
 	return tr("HUD_ROUND").format({"number": sim.round_number})
+
+
+func set_banner(text: String) -> void:
+	_banner.text = text
+
+
+func announce(text: String, seconds: float) -> void:
+	_show_message(text, seconds)
 
 
 func _show_message(text: String, seconds: float) -> void:
@@ -195,6 +204,13 @@ func _build() -> void:
 	_message.grow_vertical = Control.GROW_DIRECTION_BOTH
 	_message.visible = false
 	_root.add_child(_message)
+	_banner = Label.new()
+	_banner.theme_type_variation = &"HintLabel"
+	_banner.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	_banner.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	_banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_banner.offset_top = TOP_MARGIN
+	_root.add_child(_banner)
 	_footer = Label.new()
 	_footer.theme_type_variation = &"HintLabel"
 	_footer.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)

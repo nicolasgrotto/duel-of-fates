@@ -10,3 +10,4 @@ extends Resource
 @export var powers: bool = true
 @export var focus_evade: bool = true
 @export var free_powers: bool = false
+@export var start_health: PackedFloat32Array = PackedFloat32Array([1.0, 1.0])

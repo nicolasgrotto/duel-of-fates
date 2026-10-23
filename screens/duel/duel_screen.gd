@@ -4,6 +4,7 @@ const CONFIG: CombatConfig = preload("res://data/balance/combat_config.tres")
 const EFFECTS: EffectsConfig = preload("res://data/balance/effects_config.tres")
 const TRAINING: TrainingConfig = preload("res://data/balance/training_config.tres")
 const POWER_VFX: PowerVfxConfig = preload("res://data/balance/power_vfx_config.tres")
+const MODES: ModesConfig = preload("res://data/balance/modes_config.tres")
 const SKY_ANCHOR: NodePath = ^"SkyAnchor"
 const DEBRIS_DEPTH: int = 60
 const SKY_FALLBACK_DEPTH: int = -5
@@ -34,6 +35,8 @@ var _stage: PixelStage
 var _desaturation: Desaturation
 var _audio: DuelAudio
 var _rumble: DuelRumble
+var _ai: Array[AiController] = []
+var _awakened: Array[bool] = [false, false]
 var _death_index: int = -1
 var _replaying: bool = false
 var _replay_controllers: Array[FighterController] = []
@@ -153,7 +156,10 @@ func _build_controllers() -> Array[FighterController]:
 			DuelSetup.ControllerKind.PLAYER:
 				controllers.append(PlayerController.new(setup.player_slots[i]))
 			DuelSetup.ControllerKind.AI:
-				controllers.append(AiController.new(setup.difficulty, setup.characters[i].ai_profile, setup.match_seed + i))
+				var ai: AiController = AiController.new(setup.difficulty, setup.characters[i].ai_profile, setup.match_seed + i)
+				ai.awakening = setup.awakening[i]
+				controllers.append(ai)
+				_ai.append(ai)
 			DuelSetup.ControllerKind.DUMMY:
 				var dummy: DummyController = DummyController.new(TRAINING)
 				controllers.append(dummy)
@@ -181,6 +187,7 @@ func _bind_presentation(simulation: MatchSimulation) -> void:
 	_camera.setup(simulation, EFFECTS)
 	_audio.setup(simulation, _views, PLAYER_INDEX)
 	_hud.setup(simulation, not setup.training)
+	_hud.set_banner(setup.banner)
 	if setup.two_players:
 		_hud.tag_players()
 	_hud.set_footer(ControlHints.hint(&"p1_pause", "HINT_PAUSE") if not setup.gallery else "")
@@ -219,12 +226,21 @@ func _on_ticked() -> void:
 			_finish_replay()
 		return
 	stats.on_tick(sim)
+	_check_awakening()
 	var cinematic: bool = sim.phase == MatchSimulation.Phase.INTRO or sim.phase == MatchSimulation.Phase.KO
 	_screen.letterbox_target = 1.0 if cinematic and not setup.training else 0.0
 	if _training != null:
 		_training.on_ticked()
 	if _gallery != null:
 		_gallery.on_ticked()
+
+
+func _check_awakening() -> void:
+	for i in _ai.size():
+		if _ai[i].awakened and not _awakened[i]:
+			_awakened[i] = true
+			_hud.announce(tr("HUD_BOSS_AWAKENS"), MODES.boss_message_seconds)
+			_screen.pulse_letterbox(MODES.boss_letterbox)
 
 
 func _on_combat_event(event: CombatEvent) -> void:
@@ -301,6 +317,7 @@ func _finish_replay() -> void:
 
 func _show_result() -> void:
 	_finished = true
+	mode.finish(sim.match_winner, sim)
 	_runner.set_process(false)
 	SceneRouter.push(&"result", {
 		"mode": mode,
@@ -309,4 +326,6 @@ func _show_result() -> void:
 		"winner": sim.match_winner,
 		"player_index": -1 if setup.two_players else PLAYER_INDEX,
 		"duration": Ticks.to_seconds(stats.fight_ticks),
+		"title": mode.result_title(),
+		"note": mode.result_note(),
 	})

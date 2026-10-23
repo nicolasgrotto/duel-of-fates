@@ -108,9 +108,9 @@ Segunda etapa da migração (pedido do autor depois da prova de conceito; a bran
 - [x] Menu completo (grupos Jogar, Aprender, Extras, Opções) e tela de Opções
 - [x] Configurar teclas (presets Padrão, Setas, Personalizado), Controles e vibração do gamepad
 - [x] 2 Jogadores (teclado dividido e gamepads)
-- [ ] Arcade (com o chefe) e Sobrevivência
+- [x] Arcade (escada de 6 com dificuldade crescente e o chefe que desperta) e Sobrevivência (um round, 30% de vida de volta, chefe a cada 5 vitórias, recorde)
 - [ ] Tutorial, Treinos guiados, Desafio de parry, Desafios
-- [ ] Desbloqueios, segredos da abertura, saves
+- [ ] Desbloqueios, segredos da abertura, saves (o `SaveService` já guarda Arcade concluído e recordes)
 
 ## Fase 7 — História
 
