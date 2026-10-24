@@ -63,9 +63,10 @@ func _process(_delta: float) -> void:
 		_world_drawer.queue_redraw()
 	if not _header.visible:
 		return
-	_header.text = "FPS %d  tick %d  round %d  %s %d  lock cd %d  cinematic %d" % [
+	_header.text = "FPS %d  tick %d  round %d  %s %d  lock cd %d  cinematic %d  contacts %d (%d)" % [
 		Engine.get_frames_per_second(), sim.tick, sim.round_number,
 		MatchSimulation.Phase.keys()[sim.phase].to_lower(), sim.phase_ticks, sim.lock_cooldown_ticks, sim.cinematic_ticks,
+		sim.contact_streak, sim.contact_idle_ticks,
 	]
 	for i in 2:
 		_labels[i].text = "\n".join(_fighter_lines(i))

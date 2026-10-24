@@ -135,6 +135,9 @@ const LOCK_FACE_HEIGHT: float = 66.0
 const LOCK_SLIDE: float = 7.0
 const LOCK_PUSH: float = 5.0
 const LOCK_PULSE_DECAY: float = 10.0
+const PRESS_FACE_HEIGHT: float = 48.0
+const PRESS_TILT: float = 8.0
+const PRESS_STEP: float = 8.0
 const JUMP_APEX_SPEED: float = 260.0
 const FLIP_EASE: float = 0.6
 const FLIP_GRIP: Vector2 = Vector2(20.0, -30.0)
@@ -379,18 +382,27 @@ func _blade_lock(fighter: FighterState, opponent: FighterState, pose: RigPose) -
 	if fighter.lock_presses > _lock_presses:
 		_lock_pulse = 1.0
 	_lock_presses = fighter.lock_presses
-	var pressure: float = clampf(float(fighter.lock_presses - opponent.lock_presses) / 5.0, -1.0, 1.0)
+	var press: bool = fighter.lock_press
+	var lock: BladeLockConfig = COMBAT.blade_lock
+	var steps: float = float(lock.press_presses_to_win if press else lock.presses_to_win)
+	var pressure: float = clampf(float(fighter.lock_presses - opponent.lock_presses) / steps, -1.0, 1.0)
 	var push: float = _lock_pulse
 	var half: float = maxf(absf(opponent.x - fighter.x) * 0.5, 20.0)
 	pose.grip = LOCK_GRIP + Vector2(pressure * LOCK_SLIDE * 0.5 + push * LOCK_PUSH, -pressure * 3.0)
 	var cross: Vector2 = Vector2(half + pressure * LOCK_SLIDE, -LOCK_FACE_HEIGHT)
+	if press:
+		var tilt: float = PRESS_TILT if (fighter.lock_presses + opponent.lock_presses) % 2 == 0 else -PRESS_TILT
+		pose.grip.y += LOCK_FACE_HEIGHT - PRESS_FACE_HEIGHT
+		cross = Vector2(half + pressure * PRESS_STEP, -PRESS_FACE_HEIGHT + tilt)
+		pose.front_foot.x += pressure * PRESS_STEP
+		pose.back_foot.x += pressure * PRESS_STEP
 	pose.blade_angle = rad_to_deg((cross - pose.grip).angle())
 	pose.front_foot.x = family.stance_width * 0.35
 	pose.back_foot.x = -family.stance_width * 0.75 - maxf(pressure, 0.0) * 6.0
 	pose.tremble = true
-	_body_shift = pressure * 4.0 + push * 2.0
+	_body_shift = pressure * (PRESS_STEP if press else 4.0) + push * 2.0
 	var lean: float = family.lock_lean * (1.0 + pressure * 0.5) + push * 4.0
-	return Vector2(family.lock_crouch - pressure * 4.0, lean)
+	return Vector2(family.lock_crouch - pressure * 4.0 + (6.0 if press else 0.0), lean * (0.7 if press else 1.0))
 
 
 func start_tumble() -> void:

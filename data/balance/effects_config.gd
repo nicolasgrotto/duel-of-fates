@@ -20,6 +20,8 @@ extends Resource
 @export var hazard: EffectRecipe
 @export var technique_clash: EffectRecipe
 @export var plunge_impact: EffectRecipe
+@export var blade_press_start: EffectRecipe
+@export var blade_press_end: EffectRecipe
 
 @export_group("Sparks")
 @export var spark_life: float = 0.32

@@ -140,10 +140,10 @@ func on_event(event: CombatEvent) -> void:
 				_solver.rebounding = true
 				if event.type == CombatEvent.Type.TECHNIQUE_CLASH:
 					_solver.start_tumble()
-		CombatEvent.Type.HIT, CombatEvent.Type.GUARD_BREAK, CombatEvent.Type.BLADE_LOCK_ENDED:
+		CombatEvent.Type.HIT, CombatEvent.Type.GUARD_BREAK, CombatEvent.Type.BLADE_LOCK_ENDED, CombatEvent.Type.BLADE_PRESS_ENDED:
 			if event.target == fighter.index and not reduced_effects:
 				_flash_left = effects.hit_flash_duration
-			if event.type == CombatEvent.Type.BLADE_LOCK_ENDED and event.target == fighter.index:
+			if event.type != CombatEvent.Type.HIT and event.type != CombatEvent.Type.GUARD_BREAK and event.target == fighter.index:
 				_solver.start_tumble()
 		CombatEvent.Type.POWER_HIT:
 			if event.target == fighter.index and event.power != null and (event.power.kind == PowerData.Kind.REPULSE or event.power.kind == PowerData.Kind.SUPREME_PUSH):

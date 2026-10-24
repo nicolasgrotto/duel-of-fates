@@ -429,6 +429,7 @@ GUIDE_RECOVER,Recue e espere o Vigor voltar,Back off and wait for your Stamina t
 GUIDE_GUARD_BREAK,Quebre a guarda do boneco,Break the dummy's guard
 GUIDE_WOUND,Fira o boneco exausto,Wound the exhausted dummy
 GUIDE_LOCK,Vença três disputas de lâminas,Win three blade locks
+GUIDE_PRESS,"Troque rápidos colados com o boneco: no 3º choque ou parry seguido vem a pressão de lâminas. Vença com {light_attack}","Trade light attacks up close: the 3rd clash or parry in a row starts a blade press. Win it with {light_attack}"
 PARRY_CHALLENGE_BANNER,DESAFIO DE PARRY · RECORDE {best},PARRY CHALLENGE · BEST {best}
 PARRY_CHALLENGE_HINT,Apare os fortes com {block}: parry vale 1 · perfeito vale 2,Parry the heavies with {block}: parry is worth 1 · perfect is worth 2
 PARRY_CHALLENGE_LINE,{time} s · {points} pontos,{time} s · {points} points

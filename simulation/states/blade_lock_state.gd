@@ -34,7 +34,8 @@ func step(sim: MatchSimulation, fighter: FighterState, intent: Intent) -> void:
 func exit(_sim: MatchSimulation, fighter: FighterState) -> void:
 	fighter.lock_presses = 0
 	fighter.lock_hold_ticks = 0
+	fighter.lock_press = false
 
 
 func debug_lines(sim: MatchSimulation, fighter: FighterState) -> PackedStringArray:
-	return PackedStringArray(["presses %d  lock %d" % [fighter.lock_presses, sim.lock_ticks]])
+	return PackedStringArray(["%s  presses %d  ticks %d" % ["press" if fighter.lock_press else "lock", fighter.lock_presses, sim.lock_ticks]])

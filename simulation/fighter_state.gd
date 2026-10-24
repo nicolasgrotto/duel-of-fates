@@ -98,6 +98,7 @@ var wounded_this_round: bool = false
 var lock_presses: int = 0
 var lock_press_cooldown: int = 0
 var lock_hold_ticks: int = 0
+var lock_press: bool = false
 
 var stagger_counterable: bool = false
 var armor_used: int = 0

@@ -155,6 +155,30 @@ lift_degrees = 70.0
 shake = 3.0
 shake_duration = 0.12
 
+[sub_resource type="Resource" id="blade_press_start"]
+script = ExtResource("2_recipe")
+sparks_min = 10
+sparks_max = 14
+spark_speed = 520.0
+spread_degrees = 130.0
+shake = 3.0
+shake_duration = 0.12
+rumble_weak = 0.3
+rumble_strong = 0.3
+rumble_duration = 0.1
+
+[sub_resource type="Resource" id="blade_press_end"]
+script = ExtResource("2_recipe")
+sparks_min = 8
+sparks_max = 12
+spark_speed = 560.0
+shake = 4.0
+shake_duration = 0.12
+hit_flash = true
+rumble_weak = 0.3
+rumble_strong = 0.4
+rumble_duration = 0.1
+
 [sub_resource type="Resource" id="power_hit"]
 script = ExtResource("2_recipe")
 sparks_min = 6
@@ -219,3 +243,5 @@ power_blocked = SubResource("power_blocked")
 hazard = SubResource("hazard")
 technique_clash = SubResource("technique_clash")
 plunge_impact = SubResource("plunge_impact")
+blade_press_start = SubResource("blade_press_start")
+blade_press_end = SubResource("blade_press_end")

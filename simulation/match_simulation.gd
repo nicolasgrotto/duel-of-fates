@@ -25,6 +25,9 @@ var match_winner: int = NO_WINNER
 var lock_ticks: int = 0
 var lock_cooldown_ticks: int = 0
 var cinematic_ticks: int = 0
+var contact_streak: int = 0
+var contact_idle_ticks: int = 0
+var contact_parrier: int = -1
 
 var lock_finish_move: MoveData
 var hit_attackers: Array[FighterState] = []
@@ -126,6 +129,7 @@ func step(first_intent: Intent, second_intent: Intent) -> void:
 		ProjectileSystem.step(self)
 		HazardSystem.step(self)
 		BladeLockResolver.step(self)
+		BladePress.observe(self)
 		_check_round_end()
 	if lock_cooldown_ticks > 0:
 		lock_cooldown_ticks -= 1
@@ -334,6 +338,9 @@ func capture() -> Dictionary:
 		"lock_ticks": lock_ticks,
 		"lock_cooldown_ticks": lock_cooldown_ticks,
 		"cinematic_ticks": cinematic_ticks,
+		"contact_streak": contact_streak,
+		"contact_idle_ticks": contact_idle_ticks,
+		"contact_parrier": contact_parrier,
 		"rng_state": rng.state,
 		"fighters": fighter_snapshots,
 		"projectiles": projectiles.map(func(item: Projectile) -> Dictionary: return item.capture()),
@@ -354,6 +361,9 @@ func restore(snapshot: Dictionary) -> void:
 	lock_ticks = snapshot["lock_ticks"]
 	lock_cooldown_ticks = snapshot["lock_cooldown_ticks"]
 	cinematic_ticks = snapshot["cinematic_ticks"]
+	contact_streak = snapshot["contact_streak"]
+	contact_idle_ticks = snapshot["contact_idle_ticks"]
+	contact_parrier = snapshot["contact_parrier"]
 	rng.state = snapshot["rng_state"]
 	var fighter_snapshots: Array = snapshot["fighters"]
 	for i in fighters.size():
@@ -383,6 +393,7 @@ func _start_round() -> void:
 
 func restage() -> void:
 	cinematic_ticks = 0
+	BladePress.reset(self)
 	var half_distance: float = config.round_start_distance * 0.5
 	fighters[0].reset_for_round(-half_distance, 1)
 	fighters[1].reset_for_round(half_distance, -1)

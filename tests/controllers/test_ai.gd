@@ -134,3 +134,16 @@ func test_cornered_ai_spins_out_under_a_heavy() -> void:
 	eager.spin_dodge_chance = 1.0
 	assert_gt(_spin_dodges_when_cornered(eager, 10), 5.0)
 	assert_eq(_spin_dodges_when_cornered(EASY, 20), 0)
+
+
+func test_ai_pushes_through_a_blade_press() -> void:
+	var duel: DuelFixture = DuelFixture.create(null, null, 3)
+	duel.skip_intro()
+	duel.place(30.0)
+	BladeLockResolver.start(duel.sim, duel.fighter(0), duel.fighter(1), true)
+	var ai: AiController = AiController.new(HARD, DuelFixture.GUARDIAN.ai_profile, 3)
+	for tick in Ticks.from_seconds(DuelFixture.CONFIG.blade_lock.press_max_duration) + 30:
+		ai.produce(duel.sim, 0, duel.intents[0])
+		duel.step(1)
+	assert_eq(duel.count_events(CombatEvent.Type.BLADE_PRESS_ENDED), 1)
+	assert_eq(duel.last_event(CombatEvent.Type.BLADE_PRESS_ENDED)["source"], 0)

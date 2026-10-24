@@ -20,6 +20,7 @@ const SOUNDS: Dictionary = {
 	CombatEvent.Type.PERFECT_PARRY: &"perfect_parry",
 	CombatEvent.Type.CLASH: &"clash",
 	CombatEvent.Type.BLADE_LOCK_STARTED: &"clash",
+	CombatEvent.Type.BLADE_PRESS_STARTED: &"clash",
 	CombatEvent.Type.BLADE_LOCK_PRESSED: &"lock_press",
 	CombatEvent.Type.SHOVE: &"shove",
 	CombatEvent.Type.EVADE_SUCCESS: &"evade",
@@ -156,10 +157,10 @@ func on_event(event: CombatEvent) -> void:
 			AudioDirector.play(&"hit_heavy" if event.heavy else &"hit_light", at, 0.0, randf_range(0.95, 1.05))
 		CombatEvent.Type.PERFECT_PARRY:
 			AudioDirector.muffle(sim.config.perfect_parry_slow_motion)
-		CombatEvent.Type.BLADE_LOCK_STARTED:
+		CombatEvent.Type.BLADE_LOCK_STARTED, CombatEvent.Type.BLADE_PRESS_STARTED:
 			_lock_loop.global_position = at
 			_lock_loop.play()
-		CombatEvent.Type.BLADE_LOCK_ENDED:
+		CombatEvent.Type.BLADE_LOCK_ENDED, CombatEvent.Type.BLADE_PRESS_ENDED:
 			_lock_loop.stop()
 			AudioDirector.play(&"lock_tie" if event.source == CombatEvent.NO_FIGHTER else &"lock_win", at)
 		CombatEvent.Type.DEATH:

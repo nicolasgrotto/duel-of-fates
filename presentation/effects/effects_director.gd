@@ -49,7 +49,7 @@ func _ready() -> void:
 
 
 func on_event(event: CombatEvent) -> void:
-	if event.type == CombatEvent.Type.BLADE_LOCK_STARTED:
+	if event.type == CombatEvent.Type.BLADE_LOCK_STARTED or event.type == CombatEvent.Type.BLADE_PRESS_STARTED:
 		_lock_height = -event.position.y
 	var recipe: EffectRecipe = _recipe_for(event)
 	if recipe == null:
@@ -93,6 +93,10 @@ func _recipe_for(event: CombatEvent) -> EffectRecipe:
 			return config.blade_lock_press
 		CombatEvent.Type.BLADE_LOCK_ENDED:
 			return config.blade_lock_end
+		CombatEvent.Type.BLADE_PRESS_STARTED:
+			return config.blade_press_start
+		CombatEvent.Type.BLADE_PRESS_ENDED:
+			return config.blade_press_end
 		CombatEvent.Type.DEATH:
 			return config.knockout
 		CombatEvent.Type.POWER_HIT:

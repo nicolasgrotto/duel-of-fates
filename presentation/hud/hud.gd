@@ -96,7 +96,7 @@ func on_event(event: CombatEvent) -> void:
 			_message_left = 0.0
 		CombatEvent.Type.DEATH:
 			_show_message(tr("HUD_KO"), MESSAGE_KO_SECONDS)
-		CombatEvent.Type.HIT, CombatEvent.Type.BLADE_LOCK_ENDED:
+		CombatEvent.Type.HIT, CombatEvent.Type.BLADE_LOCK_ENDED, CombatEvent.Type.BLADE_PRESS_ENDED:
 			if event.target >= 0:
 				_ghost_delay[event.target] = GHOST_DELAY
 		CombatEvent.Type.ACTION_REJECTED:
