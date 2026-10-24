@@ -3,7 +3,7 @@ extends Resource
 
 enum Kind { LIGHT, HEAVY, FORWARD_HEAVY, COUNTER, SHOVE, AERIAL_LIGHT, AERIAL_HEAVY, LOCK_FINISH, ABILITY, STANCE, TECHNIQUE }
 enum Limb { NONE, ARM, LEG, HEAD }
-enum TechniqueStyle { ARC, SPIN, DASH, THROW, THRUST, RISING, FLURRY, SWEEP, PLUNGE }
+enum TechniqueStyle { ARC, SPIN, DASH, THROW, THRUST, RISING, FLURRY, LUNGE, PLUNGE }
 
 @export var id: StringName
 @export var kind: Kind = Kind.LIGHT
@@ -39,7 +39,6 @@ enum TechniqueStyle { ARC, SPIN, DASH, THROW, THRUST, RISING, FLURRY, SWEEP, PLU
 @export var aerial_technique: bool = false
 
 @export_group("Technique")
-@export var stagger_on_guard: float = 0.0
 @export var multi_hits: int = 1
 @export var multi_interval: float = 0.07
 @export var airborne_bonus: float = 0.0

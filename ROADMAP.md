@@ -125,7 +125,7 @@ Aprovada pelo autor. Decisões em GAME_DESIGN (Esquiva com giro, Pressão de lâ
 
 Correções:
 - [x] Galeria de poderes: Dreno, Congelar, Truque Mental e Estrangular não acertam o alvo (causa: o alvo ficava na distância do round, 394 u entre as bordas, fora do alcance desses poderes, da Repulsão e das técnicas corpo a corpo; agora o `GalleryPanel` aproxima os lutadores pelo alcance do que demonstra)
-- [ ] Remover a Varredura (técnica da Brasa, do Eco e do Predestinado Eclipse; habilidade da Haste e do Soberano) e pôr os substitutos de CHARACTERS.md (Corte ascendente, Giro, Avanço com corte, Investida da Haste), com IA, galeria, Tutorial e testes
+- [x] Remover a Varredura (técnica da Brasa, do Eco e do Predestinado Eclipse; habilidade da Haste e do Soberano) e pôr os substitutos de CHARACTERS.md (Corte ascendente, Giro, Avanço com corte, Investida da Haste), com IA, galeria, Tutorial e testes (a IA usa a Investida pelo alcance + avanço; o Tutorial não citava a Varredura)
 
 Animação (apresentação):
 - [ ] Postura, empunhadura e swing por família (tabela da ART_DIRECTION), incluindo as duas lâminas da Vespa

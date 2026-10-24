@@ -122,14 +122,14 @@ ABILITY_SHADOW,Ímpeto: avanço cortante com armadura,Onslaught: armored cutting
 ABILITY_BASTION,Marreta: golpe lento com armadura dupla,Maul: slow strike with double armor
 ABILITY_WASP,Zumbido: avanço invulnerável que atravessa,Buzz: invulnerable dash through
 ABILITY_MIRROR,Postura de Espera: apara tudo o que chegar,Waiting Stance: parries whatever comes
-ABILITY_LANCE,"Varredura: alcance enorme, baixa e lenta","Sweep: huge reach, low and slow"
+ABILITY_LANCE,"Investida da Haste: lunge longo com a ponta","Lance Charge: a long lunge with the tip"
 ABILITY_EMBER,Brasa Viva: postura com resposta forte,Living Ember: stance with a strong answer
 ABILITY_FORGE,Forja: segure para carregar até quebrar a guarda,Forge: hold to charge until it breaks guard
 ABILITY_HERON,Voo da Garça: salto alto por cima do oponente,Heron Flight: high leap over the opponent
 ABILITY_REAPER,Roda Dupla: acerta na frente e atrás,Twin Wheel: hits front and back
 ABILITY_ECHO,Passo-reflexo: passo curto invulnerável,Reflex Step: short invulnerable step
 ABILITY_AWAKENED_SHADOW,Ímpeto,Onslaught
-ABILITY_SOVEREIGN,Varredura,Sweep
+ABILITY_SOVEREIGN,Investida da Haste,Lance Charge
 ABILITY_ELDER,Salto: avança pelo ar e cai golpeando,Leap: flies forward and strikes on the way down
 ABILITY_FORETOLD,Passo-reflexo,Reflex Step
 ABILITY_FORETOLD_ECLIPSE,Passo-reflexo,Reflex Step
@@ -267,7 +267,6 @@ TECHNIQUE_BLADE_THROW,Arremesso da lâmina,Blade throw
 TECHNIQUE_THRUST,Estocada,Thrust
 TECHNIQUE_RISING_CUT,Corte ascendente,Rising cut
 TECHNIQUE_FLURRY,Rajada,Flurry
-TECHNIQUE_SWEEP_LOW,Varredura,Sweep
 TECHNIQUE_PLUNGE,Investida descendente,Plunging strike
 SELECT_POWERS,Poderes,Powers
 SELECT_POWER_NEUTRAL,Poder · {name},Power · {name}

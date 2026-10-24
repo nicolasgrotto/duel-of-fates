@@ -248,7 +248,7 @@ func set_wound(wound: FighterState.Wound) -> void:
 			sprite.self_modulate = Color.WHITE
 
 
-func sever(limb: MoveData.Limb, front: bool, both_legs: bool) -> void:
+func sever(limb: MoveData.Limb, front: bool) -> void:
 	_missing = limb
 	_cuts.clear()
 	var side: String = "front" if front else "back"
@@ -257,8 +257,6 @@ func sever(limb: MoveData.Limb, front: bool, both_legs: bool) -> void:
 			_cuts.append("arm_" + side)
 		MoveData.Limb.LEG:
 			_cuts.append("leg_" + side)
-			if both_legs:
-				_cuts.append("leg_" + ("back" if front else "front"))
 		MoveData.Limb.HEAD:
 			_cuts.append("head")
 	var hidden: Array[String] = []

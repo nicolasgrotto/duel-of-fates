@@ -17,7 +17,7 @@
 [ext_resource type="Resource" path="res://data/powers/pull.tres" id="p_pull"]
 [ext_resource type="Resource" path="res://data/powers/throw.tres" id="p_throw"]
 [ext_resource type="Resource" path="res://data/techniques/flurry.tres" id="t_flurry"]
-[ext_resource type="Resource" path="res://data/techniques/sweep_low.tres" id="t_sweep_low"]
+[ext_resource type="Resource" path="res://data/techniques/spin.tres" id="t_spin"]
 
 [sub_resource type="Resource" id="echo_light_1"]
 script = ExtResource("2_move")
@@ -188,7 +188,7 @@ can_feint = true
 ability = SubResource("echo_ability")
 powers = Array[ExtResource("14_power")]([ExtResource("p_lightning"), ExtResource("p_pull"), ExtResource("p_throw")])
 technique_forward = ExtResource("t_flurry")
-technique_back = ExtResource("t_sweep_low")
+technique_back = ExtResource("t_spin")
 ai_profile = ExtResource("9_ai")
 path = 1
 style_key = "STYLE_ECHO"

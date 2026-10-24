@@ -17,7 +17,7 @@
 [ext_resource type="Resource" path="res://data/powers/lightning.tres" id="p_lightning"]
 [ext_resource type="Resource" path="res://data/powers/pull.tres" id="p_pull"]
 [ext_resource type="Resource" path="res://data/techniques/dash_slash.tres" id="t_dash_slash"]
-[ext_resource type="Resource" path="res://data/techniques/sweep_low.tres" id="t_sweep_low"]
+[ext_resource type="Resource" path="res://data/techniques/rising_cut.tres" id="t_rising_cut"]
 
 [sub_resource type="Resource" id="ember_light_1"]
 script = ExtResource("2_move")
@@ -237,7 +237,7 @@ punish_bonus = 0.2
 ability = SubResource("ember_ability")
 powers = Array[ExtResource("14_power")]([ExtResource("p_lightning"), ExtResource("p_pull"), ExtResource("p_freeze")])
 technique_forward = ExtResource("t_dash_slash")
-technique_back = ExtResource("t_sweep_low")
+technique_back = ExtResource("t_rising_cut")
 ai_profile = ExtResource("9_ai")
 path = 1
 style_key = "STYLE_EMBER"

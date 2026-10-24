@@ -66,12 +66,6 @@ static func _barrier(sim: MatchSimulation, attacker: FighterState, defender: Fig
 	event.hitstop_ticks = sim.freeze_pair(attacker, defender, sim.config.hitstop_block)
 
 
-static func _guard_stagger(sim: MatchSimulation, defender: FighterState, move: MoveData) -> void:
-	if move.stagger_on_guard <= 0.0 or not defender.is_alive():
-		return
-	_recoil(sim, defender, FighterState.State.STAGGERED, move.stagger_on_guard)
-
-
 static func _in_stance(fighter: FighterState) -> bool:
 	return fighter.is_active() and fighter.move.kind == MoveData.Kind.STANCE
 
@@ -152,7 +146,6 @@ static func _block(sim: MatchSimulation, attacker: FighterState, defender: Fight
 		defender.vx = CombatGeometry.away_from(attacker, defender) * _knockback(sim, attacker, push)
 	event.hitstop_ticks = sim.freeze_pair(attacker, defender, config.hitstop_block)
 	event.frame_advantage = defender.stun_ticks - attacker.ticks_left_in_move()
-	_guard_stagger(sim, defender, move)
 
 
 static func _breaks_guard(attacker: FighterState, move: MoveData) -> bool:
@@ -230,7 +223,6 @@ static func _parry(sim: MatchSimulation, attacker: FighterState, defender: Fight
 	sim.gain_flow(defender, config.flow.gain_on_parry)
 	event.hitstop_ticks = sim.freeze_pair(attacker, defender, config.hitstop_parry)
 	event.frame_advantage = -attacker.ticks_left_in_move()
-	_guard_stagger(sim, defender, move)
 
 
 static func _perfect_parry(sim: MatchSimulation, attacker: FighterState, defender: FighterState, move: MoveData) -> void:

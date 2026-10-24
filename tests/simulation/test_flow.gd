@@ -443,17 +443,41 @@ func test_flurry_hits_four_times() -> void:
 	assert_eq(duel.count_events(CombatEvent.Type.HIT), 4)
 
 
-func test_low_sweep_staggers_through_guard() -> void:
-	var duel: DuelFixture = _duel(&"ember", &"guardian")
-	duel.place(60.0)
-	duel.hold(1, Intent.Command.BLOCK)
-	duel.intents[0].move_x = -1
+func test_sweep_is_gone_from_the_cast() -> void:
+	var catalog: PowerCatalog = load("res://data/powers/catalog.tres")
+	for technique in catalog.techniques:
+		assert_ne(technique.id, &"sweep_low")
+	assert_eq(DuelFixture.character(&"ember").technique_back.id, &"rising_cut")
+	assert_eq(DuelFixture.character(&"echo").technique_back.id, &"spin")
+	assert_eq(DuelFixture.character(&"foretold_eclipse").technique_forward.id, &"dash_slash")
+
+
+func test_lance_charge_lunges_to_the_tip_and_counts_as_heavy() -> void:
+	for id in [&"lance", &"sovereign"]:
+		var duel: DuelFixture = _duel(id, &"guardian")
+		var charge: MoveData = duel.fighter(0).character.ability.move
+		assert_eq(charge.reach, duel.fighter(0).character.heavy.reach + 60.0)
+		assert_true(charge.is_heavy())
+		assert_eq(charge.finisher_limb, MoveData.Limb.LEG)
+		duel.place(charge.reach + 100.0)
+		var health: float = duel.fighter(1).health
+		duel.press(0, Intent.Command.SPECIAL)
+		var hit: bool = duel.step_until(func() -> bool: return duel.count_events(CombatEvent.Type.HIT) > 0, 60)
+		assert_true(hit, "%s reaches past the heavy with the lunge" % id)
+		assert_gt(health - duel.fighter(1).health, charge.damage * duel.fighter(0).blade_multiplier, "the tip lands for the sweet spot bonus")
+
+
+func test_lance_charge_is_parried_like_a_heavy() -> void:
+	var duel: DuelFixture = _duel(&"lance", &"guardian")
+	var charge: MoveData = duel.fighter(0).character.ability.move
+	duel.place(charge.reach - 20.0)
 	duel.press(0, Intent.Command.SPECIAL)
-	duel.step(1)
-	duel.intents[0].move_x = 0
-	duel.step(40)
-	assert_eq(duel.count_events(CombatEvent.Type.BLOCK), 1)
-	assert_eq(duel.fighter(1).state, FighterState.State.STAGGERED)
+	duel.step(charge.startup_ticks() - 2)
+	duel.press(1, Intent.Command.BLOCK)
+	duel.hold(1, Intent.Command.BLOCK)
+	duel.step(10)
+	assert_eq(duel.count_events(CombatEvent.Type.PERFECT_PARRY), 1)
+	assert_eq(duel.fighter(0).state, FighterState.State.STAGGERED)
 
 
 func test_rising_cut_launches_airborne_targets() -> void:

@@ -60,8 +60,8 @@ const RISING_LOW_GRIP: Vector2 = Vector2(-12.0, -2.0)
 const RISING_HIGH_GRIP: Vector2 = Vector2(14.0, -74.0)
 const FLURRY_REACH: float = 36.0
 const FLURRY_RISE: float = 14.0
-const SWEEP_BACK_GRIP: Vector2 = Vector2(-10.0, 22.0)
-const SWEEP_FRONT_GRIP: Vector2 = Vector2(32.0, 24.0)
+const LUNGE_CHAMBER_GRIP: Vector2 = Vector2(-4.0, -6.0)
+const LUNGE_EXTEND_GRIP: Vector2 = Vector2(52.0, -24.0)
 const PLUNGE_GRIP: Vector2 = Vector2(14.0, -14.0)
 const REBOUND_GRIP: Vector2 = Vector2(4.0, -50.0)
 const REBOUND_ANGLE: float = -125.0
@@ -320,7 +320,7 @@ func _attack(fighter: FighterState, pose: RigPose, guard_angle: float, guard_gri
 		pose.front_foot.x += family.heavy_step * amount
 		_body_shift = family.lunge * amount
 		return Vector2(4.0 * amount, 16.0 * amount)
-	if move.kind == MoveData.Kind.TECHNIQUE and move.technique_style != MoveData.TechniqueStyle.ARC:
+	if move.technique_style != MoveData.TechniqueStyle.ARC:
 		return _technique(fighter, pose, move, guard_angle, guard_grip)
 	var heavy: bool = move.is_heavy()
 	var power: float = HEAVY_SCALE if heavy else 1.0
@@ -438,14 +438,15 @@ func _technique(fighter: FighterState, pose: RigPose, move: MoveData, guard_angl
 			lean = 14.0 * ramp
 			pose.front_foot.x += 8.0 * ramp
 			swing = 1.0 if active else swing
-		MoveData.TechniqueStyle.SWEEP:
-			windup_grip = SWEEP_BACK_GRIP
-			strike_grip = SWEEP_FRONT_GRIP
+		MoveData.TechniqueStyle.LUNGE:
+			windup_grip = LUNGE_CHAMBER_GRIP
+			strike_grip = LUNGE_EXTEND_GRIP
 			angle = lerpf(move.blade_angle_windup, move.blade_angle_strike, swing)
-			crouch = 22.0 * ramp
-			lean = 24.0 * ramp
-			pose.front_foot.x += 16.0 * ramp
-			pose.back_foot.x -= 16.0 * ramp
+			crouch = lerpf(10.0, 6.0, swing) * ramp
+			lean = lerpf(-6.0, 22.0, swing) * ramp
+			pose.front_foot.x += 24.0 * swing * ramp
+			pose.back_foot.x -= 10.0 * ramp
+			_body_shift = lerpf(-6.0, 18.0, swing) * ramp
 		MoveData.TechniqueStyle.PLUNGE:
 			windup_grip = PLUNGE_GRIP + Vector2(-6.0, -12.0)
 			strike_grip = PLUNGE_GRIP

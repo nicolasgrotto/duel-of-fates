@@ -163,11 +163,8 @@ func _start_death(event: CombatEvent) -> void:
 	_fall_limb = event.limb if show_finishers else MoveData.Limb.NONE
 	if show_finishers and event.limb != MoveData.Limb.NONE:
 		var away: int = -fighter.facing if event.from_front else fighter.facing
-		var both_legs: bool = event.limb == MoveData.Limb.LEG and event.move != null and event.move.technique_style == MoveData.TechniqueStyle.SWEEP
 		_spawn_piece(event.limb, event.from_front, away)
-		if both_legs:
-			_spawn_piece(event.limb, not event.from_front, away)
-		rig.sever(event.limb, event.from_front, both_legs)
+		rig.sever(event.limb, event.from_front)
 		_lost_blade = rig.lost_main_hand()
 
 
