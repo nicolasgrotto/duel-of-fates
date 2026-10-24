@@ -19,6 +19,7 @@ extends Resource
 @export var power_blocked: EffectRecipe
 @export var hazard: EffectRecipe
 @export var technique_clash: EffectRecipe
+@export var plunge_impact: EffectRecipe
 
 @export_group("Sparks")
 @export var spark_life: float = 0.32

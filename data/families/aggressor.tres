@@ -24,3 +24,4 @@ free_hand = Vector2(-14, -26)
 wrist_lag = 1.8
 recover_share = 0.5
 one_hand_follow = true
+plunge_cut = 1

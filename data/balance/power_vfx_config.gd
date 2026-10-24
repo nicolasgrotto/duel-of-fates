@@ -2,6 +2,8 @@ class_name PowerVfxConfig
 extends Resource
 
 @export_group("Debris")
+@export var plunge_dust: int = 6
+@export var plunge_chunks: int = 3
 @export var dust_life: float = 0.6
 @export var dust_rise: float = 40.0
 @export var dust_size: float = 10.0

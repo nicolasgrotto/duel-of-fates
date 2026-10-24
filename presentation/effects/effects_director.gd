@@ -55,6 +55,8 @@ func on_event(event: CombatEvent) -> void:
 	if recipe == null:
 		return
 	var contact: Vector2 = _blade_contact(event, Vector2(event.position.x, -event.position.y))
+	if event.type == CombatEvent.Type.LAND:
+		contact = plunge_point(event.source)
 	var direction: float = _direction(event)
 	_burst(recipe, contact, direction, event)
 	if recipe.ring_radius > 0.0:
@@ -103,7 +105,23 @@ func _recipe_for(event: CombatEvent) -> EffectRecipe:
 			return config.technique_clash
 		CombatEvent.Type.PROJECTILE_REFLECTED:
 			return config.parry
+		CombatEvent.Type.LAND:
+			return config.plunge_impact if is_plunging(sim, event.source) else null
 	return null
+
+
+static func is_plunging(simulation: MatchSimulation, index: int) -> bool:
+	if simulation == null or index < 0:
+		return false
+	var fighter: FighterState = simulation.fighters[index]
+	return fighter.is_attacking() and fighter.move != null and fighter.move.technique_style == MoveData.TechniqueStyle.PLUNGE
+
+
+func plunge_point(index: int) -> Vector2:
+	var fighter: FighterState = sim.fighters[index]
+	var segment: PackedVector2Array = views[index].blade_segment() if index < views.size() else PackedVector2Array()
+	var x: float = segment[1].x if not segment.is_empty() else fighter.x + fighter.facing * sim.config.body_width
+	return Vector2(x, 0.0)
 
 
 func _blade_contact(event: CombatEvent, fallback: Vector2) -> Vector2:

@@ -40,6 +40,8 @@ enum Grip { TWO_HANDED, ONE_HANDED, DUAL, STAFF }
 @export var one_hand_follow: bool = false
 @export var dash_cut: MoveData.Cut = MoveData.Cut.RISING
 @export var dash_twirl: bool = false
+@export var plunge_cut: MoveData.Cut = MoveData.Cut.THRUST
+@export var plunge_pirouette: bool = false
 
 @export_group("Air and dodges")
 @export var flip_on_double_jump: bool = true

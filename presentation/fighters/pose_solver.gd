@@ -98,7 +98,17 @@ const FLURRY_REACH: float = 36.0
 const FLURRY_RISE: float = 14.0
 const LUNGE_CHAMBER_GRIP: Vector2 = Vector2(-4.0, -6.0)
 const LUNGE_EXTEND_GRIP: Vector2 = Vector2(52.0, -24.0)
-const PLUNGE_GRIP: Vector2 = Vector2(14.0, -14.0)
+const PLUNGE_RAISED_GRIP: Vector2 = Vector2(4.0, -56.0)
+const PLUNGE_RAISED_ANGLE: float = -100.0
+const PLUNGE_THRUST_GRIP: Vector2 = Vector2(16.0, -10.0)
+const PLUNGE_THRUST_ANGLE: float = 70.0
+const PLUNGE_CUT_GRIP: Vector2 = Vector2(26.0, 2.0)
+const PLUNGE_CUT_ANGLE: float = 78.0
+const PLUNGE_TILT: float = 0.45
+const PLUNGE_CUT_SPEED: float = 5.0
+const PLUNGE_THRUST_SPEED: float = 8.0
+const PLUNGE_HOLD: float = 0.3
+const PLUNGE_KNEEL: float = 26.0
 const REBOUND_GRIP: Vector2 = Vector2(4.0, -50.0)
 const REBOUND_ANGLE: float = -125.0
 const HIT_LEAN: float = -26.0
@@ -396,6 +406,8 @@ func _attack(fighter: FighterState, pose: RigPose, guard_angle: float, guard_gri
 		return Vector2(4.0 * amount, 16.0 * amount)
 	if move.technique_style == MoveData.TechniqueStyle.DASH:
 		return _dash_slash(fighter, pose, move, guard_angle, guard_grip)
+	if move.technique_style == MoveData.TechniqueStyle.PLUNGE:
+		return _plunge(fighter, pose, move, guard_angle, guard_grip)
 	if move.technique_style != MoveData.TechniqueStyle.ARC:
 		return _technique(fighter, pose, move, guard_angle, guard_grip)
 	var heavy: bool = move.is_heavy()
@@ -498,6 +510,37 @@ func _dash_slash(fighter: FighterState, pose: RigPose, move: MoveData, guard_ang
 	return Vector2(10.0 * (1.0 - settle), (6.0 if descending else -6.0) * (1.0 - settle))
 
 
+func _plunge(fighter: FighterState, pose: RigPose, move: MoveData, guard_angle: float, guard_grip: Vector2) -> Vector2:
+	var progress: float = _progress(fighter, move)
+	var cutting: bool = family.plunge_cut == MoveData.Cut.DESCENDING
+	var strike_grip: Vector2 = PLUNGE_CUT_GRIP if cutting else PLUNGE_THRUST_GRIP
+	var strike_angle: float = PLUNGE_CUT_ANGLE if cutting else PLUNGE_THRUST_ANGLE
+	match fighter.move_phase:
+		FighterState.Phase.STARTUP:
+			var ramp: float = 1.0 - pow(1.0 - progress, ANTICIPATION_EASE)
+			_tuck(pose, 1.0)
+			pose.grip = _from_grip.lerp(PLUNGE_RAISED_GRIP, ramp)
+			pose.blade_angle = rad_to_deg(lerp_angle(deg_to_rad(_from_angle), deg_to_rad(PLUNGE_RAISED_ANGLE), ramp))
+			pose.spin = -PLUNGE_TILT * 0.5 * ramp
+			if family.plunge_pirouette:
+				pose.turn = TAU * ramp
+			return Vector2(0.0, -10.0 * ramp)
+		FighterState.Phase.ACTIVE:
+			var swing: float = minf(progress * (PLUNGE_CUT_SPEED if cutting else PLUNGE_THRUST_SPEED), 1.0)
+			_tuck(pose, 0.8)
+			pose.grip = _arc(PLUNGE_RAISED_GRIP, strike_grip, swing)
+			pose.blade_angle = lerpf(PLUNGE_RAISED_ANGLE, strike_angle, swing)
+			pose.spin = PLUNGE_TILT * swing
+			pose.trail = true
+			return Vector2(0.0, 18.0 * swing)
+	var settle: float = smoothstep(PLUNGE_HOLD, 1.0, progress)
+	pose.grip = strike_grip.lerp(guard_grip, settle)
+	pose.blade_angle = rad_to_deg(lerp_angle(deg_to_rad(strike_angle), deg_to_rad(guard_angle), settle))
+	pose.front_foot.x += 10.0 * (1.0 - settle)
+	pose.back_foot = pose.back_foot.lerp(Vector2(-16.0, -2.0), 1.0 - settle)
+	return Vector2(PLUNGE_KNEEL * (1.0 - settle), 24.0 * (1.0 - settle))
+
+
 static func _cut_turn(cut: MoveData.Cut, amount: float, active: bool) -> float:
 	match cut:
 		MoveData.Cut.HORIZONTAL:
@@ -576,12 +619,6 @@ func _technique(fighter: FighterState, pose: RigPose, move: MoveData, guard_angl
 			pose.front_foot.x += 24.0 * swing * ramp
 			pose.back_foot.x -= 10.0 * ramp
 			_body_shift = lerpf(-6.0, 18.0, swing) * ramp
-		MoveData.TechniqueStyle.PLUNGE:
-			windup_grip = PLUNGE_GRIP + Vector2(-6.0, -12.0)
-			strike_grip = PLUNGE_GRIP
-			angle = lerpf(move.blade_angle_windup, move.blade_angle_strike, swing)
-			lean = 20.0 * ramp
-			_tuck(pose, 1.0)
 	match fighter.move_phase:
 		FighterState.Phase.STARTUP:
 			pose.grip = _arc(start_grip, windup_grip, ramp)

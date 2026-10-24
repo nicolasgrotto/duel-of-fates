@@ -107,6 +107,8 @@ func on_event(event: CombatEvent) -> void:
 				_tint = PALETTE.dust
 		CombatEvent.Type.LAND, CombatEvent.Type.DODGE:
 			_kick(event.source)
+			if event.type == CombatEvent.Type.LAND and EffectsDirector.is_plunging(sim, event.source):
+				_plunge_impact(event.source)
 
 
 func _on_power_active(event: CombatEvent) -> void:
@@ -128,6 +130,17 @@ func _on_power_active(event: CombatEvent) -> void:
 			meteors[caster.index] = Vector2(target.x, -config.meteor_height)
 			meteor_times[caster.index] = 0.0
 			meteor_facing[caster.index] = caster.facing
+
+
+func _plunge_impact(index: int) -> void:
+	var fighter: FighterState = sim.fighters[index]
+	var x: float = fighter.x + fighter.facing * fighter.character.family.stance_width
+	if index < views.size():
+		var segment: PackedVector2Array = views[index].blade_segment()
+		if not segment.is_empty():
+			x = segment[1].x
+	dust(Vector2(x, floor_y), config.plunge_dust, 12.0, 80.0)
+	chunks(Vector2(x, floor_y - 2.0), config.plunge_chunks, 260.0, 3.0)
 
 
 func _kick(index: int) -> void:
