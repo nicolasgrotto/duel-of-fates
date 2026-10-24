@@ -11,7 +11,6 @@ Ordem de construção do jogo. Cada fase termina jogável e testada. Marque `[x]
   - A IA não usa o Truque Mental de forma tática (lança quando está ao alcance) e não guarda medidor para o quarto poder.
   - Equilíbrio do elenco pela matriz (10 duelos por par, lados alternados): no Difícil, todos entre 38% e 65%; no Normal, entre 33% e 62%. Os personagens defensivos (Guardião, Espelho) rendem mais no Difícil, porque dependem da defesa reativa da IA. Rounds de ~10–11 s (alvo ~15 s).
   - A IA quase não usa o empurrão contra IA (o oponente raramente fica parado em guarda); revisar junto com o equilíbrio.
-  - Reserva de Defesa antes da quebra de guarda (GAME_DESIGN, seção 11) ainda não implementada.
   - Mudar `application/config/name` desloca a pasta `user://`: depois disso o editor precisa ser reaberto para o addon MCP voltar a autenticar o runtime.
 
 ## Fase 0 — Fundação

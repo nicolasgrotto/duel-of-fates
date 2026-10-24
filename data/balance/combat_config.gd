@@ -34,6 +34,7 @@ extends Resource
 @export var vigor_regen: float = 25.0
 @export var vigor_regen_delay: float = 0.6
 @export var block_regen_ratio: float = 0.4
+@export var defense_reserve_per_point: float = 4.0
 
 @export_group("Parry")
 @export var perfect_parry_window: float = 0.08

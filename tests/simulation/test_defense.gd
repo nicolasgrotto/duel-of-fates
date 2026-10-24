@@ -158,3 +158,24 @@ func test_air_dash_once_per_jump() -> void:
 	duel.press(0, Intent.Command.DODGE)
 	duel.step(1)
 	assert_false(duel.fighter(0).is_air_dashing())
+
+
+func test_defense_reserve_holds_the_last_block() -> void:
+	var tank: DuelFixture = DuelFixture.versus(&"bastion", &"shadow")
+	tank.place(60.0)
+	var bastion: FighterState = tank.fighter(0)
+	assert_gt(bastion.guard_reserve, 0.0, "a high Defense gives a reserve")
+	assert_eq(tank.fighter(1).guard_reserve, 0.0, "below neutral there is none")
+	tank.hold(0, Intent.Command.BLOCK)
+	tank.step(1)
+	var cost: float = tank.sim.block_cost(bastion, tank.fighter(1).character.light_chain[0]) + tank.fighter(1).character.light_block_drain
+	bastion.vigor = maxf(cost - bastion.guard_reserve * 0.5, 0.5)
+	bastion.regen_delay_ticks = 600
+	tank.press(1, Intent.Command.LIGHT)
+	tank.step(12)
+	assert_eq(tank.count_events(CombatEvent.Type.BLOCK), 1, "the reserve covers the shortfall")
+	assert_almost(bastion.vigor, 0.0)
+	tank.step(20)
+	tank.press(1, Intent.Command.LIGHT)
+	tank.step(12)
+	assert_eq(tank.count_events(CombatEvent.Type.GUARD_BREAK), 1, "with nothing left, the next block breaks")

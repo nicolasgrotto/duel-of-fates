@@ -124,6 +124,7 @@ Bloquear um rápido custa ~8 de Vigor ao defensor; um forte, ~30.
 - Golpe bloqueado: sem dano, o defensor perde Vigor, é empurrado um pouco e fica preso por um instante (blockstun).
 - Na guarda, a regeneração de Vigor é mais lenta (40%).
 - **Quebra de guarda**: sem Vigor para o bloqueio, o Vigor zera e o defensor fica `STUNNED` por 1,2 a 1,4 s (pelo personagem), tempo para o atacante reagir e conectar um forte.
+- **Reserva de Defesa**: cada ponto de Defesa acima de 4 dá 4 de reserva (Defesa 7 = 12; Ancião 8 = 16; Soberano 9 = 20; `CombatConfig.defense_reserve_per_point`). Se ainda resta Vigor e o que falta para o bloqueio cabe na reserva, a guarda segura esse último bloqueio e o Vigor zera (exaustão); com o Vigor já em zero, o próximo bloqueio quebra. Defesa 4 ou menos não tem reserva.
 
 ### Parry (aparar)
 
@@ -315,7 +316,7 @@ Seis atributos: **Vida, Vigor, Lâmina, Defesa, Agilidade, Fluxo**.
 
 - Escala de **1 a 7** no elenco comum. Os secretos passam disso pelo **potencial**: Ancião até 8, Soberano até 9, Predestinado até 10.
 - Nota 4 tem multiplicador 1; cada nota muda 8% (1 = 0,76; 7 = 1,24; 10 = 1,48).
-- **Vida**: vida máxima. **Vigor**: máximo e regeneração. **Lâmina**: todos os danos de lâmina e um pequeno bônus na janela de parry perfeito. **Defesa**: custo da guarda, recuo no bloqueio e reserva antes da quebra (não reduz dano; custo e recuo são divididos pelo multiplicador; a reserva ainda não está implementada). **Agilidade**: caminhada, pulo, avanços e janela da esquiva de precisão. **Fluxo**: nível dos poderes.
+- **Vida**: vida máxima. **Vigor**: máximo e regeneração. **Lâmina**: todos os danos de lâmina e um pequeno bônus na janela de parry perfeito. **Defesa**: custo da guarda, recuo no bloqueio e reserva antes da quebra (não reduz dano; custo e recuo são divididos pelo multiplicador; a reserva segura o último bloqueio, ver seção 7). **Agilidade**: caminhada, pulo, avanços e janela da esquiva de precisão. **Fluxo**: nível dos poderes.
 - Os atributos do elenco são fixos. Só o protagonista da História distribui pontos.
 
 ## 12. Ritmo e balanceamento

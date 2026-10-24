@@ -39,6 +39,7 @@ var vigor_regen: float = 25.0
 var blade_multiplier: float = 1.0
 var defense_multiplier: float = 1.0
 var agility_multiplier: float = 1.0
+var guard_reserve: float = 0.0
 var perfect_parry_ticks: int = 5
 var parry_window_ticks: int = 12
 
@@ -153,6 +154,7 @@ func setup(fighter_index: int, data: CharacterData, config: CombatConfig) -> voi
 	blade_multiplier = config.attribute_multiplier(data.blade)
 	defense_multiplier = config.attribute_multiplier(data.defense)
 	agility_multiplier = config.attribute_multiplier(data.agility)
+	guard_reserve = maxf(data.defense - config.attribute_neutral, 0) * config.defense_reserve_per_point
 	walk_speed = config.walk_speed * agility_multiplier
 	jump_velocity = config.jump_velocity * agility_multiplier
 	if data.max_health_override > 0.0:

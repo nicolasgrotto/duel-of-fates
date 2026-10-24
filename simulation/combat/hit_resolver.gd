@@ -129,7 +129,7 @@ static func _block(sim: MatchSimulation, attacker: FighterState, defender: Fight
 	if move.kind == MoveData.Kind.LIGHT:
 		cost += attacker.character.light_block_drain
 	attacker.move_connected = true
-	if defender.vigor < cost or _breaks_guard(attacker, move):
+	if _guard_gives_way(defender, cost) or _breaks_guard(attacker, move):
 		sim.drain_vigor(defender, defender.vigor)
 		var break_event: CombatEvent = _event(sim, CombatEvent.Type.GUARD_BREAK, attacker, defender, move)
 		_recoil(sim, defender, FighterState.State.STUNNED, defender.character.guard_break_stun)
@@ -146,6 +146,12 @@ static func _block(sim: MatchSimulation, attacker: FighterState, defender: Fight
 		defender.vx = CombatGeometry.away_from(attacker, defender) * _knockback(sim, attacker, push)
 	event.hitstop_ticks = sim.freeze_pair(attacker, defender, config.hitstop_block)
 	event.frame_advantage = defender.stun_ticks - attacker.ticks_left_in_move()
+
+
+static func _guard_gives_way(defender: FighterState, cost: float) -> bool:
+	if defender.vigor >= cost:
+		return false
+	return defender.vigor <= 0.0 or cost - defender.vigor > defender.guard_reserve
 
 
 static func _breaks_guard(attacker: FighterState, move: MoveData) -> bool:

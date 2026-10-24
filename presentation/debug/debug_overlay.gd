@@ -78,7 +78,7 @@ func _fighter_lines(i: int) -> PackedStringArray:
 		"%s  %s %d" % [fighter.character.id, FighterState.State.keys()[fighter.state].to_lower(), fighter.state_ticks],
 		"pos %.0f, %.0f  vel %.0f, %.0f  facing %d" % [fighter.x, fighter.y, fighter.vx, fighter.vy, fighter.facing],
 		"health %.1f / %.0f  vigor %.1f / %.0f" % [fighter.health, fighter.max_health, fighter.vigor, fighter.max_vigor],
-		"exhausted %s  wound %s  freeze %d" % [fighter.exhausted, FighterState.Wound.keys()[fighter.wound].to_lower(), fighter.freeze_ticks],
+		"exhausted %s  wound %s  freeze %d  reserve %.0f" % [fighter.exhausted, FighterState.Wound.keys()[fighter.wound].to_lower(), fighter.freeze_ticks, fighter.guard_reserve],
 		"buffer %s %d" % [FighterState.Action.keys()[fighter.buffered_action].to_lower(), fighter.buffer_ticks],
 	]
 	lines.append_array(sim.state_logic(fighter).debug_lines(sim, fighter))
