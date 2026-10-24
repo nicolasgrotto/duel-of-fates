@@ -142,3 +142,48 @@ func test_shared_grip_survives_large_blended_blade_rotations() -> void:
 		pose.blade_angle = angle
 		ArmGeometry.constrain(pose, data)
 		_check_reach(data, pose, "rotating hilt %d" % angle)
+
+
+func test_dodges_acrobatics_and_lock_pressure_keep_both_arms_reachable() -> void:
+	for data in _characters():
+		var fighter: FighterState = FighterState.new()
+		fighter.setup(0, data, DuelFixture.CONFIG)
+		var other: FighterState = FighterState.new()
+		other.setup(1, DuelFixture.SHADOW, DuelFixture.CONFIG)
+		other.x = 80.0
+		var solver: PoseSolver = PoseSolver.new()
+		solver.setup(data, data.art)
+		var pose: RigPose = RigPose.new()
+		fighter.state = FighterState.State.DODGING
+		for kind in FighterState.DodgeKind.values():
+			fighter.dodge_kind = kind
+			fighter.on_ground = kind != FighterState.DodgeKind.AIR
+			for direction in [-1, 1]:
+				fighter.dodge_direction = direction
+				for tick in 25:
+					fighter.state_ticks = tick
+					solver.solve(fighter, other, pose)
+					_check_reach(data, pose, "dodge %d tick %d" % [kind, tick])
+		fighter.state = FighterState.State.JUMPING
+		fighter.on_ground = false
+		for sample in 21:
+			solver.flip_progress = sample / 20.0
+			solver.solve(fighter, other, pose)
+			_check_reach(data, pose, "double jump")
+			solver.vault_progress = sample / 20.0
+			solver.solve(fighter, other, pose)
+			_check_reach(data, pose, "vault")
+		fighter.state = FighterState.State.STAGGERED
+		fighter.on_ground = true
+		solver.start_tumble()
+		for sample in 30:
+			solver.solve(fighter, other, pose)
+			_check_reach(data, pose, "tumble")
+			solver.advance(Ticks.DELTA)
+		fighter.state = FighterState.State.BLADE_LOCK
+		for press in [false, true]:
+			fighter.lock_press = press
+			for presses in 5:
+				fighter.lock_presses = presses
+				solver.solve(fighter, other, pose)
+				_check_reach(data, pose, "lock pressure")

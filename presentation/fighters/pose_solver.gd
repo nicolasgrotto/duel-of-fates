@@ -354,6 +354,7 @@ func _set_arm_intent(fighter: FighterState, pose: RigPose) -> void:
 		if fighter.move_phase == FighterState.Phase.STARTUP:
 			pose.front_elbow_hint = family.front_elbow.lerp(family.windup_elbow, progress)
 		if fighter.move_phase == FighterState.Phase.ACTIVE:
+			pose.front_elbow_hint = family.windup_elbow.lerp(family.front_elbow, progress)
 			if move.cut == MoveData.Cut.THRUST or move.technique_style in [MoveData.TechniqueStyle.THRUST, MoveData.TechniqueStyle.LUNGE, MoveData.TechniqueStyle.FLURRY]:
 				pose.arm_extension = progress
 	if fighter.power != null and fighter.power.kind == PowerData.Kind.REPULSE and fighter.power_phase != FighterState.Phase.STARTUP:
