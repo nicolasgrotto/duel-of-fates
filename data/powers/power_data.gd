@@ -28,6 +28,7 @@ enum Kind {
 @export var duration: float = 0.0
 @export var recovery: float = 0.35
 @export var pulse_interval: float = 0.1
+@export var apex_repeat_delay: float = 0.0
 
 @export_group("Effect")
 @export var reach: float = 320.0
@@ -61,6 +62,10 @@ func startup_ticks() -> int:
 
 func recovery_ticks() -> int:
 	return Ticks.from_seconds(recovery)
+
+
+func recovery_ticks_at(apex: bool) -> int:
+	return Ticks.from_seconds(recovery + (apex_repeat_delay if apex else 0.0))
 
 
 func is_channeled() -> bool:

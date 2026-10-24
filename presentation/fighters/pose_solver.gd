@@ -35,6 +35,12 @@ const REPULSE_PALM_HAND: Vector2 = Vector2(42.0, -40.0)
 const REPULSE_HOLD: float = 0.45
 const PULL_CLAW_HAND: Vector2 = Vector2(-8.0, -42.0)
 const PULL_HOLD: float = 0.5
+const CLEAVE_HIGH_GRIP: Vector2 = Vector2(-12.0, -64.0)
+const CLEAVE_HIGH_ANGLE: float = -140.0
+const CLEAVE_FLOOR_GRIP: Vector2 = Vector2(30.0, 10.0)
+const CLEAVE_FLOOR_ANGLE: float = 76.0
+const CLEAVE_WINDUP_SHARE: float = 0.55
+const CLEAVE_HOLD: float = 0.3
 const REPULSE_RECOIL: float = 8.0
 const CHOKED_GRIP: Vector2 = Vector2(8.0, -50.0)
 const CHOKED_HAND: Vector2 = Vector2(4.0, -54.0)
@@ -749,10 +755,7 @@ func _cast(fighter: FighterState, pose: RigPose) -> Vector2:
 			pose.blade_angle = lerpf(pose.blade_angle, INVOKE_ANGLE, progress * 0.6)
 			return Vector2(4.0 * progress, 0.0)
 		PowerData.Kind.FLOW_CLEAVE:
-			pose.blade_angle = lerpf(-170.0, 60.0, ease(progress, 2.0))
-			pose.grip = STRIKE_GRIP if progress > 0.5 else HEAVY_WINDUP_GRIP
-			pose.trail = progress > 0.4 and fighter.power_phase == FighterState.Phase.STARTUP
-			return Vector2(6.0, 12.0 * progress)
+			return _flow_cleave(fighter, pose)
 	pose.off_hand = RELAXED_HAND.lerp(CAST_HAND, progress) + tremor
 	pose.grip = pose.grip.lerp(CAST_GRIP, progress)
 	pose.blade_angle = lerpf(pose.blade_angle, CAST_ANGLE, progress)
@@ -794,6 +797,44 @@ func _pull(fighter: FighterState, pose: RigPose) -> Vector2:
 	pose.back_foot.x -= 10.0 * (1.0 - settle)
 	_body_shift = -6.0 * yank * (1.0 - settle)
 	return Vector2(6.0 * (1.0 - settle), -14.0 * yank * (1.0 - settle))
+
+
+func _flow_cleave(fighter: FighterState, pose: RigPose) -> Vector2:
+	var power: PowerData = fighter.power
+	if fighter.power_phase == FighterState.Phase.STARTUP:
+		var progress: float = clampf(float(fighter.power_ticks) / maxf(power.startup_ticks(), 1.0), 0.0, 1.0)
+		if progress < CLEAVE_WINDUP_SHARE:
+			var lift: float = ease(progress / CLEAVE_WINDUP_SHARE, 0.5)
+			pose.grip = pose.grip.lerp(CLEAVE_HIGH_GRIP, lift)
+			pose.blade_angle = rad_to_deg(lerp_angle(deg_to_rad(pose.blade_angle), deg_to_rad(CLEAVE_HIGH_ANGLE), lift))
+			pose.back_foot.x -= 8.0 * lift
+			return Vector2(2.0 * lift, -10.0 * lift)
+		return _cleave_swing((progress - CLEAVE_WINDUP_SHARE) / (1.0 - CLEAVE_WINDUP_SHARE), pose)
+	var seconds: float = Ticks.to_seconds(fighter.power_ticks)
+	var repeat: float = power.apex_repeat_delay if fighter.flow_tier >= PowerEffects.APEX_TIER else 0.0
+	if seconds < repeat:
+		var rewind: float = repeat * (1.0 - CLEAVE_WINDUP_SHARE)
+		if seconds < rewind:
+			var lift: float = ease(seconds / rewind, 0.5)
+			pose.grip = CLEAVE_FLOOR_GRIP.lerp(CLEAVE_HIGH_GRIP, lift)
+			pose.blade_angle = lerpf(CLEAVE_FLOOR_ANGLE, CLEAVE_HIGH_ANGLE + 360.0, lift)
+			return Vector2(22.0 * (1.0 - lift), 26.0 * (1.0 - lift) - 10.0 * lift)
+		return _cleave_swing((seconds - rewind) / (repeat - rewind), pose)
+	var remaining: float = maxf(Ticks.to_seconds(power.recovery_ticks_at(repeat > 0.0)) - repeat, Ticks.DELTA)
+	var settle: float = smoothstep(CLEAVE_HOLD, 1.0, (seconds - repeat) / remaining)
+	pose.grip = CLEAVE_FLOOR_GRIP.lerp(pose.grip, settle)
+	pose.blade_angle = rad_to_deg(lerp_angle(deg_to_rad(CLEAVE_FLOOR_ANGLE), deg_to_rad(pose.blade_angle), settle))
+	pose.front_foot.x += 14.0 * (1.0 - settle)
+	return Vector2(22.0 * (1.0 - settle), 26.0 * (1.0 - settle))
+
+
+func _cleave_swing(amount: float, pose: RigPose) -> Vector2:
+	var swing: float = clampf(amount, 0.0, 1.0)
+	pose.grip = _arc(CLEAVE_HIGH_GRIP, CLEAVE_FLOOR_GRIP, swing)
+	pose.blade_angle = lerpf(CLEAVE_HIGH_ANGLE, CLEAVE_FLOOR_ANGLE, swing)
+	pose.trail = true
+	pose.front_foot.x += 14.0 * swing
+	return Vector2(22.0 * swing, lerpf(-10.0, 26.0, swing))
 
 
 func _is_last_chain(fighter: FighterState) -> bool:

@@ -583,3 +583,20 @@ func test_dash_slash_dashes_in_startup_and_cuts_at_the_end() -> void:
 	duel.step(dash.active_ticks() + 1)
 	assert_eq(duel.count_events(CombatEvent.Type.HIT), 1)
 	assert_lt(absf(duel.fighter(0).vx), 1.0, "the cut lands from a planted stance")
+
+
+func test_apex_flow_cleave_spaces_its_two_cuts() -> void:
+	var duel: DuelFixture = _duel(&"foretold", &"shadow")
+	duel.place(500.0)
+	var cleave: PowerData = duel.give_power(0, &"flow_cleave")
+	duel.set_level(0, 10)
+	duel.cast(0)
+	var spawns: Array[int] = []
+	for tick in cleave.startup_ticks() + cleave.recovery_ticks_at(true) + 12:
+		duel.step(1)
+		var last: Dictionary = duel.last_event(CombatEvent.Type.PROJECTILE_SPAWNED)
+		if not last.is_empty() and not spawns.has(last["tick"]):
+			spawns.append(last["tick"])
+	assert_eq(spawns.size(), 2)
+	assert_true(spawns.size() == 2 and spawns[1] - spawns[0] >= Ticks.from_seconds(cleave.apex_repeat_delay), "the second cut waits for its own full arc")
+	assert_ne(duel.fighter(0).state, FighterState.State.CASTING)

@@ -2,7 +2,6 @@ class_name PowerEffects
 
 const ROCK_SPACING: float = 0.12
 const ROCK_LIFT: float = 18.0
-const SECOND_CLEAVE_DELAY: float = 0.15
 const APEX_TIER: int = 3
 const FISSURE_REACH: float = 120.0
 const FISSURE_DELAY: float = 0.2
@@ -106,7 +105,7 @@ static func sustain(sim: MatchSimulation, caster: FighterState, intent: Intent) 
 static func recovering(sim: MatchSimulation, caster: FighterState) -> void:
 	var power: PowerData = caster.power
 	if power.kind == PowerData.Kind.FLOW_CLEAVE and caster.flow_tier >= APEX_TIER and caster.spawned == 1:
-		if caster.power_ticks >= Ticks.from_seconds(SECOND_CLEAVE_DELAY):
+		if caster.power_ticks >= Ticks.from_seconds(power.apex_repeat_delay):
 			_spawn_cleave(sim, caster, power)
 			caster.spawned = 2
 

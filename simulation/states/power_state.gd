@@ -14,7 +14,7 @@ func step(sim: MatchSimulation, fighter: FighterState, intent: Intent) -> void:
 		FighterState.Phase.RECOVERY:
 			decelerate(sim, fighter)
 			PowerEffects.recovering(sim, fighter)
-			if fighter.power_ticks >= fighter.power.recovery_ticks():
+			if fighter.power_ticks >= fighter.power.recovery_ticks_at(fighter.flow_tier >= PowerEffects.APEX_TIER):
 				finish_to_neutral(sim, fighter)
 
 

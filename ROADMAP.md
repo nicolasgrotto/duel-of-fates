@@ -140,7 +140,7 @@ Poderes (apresentação):
 - [x] Repulsão (pose da palma)
 - [x] Puxão (efeito em quem lança, sem bola atrás do alvo)
 - [x] Raio tiers 3 e 4 em leque
-- [ ] Corte de Fluxo com swing grande e tier 4 espaçado
+- [x] Corte de Fluxo com swing grande e tier 4 espaçado
 - [ ] Telecinese em Massa: cinemática de ~1,5 s com congelamento determinístico
 
 Regras novas (simulação, testes, IA, Tutorial e Treinos guiados, overlay F3):

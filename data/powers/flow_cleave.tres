@@ -13,6 +13,7 @@ kind = 12
 cost = 20.0
 startup = 0.25
 recovery = 0.35
+apex_repeat_delay = 0.35
 damage = 10.0
 speed = 700.0
 reach = 520.0
