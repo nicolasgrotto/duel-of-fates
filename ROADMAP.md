@@ -124,7 +124,7 @@ Segunda etapa da migração (pedido do autor depois da prova de conceito; a bran
 Aprovada pelo autor. Decisões em GAME_DESIGN (Esquiva com giro, Pressão de lâminas, Desengajamento, Investida da Haste), ART_DIRECTION ("Revisão de animação aprovada" e Técnicas) e VFX ("Revisão aprovada dos poderes"). Fazer na ordem, um commit por item, testando cada um.
 
 Correções:
-- [ ] Galeria de poderes: Dreno, Congelar, Truque Mental e Estrangular não acertam o alvo (investigar a posição do alvo no `GalleryPanel` e as condições de acerto desses poderes)
+- [x] Galeria de poderes: Dreno, Congelar, Truque Mental e Estrangular não acertam o alvo (causa: o alvo ficava na distância do round, 394 u entre as bordas, fora do alcance desses poderes, da Repulsão e das técnicas corpo a corpo; agora o `GalleryPanel` aproxima os lutadores pelo alcance do que demonstra)
 - [ ] Remover a Varredura (técnica da Brasa, do Eco e do Predestinado Eclipse; habilidade da Haste e do Soberano) e pôr os substitutos de CHARACTERS.md (Corte ascendente, Giro, Avanço com corte, Investida da Haste), com IA, galeria, Tutorial e testes
 
 Animação (apresentação):

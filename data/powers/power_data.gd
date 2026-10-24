@@ -89,5 +89,14 @@ func _by_level(values: PackedFloat32Array, level: int, fallback: float) -> float
 	return values[clampi(level, 1, values.size()) - 1]
 
 
+func targeted_reach(tier: int) -> float:
+	match kind:
+		Kind.PULL:
+			return tier_value(tier)
+		Kind.REPULSE, Kind.MIND_TWIST, Kind.SUPREME_PUSH, Kind.FREEZE, Kind.CHOKE, Kind.DRAIN, Kind.LIGHTNING:
+			return reach
+	return 0.0
+
+
 func tier_value(tier: int) -> float:
 	return tier_values[clampi(tier, 0, tier_values.size() - 1)]

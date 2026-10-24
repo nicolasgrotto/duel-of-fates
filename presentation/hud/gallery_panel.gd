@@ -181,10 +181,25 @@ func _stage(sim: MatchSimulation) -> void:
 	if technique != null:
 		fighter.character.technique_forward = technique
 		fighter.character.technique_air = technique
+	if power != null:
+		_close_in(sim, power.targeted_reach(fighter.flow_tier))
+	elif not technique.throws_blade:
+		_close_in(sim, technique.reach + technique.lunge)
 	var target_powers: Array[PowerData] = [CATALOG.find(TARGET_POWERS.get(target.behavior, &"")), null, null]
 	other.equip_powers(target_powers)
 	caster.perform(power, technique)
 	_wait = _duration(power)
+
+
+func _close_in(sim: MatchSimulation, reach: float) -> void:
+	if reach <= 0.0:
+		return
+	var gap: float = minf(sim.config.round_start_distance - sim.config.body_width, reach * config.gallery_reach_ratio)
+	var half: float = (gap + sim.config.body_width) * 0.5
+	var first: FighterState = sim.fighters[0]
+	var second: FighterState = sim.fighters[1]
+	first.x = -half
+	second.x = half
 
 
 func _duration(power: PowerData) -> int:
