@@ -29,6 +29,7 @@ enum Kind {
 @export var recovery: float = 0.35
 @export var pulse_interval: float = 0.1
 @export var apex_repeat_delay: float = 0.0
+@export var cinematic_freeze: float = 0.0
 
 @export_group("Effect")
 @export var reach: float = 320.0

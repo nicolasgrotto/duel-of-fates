@@ -600,3 +600,27 @@ func test_apex_flow_cleave_spaces_its_two_cuts() -> void:
 	assert_eq(spawns.size(), 2)
 	assert_true(spawns.size() == 2 and spawns[1] - spawns[0] >= Ticks.from_seconds(cleave.apex_repeat_delay), "the second cut waits for its own full arc")
 	assert_ne(duel.fighter(0).state, FighterState.State.CASTING)
+
+
+func test_mass_telekinesis_freezes_the_duel_for_its_cinematic() -> void:
+	var duel: DuelFixture = _duel(&"foretold", &"shadow")
+	duel.place(200.0)
+	var power: PowerData = duel.give_power(0, &"mass_telekinesis", FighterState.FOURTH_SLOT)
+	duel.press(0, Intent.Command.POWER)
+	duel.press(0, Intent.Command.SPECIAL)
+	var active: bool = duel.step_until(func() -> bool: return duel.count_events(CombatEvent.Type.POWER_ACTIVE) > 0, 120)
+	assert_true(active)
+	var freeze: int = Ticks.from_seconds(power.cinematic_freeze)
+	assert_eq(duel.sim.cinematic_ticks, freeze)
+	var snapshot: Dictionary = duel.sim.capture()
+	duel.intents[1].move_x = 1
+	duel.step(freeze - 1)
+	assert_almost(duel.fighter(1).x, snapshot["fighters"][1]["x"], 0.001, "nobody moves during the cinematic")
+	var first_delay: int = -1
+	for hazard in duel.sim.hazards:
+		if hazard.active:
+			first_delay = maxi(first_delay, hazard.delay_ticks)
+	assert_eq(first_delay, snapshot["hazards"].map(func(item: Dictionary) -> int: return item["delay_ticks"] if item["active"] else -1).max(), "the marks wait for the cinematic")
+	duel.step(2)
+	assert_eq(duel.sim.cinematic_ticks, 0)
+	assert_ne(duel.fighter(1).x, snapshot["fighters"][1]["x"])

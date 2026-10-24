@@ -217,6 +217,7 @@ static func _mass_telekinesis(sim: MatchSimulation, caster: FighterState, target
 		sim.spawn_hazard(Hazard.Kind.ROCK_DROP, caster, target.x + offset, RAIN_RADIUS, delay, group + i, power.damage, power)
 	sim.skip_hazard_groups(impacts)
 	caster.rain_ticks = Ticks.from_seconds(RAIN_MARK + impacts * RAIN_SPACING)
+	sim.cinematic_ticks = Ticks.from_seconds(power.cinematic_freeze)
 
 
 static func _spawn_cleave(sim: MatchSimulation, caster: FighterState, power: PowerData) -> void:

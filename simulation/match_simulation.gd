@@ -24,6 +24,7 @@ var round_winner: int = NO_WINNER
 var match_winner: int = NO_WINNER
 var lock_ticks: int = 0
 var lock_cooldown_ticks: int = 0
+var cinematic_ticks: int = 0
 
 var lock_finish_move: MoveData
 var hit_attackers: Array[FighterState] = []
@@ -98,6 +99,9 @@ func start_match() -> void:
 func step(first_intent: Intent, second_intent: Intent) -> void:
 	event_count = 0
 	tick += 1
+	if cinematic_ticks > 0:
+		cinematic_ticks -= 1
+		return
 	round_tick += 1
 	phase_ticks += 1
 	_advance_phase()
@@ -329,6 +333,7 @@ func capture() -> Dictionary:
 		"match_winner": match_winner,
 		"lock_ticks": lock_ticks,
 		"lock_cooldown_ticks": lock_cooldown_ticks,
+		"cinematic_ticks": cinematic_ticks,
 		"rng_state": rng.state,
 		"fighters": fighter_snapshots,
 		"projectiles": projectiles.map(func(item: Projectile) -> Dictionary: return item.capture()),
@@ -348,6 +353,7 @@ func restore(snapshot: Dictionary) -> void:
 	match_winner = snapshot["match_winner"]
 	lock_ticks = snapshot["lock_ticks"]
 	lock_cooldown_ticks = snapshot["lock_cooldown_ticks"]
+	cinematic_ticks = snapshot["cinematic_ticks"]
 	rng.state = snapshot["rng_state"]
 	var fighter_snapshots: Array = snapshot["fighters"]
 	for i in fighters.size():
@@ -376,6 +382,7 @@ func _start_round() -> void:
 
 
 func restage() -> void:
+	cinematic_ticks = 0
 	var half_distance: float = config.round_start_distance * 0.5
 	fighters[0].reset_for_round(-half_distance, 1)
 	fighters[1].reset_for_round(half_distance, -1)

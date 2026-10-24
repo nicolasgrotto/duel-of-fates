@@ -42,14 +42,14 @@ extends Resource
 @export var cleave_ground_sparks: int = 2
 
 @export_group("Mass telekinesis")
-@export var mass_rise: float = 0.2
-@export var mass_hold: float = 0.14
-@export var mass_descend: float = 0.22
+@export var mass_rise: float = 0.45
+@export var mass_hold: float = 0.6
+@export var mass_descend: float = 0.45
 @export var mass_sky_offset: float = 560.0
 @export var meteor_height: float = 820.0
 @export var meteor_radius: float = 52.0
 @export var meteor_pull: float = 260.0
-@export var meteor_crack: float = 0.28
+@export var meteor_crack: float = 0.95
 @export var rain_chunks: int = 7
 @export var rain_dust: int = 4
 

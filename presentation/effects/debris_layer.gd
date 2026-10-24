@@ -195,9 +195,9 @@ func rain_position(hazard: Hazard) -> Vector2:
 	var total: float = Ticks.to_seconds(int(hazard.total_delay))
 	var elapsed: float = total - Ticks.to_seconds(hazard.delay_ticks)
 	var spread: Vector2 = Vector2(sin(hazard.group * 2.1) * config.meteor_radius * 0.6, cos(hazard.group * 1.3) * config.meteor_radius * 0.4)
-	if elapsed < config.meteor_crack:
+	if meteor_times[hazard.owner] >= 0.0 and meteor_times[hazard.owner] < config.meteor_crack:
 		return meteor + spread
-	var fall: float = clampf((elapsed - config.meteor_crack) / maxf(total - config.meteor_crack, 0.01), 0.0, 1.0)
+	var fall: float = clampf(elapsed / maxf(total, 0.01), 0.0, 1.0)
 	return (meteor + spread).lerp(Vector2(hazard.x, floor_y), fall * fall)
 
 

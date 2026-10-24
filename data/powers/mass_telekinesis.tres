@@ -16,6 +16,7 @@ mark_color = Color(1.0000, 0.6039, 0.2902, 1)
 min_level = 6
 startup = 0.8
 recovery = 0.4
+cinematic_freeze = 1.05
 tier_values = PackedFloat32Array(5.0, 5.0, 6.0, 7.0)
 damage = 7.0
 strength = 500.0
