@@ -19,6 +19,16 @@ enum Grip { TWO_HANDED, ONE_HANDED, DUAL, STAFF }
 @export var off_guard_hand: Vector2 = Vector2(-6.0, -34.0)
 @export var off_guard_angle: float = 150.0
 
+@export_group("Arms")
+@export_range(0.5, 0.98) var arm_reach: float = 0.92
+@export_range(0.9, 0.999) var arm_extension: float = 0.985
+@export var front_elbow: Vector2 = Vector2(-0.25, 1.0)
+@export var back_elbow: Vector2 = Vector2(-1.0, 0.6)
+@export var windup_elbow: Vector2 = Vector2(-1.0, 0.3)
+@export var walk_free_hand: Vector2 = Vector2(-12.0, -14.0)
+@export var lance_hand_spacing: float = 22.0
+@export var staff_hand_spacing: float = 11.0
+
 @export_group("Walk")
 @export var stride: float = 10.0
 @export var bob: float = 2.0
@@ -53,6 +63,8 @@ enum Grip { TWO_HANDED, ONE_HANDED, DUAL, STAFF }
 @export var vault_time: float = 0.42
 @export var acrobatic_recovery: bool = false
 @export var tumble_time: float = 0.45
+@export var skid_hip_height: float = 12.0
+@export var skid_lean: float = -50.0
 
 @export_group("Blade lock")
 @export var lock_lean: float = 18.0

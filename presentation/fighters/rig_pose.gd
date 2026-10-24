@@ -16,6 +16,10 @@ var open_hand: bool = false
 var tremble: bool = false
 var trail: bool = false
 var off_trail: bool = false
+var hand_spacing: float = 0.0
+var arm_extension: float = 0.0
+var front_elbow_hint: Vector2 = Vector2.DOWN
+var back_elbow_hint: Vector2 = Vector2.DOWN
 
 
 func copy_from(other: RigPose) -> void:
@@ -34,6 +38,10 @@ func copy_from(other: RigPose) -> void:
 	tremble = other.tremble
 	trail = other.trail
 	off_trail = other.off_trail
+	hand_spacing = other.hand_spacing
+	arm_extension = other.arm_extension
+	front_elbow_hint = other.front_elbow_hint
+	back_elbow_hint = other.back_elbow_hint
 
 
 func blend_toward(target: RigPose, weight: float) -> void:
@@ -52,6 +60,10 @@ func blend_toward(target: RigPose, weight: float) -> void:
 	tremble = target.tremble
 	trail = target.trail
 	off_trail = target.off_trail
+	hand_spacing = target.hand_spacing
+	arm_extension = lerpf(arm_extension, target.arm_extension, weight)
+	front_elbow_hint = front_elbow_hint.lerp(target.front_elbow_hint, weight)
+	back_elbow_hint = back_elbow_hint.lerp(target.back_elbow_hint, weight)
 
 
 func blade_direction() -> Vector2:

@@ -52,8 +52,6 @@ const TUCK_FRONT: Vector2 = Vector2(14.0, -20.0)
 const TUCK_BACK: Vector2 = Vector2(-10.0, -26.0)
 const EXHAUSTED_DROP: float = 16.0
 const OFF_HAND_SPACING: float = 5.5
-const LANCE_SPACING: float = 22.0
-const STAFF_SPACING: float = 11.0
 const LANDING_CROUCH: float = 12.0
 const LANDING_TIME: float = 0.12
 const HEAVY_SCALE: float = 1.6
@@ -217,6 +215,10 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 	pose.tremble = false
 	pose.trail = false
 	pose.off_trail = false
+	pose.hand_spacing = 0.0
+	pose.arm_extension = 0.0
+	pose.front_elbow_hint = family.front_elbow
+	pose.back_elbow_hint = family.back_elbow
 	pose.grip = guard_grip
 	pose.blade_angle = guard_angle + sin(time * 1.3) * family.sway
 	pose.front_foot = Vector2(family.stance_width * 0.5, 0.0)
@@ -316,7 +318,7 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 		_tuck(pose, 0.7)
 	if tumble_left > 0.0 and fighter.on_ground:
 		crouch = _tumble(pose, crouch)
-		lean = SKID_LEAN * tumble_left / family.tumble_time if not family.acrobatic_recovery else lean
+		lean = family.skid_lean * tumble_left / family.tumble_time if not family.acrobatic_recovery else lean
 	pose.pelvis = Vector2(_body_shift, -hip_height + crouch)
 	if clash_left > 0.0:
 		var recoil: float = clash_left / CLASH_RECOIL_TIME
@@ -336,6 +338,26 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 		pose.off_hand += pose.pelvis
 	if family.grip == MotionFamily.Grip.DUAL:
 		_place_second_blade(fighter, pose, off_free)
+	pose.grip = pose.pelvis + (pose.grip - pose.pelvis).rotated(pose.torso_angle)
+	pose.off_hand = pose.pelvis + (pose.off_hand - pose.pelvis).rotated(pose.torso_angle)
+	if tumble_left > 0.0 and fighter.on_ground and not family.acrobatic_recovery:
+		var skid: float = 1.0 - smoothstep(0.5, 1.0, 1.0 - tumble_left / family.tumble_time)
+		pose.off_hand = pose.off_hand.lerp(Vector2(SKID_HAND.x, 0.0), skid)
+	_set_arm_intent(fighter, pose)
+	ArmGeometry.constrain(pose, character)
+
+
+func _set_arm_intent(fighter: FighterState, pose: RigPose) -> void:
+	if fighter.is_attacking() and fighter.move != null:
+		var move: MoveData = fighter.move
+		var progress: float = _progress(fighter, move)
+		if fighter.move_phase == FighterState.Phase.STARTUP:
+			pose.front_elbow_hint = family.front_elbow.lerp(family.windup_elbow, progress)
+		if fighter.move_phase == FighterState.Phase.ACTIVE:
+			if move.cut == MoveData.Cut.THRUST or move.technique_style in [MoveData.TechniqueStyle.THRUST, MoveData.TechniqueStyle.LUNGE, MoveData.TechniqueStyle.FLURRY]:
+				pose.arm_extension = progress
+	if fighter.power != null and fighter.power.kind == PowerData.Kind.REPULSE and fighter.power_phase != FighterState.Phase.STARTUP:
+		pose.arm_extension = 1.0
 
 
 func _block(opponent: FighterState, pose: RigPose) -> void:
@@ -424,10 +446,11 @@ func _tumble(pose: RigPose, crouch: float) -> float:
 		pose.spin = -TAU * ease(progress, -1.6)
 		return crouch - sin(progress * PI) * TUMBLE_LIFT
 	var skid: float = 1.0 - smoothstep(0.5, 1.0, progress)
-	pose.off_hand = SKID_HAND + Vector2(0.0, hip_height - crouch - SKID_CROUCH * skid)
+	var low: float = lerpf(crouch, hip_height - family.skid_hip_height, skid)
+	pose.off_hand = SKID_HAND + Vector2(0.0, hip_height - low)
 	pose.open_hand = true
 	pose.back_foot.x -= 10.0 * skid
-	return crouch + SKID_CROUCH * skid
+	return low
 
 
 func _jump_pose(fighter: FighterState, pose: RigPose) -> void:
@@ -734,7 +757,7 @@ func _track_attack(fighter: FighterState, pose: RigPose, guard_angle: float, gua
 	_attack_key = key
 	var started: bool = pose.grip != Vector2.ZERO and pose.pelvis != Vector2.ZERO
 	_from_angle = pose.blade_angle if started else guard_angle
-	_from_grip = pose.grip - pose.pelvis if started else guard_grip
+	_from_grip = ArmGeometry.to_body(pose.grip, pose) if started else guard_grip
 	if _from_grip.length() > MAX_FROM_REACH:
 		_from_grip = guard_grip
 
@@ -884,20 +907,25 @@ func _dodge(fighter: FighterState, pose: RigPose) -> Vector2:
 	return Vector2.ZERO
 
 
-func _place_off_hand(_fighter: FighterState, pose: RigPose) -> void:
+func _place_off_hand(fighter: FighterState, pose: RigPose) -> void:
 	var direction: Vector2 = pose.blade_direction()
 	if character.weapon.kind == WeaponData.Kind.LANCE:
-		pose.off_hand = pose.grip - direction * LANCE_SPACING
+		pose.hand_spacing = family.lance_hand_spacing
+		pose.off_hand = pose.grip - direction * pose.hand_spacing
 		return
 	match family.grip:
 		MotionFamily.Grip.TWO_HANDED:
+			pose.hand_spacing = minf(family.back_hand_spacing, character.weapon.hilt_length * 0.5)
 			pose.off_hand = pose.grip - direction * family.back_hand_spacing
 		MotionFamily.Grip.STAFF:
-			pose.off_hand = pose.grip - direction * STAFF_SPACING
+			pose.hand_spacing = family.staff_hand_spacing
+			pose.off_hand = pose.grip - direction * pose.hand_spacing
 		MotionFamily.Grip.DUAL:
 			pose.off_hand = family.off_guard_hand + pose.pelvis
 		MotionFamily.Grip.ONE_HANDED:
 			pose.off_hand = family.free_hand + pose.pelvis + Vector2(sin(time * 1.1) * 1.5, 0.0)
+			if fighter.state == FighterState.State.WALKING:
+				pose.off_hand = family.walk_free_hand + pose.pelvis + Vector2(sin(walk_phase) * family.sway, 0.0)
 
 
 func _place_second_blade(fighter: FighterState, pose: RigPose, off_free: bool) -> void:

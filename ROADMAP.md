@@ -4,6 +4,8 @@ Ordem de construção do jogo. Cada fase termina jogável e testada. Marque `[x]
 
 ## Ponto de continuidade
 
+- **Revisão em andamento**: referência anterior dos 16 personagens em `%TEMP%/duel_pose_review/before` e folhas `before_*.png`; comparação da base em `base_*.png`. Espaço dos braços e vínculo da empunhadura implementados em `ArmGeometry`, com cinco testes novos de apresentação; sincronia lâmina × hitbox preservada. A derrapada agora abaixa o corpo para a mão alcançar o chão. Próximo passo: calibrar guardas de todas as famílias, depois implementar a onda de choque da Repulsão e concluir a validação visual. Ferramenta temporária em `.preview/` deve ser apagada ao terminar. Não mesclar na `main`.
+
 - **Fase atual**: fase 8 (acabamento), na branch `pixel-art`. A fase 7.5 (revisão de combate e animação) foi concluída inteira; falta só o autor jogar e ajustar sensação e números (famílias, poderes, Pressão e Desengajamento). Fases 0 a 7 e as duas etapas da migração para pixel art concluídas; a História tem as telas, os encontros e os quatro finais ligados (regras testadas; falta uma passada completa jogando).
 - **Próximo passo**: o autor seguir o roteiro de validação em [PLAYTEST.md](PLAYTEST.md) e devolver o que não ficou bom; depois a rodada de equilíbrio pela matriz (pendência abaixo) e o desempenho numa máquina de referência. Já feitos na fase 8: Reserva de Defesa, IA tática (Truque Mental, guardar medidor), remapeamento do gamepad, ambiências e temas por arena, revisão do inglês. Itens antigos: passada de localização (revisar o EN da História) e trilha e ambiências por arena. Na História, falta o autor jogar a campanha inteira e ajustar a dificuldade dos encontros (`ai_offset` em STORY.md). Da migração, falta a revisão do autor jogando e medir a GPU numa máquina de referência com o editor fechado (a CPU já está medida). A branch `pixel-art` segue até o fim do projeto; só então o autor escolhe entre ela e a `phase-5-hd`.
 - **Pendências conhecidas**:
@@ -147,6 +149,9 @@ Regras novas (simulação, testes, IA, Tutorial e Treinos guiados, overlay F3):
 - [x] Desengajamento
 
 ## Fase 8 — Acabamento
+
+- [ ] Revisão geral de braços e guardas
+- [ ] Repulsão como onda de choque
 
 - [x] Localização completa PT-BR e EN (todas as chaves nos dois idiomas, garantido por `test_translations`; passada de revisão do inglês: nenhum texto em português na coluna EN, falas da História polidas em STORY.md e no CSV)
 - [x] Trilha e ambiências de todas as arenas (ambiência própria nas dez, temas duelo, sagrado e chefe com variação de tom por arena, tema de chefe nos personagens-chefe)

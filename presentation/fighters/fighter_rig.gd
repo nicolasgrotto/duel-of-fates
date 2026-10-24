@@ -5,7 +5,6 @@ const MATERIAL_SHADER: Shader = preload("res://presentation/fighters/fighter_mat
 const BACK_SHADE: Color = Color(0.68, 0.68, 0.72)
 const BODY_DEPTH: int = 32
 const WOUND_SHADE: Color = Color(0.78, 0.72, 0.72)
-const ARM_PREFER: Vector2 = Vector2(-0.35, 1.0)
 const LEG_PREFER: Vector2 = Vector2(1.0, 0.1)
 const HEAD_PARTS: Array[String] = ["head", "hair", "beard", "hood", "mask"]
 const EYE_OFFSET: Vector2 = Vector2(6.0, -15.3)
@@ -131,6 +130,7 @@ func _add_cloths(layer: String) -> void:
 
 
 func apply(pose: RigPose, facing: int, delta: float) -> void:
+	ArmGeometry.constrain(pose, character)
 	var up: Vector2 = Vector2.UP.rotated(pose.torso_angle)
 	var torso_length: float = art.dim("torso_length")
 	var pelvis: Vector2 = pose.pelvis
@@ -141,14 +141,14 @@ func apply(pose: RigPose, facing: int, delta: float) -> void:
 	_place("torso", pelvis, pose.torso_angle)
 	_place("chest", chest, pose.torso_angle)
 	_place("head", head_base, head_rotation)
-	var front_shoulder: Vector2 = chest + Vector2(2.0, 4.0).rotated(pose.torso_angle)
-	var back_shoulder: Vector2 = chest + Vector2(-3.0, 4.0).rotated(pose.torso_angle)
+	var front_shoulder: Vector2 = ArmGeometry.shoulder(pose, art, true)
+	var back_shoulder: Vector2 = ArmGeometry.shoulder(pose, art, false)
 	_place("shoulder_front", front_shoulder, pose.torso_angle)
 	_place("shoulder_back", back_shoulder, pose.torso_angle)
 	front_hand = pose.grip
 	back_hand = pose.off_hand
-	front_elbow = _arm("front", front_shoulder, front_hand)
-	back_elbow = _arm("back", back_shoulder, back_hand)
+	front_elbow = _arm("front", front_shoulder, front_hand, pose.front_elbow_hint.rotated(pose.torso_angle))
+	back_elbow = _arm("back", back_shoulder, back_hand, pose.back_elbow_hint.rotated(pose.torso_angle))
 	var hip_front: Vector2 = pelvis + Vector2(3.0, 0.0)
 	var hip_back: Vector2 = pelvis + Vector2(-3.0, 0.0)
 	front_knee = _leg("front", hip_front, pose.front_foot)
@@ -175,10 +175,10 @@ func _place(bone_name: String, at: Vector2, angle: float) -> void:
 	bone.rotation = angle
 
 
-func _arm(side: String, shoulder: Vector2, hand: Vector2) -> Vector2:
+func _arm(side: String, shoulder: Vector2, hand: Vector2, prefer: Vector2) -> Vector2:
 	var upper: float = art.dim("upper_arm")
 	var lower: float = art.dim("forearm")
-	var elbow: Vector2 = TwoBoneIk.solve(shoulder, hand, upper, lower, ARM_PREFER)
+	var elbow: Vector2 = TwoBoneIk.solve(shoulder, hand, upper, lower, prefer)
 	var reach: Vector2 = elbow + (hand - elbow).limit_length(lower)
 	_place("upper_arm_" + side, shoulder, (elbow - shoulder).angle())
 	_place("forearm_" + side, elbow, (reach - elbow).angle())
