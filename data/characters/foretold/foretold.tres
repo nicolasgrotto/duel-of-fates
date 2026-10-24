@@ -171,6 +171,7 @@ requirement_key = "REQUIREMENT_STORY"
 colors = PackedColorArray(0.2000, 0.1412, 0.1020, 1, 0.1412, 0.1412, 0.1686, 1, 0.2902, 0.3059, 0.3451, 1, 0.6902, 0.5412, 0.4314, 1, 0.2275, 0.1647, 0.1255, 1, 0.2902, 0.3059, 0.3451, 1, 0.0706, 0.0706, 0.0784, 1, 1.0000, 0.6980, 0.1804, 1)
 show_parts = PackedStringArray("hood", "mask", "pad", "cape")
 hide_parts = PackedStringArray()
+prosthetic_arm = true
 
 [sub_resource type="Resource" id="foretold_costume_3"]
 script = ExtResource("4_costume")
@@ -178,8 +179,9 @@ id = &"foretold_duel"
 name_key = "COSTUME_DUEL"
 requirement_key = "REQUIREMENT_ARCADE"
 colors = PackedColorArray(0.1686, 0.1294, 0.0980, 1, 0.0706, 0.0588, 0.0510, 1, 0.3020, 0.2353, 0.1765, 1, 0.6902, 0.5412, 0.4314, 1, 0.2275, 0.1647, 0.1255, 1, 0.6039, 0.6392, 0.6784, 1, 0.0706, 0.0588, 0.0510, 1, 1.0000, 0.6980, 0.1804, 1)
-show_parts = PackedStringArray()
+show_parts = PackedStringArray("collar")
 hide_parts = PackedStringArray()
+prosthetic_arm = true
 
 [sub_resource type="Resource" id="foretold_costume_4"]
 script = ExtResource("4_costume")

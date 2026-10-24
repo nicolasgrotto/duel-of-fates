@@ -112,6 +112,16 @@ Duelar contra a IA no **Difícil** (Opções › Dificuldade).
 | 6.3 | Duelar contra Soberano, Ancião ou Predestinado; Arcade até a Sombra Desperta | toca o tema de chefe; no despertar da Sombra (abaixo de metade da vida) a percussão e a tensão abrem | `CharacterData.theme`; `ModesConfig.boss_music_floor` |
 | 6.4 | Disputa, pressão e desengajamento | o atrito da disputa começa na pressão e para no desengajamento | `presentation/audio/duel_audio.gd` |
 
+## 6b. História: aparência e trajes
+
+| # | Como testar | Esperado | Onde ajustar |
+| --- | --- | --- | --- |
+| 6b.1 | História › Nova campanha, no passo do caminho | Aurora em azul, Eclipse em vermelho | `UiPalette.aurora`, `eclipse` |
+| 6b.2 | Passos traje, cabelo, barba, cor do cabelo e tom de pele com cada estilo (Técnica, Fúria, Voo) | a prévia muda a cada item; as combinações leem bem na grade (ex.: médio ondulado + barba cheia + armadura de placas clara) | arte: `tools/art/fighter_parts.py` (`hair_part`, `beard_part`, `plate`) e `python tools/art/paint_fighters.py guardian shadow heron`; cores: `data/story/campaign_data.gd`; trajes: `data/story/outfits/` |
+| 6b.3 | Hub › Aparência | reabre só os passos de aparência e salva ao confirmar o tom de pele | `screens/story/story_new.gd` |
+| 6b.4 | Campanha antiga (criada antes desta versão) | carrega com cabelo curto e sem barba | `CampaignData.default_hair` |
+| 6b.5 | Predestinado, trajes Caído e Duelo (seleção, `C`) | antebraço da lâmina metálico; Duelo com túnica escura de gola alta | `data/characters/foretold/foretold.tres` (`prosthetic_arm`) |
+
 ## 7. Controles e textos
 
 | # | Como testar | Esperado | Onde ajustar |

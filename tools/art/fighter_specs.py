@@ -28,7 +28,7 @@ def sash(length):
 SPECS = {
     "guardian": dict(
         torso=dict(tunic="wrap", belt="wide"),
-        head=dict(hair="short"),
+        head=dict(hair="short", styles=True),
         arms=dict(bracer=True, sleeve_slot="cloak"),
         legs=dict(boot="mid"),
         cloth=[skirt(32.0)],
@@ -36,7 +36,7 @@ SPECS = {
     "shadow": dict(
         build=dict(shoulder_half=11.0, hunch=0.12),
         torso=dict(tunic="wrap", belt="plain", buckle=False),
-        head=dict(hair="short", hood="pointed", eclipse_eyes=True),
+        head=dict(hair="short", hood="pointed", eclipse_eyes=True, styles=True),
         arms=dict(bracer=False),
         legs=dict(boot="high"),
         cloth=[skirt(40.0, bottom=30.0), cape(112.0, hem="torn")],
@@ -91,7 +91,7 @@ SPECS = {
     "heron": dict(
         build=dict(shoulder_half=10.5, waist_half=8.0, scale=0.98),
         torso=dict(tunic="wrap", belt="plain"),
-        head=dict(hair="bun"),
+        head=dict(hair="bun", styles=True),
         arms=dict(),
         legs=dict(boot="high"),
         cloth=[skirt(22.0, top=18.0, bottom=22.0), scarf(64.0)],

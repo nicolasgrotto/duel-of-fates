@@ -12,6 +12,10 @@ var name: String = ""
 var path: int = 0
 var style: int = 0
 var look: int = 0
+var hair: int = CAMPAIGN.default_hair
+var beard: int = 0
+var hair_color: int = 0
+var skin: int = CAMPAIGN.default_skin
 var color: int = 0
 var difficulty: int = 1
 var attributes: Dictionary = {}
@@ -202,13 +206,39 @@ func protagonist() -> CharacterData:
 	for attribute in ATTRIBUTES:
 		data.set(attribute, attributes[attribute])
 	data.blade_colors = PackedColorArray([blade_color()])
-	var costumes: Array[CostumeData] = [base.costumes[look % base.costumes.size()]]
+	var costumes: Array[CostumeData] = [appearance()]
 	data.costumes = costumes
+	data.eclipse_eyes = path == 1
 	data.powers = equipped_powers()
 	data.fourth_power = null
 	data.secret = false
 	data.variant = null
 	return data
+
+
+func appearance() -> CostumeData:
+	var outfit: CostumeData = CAMPAIGN.outfits[clampi(look, 0, CAMPAIGN.outfits.size() - 1)].duplicate() as CostumeData
+	var colors: PackedColorArray = outfit.colors.duplicate()
+	colors[CostumeData.Slot.HAIR] = CAMPAIGN.hair_colors[clampi(hair_color, 0, CAMPAIGN.hair_colors.size() - 1)]
+	colors[CostumeData.Slot.SKIN] = CAMPAIGN.skin_tones[clampi(skin, 0, CAMPAIGN.skin_tones.size() - 1)]
+	outfit.colors = colors
+	var hidden: PackedStringArray = outfit.hide_parts.duplicate()
+	hidden.append_array(PackedStringArray(["hair", "beard"]))
+	outfit.hide_parts = hidden
+	var shown: PackedStringArray = outfit.show_parts.duplicate()
+	for style in [CAMPAIGN.hair_styles[clampi(hair, 0, CAMPAIGN.hair_styles.size() - 1)], CAMPAIGN.beard_styles[clampi(beard, 0, CAMPAIGN.beard_styles.size() - 1)]]:
+		if style != "":
+			shown.append(style)
+	outfit.show_parts = shown
+	return outfit
+
+
+func set_appearance(choices: Dictionary) -> void:
+	look = choices.get(&"look", look)
+	hair = choices.get(&"hair", hair)
+	beard = choices.get(&"beard", beard)
+	hair_color = choices.get(&"hair_color", hair_color)
+	skin = choices.get(&"skin", skin)
 
 
 func equipped_powers() -> Array[PowerData]:
@@ -229,6 +259,7 @@ static func load_power(id: StringName) -> PowerData:
 func to_dict() -> Dictionary:
 	return {
 		"name": name, "path": path, "style": style, "look": look, "color": color, "difficulty": difficulty,
+		"hair": hair, "beard": beard, "hair_color": hair_color, "skin": skin,
 		"attributes": attributes.duplicate(), "free_points": free_points, "cleared": cleared.duplicate(), "learned": learned.duplicate(),
 		"equipped": equipped.duplicate(), "slots_open": slots_open, "secret_pending": secret_pending, "ending": ending,
 	}
@@ -240,6 +271,10 @@ static func from_dict(data: Dictionary) -> StoryCampaign:
 	campaign.path = data.get("path", 0)
 	campaign.style = data.get("style", 0)
 	campaign.look = data.get("look", 0)
+	campaign.hair = data.get("hair", CAMPAIGN.default_hair)
+	campaign.beard = data.get("beard", 0)
+	campaign.hair_color = data.get("hair_color", 0)
+	campaign.skin = data.get("skin", CAMPAIGN.default_skin)
 	campaign.color = data.get("color", 0)
 	campaign.difficulty = data.get("difficulty", 1)
 	campaign.attributes = data.get("attributes", {})

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="CostumeData" format=3]
+
+[ext_resource type="Script" path="res://data/costume_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"story_plate"
+name_key = "LOOK_PLATE"
+requirement_key = ""
+colors = PackedColorArray(0.7255, 0.7373, 0.7804, 1, 0.1647, 0.1765, 0.2000, 1, 0.8941, 0.8863, 0.8627, 1, 0.6039, 0.4627, 0.3765, 1, 0.2902, 0.1961, 0.1333, 1, 0.6039, 0.6392, 0.6784, 1, 0.2275, 0.2078, 0.1882, 1, 1.0000, 0.6980, 0.1804, 1)
+show_parts = PackedStringArray("plate", "pad")
+hide_parts = PackedStringArray("hood", "mask", "cape", "neckerchief")

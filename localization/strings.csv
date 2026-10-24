@@ -592,7 +592,7 @@ STORY_NEW_TITLE,NOVA CAMPANHA,NEW CAMPAIGN
 STORY_STEP_NAME,Nome,Name
 STORY_STEP_PATH,Caminho do Fluxo,Path of the Flow
 STORY_STEP_STYLE,Estilo de luta,Fighting style
-STORY_STEP_LOOK,Visual,Look
+STORY_STEP_LOOK,Traje,Outfit
 STORY_STEP_COLOR,Cor da lâmina,Blade color
 STORY_STEP_DIFFICULTY,Dificuldade,Difficulty
 STORY_TYPE_NAME,Digitar um nome…,Type a name…
@@ -604,6 +604,36 @@ STORY_SEE_ENDING,Rever o final,See the ending again
 STORY_RAISE,Evoluir atributos · {points} pontos,Raise attributes · {points} points
 STORY_VIEW_ATTRIBUTES,Atributos,Attributes
 STORY_POWERS,Poderes,Powers
+STORY_APPEARANCE,Aparência,Appearance
+STORY_STEP_HAIR,Cabelo,Hair
+STORY_STEP_BEARD,Barba,Facial hair
+STORY_STEP_HAIR_COLOR,Cor do cabelo,Hair color
+STORY_STEP_SKIN,Tom de pele,Skin tone
+LOOK_PLATE,Armadura de placas clara,Light plate armor
+LOOK_LAYERED,Túnica escura em camadas,Dark layered tunic
+HAIR_NONE,Raspado,Shaved
+HAIR_SHORT,Curto,Short
+HAIR_MID_WAVY,Médio ondulado,Medium wavy
+HAIR_WAVY,Ondulado até o queixo,Chin-length wavy
+HAIR_LONG,Longo,Long
+HAIR_PONYTAIL,Rabo de cavalo,Ponytail
+HAIR_BUN,Coque,Bun
+BEARD_NONE,Sem barba,Clean shaven
+BEARD_SHORT,Curta,Short beard
+BEARD_FULL,Cheia aparada,Full trimmed beard
+BEARD_LONG,Longa,Long beard
+BEARD_MUSTACHE,Bigode,Mustache
+HAIR_COLOR_DARK_BROWN,Castanho-escuro,Dark brown
+HAIR_COLOR_BROWN,Castanho,Brown
+HAIR_COLOR_AUBURN,Ruivo,Auburn
+HAIR_COLOR_DARK_BLOND,Loiro-escuro,Dark blond
+HAIR_COLOR_BLACK,Preto,Black
+HAIR_COLOR_GREY,Grisalho,Grey
+SKIN_LIGHT,Clara,Light
+SKIN_FAIR,Clara morena,Fair
+SKIN_MEDIUM,Morena,Medium
+SKIN_DARK,Escura,Dark
+SKIN_DEEP,Bem escura,Deep
 STORY_RESTART,Nova campanha,New campaign
 STORY_DONE,Campanha concluída,Campaign complete
 STORY_STATUS,{difficulty} · {wins} encontros vencidos,{difficulty} · {wins} encounters won

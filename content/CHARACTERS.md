@@ -264,8 +264,8 @@ Os três têm **potencial**: o teto de todos os atributos sobe (+1, +2, +3), e a
 - **Visual base**: túnica clara cor de areia (`#c9c3b5`), corpo `#2a2f3a`, acabamento azul (`#6fb2ff`); sem capuz; cinto com fivela e botas escuras. Lâmina azul-aurora.
 - **Trajes**:
   - **Ocaso** (final secreto): presença austera de quem já passou pelo fim; capuz levantado, manto longo, túnica em camadas, luvas de bronze escurecido. Manto `#1c1a20`, corpo `#26222b`, acabamento bronze fosco `#7a6650`.
-  - **Caído** (concluir a História): cavaleiro de armadura negra com capa longa e capuz marrom-escuros, máscara cinza-aço, ombreiras e luvas pretas. Manto `#33241a`, corpo `#24242b`, acabamento `#4a4e58`.
-  - **Duelo** (vencer o Arcade com ele): túnica escura em camadas, sem capa e sem capuz, luvas pretas e cabelo castanho-escuro ondulado até o queixo. Manto `#2b2119`, corpo `#120f0d`, acabamento `#4d3c2d`.
+  - **Caído** (concluir a História): cavaleiro de armadura negra com capa longa e capuz marrom-escuros, máscara cinza-aço, ombreiras, luvas pretas e o antebraço da lâmina protético (metal, `CostumeData.prosthetic_arm`). Manto `#33241a`, corpo `#24242b`, acabamento `#4a4e58`.
+  - **Duelo** (vencer o Arcade com ele): túnica escura em camadas (gola alta), sem capa e sem capuz, cabelo castanho-escuro ondulado até o queixo e o antebraço da lâmina protético. Arquétipo do jovem duelista que perdeu o braço, sem copiar rosto, traje ou marca de personagem existente. Manto `#2b2119`, corpo `#120f0d`, acabamento `#4d3c2d`.
   - **Legado** (final secreto): capa `#34394a`, capa longa e máscara.
 - Variantes liberadas ao vencê-las na História (o final secreto de cada rota enfrenta a variante oposta) ou pelo segredo do Equilíbrio.
 - **Lâmina por variante**: a Aurora usa o azul-aurora (`#6fb2ff`); a Eclipse usa o **vermelho do Ápice** (`#ff2b45`), como cita a fala final da rota Aurora. A regra "lâminas sem moral" continua valendo: a cor marca a variante, não o caráter.
@@ -278,8 +278,10 @@ Criado pelo jogador (ver [STORY.md](STORY.md)).
 - **Caminho**: Aurora ou Eclipse (define os poderes e as falas).
 - **Estilo de luta**: **Técnica** (golpes, habilidade e técnicas do Guardião), **Fúria** (da Sombra) ou **Voo** (da Garça).
 - **Visual**: **Errante** (capa longa azul-ardósia `#3e4a5e`, corpo `#1d222b`, acabamento `#7f90aa`, lenço, sem capuz nem máscara), **Vigia** (capa curta `#454d58`, capuz e máscara) ou **Peregrino** (capa longa terrosa `#51483c`, ombreiras, sem capuz ou máscara).
+- **Traje** (fase 8, além dos três acima): **Armadura de placas clara** (peitoral e ombreiras de placas claras sobre a túnica, sem capa) e **Túnica escura em camadas** (gola alta e capa). Trajes em `data/story/outfits/`.
+- **Cabelo**: raspado, curto, médio ondulado, ondulado até o queixo, longo, rabo de cavalo ou coque. **Barba**: nenhuma, curta, cheia aparada, longa ou bigode. **Cor do cabelo** (6) e **tom de pele** (5). Combinam livremente com os trajes; são arquétipos, nunca a réplica de um personagem existente. Editáveis depois pelo hub (Aparência).
 - **Cor da lâmina**: Ciano-gelo, Verde-ácido, Amarelo-âmbar, Branco-prata, Violeta, Laranja-brasa, Verde-menta, Rosa-pálido, Magenta ou Vermelho-forja.
-- **Olhos do Eclipse** se escolher o caminho do Eclipse.
+- **Olhos do Eclipse** se escolher o caminho do Eclipse (e só nesse caso, qualquer que seja o estilo).
 
 ## Olhos do Eclipse
 

@@ -4,14 +4,18 @@ extends Node2D
 const MATERIAL_SHADER: Shader = preload("res://presentation/fighters/fighter_material.gdshader")
 const PALETTE: UiPalette = preload("res://ui/palette.tres")
 const LIMB_BONES: Dictionary = {
-	MoveData.Limb.ARM: ["upper_arm_", "forearm_", "hand_"],
-	MoveData.Limb.LEG: ["thigh_", "shin_", "boot_"],
+	MoveData.Limb.ARM: ["forearm_", "hand_"],
+	MoveData.Limb.LEG: ["shin_", "boot_"],
 }
 const BACK_SHADE: Color = Color(0.68, 0.68, 0.72)
 const BODY_DEPTH: int = 32
 const WOUND_SHADE: Color = Color(0.78, 0.72, 0.72)
 const LEG_PREFER: Vector2 = Vector2(1.0, 0.1)
 const HEAD_PARTS: Array[String] = ["head", "hair", "beard", "hood", "mask"]
+const HAIR_PREFIX: String = "hair_"
+const BEARD_PREFIX: String = "beard_"
+const HAIR_DEPTH: int = 8
+const BEARD_DEPTH: int = 9
 const EYE_OFFSET: Vector2 = Vector2(6.0, -15.3)
 
 var art: FighterArt
@@ -88,10 +92,16 @@ func build(data: CharacterData, look: CostumeData) -> void:
 	_add_sprite("shin_front", "knee", 3, Color.WHITE)
 	_add_sprite("boot_front", "boot", 3, Color.WHITE)
 	_add_cloths("front")
+	_add_sprite("torso", "plate", 1, Color.WHITE)
 	_add_sprite("chest", "collar", 6, Color.WHITE)
 	_add_sprite("chest", "neckerchief", 6, Color.WHITE)
 	for i in HEAD_PARTS.size():
 		_add_sprite("head", HEAD_PARTS[i], 7 + i, Color.WHITE)
+	for part in art.textures.keys():
+		if part.begins_with(HAIR_PREFIX):
+			_add_sprite("head", part, HAIR_DEPTH, Color.WHITE)
+		elif part.begins_with(BEARD_PREFIX):
+			_add_sprite("head", part, BEARD_DEPTH, Color.WHITE)
 	_add_sprite("upper_arm_front", "upper_arm", 11, Color.WHITE)
 	_add_sprite("shoulder_front", "pad", 12, Color.WHITE)
 	var forearm: String = "forearm_front" if art.has_part("forearm_front") else "forearm"
@@ -101,6 +111,7 @@ func build(data: CharacterData, look: CostumeData) -> void:
 	_hilt.z_index = 14
 	_hilt.setup(data.weapon, costume)
 	add_child(_hilt)
+	clear_prosthetics()
 	_marks = CutMarks.new()
 	_marks.z_index = 16
 	add_child(_marks)
@@ -109,7 +120,7 @@ func build(data: CharacterData, look: CostumeData) -> void:
 func _add_sprite(bone_name: String, part: String, z: int, shade: Color) -> void:
 	if not art.has_part(part):
 		return
-	var optional: bool = part in ["hair", "beard", "hood", "mask", "pad", "collar", "neckerchief", "knee"]
+	var optional: bool = part in ["hair", "beard", "hood", "mask", "pad", "collar", "neckerchief", "knee", "plate"] or part.begins_with(HAIR_PREFIX) or part.begins_with(BEARD_PREFIX)
 	if optional and not visible_parts.has(part):
 		return
 	var sprite: Sprite2D = Sprite2D.new()
@@ -296,6 +307,8 @@ func set_prosthetic(limb: MoveData.Limb, front: bool) -> void:
 func clear_prosthetics() -> void:
 	for key in _sprites:
 		_sprites[key].material = shader_material
+	if costume.prosthetic_arm:
+		set_prosthetic(MoveData.Limb.ARM, true)
 
 
 func skeleton_lines() -> PackedVector2Array:

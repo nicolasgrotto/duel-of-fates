@@ -217,10 +217,58 @@ def overlay_parts(spec, dims):
     kerchief = Part("neckerchief", -10, -6, 10, 10)
     kerchief.paint(kerchief.polygon_mask([(-8, -3), (8, -3), (4, 2), (1.5, 8), (-3, 2)]), "trim", tone=0.55, folds=0.6, bevel=1.5)
     parts.append(kerchief)
+    w = dims.get("waist_half", s * 0.8)
+    plate = Part("plate", -s - 2, -t - 2, s + 2, 4)
+    plate_shape = [(-s * 0.85, -t + 1.5), (s * 0.95, -t + 1.5), (s * 0.85, -t * 0.42), (w * 0.2, -t * 0.3), (-s * 0.7, -t * 0.42)]
+    plate.paint(plate.polygon_mask(plate_shape), "trim", tone=0.62, relief=2.0, bevel=2.5, form=0.4)
+    plate.darken(plate.line_mask([(s * 0.05, -t + 2.5), (w * 0.1, -t * 0.34)], 0.6), 0.35)
+    plate.darken(plate.line_mask([(-s * 0.6, -t * 0.66), (s * 0.8, -t * 0.66)], 0.5), 0.25)
+    parts.append(plate)
     collar = Part("collar", -14, -10, 12, 6)
     collar.paint(collar.polygon_mask([(-12, 4), (-11, -4), (-5, -8), (4, -6), (9, -1), (10, 4)]), "cloak", tone=0.5, folds=0.9, fold_axis="x", fold_period=2.4, bevel=3)
     parts.append(collar)
     return parts
+
+
+HAIR_STYLES = ["short", "mid_wavy", "wavy", "long", "ponytail", "bun"]
+BEARD_STYLES = ["short", "full", "long", "mustache"]
+
+
+def hair_part(name, style, k, cx, cy):
+    part = Part(name, -12 * k, -28 * k, 12 * k, 8 * k)
+    cap = [(cx - 7.4 * k, cy + 3 * k), (cx - 7.6 * k, cy - 4 * k), (cx - 3 * k, cy - 9.2 * k), (cx + 3.5 * k, cy - 9 * k), (cx + 7.6 * k, cy - 4.5 * k), (cx + 5 * k, cy - 5.5 * k), (cx + 0.5 * k, cy - 4.5 * k), (cx - 2.5 * k, cy + 1 * k), (cx - 3 * k, cy + 4.5 * k)]
+    if style == "long":
+        cap += [(cx - 4 * k, cy + 12 * k), (cx - 8.5 * k, cy + 13 * k)]
+    if style == "wavy":
+        cap += [(cx - 1 * k, cy + 7.5 * k), (cx - 7.6 * k, cy + 8 * k)]
+    if style == "mid_wavy":
+        cap = [(cx - 7.6 * k, cy + 6 * k), (cx - 8 * k, cy - 4 * k), (cx - 3 * k, cy - 9.6 * k), (cx + 3.5 * k, cy - 9.4 * k), (cx + 7.8 * k, cy - 4.8 * k),
+            (cx + 5.5 * k, cy - 6.2 * k), (cx + 2.5 * k, cy - 6.6 * k), (cx + 0.5 * k, cy - 3.5 * k), (cx - 1.4 * k, cy + 3 * k), (cx - 0.6 * k, cy + 6.4 * k),
+            (cx - 3.4 * k, cy + 5.2 * k), (cx - 5.4 * k, cy + 7.4 * k)]
+    mask = part.polygon_mask(cap)
+    if style == "ponytail":
+        mask = (mask + part.polygon_mask([(cx - 6 * k, cy - 3 * k), (cx - 12 * k, cy + 1 * k), (cx - 11 * k, cy + 9 * k), (cx - 8 * k, cy + 2 * k)])).clip(0, 1)
+    if style == "bun":
+        mask = (mask + part.ellipse_mask((cx - 6.5 * k, cy - 6.5 * k), 3.6 * k, 3.4 * k)).clip(0, 1)
+    part.paint(mask, "hair", tone=0.5, folds=1.0, fold_axis="y", fold_period=1.6, bevel=2.2, relief=1.3, form=0.35)
+    shine = part.line_mask([(cx - 3.5 * k, cy - 7.4 * k), (cx + 1.5 * k, cy - 8.4 * k), (cx + 4.5 * k, cy - 7.0 * k)], 0.9 * k)
+    part.lighten(shine * mask, 0.28)
+    part.darken(part.line_mask([(cx - 1.5 * k, cy - 5.6 * k), (cx - 3.0 * k, cy + 1.0 * k)], 0.7 * k) * mask, 0.3)
+    return part
+
+
+def beard_part(name, style, k, cx, cy):
+    part = Part(name, -12 * k, -28 * k, 12 * k, 22 * k)
+    if style == "long":
+        shape = [(cx - 1.5 * k, cy + 2 * k), (cx + 7.6 * k, cy + 3 * k), (cx + 6 * k, cy + 14 * k), (cx + 2 * k, cy + 26 * k), (cx - 0.5 * k, cy + 12 * k)]
+    elif style == "full":
+        shape = [(cx - 2.6 * k, cy - 0.5 * k), (cx + 2 * k, cy + 1.4 * k), (cx + 7.8 * k, cy + 2.6 * k), (cx + 7.2 * k, cy + 8.8 * k), (cx + 3.4 * k, cy + 11.4 * k), (cx - 0.6 * k, cy + 10 * k), (cx - 3 * k, cy + 5 * k)]
+    elif style == "mustache":
+        shape = [(cx + 3.6 * k, cy + 3.0 * k), (cx + 7.4 * k, cy + 3.2 * k), (cx + 7.4 * k, cy + 4.6 * k), (cx + 5.4 * k, cy + 4.4 * k), (cx + 3.4 * k, cy + 5.4 * k)]
+    else:
+        shape = [(cx - 1.5 * k, cy + 2 * k), (cx + 7.6 * k, cy + 3 * k), (cx + 6.4 * k, cy + 8.4 * k), (cx + 1 * k, cy + 9.2 * k), (cx - 2 * k, cy + 5 * k)]
+    part.paint(part.polygon_mask(shape), "hair", tone=0.55, folds=1.0, fold_axis="y", fold_period=1.4, bevel=1.8)
+    return part
 
 
 def head_parts(spec, dims):
@@ -249,31 +297,15 @@ def head_parts(spec, dims):
     parts.append(face)
     hair = head.get("hair")
     if hair:
-        part = Part("hair", -12 * k, -28 * k, 12 * k, 8 * k)
-        cap = [(cx - 7.4 * k, cy + 3 * k), (cx - 7.6 * k, cy - 4 * k), (cx - 3 * k, cy - 9.2 * k), (cx + 3.5 * k, cy - 9 * k), (cx + 7.6 * k, cy - 4.5 * k), (cx + 5 * k, cy - 5.5 * k), (cx + 0.5 * k, cy - 4.5 * k), (cx - 2.5 * k, cy + 1 * k), (cx - 3 * k, cy + 4.5 * k)]
-        if hair == "long":
-            cap += [(cx - 4 * k, cy + 12 * k), (cx - 8.5 * k, cy + 13 * k)]
-        if hair == "wavy":
-            cap += [(cx - 1 * k, cy + 7.5 * k), (cx - 7.6 * k, cy + 8 * k)]
-        mask = part.polygon_mask(cap)
-        if hair == "ponytail":
-            mask = (mask + part.polygon_mask([(cx - 6 * k, cy - 3 * k), (cx - 12 * k, cy + 1 * k), (cx - 11 * k, cy + 9 * k), (cx - 8 * k, cy + 2 * k)])).clip(0, 1)
-        if hair == "bun":
-            mask = (mask + part.ellipse_mask((cx - 6.5 * k, cy - 6.5 * k), 3.6 * k, 3.4 * k)).clip(0, 1)
-        part.paint(mask, "hair", tone=0.5, folds=1.0, fold_axis="y", fold_period=1.6, bevel=2.2, relief=1.3, form=0.35)
-        shine = part.line_mask([(cx - 3.5 * k, cy - 7.4 * k), (cx + 1.5 * k, cy - 8.4 * k), (cx + 4.5 * k, cy - 7.0 * k)], 0.9 * k)
-        part.lighten(shine * mask, 0.28)
-        part.darken(part.line_mask([(cx - 1.5 * k, cy - 5.6 * k), (cx - 3.0 * k, cy + 1.0 * k)], 0.7 * k) * mask, 0.3)
-        parts.append(part)
+        parts.append(hair_part("hair", hair, k, cx, cy))
     beard = head.get("beard")
     if beard:
-        part = Part("beard", -12 * k, -28 * k, 12 * k, 22 * k)
-        if beard == "long":
-            shape = [(cx - 1.5 * k, cy + 2 * k), (cx + 7.6 * k, cy + 3 * k), (cx + 6 * k, cy + 14 * k), (cx + 2 * k, cy + 26 * k), (cx - 0.5 * k, cy + 12 * k)]
-        else:
-            shape = [(cx - 1.5 * k, cy + 2 * k), (cx + 7.6 * k, cy + 3 * k), (cx + 6.4 * k, cy + 8.4 * k), (cx + 1 * k, cy + 9.2 * k), (cx - 2 * k, cy + 5 * k)]
-        part.paint(part.polygon_mask(shape), "hair", tone=0.55, folds=1.0, fold_axis="y", fold_period=1.4, bevel=1.8)
-        parts.append(part)
+        parts.append(beard_part("beard", beard, k, cx, cy))
+    if head.get("styles"):
+        for style in HAIR_STYLES:
+            parts.append(hair_part("hair_" + style, style, k, cx, cy))
+        for style in BEARD_STYLES:
+            parts.append(beard_part("beard_" + style, style, k, cx, cy))
     hood = head.get("hood")
     if hood:
         part = Part("hood", -16 * k, -36 * k, 14 * k, 6)

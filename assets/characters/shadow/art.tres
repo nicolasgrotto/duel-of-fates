@@ -7,6 +7,26 @@
 [ext_resource type="Texture2D" path="res://assets/characters/shadow/head_n.png" id="n_head"]
 [ext_resource type="Texture2D" path="res://assets/characters/shadow/hair.png" id="t_hair"]
 [ext_resource type="Texture2D" path="res://assets/characters/shadow/hair_n.png" id="n_hair"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/hair_short.png" id="t_hair_short"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/hair_short_n.png" id="n_hair_short"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/hair_mid_wavy.png" id="t_hair_mid_wavy"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/hair_mid_wavy_n.png" id="n_hair_mid_wavy"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/hair_wavy.png" id="t_hair_wavy"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/hair_wavy_n.png" id="n_hair_wavy"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/hair_long.png" id="t_hair_long"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/hair_long_n.png" id="n_hair_long"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/hair_ponytail.png" id="t_hair_ponytail"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/hair_ponytail_n.png" id="n_hair_ponytail"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/hair_bun.png" id="t_hair_bun"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/hair_bun_n.png" id="n_hair_bun"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/beard_short.png" id="t_beard_short"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/beard_short_n.png" id="n_beard_short"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/beard_full.png" id="t_beard_full"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/beard_full_n.png" id="n_beard_full"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/beard_long.png" id="t_beard_long"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/beard_long_n.png" id="n_beard_long"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/beard_mustache.png" id="t_beard_mustache"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/beard_mustache_n.png" id="n_beard_mustache"]
 [ext_resource type="Texture2D" path="res://assets/characters/shadow/hood.png" id="t_hood"]
 [ext_resource type="Texture2D" path="res://assets/characters/shadow/hood_n.png" id="n_hood"]
 [ext_resource type="Texture2D" path="res://assets/characters/shadow/mask.png" id="t_mask"]
@@ -29,6 +49,8 @@
 [ext_resource type="Texture2D" path="res://assets/characters/shadow/pad_n.png" id="n_pad"]
 [ext_resource type="Texture2D" path="res://assets/characters/shadow/neckerchief.png" id="t_neckerchief"]
 [ext_resource type="Texture2D" path="res://assets/characters/shadow/neckerchief_n.png" id="n_neckerchief"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/plate.png" id="t_plate"]
+[ext_resource type="Texture2D" path="res://assets/characters/shadow/plate_n.png" id="n_plate"]
 [ext_resource type="Texture2D" path="res://assets/characters/shadow/collar.png" id="t_collar"]
 [ext_resource type="Texture2D" path="res://assets/characters/shadow/collar_n.png" id="n_collar"]
 [ext_resource type="Texture2D" path="res://assets/characters/shadow/skirt.png" id="t_skirt"]
@@ -39,9 +61,9 @@
 [resource]
 script = ExtResource("1_script")
 pixels_per_unit = 0.5
-textures = {"torso": ExtResource("t_torso"), "head": ExtResource("t_head"), "hair": ExtResource("t_hair"), "hood": ExtResource("t_hood"), "mask": ExtResource("t_mask"), "upper_arm": ExtResource("t_upper_arm"), "forearm": ExtResource("t_forearm"), "hand": ExtResource("t_hand"), "hand_open": ExtResource("t_hand_open"), "thigh": ExtResource("t_thigh"), "shin": ExtResource("t_shin"), "boot": ExtResource("t_boot"), "pad": ExtResource("t_pad"), "neckerchief": ExtResource("t_neckerchief"), "collar": ExtResource("t_collar"), "skirt": ExtResource("t_skirt"), "cape": ExtResource("t_cape")}
-normals = {"torso": ExtResource("n_torso"), "head": ExtResource("n_head"), "hair": ExtResource("n_hair"), "hood": ExtResource("n_hood"), "mask": ExtResource("n_mask"), "upper_arm": ExtResource("n_upper_arm"), "forearm": ExtResource("n_forearm"), "hand": ExtResource("n_hand"), "hand_open": ExtResource("n_hand_open"), "thigh": ExtResource("n_thigh"), "shin": ExtResource("n_shin"), "boot": ExtResource("n_boot"), "pad": ExtResource("n_pad"), "neckerchief": ExtResource("n_neckerchief"), "collar": ExtResource("n_collar"), "skirt": ExtResource("n_skirt"), "cape": ExtResource("n_cape")}
-pivots = {"torso": Vector2(7.50, 24.00), "head": Vector2(7.68, 17.92), "hair": Vector2(7.68, 17.92), "hood": Vector2(10.24, 23.04), "mask": Vector2(7.68, 17.92), "upper_arm": Vector2(4.12, 4.12), "forearm": Vector2(3.75, 3.75), "hand": Vector2(2.50, 2.50), "hand_open": Vector2(2.00, 3.50), "thigh": Vector2(6.32, 6.32), "shin": Vector2(4.95, 4.95), "boot": Vector2(3.00, 3.00), "pad": Vector2(4.50, 3.50), "neckerchief": Vector2(5.00, 3.00), "collar": Vector2(7.00, 5.00), "skirt": Vector2(0.00, 0.00), "cape": Vector2(0.00, 0.00)}
+textures = {"torso": ExtResource("t_torso"), "head": ExtResource("t_head"), "hair": ExtResource("t_hair"), "hair_short": ExtResource("t_hair_short"), "hair_mid_wavy": ExtResource("t_hair_mid_wavy"), "hair_wavy": ExtResource("t_hair_wavy"), "hair_long": ExtResource("t_hair_long"), "hair_ponytail": ExtResource("t_hair_ponytail"), "hair_bun": ExtResource("t_hair_bun"), "beard_short": ExtResource("t_beard_short"), "beard_full": ExtResource("t_beard_full"), "beard_long": ExtResource("t_beard_long"), "beard_mustache": ExtResource("t_beard_mustache"), "hood": ExtResource("t_hood"), "mask": ExtResource("t_mask"), "upper_arm": ExtResource("t_upper_arm"), "forearm": ExtResource("t_forearm"), "hand": ExtResource("t_hand"), "hand_open": ExtResource("t_hand_open"), "thigh": ExtResource("t_thigh"), "shin": ExtResource("t_shin"), "boot": ExtResource("t_boot"), "pad": ExtResource("t_pad"), "neckerchief": ExtResource("t_neckerchief"), "plate": ExtResource("t_plate"), "collar": ExtResource("t_collar"), "skirt": ExtResource("t_skirt"), "cape": ExtResource("t_cape")}
+normals = {"torso": ExtResource("n_torso"), "head": ExtResource("n_head"), "hair": ExtResource("n_hair"), "hair_short": ExtResource("n_hair_short"), "hair_mid_wavy": ExtResource("n_hair_mid_wavy"), "hair_wavy": ExtResource("n_hair_wavy"), "hair_long": ExtResource("n_hair_long"), "hair_ponytail": ExtResource("n_hair_ponytail"), "hair_bun": ExtResource("n_hair_bun"), "beard_short": ExtResource("n_beard_short"), "beard_full": ExtResource("n_beard_full"), "beard_long": ExtResource("n_beard_long"), "beard_mustache": ExtResource("n_beard_mustache"), "hood": ExtResource("n_hood"), "mask": ExtResource("n_mask"), "upper_arm": ExtResource("n_upper_arm"), "forearm": ExtResource("n_forearm"), "hand": ExtResource("n_hand"), "hand_open": ExtResource("n_hand_open"), "thigh": ExtResource("n_thigh"), "shin": ExtResource("n_shin"), "boot": ExtResource("n_boot"), "pad": ExtResource("n_pad"), "neckerchief": ExtResource("n_neckerchief"), "plate": ExtResource("n_plate"), "collar": ExtResource("n_collar"), "skirt": ExtResource("n_skirt"), "cape": ExtResource("n_cape")}
+pivots = {"torso": Vector2(7.50, 24.00), "head": Vector2(7.68, 17.92), "hair": Vector2(7.68, 17.92), "hair_short": Vector2(7.68, 17.92), "hair_mid_wavy": Vector2(7.68, 17.92), "hair_wavy": Vector2(7.68, 17.92), "hair_long": Vector2(7.68, 17.92), "hair_ponytail": Vector2(7.68, 17.92), "hair_bun": Vector2(7.68, 17.92), "beard_short": Vector2(7.68, 17.92), "beard_full": Vector2(7.68, 17.92), "beard_long": Vector2(7.68, 17.92), "beard_mustache": Vector2(7.68, 17.92), "hood": Vector2(10.24, 23.04), "mask": Vector2(7.68, 17.92), "upper_arm": Vector2(4.12, 4.12), "forearm": Vector2(3.75, 3.75), "hand": Vector2(2.50, 2.50), "hand_open": Vector2(2.00, 3.50), "thigh": Vector2(6.32, 6.32), "shin": Vector2(4.95, 4.95), "boot": Vector2(3.00, 3.00), "pad": Vector2(4.50, 3.50), "neckerchief": Vector2(5.00, 3.00), "plate": Vector2(6.50, 23.00), "collar": Vector2(7.00, 5.00), "skirt": Vector2(0.00, 0.00), "cape": Vector2(0.00, 0.00)}
 dims = {"shoulder_half": 11.0, "waist_half": 9.0, "hip_half": 8.0, "torso_length": 44.0, "neck": -2.5, "upper_arm": 23.0, "forearm": 21.0, "thigh": 35.0, "shin": 33.0, "ankle": 4.0, "foot": 13.0, "arm_width": 7.5, "leg_width": 11.0, "head": 1.28, "scale": 1.0, "hunch": 0.12}
 cloths = [{"name": "skirt", "anchor": "waist", "layer": "front", "length": 40.0, "top_width": 20.0, "bottom_width": 30.0, "stiffness": 0.75, "segments": 5}, {"name": "cape", "anchor": "shoulders", "layer": "back", "length": 112.0, "top_width": 22.0, "bottom_width": 36.0, "stiffness": 0.35, "segments": 7}]
 default_parts = PackedStringArray("hood", "hair", "skirt", "cape")

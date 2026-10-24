@@ -53,3 +53,27 @@ func test_round_trip_and_protagonist() -> void:
 	assert_eq(data.name_key, "Kael")
 	assert_eq(data.powers[0].id, &"lightning")
 	assert_true(data.powers[1] == null)
+
+
+func test_appearance_shows_the_chosen_hair_beard_and_colors() -> void:
+	var campaign: StoryCampaign = StoryCampaign.create("Kael", 0, 0, 3, 0, 1)
+	campaign.set_appearance({&"hair": 2, &"beard": 2, &"hair_color": 5, &"skin": 3})
+	var hero: CharacterData = campaign.protagonist()
+	var costume: CostumeData = hero.costumes[0]
+	var parts: PackedStringArray = costume.parts_for(hero.art)
+	assert_true(parts.has("hair_mid_wavy"))
+	assert_true(parts.has("beard_full"))
+	assert_true(parts.has("plate"), "the light plate outfit shows the plate")
+	assert_false(parts.has("hair"), "the base hair gives way to the chosen one")
+	assert_eq(costume.color(CostumeData.Slot.HAIR), StoryCampaign.CAMPAIGN.hair_colors[5])
+	assert_eq(costume.color(CostumeData.Slot.SKIN), StoryCampaign.CAMPAIGN.skin_tones[3])
+	assert_false(hero.eclipse_eyes, "aurora protagonists keep their own eyes")
+
+
+func test_old_saves_get_a_default_appearance() -> void:
+	var campaign: StoryCampaign = StoryCampaign.from_dict({"name": "Iria", "path": 1, "style": 1, "look": 0})
+	assert_eq(campaign.hair, StoryCampaign.CAMPAIGN.default_hair)
+	assert_eq(campaign.beard, 0)
+	assert_true(campaign.protagonist().eclipse_eyes)
+	var round_trip: StoryCampaign = StoryCampaign.from_dict(campaign.to_dict())
+	assert_eq(round_trip.skin, campaign.skin)

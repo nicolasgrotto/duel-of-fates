@@ -12,6 +12,7 @@ enum Slot { CLOAK, BODY, TRIM, SKIN, HAIR, METAL, LEATHER, EYES }
 ])
 @export var show_parts: PackedStringArray = []
 @export var hide_parts: PackedStringArray = []
+@export var prosthetic_arm: bool = false
 
 
 func parts_for(art: FighterArt) -> PackedStringArray:

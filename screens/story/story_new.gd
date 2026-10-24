@@ -7,15 +7,22 @@ const TITLE_TOP: float = 80.0
 const SUBTITLE_TOP: float = 150.0
 const NAME_LIMIT: int = 16
 const PALETTE: UiPalette = preload("res://ui/palette.tres")
-const STEPS: Array[StringName] = [&"name", &"path", &"style", &"look", &"color", &"difficulty"]
+const STEPS: Array[StringName] = [&"name", &"path", &"style", &"look", &"hair", &"beard", &"hair_color", &"skin", &"color", &"difficulty"]
+const APPEARANCE_FIRST: StringName = &"look"
+const APPEARANCE_LAST: StringName = &"skin"
 const STEP_KEYS: Dictionary = {
 	&"name": "STORY_STEP_NAME", &"path": "STORY_STEP_PATH", &"style": "STORY_STEP_STYLE",
-	&"look": "STORY_STEP_LOOK", &"color": "STORY_STEP_COLOR", &"difficulty": "STORY_STEP_DIFFICULTY",
+	&"look": "STORY_STEP_LOOK", &"hair": "STORY_STEP_HAIR", &"beard": "STORY_STEP_BEARD", &"hair_color": "STORY_STEP_HAIR_COLOR",
+	&"skin": "STORY_STEP_SKIN", &"color": "STORY_STEP_COLOR", &"difficulty": "STORY_STEP_DIFFICULTY",
 }
 const TYPE_NAME: StringName = &"type"
 
 var _step: int = 0
-var _choices: Dictionary = {&"name": "Kael", &"path": 0, &"style": 0, &"look": 0, &"color": 0, &"difficulty": 1}
+var _choices: Dictionary = {
+	&"name": "Kael", &"path": 0, &"style": 0, &"look": 0, &"hair": StoryCampaign.CAMPAIGN.default_hair, &"beard": 0,
+	&"hair_color": 0, &"skin": StoryCampaign.CAMPAIGN.default_skin, &"color": 0, &"difficulty": 1,
+}
+var _editing: StoryCampaign
 var _list: MenuList
 var _subtitle: Label
 var _preview: FighterPreview
@@ -81,8 +88,18 @@ func _show_step() -> void:
 			for i in _campaign_data.style_keys.size():
 				_list.add_item(StringName(str(i)), tr(_campaign_data.style_keys[i]))
 		&"look":
-			for i in _campaign_data.look_keys.size():
-				_list.add_item(StringName(str(i)), tr(_campaign_data.look_keys[i]))
+			for i in _campaign_data.outfits.size():
+				_list.add_item(StringName(str(i)), tr(_campaign_data.outfits[i].name_key))
+		&"hair":
+			_add_options(_campaign_data.hair_keys)
+		&"beard":
+			_add_options(_campaign_data.beard_keys)
+		&"hair_color":
+			_add_options(_campaign_data.hair_color_keys)
+			for i in _campaign_data.hair_colors.size():
+				_list.set_item_color(StringName(str(i)), _campaign_data.hair_colors[i].lightened(0.35))
+		&"skin":
+			_add_options(_campaign_data.skin_keys)
 		&"color":
 			for i in _campaign_data.blade_sources.size():
 				var source: CharacterData = DuelMode.character(_campaign_data.blade_sources[i])
@@ -108,8 +125,30 @@ func _refresh_preview() -> void:
 	_preview.show_fighter(hero, hero.costumes[0], hero.blade_colors[0])
 
 
+func _add_options(keys: PackedStringArray) -> void:
+	for i in keys.size():
+		_list.add_item(StringName(str(i)), tr(keys[i]))
+
+
+func open(params: Dictionary) -> void:
+	if not params.get("edit", false):
+		return
+	_editing = StoryCampaign.current()
+	if _editing == null:
+		return
+	for key in [&"name", &"path", &"style", &"look", &"hair", &"beard", &"hair_color", &"skin", &"color", &"difficulty"]:
+		_choices[key] = _editing.get(String(key))
+	_step = STEPS.find(APPEARANCE_FIRST)
+	_show_step()
+
+
 func _build() -> StoryCampaign:
-	return StoryCampaign.create(_choices[&"name"], _choices[&"path"], _choices[&"style"], _choices[&"look"], _choices[&"color"], _choices[&"difficulty"])
+	if _editing != null:
+		_editing.set_appearance(_choices)
+		return _editing
+	var campaign: StoryCampaign = StoryCampaign.create(_choices[&"name"], _choices[&"path"], _choices[&"style"], _choices[&"look"], _choices[&"color"], _choices[&"difficulty"])
+	campaign.set_appearance(_choices)
+	return campaign
 
 
 func _on_chosen(id: StringName) -> void:
@@ -135,6 +174,10 @@ func _on_name_typed(text: String) -> void:
 
 
 func _next() -> void:
+	if _editing != null and STEPS[_step] == APPEARANCE_LAST:
+		_build().save()
+		SceneRouter.change(&"story_hub")
+		return
 	if _step + 1 >= STEPS.size():
 		var campaign: StoryCampaign = _build()
 		campaign.save()
@@ -150,6 +193,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		if _input.visible:
 			_input.visible = false
 			_list.set_process_unhandled_input(true)
+		elif _editing != null and STEPS[_step] == APPEARANCE_FIRST:
+			SceneRouter.change(&"story_hub")
 		elif _step == 0:
 			SceneRouter.change(&"menu", {"group": &"play", "focus": &"story"})
 		else:

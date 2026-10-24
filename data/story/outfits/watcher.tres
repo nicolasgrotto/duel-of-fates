@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="CostumeData" format=3]
+
+[ext_resource type="Script" path="res://data/costume_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"story_watcher"
+name_key = "LOOK_WATCHER"
+requirement_key = ""
+colors = PackedColorArray(0.2706, 0.3020, 0.3451, 1, 0.1333, 0.1529, 0.1882, 1, 0.5137, 0.5647, 0.6196, 1, 0.6039, 0.4627, 0.3765, 1, 0.2902, 0.1961, 0.1333, 1, 0.6039, 0.6392, 0.6784, 1, 0.1725, 0.1647, 0.1647, 1, 1.0000, 0.6980, 0.1804, 1)
+show_parts = PackedStringArray("hood", "mask", "cape")
+hide_parts = PackedStringArray("pad", "plate", "neckerchief")
