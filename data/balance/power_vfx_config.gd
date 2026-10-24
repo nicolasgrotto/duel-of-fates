@@ -20,6 +20,7 @@ extends Resource
 @export var throw_impact_chunks: int = 6
 
 @export_group("Repulse and fracture")
+@export var repulse_palm_offset: float = 30.0
 @export var repulse_dust: int = 8
 @export var fracture_chunks: int = 5
 @export var fracture_dust: int = 3

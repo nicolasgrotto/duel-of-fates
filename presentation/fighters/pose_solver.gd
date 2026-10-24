@@ -30,6 +30,10 @@ const INVOKE_HAND: Vector2 = Vector2(10.0, -88.0)
 const INVOKE_ANGLE: float = 100.0
 const GROUND_HAND: Vector2 = Vector2(26.0, 6.0)
 const SELF_HAND: Vector2 = Vector2(14.0, -38.0)
+const REPULSE_DRAW_HAND: Vector2 = Vector2(-2.0, -40.0)
+const REPULSE_PALM_HAND: Vector2 = Vector2(42.0, -40.0)
+const REPULSE_HOLD: float = 0.45
+const REPULSE_RECOIL: float = 8.0
 const CHOKED_GRIP: Vector2 = Vector2(8.0, -50.0)
 const CHOKED_HAND: Vector2 = Vector2(4.0, -54.0)
 const TREMOR: float = 1.2
@@ -724,6 +728,8 @@ func _cast(fighter: FighterState, pose: RigPose) -> Vector2:
 	pose.open_hand = power.kind != PowerData.Kind.FLOW_CLEAVE
 	var tremor: Vector2 = Vector2(sin(time * 41.0), cos(time * 37.0)) * TREMOR if fighter.state == FighterState.State.CHANNELING else Vector2.ZERO
 	match power.kind:
+		PowerData.Kind.REPULSE:
+			return _repulse(fighter, pose)
 		PowerData.Kind.STORM, PowerData.Kind.MASS_TELEKINESIS:
 			pose.off_hand = RELAXED_HAND.lerp(INVOKE_HAND, progress) + tremor
 			pose.grip = pose.grip.lerp(Vector2(10.0, -10.0), progress)
@@ -747,6 +753,24 @@ func _cast(fighter: FighterState, pose: RigPose) -> Vector2:
 	pose.grip = pose.grip.lerp(CAST_GRIP, progress)
 	pose.blade_angle = lerpf(pose.blade_angle, CAST_ANGLE, progress)
 	return Vector2(4.0 * progress, 10.0 * progress)
+
+
+func _repulse(fighter: FighterState, pose: RigPose) -> Vector2:
+	var power: PowerData = fighter.power
+	pose.open_hand = true
+	pose.grip = pose.grip.lerp(CAST_GRIP, 0.7)
+	pose.blade_angle = lerpf(pose.blade_angle, CAST_ANGLE, 0.7)
+	if fighter.power_phase == FighterState.Phase.STARTUP:
+		var draw: float = ease(clampf(float(fighter.power_ticks) / maxf(power.startup_ticks(), 1.0), 0.0, 1.0), 0.6)
+		pose.off_hand = RELAXED_HAND.lerp(REPULSE_DRAW_HAND, draw)
+		pose.back_foot.x -= 6.0 * draw
+		return Vector2(6.0 * draw, -6.0 * draw)
+	var released: float = clampf(float(fighter.power_ticks) / maxf(power.recovery_ticks(), 1.0), 0.0, 1.0)
+	var settle: float = smoothstep(REPULSE_HOLD, 1.0, released)
+	pose.off_hand = REPULSE_PALM_HAND.lerp(RELAXED_HAND, settle)
+	pose.back_foot.x -= 12.0 * (1.0 - settle)
+	_body_shift = -REPULSE_RECOIL * (1.0 - settle)
+	return Vector2(8.0 * (1.0 - settle), -10.0 * (1.0 - settle))
 
 
 func _is_last_chain(fighter: FighterState) -> bool:

@@ -137,7 +137,7 @@ Animação (apresentação):
 - [x] Salto de transposição e recuperação acrobática
 
 Poderes (apresentação):
-- [ ] Repulsão (pose da palma)
+- [x] Repulsão (pose da palma)
 - [ ] Puxão (efeito em quem lança, sem bola atrás do alvo)
 - [ ] Raio tiers 3 e 4 em leque
 - [ ] Corte de Fluxo com swing grande e tier 4 espaçado

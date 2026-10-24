@@ -96,8 +96,9 @@ func _on_power_active(event: CombatEvent) -> void:
 	var hand: Vector2 = views[caster.index].hand_position(false)
 	match event.power.kind:
 		PowerData.Kind.REPULSE:
+			var palm: Vector2 = views[caster.index].chest_position() + Vector2(caster.facing * vfx.repulse_palm_offset, 0.0)
 			for i in 3:
-				_burst(Burst.CHEVRONS, hand, caster.facing, 0.35 + i * 0.06, event.power.reach * (0.6 + i * 0.2), color)
+				_burst(Burst.CHEVRONS, palm, caster.facing, 0.35 + i * 0.06, event.power.reach * (0.6 + i * 0.2), color)
 		PowerData.Kind.SUPREME_PUSH:
 			_burst(Burst.RING_OUT, views[caster.index].body_center(), 0.0, 0.35, event.power.reach, color)
 			for side in [-1.0, 1.0]:
