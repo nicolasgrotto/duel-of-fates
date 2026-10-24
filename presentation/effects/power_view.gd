@@ -18,7 +18,7 @@ const CLEAVE_GROW: float = 70.0
 const CLEAVE_LAYERS: Array[Vector2] = [Vector2(2.4, 0.28), Vector2(1.2, 0.8), Vector2(0.4, 1.0)]
 const METEOR_CRACKS: int = 5
 
-enum Burst { WAVE, RING_IN, RING_OUT, BOLT, FLASH, CHEVRONS }
+enum Burst { WAVE, RING_IN, RING_OUT, BOLT, FLASH, CHEVRONS, TETHER, OUTLINE }
 
 var sim: MatchSimulation
 var views: Array[FighterView] = []
@@ -82,8 +82,13 @@ func on_event(event: CombatEvent) -> void:
 			if event.target >= 0:
 				_burst(Burst.RING_OUT, at, 0.0, 0.25, 60.0, tier_color(sim.fighters[event.target].flow_tier))
 		CombatEvent.Type.POWER_HIT:
-			if event.source >= 0:
-				_burst(Burst.FLASH, at, 0.0, 0.12, 34.0, tier_color(sim.fighters[event.source].flow_tier))
+			if event.source < 0:
+				return
+			var color: Color = tier_color(sim.fighters[event.source].flow_tier)
+			if event.power != null and event.power.kind == PowerData.Kind.PULL:
+				_burst(Burst.OUTLINE, at, event.target, vfx.pull_outline_time, 0.0, color)
+			else:
+				_burst(Burst.FLASH, at, 0.0, 0.12, 34.0, color)
 		CombatEvent.Type.HAZARD_TRIGGERED:
 			_on_hazard(event, at)
 		CombatEvent.Type.PROJECTILE_REFLECTED:
@@ -104,8 +109,7 @@ func _on_power_active(event: CombatEvent) -> void:
 			for side in [-1.0, 1.0]:
 				_burst(Burst.CHEVRONS, views[caster.index].body_center(), side, 0.35, event.power.reach, color)
 		PowerData.Kind.PULL:
-			var target: FighterState = sim.opponent_of(caster)
-			_burst(Burst.RING_IN, views[target.index].body_center(), 0.0, 0.3, 90.0, color)
+			_burst(Burst.TETHER, hand, caster.index, vfx.pull_tether_time, event.power.tier_value(caster.flow_tier), color)
 		PowerData.Kind.FRACTURE:
 			_burst(Burst.FLASH, Vector2(hand.x, 0.0), 0.0, 0.2, 60.0, color)
 		PowerData.Kind.HEAL, PowerData.Kind.FOCUS, PowerData.Kind.WRATH, PowerData.Kind.SANCTUARY:
@@ -446,11 +450,26 @@ func _draw_bursts() -> void:
 				draw_circle(at, radius * 0.45, Color(_colors[i], 0.45 * strength))
 			Burst.BOLT:
 				_draw_beam(at + Vector2(0.0, -_sizes[i]), at, _colors[i] * Color(1, 1, 1, 1.0 - progress), i * 13 + _beam_seed, 3.0)
+			Burst.TETHER:
+				_draw_tether(int(_directions[i]), _sizes[i], _colors[i], progress)
+			Burst.OUTLINE:
+				_draw_ellipse(views[int(_directions[i])].body_center(), Vector2(30.0, 82.0) * (1.0 + progress * 0.15), color, 2.0)
 			Burst.CHEVRONS:
 				var reach: float = _sizes[i] * progress
 				var tip: Vector2 = at + Vector2(_directions[i] * reach, 0.0)
 				var back: float = -_directions[i] * 18.0
 				draw_polyline(PackedVector2Array([tip + Vector2(back, -26.0), tip, tip + Vector2(back, 26.0)]), color, 4.0)
+
+
+func _draw_tether(caster_index: int, reach: float, color: Color, progress: float) -> void:
+	var caster: FighterState = sim.fighters[caster_index]
+	var hand: Vector2 = views[caster_index].hand_position(false)
+	var target: Vector2 = views[1 - caster_index].chest_position()
+	var span: float = minf(absf(target.x - hand.x), reach + sim.config.body_width)
+	var end: Vector2 = Vector2(hand.x + caster.facing * span, lerpf(hand.y, target.y, 0.8))
+	var strength: float = ceilf((1.0 - progress) * FADE_STEPS) / FADE_STEPS
+	draw_circle(hand, 5.0 + 3.0 * strength, Color(color, 0.6 * strength))
+	_draw_beam(hand, end, Color(color, strength), _beam_seed * 3 + caster_index, 1.2)
 
 
 func _draw_beam(from: Vector2, to: Vector2, color: Color, seed_value: int, width: float) -> void:

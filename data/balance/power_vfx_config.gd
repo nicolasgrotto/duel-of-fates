@@ -21,6 +21,8 @@ extends Resource
 
 @export_group("Repulse and fracture")
 @export var repulse_palm_offset: float = 30.0
+@export var pull_tether_time: float = 0.32
+@export var pull_outline_time: float = 0.2
 @export var repulse_dust: int = 8
 @export var fracture_chunks: int = 5
 @export var fracture_dust: int = 3

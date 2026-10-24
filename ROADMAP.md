@@ -138,7 +138,7 @@ Animação (apresentação):
 
 Poderes (apresentação):
 - [x] Repulsão (pose da palma)
-- [ ] Puxão (efeito em quem lança, sem bola atrás do alvo)
+- [x] Puxão (efeito em quem lança, sem bola atrás do alvo)
 - [ ] Raio tiers 3 e 4 em leque
 - [ ] Corte de Fluxo com swing grande e tier 4 espaçado
 - [ ] Telecinese em Massa: cinemática de ~1,5 s com congelamento determinístico

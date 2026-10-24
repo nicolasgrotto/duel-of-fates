@@ -33,6 +33,8 @@ const SELF_HAND: Vector2 = Vector2(14.0, -38.0)
 const REPULSE_DRAW_HAND: Vector2 = Vector2(-2.0, -40.0)
 const REPULSE_PALM_HAND: Vector2 = Vector2(42.0, -40.0)
 const REPULSE_HOLD: float = 0.45
+const PULL_CLAW_HAND: Vector2 = Vector2(-8.0, -42.0)
+const PULL_HOLD: float = 0.5
 const REPULSE_RECOIL: float = 8.0
 const CHOKED_GRIP: Vector2 = Vector2(8.0, -50.0)
 const CHOKED_HAND: Vector2 = Vector2(4.0, -54.0)
@@ -730,6 +732,8 @@ func _cast(fighter: FighterState, pose: RigPose) -> Vector2:
 	match power.kind:
 		PowerData.Kind.REPULSE:
 			return _repulse(fighter, pose)
+		PowerData.Kind.PULL:
+			return _pull(fighter, pose)
 		PowerData.Kind.STORM, PowerData.Kind.MASS_TELEKINESIS:
 			pose.off_hand = RELAXED_HAND.lerp(INVOKE_HAND, progress) + tremor
 			pose.grip = pose.grip.lerp(Vector2(10.0, -10.0), progress)
@@ -771,6 +775,25 @@ func _repulse(fighter: FighterState, pose: RigPose) -> Vector2:
 	pose.back_foot.x -= 12.0 * (1.0 - settle)
 	_body_shift = -REPULSE_RECOIL * (1.0 - settle)
 	return Vector2(8.0 * (1.0 - settle), -10.0 * (1.0 - settle))
+
+
+func _pull(fighter: FighterState, pose: RigPose) -> Vector2:
+	var power: PowerData = fighter.power
+	pose.grip = pose.grip.lerp(CAST_GRIP, 0.7)
+	pose.blade_angle = lerpf(pose.blade_angle, CAST_ANGLE, 0.7)
+	if fighter.power_phase == FighterState.Phase.STARTUP:
+		var reach: float = ease(clampf(float(fighter.power_ticks) / maxf(power.startup_ticks(), 1.0), 0.0, 1.0), 0.6)
+		pose.off_hand = RELAXED_HAND.lerp(CAST_HAND, reach)
+		pose.open_hand = true
+		return Vector2(4.0 * reach, 12.0 * reach)
+	var pulled: float = clampf(float(fighter.power_ticks) / maxf(power.recovery_ticks(), 1.0), 0.0, 1.0)
+	var yank: float = ease(minf(pulled / PULL_HOLD, 1.0), 0.4)
+	var settle: float = smoothstep(PULL_HOLD, 1.0, pulled)
+	pose.off_hand = CAST_HAND.lerp(PULL_CLAW_HAND, yank).lerp(RELAXED_HAND, settle)
+	pose.open_hand = false
+	pose.back_foot.x -= 10.0 * (1.0 - settle)
+	_body_shift = -6.0 * yank * (1.0 - settle)
+	return Vector2(6.0 * (1.0 - settle), -14.0 * yank * (1.0 - settle))
 
 
 func _is_last_chain(fighter: FighterState) -> bool:
