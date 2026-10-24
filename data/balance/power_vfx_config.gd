@@ -12,6 +12,9 @@ extends Resource
 @export var chunk_bounce: float = 0.35
 
 @export_group("Throw")
+@export var dual_throw_delay: float = 0.06
+@export var dual_throw_arc: float = 26.0
+@export var thrown_blade_spin: float = 22.0
 @export var throw_rise_height: float = 46.0
 @export var throw_rise_dust: int = 4
 @export var throw_impact_chunks: int = 6

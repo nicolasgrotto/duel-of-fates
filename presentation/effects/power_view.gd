@@ -323,13 +323,30 @@ func _draw_projectile(projectile: Projectile) -> void:
 		Projectile.Kind.CLEAVE:
 			_draw_cleave(projectile, at)
 		Projectile.Kind.BLADE, Projectile.Kind.ARSENAL:
-			var spin: float = _time * 22.0
-			var half: float = 46.0 if projectile.kind == Projectile.Kind.BLADE else 12.0
-			var direction: Vector2 = Vector2.from_angle(spin) * half
+			var weapon: WeaponData = sim.fighters[projectile.owner].character.weapon
 			var tint: Color = blade_colors[projectile.owner]
-			draw_line(at - direction, at + direction, Color(tint, 0.35), 12.0)
-			draw_line(at - direction, at + direction, Color(tint, 0.85), 4.5)
-			draw_line(at - direction, at + direction, Color.WHITE, 1.8)
+			if projectile.kind == Projectile.Kind.BLADE and weapon.kind == WeaponData.Kind.DUAL:
+				_draw_dual_throw(projectile, at, weapon, tint)
+				return
+			var half: float = 46.0 if projectile.kind == Projectile.Kind.BLADE else 12.0
+			_draw_spinning_blade(at, _time * vfx.thrown_blade_spin, half, tint)
+
+
+func _draw_spinning_blade(at: Vector2, spin: float, half: float, tint: Color) -> void:
+	var direction: Vector2 = Vector2.from_angle(spin) * half
+	draw_line(at - direction, at + direction, Color(tint, 0.35), 12.0)
+	draw_line(at - direction, at + direction, Color(tint, 0.85), 4.5)
+	draw_line(at - direction, at + direction, Color.WHITE, 1.8)
+
+
+func _draw_dual_throw(projectile: Projectile, at: Vector2, weapon: WeaponData, tint: Color) -> void:
+	var trip: float = clampf(projectile.travelled / maxf(projectile.max_distance, 1.0), 0.0, 2.0)
+	var lift: float = vfx.dual_throw_arc * sin(PI * fposmod(trip, 1.0))
+	var heading: float = signf(projectile.vx) if projectile.vx != 0.0 else 1.0
+	var trailing: Vector2 = at - Vector2(heading * absf(projectile.vx) * vfx.dual_throw_delay, 0.0)
+	var spin: float = _time * vfx.thrown_blade_spin
+	_draw_spinning_blade(at + Vector2(0.0, -lift), spin, (weapon.blade_length + weapon.hilt_length) * 0.5, tint)
+	_draw_spinning_blade(trailing + Vector2(0.0, lift), -spin, (weapon.second_blade_length + weapon.hilt_length) * 0.5, tint)
 
 
 func _draw_cleave(projectile: Projectile, at: Vector2) -> void:

@@ -76,7 +76,7 @@ Decisões do autor para a revisão de combate e animação (ver ROADMAP, fase 7.
 - **Recuperação acrobática (só visual)**: nas separações longas (perder a disputa, choque grande, Repulsão), as famílias ágeis (Dançarina, Vespa, Ceifador) caem com mortal para trás e pousam em guarda; as outras derrapam com a mão no chão. O tempo de punição não muda.
 - **Esquiva com giro**: rotação baixa e curta atravessando o oponente (o corpo achata como no Giro), a lâmina recolhida junto ao corpo; pouso virado.
 - **Pressão de lâminas**: como a disputa, mas mais baixa e móvel: as lâminas encostadas mudam de inclinação a cada pressão e os corpos andam meio passo. **Desengajamento**: rotação do punho que solta a lâmina por baixo e corta por outro ângulo, com rastro curto.
-- **Arremesso da lâmina com duas lâminas (Vespa)**: as duas saem com 0,06 s de intervalo, em arcos espelhados (uma um pouco acima, outra abaixo), cada uma girando no próprio sentido, e voltam cada uma para a sua mão; os braços acompanham as duas idas e voltas.
+- **Arremesso da lâmina com duas lâminas (Vespa)**: as duas saem com 0,06 s de intervalo, em arcos espelhados (uma um pouco acima, outra abaixo), cada uma girando no próprio sentido, e voltam cada uma para a sua mão; os braços acompanham as duas idas e voltas. Implementado só na apresentação (a simulação continua com um projétil): a segunda lâmina segue a primeira com o atraso em dado (`PowerVfxConfig.dual_throw_delay`, `dual_throw_arc`); enquanto as lâminas estão fora, as mãos ficam estendidas e abertas para a volta (em qualquer arma).
 
 ## Interface
 

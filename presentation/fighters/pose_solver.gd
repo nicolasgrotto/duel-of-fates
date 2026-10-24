@@ -89,6 +89,8 @@ const DASH_TWIRL_TURNS: float = 2.0
 const THROW_WINDUP_GRIP: Vector2 = Vector2(-14.0, -44.0)
 const THROW_RELEASE_GRIP: Vector2 = Vector2(40.0, -42.0)
 const THROW_CATCH_HAND: Vector2 = Vector2(30.0, -44.0)
+const DUAL_THROW_OFFSET: Vector2 = Vector2(-4.0, 12.0)
+const CATCH_REACH: float = 0.6
 const THRUST_CHAMBER_GRIP: Vector2 = Vector2(2.0, -36.0)
 const THRUST_EXTEND_GRIP: Vector2 = Vector2(46.0, -34.0)
 const THRUST_ANGLE: float = 0.0
@@ -278,6 +280,11 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 				pose.front_foot = Vector2(6.0, 8.0)
 				pose.back_foot = Vector2(-4.0, 12.0)
 				lean = -10.0
+	if fighter.blade_out and (fighter.is_free() or fighter.state == FighterState.State.BLOCKING):
+		pose.grip = pose.grip.lerp(THROW_CATCH_HAND, CATCH_REACH)
+		pose.open_hand = true
+		if family.grip == MotionFamily.Grip.DUAL:
+			pose.off_hand = THROW_CATCH_HAND + DUAL_THROW_OFFSET
 	if fighter.is_airborne() and fighter.state != FighterState.State.JUMPING:
 		_tuck(pose, 0.7)
 	pose.pelvis = Vector2(_body_shift, -hip_height + crouch)
@@ -583,6 +590,8 @@ func _technique(fighter: FighterState, pose: RigPose, move: MoveData, guard_angl
 			strike_grip = THROW_RELEASE_GRIP
 			angle = lerpf(move.blade_angle_windup, move.blade_angle_strike, swing)
 			pose.off_hand = RELAXED_HAND.lerp(THROW_CATCH_HAND, ramp * swing)
+			if family.grip == MotionFamily.Grip.DUAL:
+				pose.off_hand = THROW_WINDUP_GRIP.lerp(THROW_RELEASE_GRIP, swing).lerp(RELAXED_HAND, 1.0 - ramp) + DUAL_THROW_OFFSET
 			pose.open_hand = swing > 0.0
 			lean = lerpf(-8.0, 16.0, swing) * ramp
 			pose.front_foot.x += 10.0 * swing * ramp
