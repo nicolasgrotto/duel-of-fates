@@ -9,12 +9,14 @@ const PALETTE: UiPalette = preload("res://ui/palette.tres")
 const DASH_SIZE: Vector2 = Vector2(22.0, 2.0)
 const ROW_SEPARATION: int = 18
 const DASH_GAP: int = 14
+const TINTED_IDLE_ALPHA: float = 0.6
 
 var selected: int = 0
 var centered: bool = false
 var _ids: Array[StringName] = []
 var _labels: Array[Label] = []
 var _dashes: Array[ColorRect] = []
+var _tinted: Array[bool] = []
 
 
 func _ready() -> void:
@@ -45,6 +47,17 @@ func add_item(id: StringName, text: String) -> void:
 	_ids.append(id)
 	_labels.append(label)
 	_dashes.append(dash)
+	_tinted.append(false)
+	_refresh()
+
+
+func set_item_color(id: StringName, color: Color) -> void:
+	var index: int = _ids.find(id)
+	if index < 0:
+		return
+	_labels[index].add_theme_color_override(&"font_color", color)
+	_dashes[index].color = color
+	_tinted[index] = true
 	_refresh()
 
 
@@ -98,6 +111,7 @@ func clear_items() -> void:
 	_ids.clear()
 	_labels.clear()
 	_dashes.clear()
+	_tinted.clear()
 	selected = 0
 
 
@@ -116,3 +130,4 @@ func _refresh() -> void:
 		var active: bool = i == selected
 		_labels[i].theme_type_variation = &"MenuItemSelectedLabel" if active else &"MenuItemLabel"
 		_dashes[i].modulate.a = 1.0 if active else 0.0
+		_labels[i].modulate.a = TINTED_IDLE_ALPHA if _tinted[i] and not active else 1.0

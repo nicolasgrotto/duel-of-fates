@@ -6,6 +6,7 @@ const PREVIEW: Vector2 = Vector2(1300.0, 780.0)
 const TITLE_TOP: float = 80.0
 const SUBTITLE_TOP: float = 150.0
 const NAME_LIMIT: int = 16
+const PALETTE: UiPalette = preload("res://ui/palette.tres")
 const STEPS: Array[StringName] = [&"name", &"path", &"style", &"look", &"color", &"difficulty"]
 const STEP_KEYS: Dictionary = {
 	&"name": "STORY_STEP_NAME", &"path": "STORY_STEP_PATH", &"style": "STORY_STEP_STYLE",
@@ -74,6 +75,8 @@ func _show_step() -> void:
 		&"path":
 			_list.add_item(&"0", tr("STORY_PATH_AURORA"))
 			_list.add_item(&"1", tr("STORY_PATH_ECLIPSE"))
+			_list.set_item_color(&"0", PALETTE.aurora)
+			_list.set_item_color(&"1", PALETTE.eclipse)
 		&"style":
 			for i in _campaign_data.style_keys.size():
 				_list.add_item(StringName(str(i)), tr(_campaign_data.style_keys[i]))
