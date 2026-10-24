@@ -125,6 +125,10 @@ Poeira no knockback (Salinas), cristais e fungos que pegam a cor da lâmina, vap
 
 As contagens de faíscas, tremor, flash e punch-in deste catálogo estão em `data/balance/effects_config.tres`, uma receita por evento. Nas fases 1 e 2 a lâmina é desenhada em três camadas aditivas (glow externo, glow interno, núcleo branco) com rastro de ~0,12 s e uma `PointLight2D` na cor da lâmina; o glow de tela do `WorldEnvironment` é sutil (ver ARCHITECTURE, verificação do renderer). Letterbox e câmera lenta já funcionam; a dessaturação do parry perfeito entra na fase 3.
 
+## Finalizações cinematográficas
+
+Descrição em ART_DIRECTION ("Finalizações"). Números no grupo Finishers do `EffectsConfig` (pausa antes de as metades se moverem, deslize, queda, arremesso, rastro do Avanço, pose de quem corta, raio-X, carbonização, explosão de brasa). O rastro do Avanço com corte é aditivo, na cor da lâmina, e não aparece com efeitos reduzidos; as brasas e a fumaça caem em degraus de opacidade.
+
 ## Efeitos reduzidos
 
 Opção de acessibilidade: tremor e punch-in a 25%, flash e hit flash desligados, menos partículas. Hit stop, câmera lenta e dessaturação continuam (não piscam nem tremem).

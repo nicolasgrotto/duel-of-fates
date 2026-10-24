@@ -139,6 +139,9 @@ const FLIP_EASE: float = 0.6
 const FLIP_GRIP: Vector2 = Vector2(20.0, -30.0)
 const FLIP_BLADE_ANGLE: float = -10.0
 const TUMBLE_LIFT: float = 26.0
+const FINISH_HOLD_GRIP: Vector2 = Vector2(30.0, -34.0)
+const FINISH_HOLD_ANGLE: float = 4.0
+const FINISH_HOLD_BLEND: float = 0.2
 const SPIN_DODGE_GRIP: Vector2 = Vector2(-2.0, -18.0)
 const SPIN_DODGE_ANGLE: float = 110.0
 const SKID_CROUCH: float = 22.0
@@ -153,6 +156,7 @@ var walk_phase: float = 0.0
 var flip_progress: float = -1.0
 var vault_progress: float = -1.0
 var tumble_left: float = 0.0
+var finish_hold_left: float = 0.0
 var landing_left: float = 0.0
 
 var _attack_key: int = -1
@@ -182,6 +186,7 @@ func advance(delta: float) -> void:
 	landing_left = maxf(landing_left - delta, 0.0)
 	clash_left = maxf(clash_left - delta, 0.0)
 	tumble_left = maxf(tumble_left - delta, 0.0)
+	finish_hold_left = maxf(finish_hold_left - delta, 0.0)
 	if vault_progress >= 0.0:
 		vault_progress = minf(vault_progress + delta / family.vault_time, 1.0)
 	_lock_pulse = maxf(_lock_pulse - delta * LOCK_PULSE_DECAY, 0.0)
@@ -307,6 +312,14 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 				pose.front_foot = Vector2(6.0, 8.0)
 				pose.back_foot = Vector2(-4.0, 12.0)
 				lean = -10.0
+	if finish_hold_left > 0.0 and fighter.is_alive():
+		var hold: float = minf(finish_hold_left / FINISH_HOLD_BLEND, 1.0)
+		pose.grip = pose.grip.lerp(FINISH_HOLD_GRIP, hold)
+		pose.blade_angle = rad_to_deg(lerp_angle(deg_to_rad(pose.blade_angle), deg_to_rad(FINISH_HOLD_ANGLE), hold))
+		pose.front_foot.x += 14.0 * hold
+		pose.back_foot.x -= 14.0 * hold
+		crouch += 12.0 * hold
+		lean = lerpf(lean, 10.0, hold)
 	if fighter.blade_out and (fighter.is_free() or fighter.state == FighterState.State.BLOCKING):
 		pose.grip = pose.grip.lerp(THROW_CATCH_HAND, CATCH_REACH)
 		pose.open_hand = true

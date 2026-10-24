@@ -54,6 +54,34 @@ extends Resource
 @export var trail_duration: float = 0.12
 @export var parry_flare: float = 0.15
 
+@export_group("Finishers")
+@export var finisher_hold: float = 0.35
+@export var finisher_slide_time: float = 0.45
+@export var finisher_slide_distance: float = 18.0
+@export var finisher_topple_speed: float = 2.6
+@export var finisher_drop_gravity: float = 900.0
+@export var finisher_lower_delay: float = 0.6
+@export var finisher_fling_speed: Vector2 = Vector2(380.0, -260.0)
+@export var finisher_fling_gravity: float = 1400.0
+@export var finisher_fling_spin: float = 7.0
+@export var finisher_edge_cooling: float = 1.6
+@export var finisher_edge_width: float = 3.0
+@export var finisher_smoke_interval: float = 0.18
+@export var finisher_streak_time: float = 0.3
+@export var finisher_streak_width: float = 6.0
+@export var finisher_streak_height: float = 82.0
+@export var finisher_cutter_pose: float = 1.1
+@export var xray_time: float = 0.6
+@export var xray_flicker: float = 14.0
+@export var char_time: float = 0.3
+@export var blast_time: float = 0.75
+@export var blast_distance: float = 300.0
+@export var blast_arc: float = 110.0
+@export var blast_embers: int = 26
+@export var neck_embers: int = 14
+@export var ember_speed: float = 260.0
+@export var ember_life: float = 0.8
+
 @export_group("Letterbox")
 @export var letterbox_height: float = 0.11
 @export var letterbox_speed: float = 4.0

@@ -44,6 +44,8 @@ var _snap_pose: bool = true
 var _severed: Array[SeveredPiece] = []
 var _fall_limb: MoveData.Limb = MoveData.Limb.NONE
 var _lost_blade: bool = false
+var _finisher: FinisherPlayer
+var _prosthetics: Array[Vector2i] = []
 
 
 func setup(state: FighterState, other: FighterState, tick_runner: TickRunner, effects_config: EffectsConfig, glow_layer: Node, look: CostumeData, reflect: bool) -> void:
@@ -110,7 +112,13 @@ func reset_round(ignite: bool) -> void:
 	_extinguish = 0.0
 	_ignition = 0.0 if ignite else 1.0
 	rotation = 0.0
+	if _finisher != null:
+		_finisher.clear()
+		_finisher = null
 	rig.restore()
+	rig.clear_prosthetics()
+	for lost in _prosthetics:
+		rig.set_prosthetic(lost.x as MoveData.Limb, lost.y == 1)
 	rig.reset_cloths()
 	for piece in _severed:
 		piece.queue_free()
@@ -161,6 +169,8 @@ func on_event(event: CombatEvent) -> void:
 		CombatEvent.Type.DEATH:
 			if event.target == fighter.index:
 				_start_death(event)
+			elif event.source == fighter.index and show_finishers:
+				_start_cutter_pose(event)
 
 
 func _start_death(event: CombatEvent) -> void:
@@ -168,11 +178,34 @@ func _start_death(event: CombatEvent) -> void:
 	if not reduced_effects:
 		_flash_left = effects.hit_flash_duration
 	_fall_limb = event.limb if show_finishers else MoveData.Limb.NONE
+	if show_finishers and event.finisher != Finisher.Kind.NONE:
+		_finisher = FinisherPlayer.new()
+		add_child(_finisher)
+		_finisher.start(self, event.finisher, opponent.x)
+		return
+	if show_finishers and event.limb != MoveData.Limb.NONE and (event.limb == MoveData.Limb.ARM or event.limb == MoveData.Limb.LEG):
+		_prosthetics.append(Vector2i(event.limb, 1 if event.from_front else 0))
 	if show_finishers and event.limb != MoveData.Limb.NONE:
 		var away: int = -fighter.facing if event.from_front else fighter.facing
 		_spawn_piece(event.limb, event.from_front, away)
 		rig.sever(event.limb, event.from_front)
 		_lost_blade = rig.lost_main_hand()
+
+
+func _start_cutter_pose(event: CombatEvent) -> void:
+	if event.finisher != Finisher.Kind.DASH_THROUGH and event.finisher != Finisher.Kind.PULL_CUT:
+		return
+	_solver.finish_hold_left = effects.finisher_cutter_pose
+	if event.finisher != Finisher.Kind.DASH_THROUGH or reduced_effects:
+		return
+	var streak: SlashStreak = SlashStreak.new()
+	var lift: Vector2 = Vector2(0.0, -effects.finisher_streak_height)
+	streak.from_point = global_position + lift
+	streak.to_point = Vector2(fighter.x, -fighter.y) + lift
+	streak.color = blade.color
+	streak.life = effects.finisher_streak_time
+	streak.width = effects.finisher_streak_width
+	get_parent().add_child(streak)
 
 
 func _spawn_piece(limb: MoveData.Limb, front: bool, away: int) -> void:
@@ -210,6 +243,8 @@ func _process(delta: float) -> void:
 	rig.rotation = _pose.spin
 	rig.scale.x = fighter.character.art.dim("scale") * _turn_factor(_pose.turn)
 	rig.position = _pose.pelvis - _pose.pelvis.rotated(_pose.spin) if _pose.spin != 0.0 else Vector2.ZERO
+	if _finisher != null:
+		_finisher.update(delta, _pose, fighter.facing)
 	rig.apply(_pose, fighter.facing, delta)
 	rig.set_flash(1.0 if _flash_left > 0.0 else 0.0)
 	rig.set_wound(fighter.wound)
@@ -255,15 +290,22 @@ func _update_death(delta: float) -> void:
 	if _death_time < 0.0:
 		return
 	_death_time += delta
+	_extinguish = minf(_death_time / effects.extinguish, 1.0)
+	if _finisher != null:
+		if _finisher.moves_body():
+			return
+		var delay: float = _finisher.fall_delay()
+		if _death_time < delay:
+			return
+	var falling: float = _death_time - (_finisher.fall_delay() if _finisher != null else 0.0)
 	match _fall_limb:
 		MoveData.Limb.HEAD:
-			var topple: float = clampf((_death_time - KNEEL_TIME) / FALL_DURATION, 0.0, 1.0)
+			var topple: float = clampf((falling - KNEEL_TIME) / FALL_DURATION, 0.0, 1.0)
 			rotation = FALL_ANGLE * ease(topple, 2.2) * fighter.facing
 		MoveData.Limb.LEG:
-			rotation = -FALL_ANGLE * ease(minf(_death_time / (FALL_DURATION * LEG_FALL_SPEED), 1.0), 1.8) * fighter.facing
+			rotation = -FALL_ANGLE * ease(minf(falling / (FALL_DURATION * LEG_FALL_SPEED), 1.0), 1.8) * fighter.facing
 		_:
-			rotation = -FALL_ANGLE * ease(minf(_death_time / FALL_DURATION, 1.0), 0.4) * fighter.facing
-	_extinguish = minf(_death_time / effects.extinguish, 1.0)
+			rotation = -FALL_ANGLE * ease(minf(falling / FALL_DURATION, 1.0), 0.4) * fighter.facing
 
 
 func _update_blade() -> void:

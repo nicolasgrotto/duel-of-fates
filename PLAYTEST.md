@@ -73,6 +73,24 @@ Galeria de poderes (↑ ↓ mudam o tier, `T` troca o alvo, `X` troca o lançado
 | 4.8 | Treinos guiados › Disputa de lâminas, 3º passo | termina com um desengajamento | `data/lessons/guided_lock.tres` |
 | 4.9 | **Reserva de Defesa**: Treino com o **Bastião** (Defesa 7), boneco atacando, segure `L` até o Vigor quase acabar | o último bloqueio que faltaria por pouco ainda segura (Vigor vai a zero); o seguinte quebra a guarda. Com a Sombra (Defesa 3) a guarda quebra assim que falta Vigor. F3 mostra `reserve` | `CombatConfig.defense_reserve_per_point` |
 
+## 4b. Finalizações cinematográficas e próteses
+
+Para ver cada uma, jogue Duelar com 1 round (ou o último round) e deixe o adversário quase sem vida. A opção Finalizações precisa estar ligada.
+
+| # | Como testar | Esperado | Onde ajustar |
+| --- | --- | --- | --- |
+| 4b.1 | Avanço com corte (frente + `I`) que mata | rastro reto, você para atrás do adversário com a lâmina na horizontal; ele fica de pé um instante e a metade de cima desliza pelo corte em brasa e cai | grupo Finishers do `EffectsConfig` |
+| 4b.2 | Investida descendente ou Corte ascendente que mata | corte vertical; as metades caem para os lados | idem |
+| 4b.3 | Arremesso da lâmina que mata | corte diagonal na parte de cima | idem |
+| 4b.4 | Corte de Fluxo que mata | corte na cintura | idem |
+| 4b.5 | Raio segurado até matar | esqueleto piscando ~0,6 s, depois corpo carbonizado com fumaça | `xray_time`, `xray_flicker`, `char_time`; cores `xray_*` e `charred_body` do `UiPalette` |
+| 4b.6 | Repulsão ou Repulsão Suprema que mata | estouro de brasa, corpo arremessado longe, cai deitado (sem sangue) | `blast_*`, `ember_*` |
+| 4b.7 | Puxão com o adversário com 12 de vida ou menos | ele é puxado e cortado ao meio; as metades voam para trás de você | `PowerData.execute_below` (`pull.tres`), `finisher_fling_*` |
+| 4b.8 | Estrangular até matar | brasa no pescoço e queda | `neck_embers` |
+| 4b.9 | Partida de 2 rounds: vença o 1º com um forte | o adversário volta no 2º round com o braço (ou a perna) metálico | `UiPalette.prosthetic_metal` |
+| 4b.10 | Opções › Finalizações desligada | nenhuma cinemática; queda comum | — |
+| 4b.11 | Depois do K.O. decisivo, assista ao replay | a cinemática se repete igual | — |
+
 ## 5. IA
 
 Duelar contra a IA no **Difícil** (Opções › Dificuldade).

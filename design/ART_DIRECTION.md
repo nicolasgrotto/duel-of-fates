@@ -187,6 +187,16 @@ Personagens com o mesmo jeito de lutar compartilham a base de animação.
 - A peça sai do lado certo: pela frente, o membro da frente; pelas costas, o de trás.
 - **Queda pelo corte**: sem cabeça, o corpo cai de joelhos e depois tomba para a frente; sem perna, desaba rápido para trás; sem braço (ou sem finalização), cai para trás.
 - **Brasa**: no coto, uma tampa em brasa (núcleo amarelo-quente `#ffd27a`, borda laranja `#ff7a2a`) esfria até cicatriz escura `#3a1a10` em ~1,6 s, pinga faíscas no primeiro 0,7 s e solta fumaça por ~3 s. A peça voa com rastro de brasa, solta fumaça ao pousar, e a cabeça rola pelo chão.
+- **Próteses** (fase 8, decisão do autor): o braço ou a perna perdidos num K.O. que não decide a partida voltam no round seguinte como **prótese robótica** até o fim da partida: as peças do membro trocam a paleta pelo metal (`UiPalette.prosthetic_metal`, material de prótese do rig), com a luz das lâminas por cima. Só apresentação.
+- **Finalizações cinematográficas** (K.O. decisivo; regra em GAME_DESIGN, seção 10): o corpo é cortado por um plano no shader do lutador e uma segunda cópia do rig, na mesma pose, mostra a outra metade; as metades se separam com física própria da apresentação e a borda do corte fica em brasa (amarelo-quente → laranja → cicatriz) soltando fumaça. Sem sangue.
+  - **Avanço com corte**: rastro reto e claro pelo caminho; quem corta aparece parado atrás da vítima com a lâmina estendida na horizontal (~1,1 s); a vítima fica de pé um instante, a metade de cima desliza devagar pelo corte, tomba e cai; a de baixo desaba.
+  - **Corte de Fluxo**: o mesmo corte na cintura, sem o rastro de quem corta.
+  - **Investida descendente e Corte ascendente**: corte vertical; as duas metades caem para os lados.
+  - **Arremesso da lâmina**: corte diagonal na parte de cima, que escorrega e cai.
+  - **Puxão**: a vítima chega puxada e é cortada ao meio; as metades seguem voando para trás de quem puxou.
+  - **Raio**: ~0,6 s de raio-X (corpo escuro piscando e um esqueleto estilizado de traços claros, crânio em círculo), depois o corpo escurece até carbonizado, solta fumaça e cai.
+  - **Repulsão e Repulsão Suprema**: estouro de brasa e faíscas; o corpo inteiro é arremessado longe num arco e cai deitado.
+  - **Estrangular**: estalo de brasa no pescoço e a queda.
 - **Ferimento** (braço/perna) durante o round: talho cauterizado diagonal sobre o membro (borda vermelho-escura `#5a1410`, núcleo em brasa pulsando devagar), brasas subindo de vez em quando e sombra leve no membro, até a Cura terminar ou o round acabar. Braço ferido: guarda mais baixa. Perna ferida: manca (passada curta e o corpo afunda quando o peso cai nela).
 
 ## Interface

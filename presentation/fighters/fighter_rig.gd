@@ -2,6 +2,11 @@ class_name FighterRig
 extends Node2D
 
 const MATERIAL_SHADER: Shader = preload("res://presentation/fighters/fighter_material.gdshader")
+const PALETTE: UiPalette = preload("res://ui/palette.tres")
+const LIMB_BONES: Dictionary = {
+	MoveData.Limb.ARM: ["upper_arm_", "forearm_", "hand_"],
+	MoveData.Limb.LEG: ["thigh_", "shin_", "boot_"],
+}
 const BACK_SHADE: Color = Color(0.68, 0.68, 0.72)
 const BODY_DEPTH: int = 32
 const WOUND_SHADE: Color = Color(0.78, 0.72, 0.72)
@@ -13,6 +18,10 @@ var art: FighterArt
 var character: CharacterData
 var costume: CostumeData
 var shader_material: ShaderMaterial
+var prosthetic_material: ShaderMaterial
+var pelvis_point: Vector2 = Vector2.ZERO
+var front_foot: Vector2 = Vector2.ZERO
+var back_foot: Vector2 = Vector2.ZERO
 var visible_parts: PackedStringArray = []
 var floor_y: float = 0.0
 var wind: float = 0.0
@@ -51,6 +60,11 @@ func build(data: CharacterData, look: CostumeData) -> void:
 	shader_material = ShaderMaterial.new()
 	shader_material.shader = MATERIAL_SHADER
 	shader_material.set_shader_parameter(&"palette", costume.colors)
+	shader_material.set_shader_parameter(&"charred_color", PALETTE.charred_body)
+	shader_material.set_shader_parameter(&"xray_color", PALETTE.xray_body)
+	prosthetic_material = shader_material.duplicate() as ShaderMaterial
+	prosthetic_material.set_shader_parameter(&"prosthetic", true)
+	prosthetic_material.set_shader_parameter(&"prosthetic_color", PALETTE.prosthetic_metal)
 	scale = Vector2.ONE * art.dim("scale")
 	z_index = BODY_DEPTH
 	_skeleton = Skeleton2D.new()
@@ -135,6 +149,9 @@ func apply(pose: RigPose, facing: int, delta: float) -> void:
 	var up: Vector2 = Vector2.UP.rotated(pose.torso_angle)
 	var torso_length: float = art.dim("torso_length")
 	var pelvis: Vector2 = pose.pelvis
+	pelvis_point = pelvis
+	front_foot = pose.front_foot
+	back_foot = pose.back_foot
 	chest = pelvis + up * torso_length
 	head_base = chest + up * art.dim("neck")
 	head_rotation = pose.torso_angle + pose.head_angle
@@ -242,7 +259,53 @@ func set_blade_out(out: bool) -> void:
 
 
 func set_flash(amount: float) -> void:
-	shader_material.set_shader_parameter(&"flash", amount)
+	_set_parameter(&"flash", amount)
+
+
+func set_clip(enabled: bool, point: Vector2 = Vector2.ZERO, normal: Vector2 = Vector2.DOWN) -> void:
+	_set_parameter(&"clip_enabled", enabled)
+	_set_parameter(&"clip_point", point)
+	_set_parameter(&"clip_normal", normal)
+
+
+func set_charred(amount: float) -> void:
+	_set_parameter(&"charred", amount)
+
+
+func set_xray(amount: float) -> void:
+	_set_parameter(&"xray", amount)
+
+
+func show_hilt(shown: bool) -> void:
+	_hilt.visible = shown and not _lost_main_hand
+
+
+func set_prosthetic(limb: MoveData.Limb, front: bool) -> void:
+	var side: String = "front" if front else "back"
+	for prefix in LIMB_BONES.get(limb, []):
+		for key in _sprites:
+			if key.begins_with(prefix + side + ":"):
+				_sprites[key].material = prosthetic_material
+
+
+func clear_prosthetics() -> void:
+	for key in _sprites:
+		_sprites[key].material = shader_material
+
+
+func skeleton_lines() -> PackedVector2Array:
+	var hip: Vector2 = pelvis_point
+	var neck: Vector2 = head_base
+	return PackedVector2Array([
+		hip, chest, chest, neck,
+		chest, front_elbow, front_elbow, front_hand, chest, back_elbow, back_elbow, back_hand,
+		hip, front_knee, front_knee, front_foot, hip, back_knee, back_knee, back_foot,
+	])
+
+
+func _set_parameter(parameter: StringName, value: Variant) -> void:
+	shader_material.set_shader_parameter(parameter, value)
+	prosthetic_material.set_shader_parameter(parameter, value)
 
 
 func set_wound(wound: FighterState.Wound) -> void:

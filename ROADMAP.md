@@ -158,11 +158,11 @@ Retorno do autor (plano em sete frentes; bloco A sem tocar no trabalho do Codex,
 - [x] Galeria: a Telecinese em Massa não reinicia antes de os pedaços caírem
 - [x] História: caminho da Aurora em azul e do Eclipse em vermelho
 - [x] Remover a técnica Giro (substitutos em CHARACTERS; `TechniqueStyle.SPIN` e a pose dele também saíram)
-- [x] Finalizações cinematográficas no K.O. decisivo: regra na simulação (até a apresentação entrar, esses K.O.s caem sem cortar membro)
+- [x] Finalizações cinematográficas no K.O. decisivo: regra na simulação
 - [x] Escudo da Tempestade redesenhado
 - [x] Puxão do jeito antigo: bola grande encolhendo em quem lança, sem fio
-- [ ] Próteses robóticas nos membros perdidos em rounds anteriores (bloco B)
-- [ ] Finalizações cinematográficas: apresentação (corte na cintura, vertical, diagonal, Puxão com corte, Raio com esqueleto e corpo carbonizado, explosão de brasa da Repulsão, Estrangular) (bloco B)
+- [x] Próteses robóticas nos membros perdidos em rounds anteriores
+- [x] Finalizações cinematográficas: apresentação (corte na cintura, vertical, diagonal, Puxão com corte, Raio com esqueleto e corpo carbonizado, explosão de brasa da Repulsão, Estrangular)
 - [ ] Personalização do protagonista da História (cabelos, barbas, cosméticos, armadura de placas clara) e trajes do Predestinado mais próximos do arquétipo (bloco B)
 
 - [x] Localização completa PT-BR e EN (todas as chaves nos dois idiomas, garantido por `test_translations`; passada de revisão do inglês: nenhum texto em português na coluna EN, falas da História polidas em STORY.md e no CSV)
