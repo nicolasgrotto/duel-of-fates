@@ -23,6 +23,7 @@ var vsync: bool = true
 var vibration: bool = true
 var key_preset: StringName = &"default"
 var custom_keys: Dictionary = {}
+var custom_buttons: Dictionary = {}
 
 
 func _ready() -> void:
@@ -38,6 +39,7 @@ func difficulty_data() -> AiDifficultyData:
 func apply() -> void:
 	TranslationServer.set_locale(locale)
 	InputBindings.apply_keyboard(custom_keys if key_preset == &"custom" and not custom_keys.is_empty() else InputBindings.preset_keys(key_preset))
+	InputBindings.apply_buttons(custom_buttons if not custom_buttons.is_empty() else InputBindings.default_buttons())
 	_set_volume(&"Master", master_volume)
 	_set_volume(&"Music", music_volume)
 	for bus in EFFECT_BUSES:
@@ -101,6 +103,7 @@ func load_settings() -> void:
 	vibration = file.get_value("input", "vibration", vibration)
 	key_preset = StringName(file.get_value("input", "key_preset", String(key_preset)))
 	custom_keys = file.get_value("input", "custom_keys", {})
+	custom_buttons = file.get_value("input", "custom_buttons", {})
 	if not InputBindings.PRESETS.has(key_preset):
 		key_preset = &"default"
 	if not LOCALES.has(locale):
@@ -125,6 +128,7 @@ func save_settings() -> void:
 	file.set_value("input", "vibration", vibration)
 	file.set_value("input", "key_preset", String(key_preset))
 	file.set_value("input", "custom_keys", custom_keys)
+	file.set_value("input", "custom_buttons", custom_buttons)
 	for slot in hold_to_lock.size():
 		file.set_value("accessibility", "hold_to_lock_p%d" % (slot + 1), hold_to_lock[slot])
 	file.save(SETTINGS_PATH)

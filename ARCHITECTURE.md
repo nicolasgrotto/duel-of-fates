@@ -172,7 +172,7 @@ Nenhum número de balanceamento no código. Os valores iniciais estão nos docum
 - **`AiController`**: pensa em intervalos, lê o estado visível e produz `Intent`. Perfis e dificuldades vêm de dados. Nunca toca no estado.
 - **`DummyController`** (Treino, Tutorial) e **`ReplayController`** (reproduz intents gravados).
 - Remapeamento salvo em `user://`; telas mostram os bindings atuais com ícones do dispositivo em uso.
-- Implementação (fase 6): `InputBindings.preset_keys(preset)`, `apply_keyboard(keys)`, `keyboard_map()` e `rebind(keys, action, key)` (troca de lugar); `Settings` guarda `key_preset` e `custom_keys` (seção `input` do arquivo) e aplica em `apply()`. Telas `keys` e `controls` no `SceneRouter`.
+- Implementação (fase 6): `InputBindings.preset_keys(preset)`, `apply_keyboard(keys)`, `keyboard_map()` e `rebind(keys, action, key)` (troca de lugar); `Settings` guarda `key_preset` e `custom_keys` (seção `input` do arquivo) e aplica em `apply()`. Telas `keys` e `controls` no `SceneRouter`. Gamepad (fase 8): `InputBindings.default_buttons()`, `apply_buttons(map)` (troca só os `InputEventJoypadButton` das ações de combate dos dois jogadores, cada um no seu `device`), `button_map()`, `rebind_button()` (mesma troca de lugar das teclas, `_swap`) e `is_reserved_button()`; `ControlHints.button_names()` nomeia botões e eixos pelas chaves `PAD_*` e `PAD_AXIS_*` da tabela de tradução.
 - **Vibração**: `EffectRecipe.rumble_*` (golpe forte, choque, quebra de guarda, K.O., disputa, parry perfeito, choque entre técnicas); o `EffectsDirector` emite `rumbled` e o `DuelRumble` vibra o gamepad (`device` = slot do jogador) só dos lutadores humanos envolvidos, se `Settings.vibration`; desliga no replay.
 
 Implementação:

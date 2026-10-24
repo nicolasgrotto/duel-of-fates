@@ -339,16 +339,43 @@ ACTION_EVADE,Esquiva de precisão,Precision evade
 ACTION_SPECIAL,Habilidade,Ability
 ACTION_POWER,Poder,Power
 ACTION_PAUSE,Pausar,Pause
-KEYS_TITLE,CONFIGURAR TECLAS,KEY BINDINGS
-KEYS_ROW,{action} · {keys},{action} · {keys}
-KEYS_WAITING,Pressione a nova tecla · {action},Press the new key · {action}
+KEYS_TITLE,TECLAS E BOTÕES,KEYS AND BUTTONS
+KEYS_ROW,{action} · {keys} · {buttons},{action} · {keys} · {buttons}
+KEYS_WAITING,Pressione a nova tecla ou botão do gamepad · {action},Press the new key or gamepad button · {action}
+PAD_0,A,A
+PAD_1,B,B
+PAD_2,X,X
+PAD_3,Y,Y
+PAD_4,Select,Select
+PAD_5,Guia,Guide
+PAD_6,Start,Start
+PAD_7,L3,L3
+PAD_8,R3,R3
+PAD_9,LB,LB
+PAD_10,RB,RB
+PAD_11,Direcional ↑,D-pad ↑
+PAD_12,Direcional ↓,D-pad ↓
+PAD_13,Direcional ←,D-pad ←
+PAD_14,Direcional →,D-pad →
+PAD_15,Misc,Misc
+PAD_16,Pá 1,Paddle 1
+PAD_17,Pá 2,Paddle 2
+PAD_18,Pá 3,Paddle 3
+PAD_19,Pá 4,Paddle 4
+PAD_20,Touchpad,Touchpad
+PAD_AXIS_0,Analógico ← →,Left stick ← →
+PAD_AXIS_1,Analógico ↓,Left stick ↓
+PAD_AXIS_2,Analógico direito,Right stick
+PAD_AXIS_3,Analógico direito,Right stick
+PAD_AXIS_4,LT,LT
+PAD_AXIS_5,RT,RT
 KEYS_RESERVED,{key} é reservada,{key} is reserved
 KEYS_RESTORE,Restaurar padrão,Restore defaults
 OPTION_KEY_PRESET,Teclado · {value},Keyboard · {value}
 PRESET_DEFAULT,Padrão,Default
 PRESET_ARROWS,Setas,Arrows
 PRESET_CUSTOM,Personalizado,Custom
-OPTION_KEYS,Configurar teclas,Key bindings
+OPTION_KEYS,Teclas e botões,Keys and buttons
 OPTION_VIBRATION,Vibração · {value},Vibration · {value}
 MENU_CONTROLS,Controles,Controls
 CONTROLS_TITLE,CONTROLES,CONTROLS

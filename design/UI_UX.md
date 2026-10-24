@@ -128,7 +128,7 @@ Idioma, dificuldade, efeitos, som, música, volumes, teclado (preset e Configura
 
 Lista "Ação: teclas", Restaurar padrão, Voltar. Confirmar escolhe a ação e pede a nova tecla; tecla repetida troca de lugar; teclas reservadas avisam. Qualquer mudança ativa o preset Personalizado.
 
-> Implementada na fase 6 (`screens/controls/key_config_screen.gd`), para o teclado do J1: linhas `Ação · teclas` (a nova tecla vira a principal e as secundárias ficam), `Esc` cancela a espera, Enter, `Esc` e F3/F5/F6/F7 são reservadas (aviso em vermelho de perigo). Presets nas Opções: Padrão, Setas (setas + `Z X C V`, habilidade `A`, poder `S`) e Personalizado (só aparece depois de uma troca). Gamepad e teclado do J2 ficam com o modo 2 Jogadores.
+> Implementada na fase 6 (`screens/controls/key_config_screen.gd`), para o teclado do J1: linhas `Ação · teclas` (a nova tecla vira a principal e as secundárias ficam), `Esc` cancela a espera, Enter, `Esc` e F3/F5/F6/F7 são reservadas (aviso em vermelho de perigo). Presets nas Opções: Padrão, Setas (setas + `Z X C V`, habilidade `A`, poder `S`) e Personalizado (só aparece depois de uma troca). Gamepad e teclado do J2 ficam com o modo 2 Jogadores. Fase 8: a mesma tela (Teclas e botões) aceita também um botão do gamepad enquanto espera; o mapa de botões vale para os gamepads dos dois jogadores (`Settings.custom_buttons`, salvo em `input/custom_buttons`), com a mesma troca de lugar das teclas; Start, Select e Guia são reservados; os eixos (analógico, LT do bloqueio, RT do poder) continuam fixos e aparecem na linha ao lado dos botões. Restaurar padrão volta teclas e botões.
 
 ### Controles
 
@@ -141,7 +141,7 @@ Tabela de duas colunas (ação e teclas atuais). Combinações com `+`; ações 
 - Não depender só de cor: vida baixa pisca; o desequilíbrio aparece na lâmina e na pose.
 - **Efeitos reduzidos** (ver VFX).
 - **Segurar para disputar** na disputa de lâminas.
-- Remapeamento completo de teclado e gamepad.
+- Remapeamento completo de teclado e gamepad (tela Teclas e botões).
 - Legendas sempre ativas nas falas (o jogo é todo em texto; se houver voz, legendas continuam).
 
 ## Toque (futuro)

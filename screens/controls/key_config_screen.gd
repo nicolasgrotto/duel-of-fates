@@ -56,6 +56,11 @@ func _label(variation: StringName) -> Label:
 func _input(event: InputEvent) -> void:
 	if _waiting == "":
 		return
+	var button: InputEventJoypadButton = event as InputEventJoypadButton
+	if button != null and button.pressed:
+		get_viewport().set_input_as_handled()
+		_bind_button(button.button_index)
+		return
 	var key: InputEventKey = event as InputEventKey
 	if key == null or not key.pressed or key.echo:
 		return
@@ -72,6 +77,20 @@ func _input(event: InputEvent) -> void:
 		AudioDirector.play_ui(&"rejected")
 		return
 	Settings.set_custom_keys(InputBindings.rebind(InputBindings.keyboard_map(), _waiting, code))
+	_finish_binding()
+
+
+func _bind_button(button: JoyButton) -> void:
+	if InputBindings.is_reserved_button(button):
+		_status.text = tr("KEYS_RESERVED").format({"key": ControlHints.button_name(button)})
+		_status.add_theme_color_override(&"font_color", PALETTE.danger)
+		AudioDirector.play_ui(&"rejected")
+		return
+	Settings.custom_buttons = InputBindings.rebind_button(InputBindings.button_map(), _waiting, button)
+	_finish_binding()
+
+
+func _finish_binding() -> void:
 	Settings.apply()
 	Settings.save_settings()
 	_waiting = ""
@@ -93,6 +112,7 @@ func _on_chosen(id: StringName) -> void:
 		&"restore":
 			Settings.key_preset = &"default"
 			Settings.custom_keys = {}
+			Settings.custom_buttons = {}
 			Settings.apply()
 			Settings.save_settings()
 			_refresh()
@@ -106,8 +126,10 @@ func _on_chosen(id: StringName) -> void:
 func _refresh() -> void:
 	_status.text = ""
 	for action in InputBindings.REBINDABLE:
-		var keys: PackedStringArray = ControlHints.key_names(StringName(InputBindings.player_prefix(0) + action))
-		_list.set_item_text(StringName(action), tr("KEYS_ROW").format({"action": tr(_action_key(action)), "keys": " / ".join(keys)}))
+		var bound: StringName = StringName(InputBindings.player_prefix(0) + action)
+		var keys: PackedStringArray = ControlHints.key_names(bound)
+		var buttons: PackedStringArray = ControlHints.button_names(bound)
+		_list.set_item_text(StringName(action), tr("KEYS_ROW").format({"action": tr(_action_key(action)), "keys": " / ".join(keys), "buttons": " / ".join(buttons) if not buttons.is_empty() else "-"}))
 
 
 static func _action_key(action: String) -> String:

@@ -47,6 +47,7 @@ const TWO_PLAYER_KEYS: Array[Dictionary] = [
 const PRESETS: Array[StringName] = [&"default", &"arrows", &"custom"]
 const REBINDABLE: Array[String] = ["move_left", "move_right", "jump", "light_attack", "heavy_attack", "block", "dodge", "evade", "special", "power"]
 const RESERVED_KEYS: Array[Key] = [KEY_ESCAPE, KEY_ENTER, KEY_KP_ENTER, KEY_F3, KEY_F5, KEY_F6, KEY_F7]
+const RESERVED_BUTTONS: Array[JoyButton] = [JOY_BUTTON_START, JOY_BUTTON_BACK, JOY_BUTTON_GUIDE]
 
 const COMBAT_BUTTONS: Dictionary = {
 	"move_left": [JOY_BUTTON_DPAD_LEFT],
@@ -175,20 +176,57 @@ static func keyboard_map() -> Dictionary:
 
 
 static func rebind(keys: Dictionary, action: String, keycode: Key) -> Dictionary:
-	var result: Dictionary = keys.duplicate(true)
+	return _swap(keys, action, keycode, KEY_NONE)
+
+
+static func default_buttons() -> Dictionary:
+	var buttons: Dictionary = {}
+	for action in REBINDABLE:
+		buttons[action] = COMBAT_BUTTONS.get(action, []).duplicate()
+	return buttons
+
+
+static func apply_buttons(buttons: Dictionary) -> void:
+	for slot in PLAYER_COUNT:
+		var prefix: String = player_prefix(slot)
+		for action in REBINDABLE:
+			for event in InputMap.action_get_events(prefix + action):
+				if event is InputEventJoypadButton:
+					InputMap.action_erase_event(prefix + action, event)
+			for button in buttons.get(action, COMBAT_BUTTONS.get(action, [])):
+				_add_button(prefix + action, button, slot)
+
+
+static func button_map() -> Dictionary:
+	var buttons: Dictionary = {}
+	for action in REBINDABLE:
+		var indices: Array = []
+		for event in InputMap.action_get_events(player_prefix(0) + action):
+			if event is InputEventJoypadButton:
+				indices.append((event as InputEventJoypadButton).button_index)
+		buttons[action] = indices
+	return buttons
+
+
+static func rebind_button(buttons: Dictionary, action: String, button: JoyButton) -> Dictionary:
+	return _swap(buttons, action, button, JOY_BUTTON_INVALID)
+
+
+static func _swap(map: Dictionary, action: String, code: int, none: int) -> Dictionary:
+	var result: Dictionary = map.duplicate(true)
 	var own: Array = result.get(action, []).duplicate()
-	var previous: int = own[0] if not own.is_empty() else KEY_NONE
-	own.erase(keycode)
-	own.push_front(keycode)
+	var previous: int = own[0] if not own.is_empty() else none
+	own.erase(code)
+	own.push_front(code)
 	result[action] = own
 	for other in result:
 		if other == action:
 			continue
 		var codes: Array = result[other]
-		var index: int = codes.find(keycode)
+		var index: int = codes.find(code)
 		if index < 0:
 			continue
-		if previous != KEY_NONE and not codes.has(previous):
+		if previous != none and not codes.has(previous):
 			codes[index] = previous
 		else:
 			codes.remove_at(index)
@@ -197,6 +235,10 @@ static func rebind(keys: Dictionary, action: String, keycode: Key) -> Dictionary
 
 static func is_reserved(keycode: Key) -> bool:
 	return RESERVED_KEYS.has(keycode)
+
+
+static func is_reserved_button(button: JoyButton) -> bool:
+	return RESERVED_BUTTONS.has(button)
 
 
 static func _reset_action(action: String) -> void:

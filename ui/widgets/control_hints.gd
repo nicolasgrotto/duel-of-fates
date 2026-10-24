@@ -21,6 +21,24 @@ static func key_names(action: StringName) -> PackedStringArray:
 	return names
 
 
+static func button_names(action: StringName) -> PackedStringArray:
+	var names: PackedStringArray = []
+	if not InputMap.has_action(action):
+		return names
+	for event in InputMap.action_get_events(action):
+		var button: InputEventJoypadButton = event as InputEventJoypadButton
+		if button != null:
+			names.append(button_name(button.button_index))
+		var motion: InputEventJoypadMotion = event as InputEventJoypadMotion
+		if motion != null:
+			names.append(TranslationServer.translate("PAD_AXIS_%d" % motion.axis))
+	return names
+
+
+static func button_name(button: JoyButton) -> String:
+	return TranslationServer.translate("PAD_%d" % button)
+
+
 static func key_name(physical: Key) -> String:
 	var code: Key = physical
 	if not OS.has_feature(WEB_FEATURE):
