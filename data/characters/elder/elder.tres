@@ -43,6 +43,7 @@ wound_limb = 0
 finisher_limb = 1
 blade_angle_windup = -150.0
 blade_angle_strike = 20.0
+cut = 1
 
 [sub_resource type="Resource" id="elder_light_2"]
 script = ExtResource("2_move")
@@ -68,6 +69,7 @@ wound_limb = 0
 finisher_limb = 1
 blade_angle_windup = 70.0
 blade_angle_strike = -110.0
+cut = 2
 
 [sub_resource type="Resource" id="elder_light_3"]
 script = ExtResource("2_move")
@@ -93,6 +95,7 @@ wound_limb = 0
 finisher_limb = 1
 blade_angle_windup = -20.0
 blade_angle_strike = 0.0
+cut = 4
 
 [sub_resource type="Resource" id="elder_heavy"]
 script = ExtResource("2_move")
@@ -118,6 +121,7 @@ wound_limb = 1
 finisher_limb = 1
 blade_angle_windup = -170.0
 blade_angle_strike = 40.0
+cut = 1
 
 [sub_resource type="Resource" id="elder_forward_heavy"]
 script = ExtResource("2_move")
@@ -143,6 +147,7 @@ wound_limb = 2
 finisher_limb = 2
 blade_angle_windup = -160.0
 blade_angle_strike = 60.0
+cut = 1
 
 [sub_resource type="Resource" id="elder_aerial_heavy"]
 script = ExtResource("2_move")

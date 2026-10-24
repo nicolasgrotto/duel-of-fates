@@ -43,6 +43,7 @@ wound_limb = 0
 finisher_limb = 1
 blade_angle_windup = -130.0
 blade_angle_strike = 15.0
+cut = 1
 
 [sub_resource type="Resource" id="forge_light_2"]
 script = ExtResource("2_move")
@@ -68,6 +69,7 @@ wound_limb = 0
 finisher_limb = 1
 blade_angle_windup = 60.0
 blade_angle_strike = -90.0
+cut = 2
 
 [sub_resource type="Resource" id="forge_heavy"]
 script = ExtResource("2_move")
@@ -93,6 +95,7 @@ wound_limb = 1
 finisher_limb = 1
 blade_angle_windup = -200.0
 blade_angle_strike = 60.0
+cut = 1
 
 [sub_resource type="Resource" id="forge_forward_heavy"]
 script = ExtResource("2_move")
@@ -118,6 +121,7 @@ wound_limb = 2
 finisher_limb = 2
 blade_angle_windup = -160.0
 blade_angle_strike = 60.0
+cut = 1
 
 [sub_resource type="Resource" id="forge_ability_move"]
 script = ExtResource("2_move")

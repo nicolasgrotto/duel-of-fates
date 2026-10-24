@@ -44,6 +44,7 @@ wound_limb = 0
 finisher_limb = 1
 blade_angle_windup = -150.0
 blade_angle_strike = 20.0
+cut = 1
 
 [sub_resource type="Resource" id="foretold_light_2"]
 script = ExtResource("2_move")
@@ -69,6 +70,7 @@ wound_limb = 0
 finisher_limb = 1
 blade_angle_windup = 70.0
 blade_angle_strike = -110.0
+cut = 2
 
 [sub_resource type="Resource" id="foretold_heavy"]
 script = ExtResource("2_move")
@@ -94,6 +96,7 @@ wound_limb = 1
 finisher_limb = 1
 blade_angle_windup = -170.0
 blade_angle_strike = 40.0
+cut = 1
 
 [sub_resource type="Resource" id="foretold_forward_heavy"]
 script = ExtResource("2_move")
@@ -119,6 +122,7 @@ wound_limb = 2
 finisher_limb = 2
 blade_angle_windup = -160.0
 blade_angle_strike = 60.0
+cut = 1
 
 [sub_resource type="Resource" id="foretold_ability"]
 script = ExtResource("12_ability")

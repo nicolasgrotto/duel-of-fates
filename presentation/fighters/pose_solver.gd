@@ -40,6 +40,23 @@ const ANTICIPATION_EASE: float = 2.4
 const SWING_SMOOTHING: float = 0.35
 const FOLLOW_SHARE: float = 0.35
 const SHOULDER_LEAD: float = 2.0
+const CUT_WINDUP: Dictionary = {
+	MoveData.Cut.DESCENDING: Vector2(-4.0, -50.0),
+	MoveData.Cut.RISING: Vector2(-8.0, -4.0),
+	MoveData.Cut.HORIZONTAL: Vector2(14.0, -36.0),
+	MoveData.Cut.THRUST: Vector2(0.0, -34.0),
+	MoveData.Cut.SPIN: Vector2(18.0, -36.0),
+}
+const CUT_STRIKE: Dictionary = {
+	MoveData.Cut.DESCENDING: Vector2(24.0, -18.0),
+	MoveData.Cut.RISING: Vector2(22.0, -46.0),
+	MoveData.Cut.HORIZONTAL: Vector2(28.0, -34.0),
+	MoveData.Cut.THRUST: Vector2(42.0, -32.0),
+	MoveData.Cut.SPIN: Vector2(26.0, -34.0),
+}
+const HEAVY_CUT_LIFT: float = 8.0
+const HORIZONTAL_TWIST: float = 2.5
+const THRUST_SHIFT: float = 8.0
 const OFF_SWAY: float = 6.0
 const OFF_SWING: float = 40.0
 const ARC_CENTER: Vector2 = Vector2(-2.0, -34.0)
@@ -335,6 +352,11 @@ func _attack(fighter: FighterState, pose: RigPose, guard_angle: float, guard_gri
 	var power: float = HEAVY_SCALE if heavy else 1.0
 	var windup_grip: Vector2 = (HEAVY_WINDUP_GRIP if heavy else WINDUP_GRIP) * Vector2(family.windup_pull, 1.0)
 	var strike_grip: Vector2 = STRIKE_GRIP * Vector2(family.strike_reach, 1.0)
+	if move.cut != MoveData.Cut.ARC:
+		windup_grip = CUT_WINDUP[move.cut] * Vector2(family.windup_pull, 1.0)
+		strike_grip = CUT_STRIKE[move.cut] * Vector2(family.strike_reach, 1.0)
+		if heavy and move.cut == MoveData.Cut.DESCENDING:
+			windup_grip.y -= HEAVY_CUT_LIFT
 	var progress: float = _progress(fighter, move)
 	var crouch: float = 0.0
 	var lean: float = 0.0
@@ -348,6 +370,7 @@ func _attack(fighter: FighterState, pose: RigPose, guard_angle: float, guard_gri
 			crouch = family.heavy_crouch * 0.4 * power * eased
 			_body_shift = -family.windup_shift * power * eased
 			pose.back_foot.x -= 2.0 * power * eased
+			pose.turn = _cut_turn(move.cut, eased, false)
 		FighterState.Phase.ACTIVE:
 			var swing: float = lerpf(progress, smoothstep(0.0, 1.0, progress), SWING_SMOOTHING)
 			var body: float = 1.0 - pow(1.0 - swing, SHOULDER_LEAD)
@@ -360,6 +383,10 @@ func _attack(fighter: FighterState, pose: RigPose, guard_angle: float, guard_gri
 			pose.front_foot.x += step * body
 			pose.back_foot.x -= 2.0 * power * (1.0 - body)
 			pose.trail = true
+			pose.turn = _cut_turn(move.cut, swing, true)
+			if move.cut == MoveData.Cut.THRUST:
+				_body_shift += THRUST_SHIFT * body
+				pose.front_foot.x += THRUST_SHIFT * body
 		FighterState.Phase.RECOVERY:
 			var share: float = family.recover_share
 			var through: float = 1.0 - pow(1.0 - minf(progress / share, 1.0), 2.0)
@@ -381,6 +408,15 @@ func _attack(fighter: FighterState, pose: RigPose, guard_angle: float, guard_gri
 		_tuck(pose, 0.8)
 		_body_shift = 0.0
 	return Vector2(crouch, lean)
+
+
+static func _cut_turn(cut: MoveData.Cut, amount: float, active: bool) -> float:
+	match cut:
+		MoveData.Cut.HORIZONTAL:
+			return HORIZONTAL_TWIST * (1.0 - amount) if active else HORIZONTAL_TWIST * amount
+		MoveData.Cut.SPIN:
+			return PI + PI * amount if active else PI * amount
+	return 0.0
 
 
 func _technique(fighter: FighterState, pose: RigPose, move: MoveData, guard_angle: float, guard_grip: Vector2) -> Vector2:

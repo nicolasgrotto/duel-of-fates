@@ -43,6 +43,7 @@ wound_limb = 0
 finisher_limb = 1
 blade_angle_windup = -140.0
 blade_angle_strike = 20.0
+cut = 1
 
 [sub_resource type="Resource" id="wasp_light_2"]
 script = ExtResource("2_move")
@@ -68,6 +69,7 @@ wound_limb = 0
 finisher_limb = 1
 blade_angle_windup = 60.0
 blade_angle_strike = -90.0
+cut = 2
 
 [sub_resource type="Resource" id="wasp_light_3"]
 script = ExtResource("2_move")
@@ -93,6 +95,7 @@ wound_limb = 0
 finisher_limb = 1
 blade_angle_windup = -20.0
 blade_angle_strike = 0.0
+cut = 4
 
 [sub_resource type="Resource" id="wasp_light_4"]
 script = ExtResource("2_move")
@@ -116,8 +119,9 @@ blade_reach = 60.0
 can_blade_lock = false
 wound_limb = 0
 finisher_limb = 1
-blade_angle_windup = 70.0
-blade_angle_strike = -100.0
+blade_angle_windup = -10.0
+blade_angle_strike = 0.0
+cut = 3
 
 [sub_resource type="Resource" id="wasp_light_5"]
 script = ExtResource("2_move")
@@ -141,8 +145,9 @@ blade_reach = 60.0
 can_blade_lock = false
 wound_limb = 0
 finisher_limb = 1
-blade_angle_windup = -170.0
-blade_angle_strike = 50.0
+blade_angle_windup = -10.0
+blade_angle_strike = 0.0
+cut = 5
 
 [sub_resource type="Resource" id="wasp_heavy"]
 script = ExtResource("2_move")
@@ -168,6 +173,7 @@ wound_limb = 1
 finisher_limb = 1
 blade_angle_windup = -170.0
 blade_angle_strike = 40.0
+cut = 1
 
 [sub_resource type="Resource" id="wasp_forward_heavy"]
 script = ExtResource("2_move")
@@ -193,6 +199,7 @@ wound_limb = 2
 finisher_limb = 2
 blade_angle_windup = -160.0
 blade_angle_strike = 60.0
+cut = 1
 
 [sub_resource type="Resource" id="wasp_ability"]
 script = ExtResource("12_ability")
