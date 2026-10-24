@@ -419,17 +419,18 @@ func test_arsenal_launches_and_catches() -> void:
 	assert_eq(duel.fighter(0).arsenal_count, 0, "orbiting blades catch rocks")
 
 
-func test_spin_hits_from_behind() -> void:
-	var duel: DuelFixture = _duel(&"shadow", &"guardian")
-	duel.place(20.0)
-	duel.fighter(0).facing = -1
-	duel.intents[0].move_x = 1
-	duel.press(0, Intent.Command.SPECIAL)
-	duel.step(1)
-	duel.intents[0].move_x = 0
-	duel.step(25)
-	assert_eq(duel.fighter(0).move.id if duel.fighter(0).move != null else &"spin", &"spin")
-	assert_eq(duel.count_events(CombatEvent.Type.HIT), 1)
+func test_spin_technique_is_gone_from_the_cast() -> void:
+	var catalog: PowerCatalog = load("res://data/powers/catalog.tres")
+	for technique in catalog.techniques:
+		assert_ne(technique.id, &"spin")
+	var expected: Dictionary = {
+		&"shadow": &"rising_cut", &"awakened_shadow": &"rising_cut", &"bastion": &"dash_slash", &"mirror": &"rising_cut",
+		&"lance": &"rising_cut", &"heron": &"dash_slash", &"echo": &"dash_slash", &"sovereign": &"thrust", &"elder": &"rising_cut",
+	}
+	for id in expected:
+		var data: CharacterData = DuelFixture.character(id)
+		assert_eq(data.technique_back.id, expected[id], String(id))
+		assert_ne(data.technique_forward.id if data.technique_forward != null else &"", expected[id], "%s does not repeat its forward technique" % id)
 
 
 func test_flurry_hits_four_times() -> void:
@@ -448,7 +449,7 @@ func test_sweep_is_gone_from_the_cast() -> void:
 	for technique in catalog.techniques:
 		assert_ne(technique.id, &"sweep_low")
 	assert_eq(DuelFixture.character(&"ember").technique_back.id, &"rising_cut")
-	assert_eq(DuelFixture.character(&"echo").technique_back.id, &"spin")
+	assert_eq(DuelFixture.character(&"echo").technique_back.id, &"dash_slash")
 	assert_eq(DuelFixture.character(&"foretold_eclipse").technique_forward.id, &"dash_slash")
 
 

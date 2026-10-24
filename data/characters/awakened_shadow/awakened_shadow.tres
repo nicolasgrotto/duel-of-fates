@@ -18,7 +18,7 @@
 [ext_resource type="Resource" path="res://data/powers/pull.tres" id="p_pull"]
 [ext_resource type="Resource" path="res://data/techniques/dash_slash.tres" id="t_dash_slash"]
 [ext_resource type="Resource" path="res://data/techniques/plunge.tres" id="t_plunge"]
-[ext_resource type="Resource" path="res://data/techniques/spin.tres" id="t_spin"]
+[ext_resource type="Resource" path="res://data/techniques/rising_cut.tres" id="t_rising_cut"]
 
 [ext_resource type="Resource" path="res://data/audio/boss_music.tres" id="theme_music"]
 [sub_resource type="Resource" id="awakened_shadow_light_1"]
@@ -227,7 +227,7 @@ max_health_override = 150.0
 ability = SubResource("awakened_shadow_ability")
 powers = Array[ExtResource("14_power")]([ExtResource("p_lightning"), ExtResource("p_pull"), ExtResource("p_choke")])
 technique_forward = ExtResource("t_dash_slash")
-technique_back = ExtResource("t_spin")
+technique_back = ExtResource("t_rising_cut")
 technique_air = ExtResource("t_plunge")
 theme = ExtResource("theme_music")
 ai_profile = ExtResource("9_ai")

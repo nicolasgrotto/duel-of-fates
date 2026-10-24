@@ -16,7 +16,7 @@
 [ext_resource type="Resource" path="res://data/powers/lightning.tres" id="p_lightning"]
 [ext_resource type="Resource" path="res://data/powers/pull.tres" id="p_pull"]
 [ext_resource type="Resource" path="res://data/powers/throw.tres" id="p_throw"]
-[ext_resource type="Resource" path="res://data/techniques/spin.tres" id="t_spin"]
+[ext_resource type="Resource" path="res://data/techniques/rising_cut.tres" id="t_rising_cut"]
 [ext_resource type="Resource" path="res://data/techniques/thrust.tres" id="t_thrust"]
 
 [sub_resource type="Resource" id="lance_light_1"]
@@ -215,7 +215,7 @@ sweet_spot = true
 ability = SubResource("lance_ability")
 powers = Array[ExtResource("14_power")]([ExtResource("p_lightning"), ExtResource("p_pull"), ExtResource("p_throw")])
 technique_forward = ExtResource("t_thrust")
-technique_back = ExtResource("t_spin")
+technique_back = ExtResource("t_rising_cut")
 ai_profile = ExtResource("9_ai")
 path = 1
 style_key = "STYLE_LANCE"

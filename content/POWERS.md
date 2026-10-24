@@ -119,7 +119,6 @@ Usam Habilidade com direção ou no ar, gastam **Vigor** (não Fluxo), escalam c
 
 | Técnica (PT / EN) | Resumo | Resposta |
 | --- | --- | --- |
-| **Giro** / Spin | A lâmina dá a volta no corpo e acerta dos dois lados; quem estava atrás não consegue bloquear. Um acerto só. | aparar de frente, punir a recovery |
 | **Avanço com corte** / Dash slash | Avanço longo que termina num corte. No acerto, quem acertou fica livre primeiro, mas sem rápido garantido; defendido ou errado, é punível. | guarda ou parry, punir |
 | **Arremesso da lâmina** / Blade throw | A lâmina sai girando até um alcance (480 u na Lâmina 4, ±20 u por ponto, entre 400 e 580) e volta. Acerta uma vez, na ida ou na volta. Enquanto não volta, o lutador não ataca nem defende com a lâmina. | guarda de frente, esquiva, atacar o lutador desarmado |
 | **Estocada** / Thrust | Golpe reto e estreito no peito, o maior alcance de lâmina (55 u além do forte). Prep. 0,24 · ativo 0,1 · rec. 0,5 · dano 14 · Vigor 26. | pular por cima, esquivar |

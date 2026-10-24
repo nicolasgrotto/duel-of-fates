@@ -116,7 +116,7 @@ func test_deciding_heavy_always_takes_the_head() -> void:
 	var heavy: MoveData = DuelFixture.GUARDIAN.heavy
 	assert_eq(Consequences.finisher_limb(duel.sim, heavy, true), MoveData.Limb.HEAD)
 	assert_eq(Consequences.finisher_limb(duel.sim, heavy, false), heavy.finisher_limb)
-	var spin: MoveData = load("res://data/techniques/spin.tres")
-	assert_eq(Consequences.finisher_limb(duel.sim, spin, true), MoveData.Limb.HEAD)
+	var rising: MoveData = load("res://data/techniques/rising_cut.tres")
+	assert_eq(Consequences.finisher_limb(duel.sim, rising, true), MoveData.Limb.HEAD)
 	var light: MoveData = DuelFixture.GUARDIAN.light_chain[0]
 	assert_eq(Consequences.finisher_limb(duel.sim, light, true), light.finisher_limb)

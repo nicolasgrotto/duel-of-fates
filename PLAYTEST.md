@@ -24,7 +24,7 @@ Legenda: ✅ ficou bom · ⚠️ funciona mas a sensação ou o número precisa 
 | 1.2 | Na mesma Galeria, passe pelas técnicas (depois dos poderes) | todas acertam o alvo; a Varredura não aparece mais na lista | — |
 | 1.3 | Treino com a **Haste** e com o **Soberano**: `I` sozinho, a ~2 corpos de distância | Investida da Haste: haste recolhida no quadril, passo longo, braço esticado até a ponta; acerta de longe e o Ponto doce aumenta o dano na ponta | `data/characters/lance/lance.tres` e `sovereign.tres` (sub-recurso `*_ability_move`) |
 | 1.4 | Contra a Haste no Treino, toque `L` na hora da Investida | é aparada como um forte (parry perfeito desequilibra a Haste) | — |
-| 1.5 | Treino com **Brasa** (trás + `I`), **Eco** (trás + `I`) e **Predestinado Eclipse** (frente + `I`, variante com `V` na seleção) | Corte ascendente, Giro e Avanço com corte, respectivamente | técnicas em cada `data/characters/<id>/<id>.tres` |
+| 1.5 | Treino com **Brasa** (trás + `I`), **Eco** (trás + `I`) e **Predestinado Eclipse** (frente + `I`, variante com `V` na seleção) | Corte ascendente, Avanço com corte e Avanço com corte, respectivamente; a técnica Giro não existe mais (os nove que a usavam receberam Corte ascendente, Avanço com corte ou Estocada, ver CHARACTERS) | técnicas em cada `data/characters/<id>/<id>.tres` |
 
 ## 2. Animação
 

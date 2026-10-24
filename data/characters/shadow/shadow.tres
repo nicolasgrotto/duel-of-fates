@@ -18,7 +18,7 @@
 [ext_resource type="Resource" path="res://data/powers/pull.tres" id="p_pull"]
 [ext_resource type="Resource" path="res://data/techniques/dash_slash.tres" id="t_dash_slash"]
 [ext_resource type="Resource" path="res://data/techniques/plunge.tres" id="t_plunge"]
-[ext_resource type="Resource" path="res://data/techniques/spin.tres" id="t_spin"]
+[ext_resource type="Resource" path="res://data/techniques/rising_cut.tres" id="t_rising_cut"]
 
 [sub_resource type="Resource" id="shadow_light_1"]
 script = ExtResource("2_move")
@@ -243,7 +243,7 @@ vigor_on_hit = 8.0
 ability = SubResource("shadow_ability")
 powers = Array[ExtResource("14_power")]([ExtResource("p_lightning"), ExtResource("p_pull"), ExtResource("p_choke")])
 technique_forward = ExtResource("t_dash_slash")
-technique_back = ExtResource("t_spin")
+technique_back = ExtResource("t_rising_cut")
 technique_air = ExtResource("t_plunge")
 ai_profile = ExtResource("9_ai")
 path = 1

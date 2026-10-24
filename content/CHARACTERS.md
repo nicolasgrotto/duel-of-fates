@@ -48,21 +48,23 @@ Direções relativas à frente do lutador. Técnicas usam Direção + Habilidade
 | Personagem | Poder | Frente + Poder | Trás + Poder | Quarto poder | Técnica frente | Técnica trás | No ar |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Guardião | Repulsão | Cura | Barreira | — | Avanço com corte | Arremesso da lâmina | — |
-| Sombra | Raio | Puxão | Estrangular | — | Avanço com corte | Giro | Investida descendente |
-| Bastião | Repulsão | Absorção | Barreira | — | Corte ascendente | Giro | — |
+| Sombra | Raio | Puxão | Estrangular | — | Avanço com corte | Corte ascendente | Investida descendente |
+| Bastião | Repulsão | Absorção | Barreira | — | Corte ascendente | Avanço com corte | — |
 | Vespa | Repulsão | Arremesso | Barreira | — | Rajada | Arremesso da lâmina | — |
-| Espelho | Repulsão | Arremesso | Barreira | — | Estocada | Giro | — |
-| Haste | Raio | Puxão | Arremesso | — | Estocada | Giro | — |
+| Espelho | Repulsão | Arremesso | Barreira | — | Estocada | Corte ascendente | — |
+| Haste | Raio | Puxão | Arremesso | — | Estocada | Corte ascendente | — |
 | Brasa | Raio | Puxão | Congelar | — | Avanço com corte | Corte ascendente | — |
 | Forja | Raio | Puxão | Arremesso | — | Arremesso da lâmina | Corte ascendente | — |
-| Garça | Repulsão | Arremesso | Absorção | — | — | Giro | Investida descendente |
+| Garça | Repulsão | Arremesso | Absorção | — | — | Avanço com corte | Investida descendente |
 | Ceifador | Repulsão | Puxão | Ira | — | Avanço com corte | Arremesso da lâmina | Investida descendente |
-| Eco | Raio | Puxão | Arremesso | — | Rajada | Giro | — |
-| Sombra Desperta | Raio | Puxão | Estrangular | — | Avanço com corte | Giro | Investida descendente |
-| Soberano | Raio | Tempestade | Estrangular | — | Corte ascendente | Giro | — |
-| Ancião | Repulsão | Cura | Barreira | — | Estocada | Giro | — |
+| Eco | Raio | Puxão | Arremesso | — | Rajada | Avanço com corte | — |
+| Sombra Desperta | Raio | Puxão | Estrangular | — | Avanço com corte | Corte ascendente | Investida descendente |
+| Soberano | Raio | Tempestade | Estrangular | — | Corte ascendente | Estocada | — |
+| Ancião | Repulsão | Cura | Barreira | — | Estocada | Corte ascendente | — |
 | Predestinado (Aurora) | Repulsão | Arremesso | Barreira | Telecinese em Massa | Estocada | — | — |
 | Predestinado (Eclipse) | Raio | Puxão | Estrangular | Arsenal Telecinético | Avanço com corte | — | — |
+
+A técnica Giro foi removida na fase 8 (animação ruim, decisão do autor); os substitutos estão na tabela acima.
 
 Na seleção de Duelar, 2 Jogadores e Treino, o jogador pode trocar para um conjunto **Personalizado**: os mesmos espaços, preenchidos com poderes do Fluxo comum e do seu caminho, sem repetir e respeitando o nível mínimo de cada poder.
 

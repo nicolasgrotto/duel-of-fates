@@ -153,6 +153,18 @@ Regras novas (simulação, testes, IA, Tutorial e Treinos guiados, overlay F3):
 - [x] Revisão geral de braços e guardas
 - [x] Repulsão como onda de choque
 
+Retorno do autor (plano em sete frentes; bloco A sem tocar no trabalho do Codex, bloco B depois dele):
+- [x] Tutorial: o passo da sequência fecha com o último rápido de qualquer sequência (o Guardião tem 2)
+- [x] Galeria: a Telecinese em Massa não reinicia antes de os pedaços caírem
+- [x] História: caminho da Aurora em azul e do Eclipse em vermelho
+- [x] Remover a técnica Giro (substitutos em CHARACTERS); falta tirar `TechniqueStyle.SPIN` e o caso dele do `PoseSolver` (bloco B)
+- [ ] Finalizações cinematográficas no K.O. decisivo: regra na simulação
+- [ ] Escudo da Tempestade redesenhado (bloco B)
+- [ ] Puxão do jeito antigo: bola grande encolhendo em quem lança, sem fio (bloco B)
+- [ ] Próteses robóticas nos membros perdidos em rounds anteriores (bloco B)
+- [ ] Finalizações cinematográficas: apresentação (corte na cintura, vertical, diagonal, Puxão com corte, Raio com esqueleto e corpo carbonizado, explosão de brasa da Repulsão, Estrangular) (bloco B)
+- [ ] Personalização do protagonista da História (cabelos, barbas, cosméticos, armadura de placas clara) e trajes do Predestinado mais próximos do arquétipo (bloco B)
+
 - [x] Localização completa PT-BR e EN (todas as chaves nos dois idiomas, garantido por `test_translations`; passada de revisão do inglês: nenhum texto em português na coluna EN, falas da História polidas em STORY.md e no CSV)
 - [x] Trilha e ambiências de todas as arenas (ambiência própria nas dez, temas duelo, sagrado e chefe com variação de tom por arena, tema de chefe nos personagens-chefe)
 - [x] Acessibilidade (efeitos reduzidos, remapeamento, legendas): efeitos reduzidos e "Segurar para disputar" já existiam; remapeamento do gamepad na tela Teclas e botões; o jogo não tem voz, então todas as falas já são texto

@@ -16,7 +16,7 @@
 [ext_resource type="Resource" path="res://data/powers/barrier.tres" id="p_barrier"]
 [ext_resource type="Resource" path="res://data/powers/repulse.tres" id="p_repulse"]
 [ext_resource type="Resource" path="res://data/powers/throw.tres" id="p_throw"]
-[ext_resource type="Resource" path="res://data/techniques/spin.tres" id="t_spin"]
+[ext_resource type="Resource" path="res://data/techniques/rising_cut.tres" id="t_rising_cut"]
 [ext_resource type="Resource" path="res://data/techniques/thrust.tres" id="t_thrust"]
 
 [sub_resource type="Resource" id="mirror_light_1"]
@@ -193,7 +193,7 @@ parry_window = 0.26
 ability = SubResource("mirror_ability")
 powers = Array[ExtResource("14_power")]([ExtResource("p_repulse"), ExtResource("p_throw"), ExtResource("p_barrier")])
 technique_forward = ExtResource("t_thrust")
-technique_back = ExtResource("t_spin")
+technique_back = ExtResource("t_rising_cut")
 ai_profile = ExtResource("9_ai")
 path = 0
 style_key = "STYLE_MIRROR"

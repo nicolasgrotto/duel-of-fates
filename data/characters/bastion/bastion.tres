@@ -17,7 +17,7 @@
 [ext_resource type="Resource" path="res://data/powers/barrier.tres" id="p_barrier"]
 [ext_resource type="Resource" path="res://data/powers/repulse.tres" id="p_repulse"]
 [ext_resource type="Resource" path="res://data/techniques/rising_cut.tres" id="t_rising_cut"]
-[ext_resource type="Resource" path="res://data/techniques/spin.tres" id="t_spin"]
+[ext_resource type="Resource" path="res://data/techniques/dash_slash.tres" id="t_dash_slash"]
 
 [sub_resource type="Resource" id="bastion_light_1"]
 script = ExtResource("2_move")
@@ -217,7 +217,7 @@ block_push_immune = true
 ability = SubResource("bastion_ability")
 powers = Array[ExtResource("14_power")]([ExtResource("p_repulse"), ExtResource("p_absorption"), ExtResource("p_barrier")])
 technique_forward = ExtResource("t_rising_cut")
-technique_back = ExtResource("t_spin")
+technique_back = ExtResource("t_dash_slash")
 ai_profile = ExtResource("9_ai")
 path = 0
 style_key = "STYLE_BASTION"

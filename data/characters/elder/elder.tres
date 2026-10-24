@@ -16,7 +16,7 @@
 [ext_resource type="Resource" path="res://data/powers/barrier.tres" id="p_barrier"]
 [ext_resource type="Resource" path="res://data/powers/heal.tres" id="p_heal"]
 [ext_resource type="Resource" path="res://data/powers/repulse.tres" id="p_repulse"]
-[ext_resource type="Resource" path="res://data/techniques/spin.tres" id="t_spin"]
+[ext_resource type="Resource" path="res://data/techniques/rising_cut.tres" id="t_rising_cut"]
 [ext_resource type="Resource" path="res://data/techniques/thrust.tres" id="t_thrust"]
 
 [ext_resource type="Resource" path="res://data/audio/boss_music.tres" id="theme_music"]
@@ -260,7 +260,7 @@ wall_jump = true
 ability = SubResource("elder_ability")
 powers = Array[ExtResource("14_power")]([ExtResource("p_repulse"), ExtResource("p_heal"), ExtResource("p_barrier")])
 technique_forward = ExtResource("t_thrust")
-technique_back = ExtResource("t_spin")
+technique_back = ExtResource("t_rising_cut")
 theme = ExtResource("theme_music")
 ai_profile = ExtResource("9_ai")
 path = 0

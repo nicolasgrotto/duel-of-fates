@@ -262,7 +262,6 @@ POWER_DRAIN,Dreno,Drain
 POWER_DRAIN_TEXT,Segurado: rouba medidor e Vigor do alvo.,Held: steals meter and Vigor from the target.
 POWER_ARSENAL,Arsenal Telecinético,Telekinetic Arsenal
 POWER_ARSENAL_TEXT,Lâminas em órbita que seguram projéteis; repita o comando para lançá-las.,Orbiting blades that stop projectiles; repeat the command to launch them.
-TECHNIQUE_SPIN,Giro,Spin
 TECHNIQUE_DASH_SLASH,Avanço com corte,Dash slash
 TECHNIQUE_BLADE_THROW,Arremesso da lâmina,Blade throw
 TECHNIQUE_THRUST,Estocada,Thrust

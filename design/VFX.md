@@ -115,7 +115,7 @@ Sempre na cor do tier de quem lança. Tiers mais altos mudam a **forma** (mais f
 
 ## Técnicas de lâmina
 
-Usam o rastro, o som e o impacto dos golpes fortes. O Giro desenha o círculo completo do rastro. O **choque entre técnicas** é o maior choque do jogo: clarão, tremor forte, anel e faíscas nas duas cores, os dois recuando visivelmente.
+Usam o rastro, o som e o impacto dos golpes fortes. O **choque entre técnicas** é o maior choque do jogo: clarão, tremor forte, anel e faíscas nas duas cores, os dois recuando visivelmente.
 
 ## Arena
 

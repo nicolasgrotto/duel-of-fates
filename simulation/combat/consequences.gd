@@ -50,4 +50,4 @@ static func finisher_limb(sim: MatchSimulation, move: MoveData, deciding: bool) 
 static func _takes_head(move: MoveData) -> bool:
 	if move.is_heavy():
 		return true
-	return move.is_technique() and move.technique_style in [MoveData.TechniqueStyle.SPIN, MoveData.TechniqueStyle.RISING]
+	return move.is_technique() and move.technique_style == MoveData.TechniqueStyle.RISING
