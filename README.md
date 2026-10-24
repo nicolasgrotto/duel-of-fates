@@ -6,9 +6,7 @@ Jogo de duelo de lâminas de energia em visão lateral, feito na **Godot 4.7** c
 
 ## Situação
 
-Fases 0 a 4 concluídas: o duelo completo de lâmina com o elenco inteiro (onze lutadores, o chefe e três secretos), cada um com traço, habilidade, sequência, família de movimento, trajes, cores de lâmina e IA própria; arte em peças pintadas com mapa de normal e esqueleto 2D, iluminada pelas lâminas; Plataforma de Refino; áudio e música dinâmica sintetizados. A próxima fase é o Fluxo (poderes). Detalhes em [ROADMAP.md](ROADMAP.md).
-
-Jogável agora: **Duelar** (escolha de lutador, adversário e arena, contra a IA) e **Treino**, a partir do menu.
+Fases 0 a 7.5 concluídas, na branch `pixel-art`: duelo completo com o elenco inteiro, o Fluxo (poderes e técnicas), as dez arenas, todos os modos, a História com quatro finais, a revisão de combate e animação (Esquiva com giro, Pressão de lâminas, Desengajamento) e, da fase 8, ambiências e temas por arena, remapeamento do gamepad e a revisão do inglês. Agora é a fase de acabamento e de validação jogando: o roteiro está em [PLAYTEST.md](PLAYTEST.md). Detalhes em [ROADMAP.md](ROADMAP.md).
 
 ## O jogo em uma página
 
@@ -66,4 +64,5 @@ Arte e áudio são gerados por ferramentas offline (Python 3 com numpy e Pillow)
 | [design/AUDIO.md](design/AUDIO.md) | Som das lâminas, efeitos, música dinâmica |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Organização do projeto Godot |
 | [ROADMAP.md](ROADMAP.md) | Fases de construção e ponto de continuidade |
+| [PLAYTEST.md](PLAYTEST.md) | Roteiro de validação jogando: o que testar, o que esperar e onde ajustar |
 | [ASSETS.md](ASSETS.md) | Origem e licença de cada asset |
