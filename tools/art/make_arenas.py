@@ -10,7 +10,7 @@ import os
 
 os.chdir(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
-KINDS = {k: i for i, k in enumerate(["SKY", "DISC", "RIDGE", "TOWERS", "COLUMNS", "TRUNKS", "CRYSTALS", "CEILING", "CLOUDS", "SHIP", "MONASTERY", "BRUTALIST", "RING", "FLOOR"])}
+KINDS = {k: i for i, k in enumerate(["SKY", "DISC", "RIDGE", "TOWERS", "COLUMNS", "TRUNKS", "CRYSTALS", "CEILING", "CLOUDS", "SHIP", "MONASTERY", "BRUTALIST", "RING", "FLOOR", "MIRAGE"])}
 DISCS = {"MOON": 0, "SUN": 1, "PLANET": 2, "ECLIPSE": 3}
 FLOORS = {k: i for i, k in enumerate(["STONE", "WATER", "ROOF", "METAL", "MOSS", "SALT", "DECK", "SNOW", "POLISHED"])}
 
@@ -78,7 +78,7 @@ def layer(index, spec):
 
 
 ARENAS = {
-    "flooded_sanctuary": dict(name="FloodedSanctuary", ambient=(0.5, 0.55, 0.66), reflective=True, ambience="sanctuary", layers=[
+    "flooded_sanctuary": dict(name="FloodedSanctuary", ambient=(0.5, 0.55, 0.66), reflective=True, mirror=0.45, ripples=True, ambience="sanctuary", layers=[
         dict(kind="SKY", base="#04070d", detail="#1a2436", accent="#9fb7d9", level=160, height=520, bands=6, stars=True, parallax=(0.0, 0.05), unlit=True),
         dict(kind="DISC", disc="MOON", base="#9fb7d9", detail="#8399bd", level=-120, radius=80, parallax=(0.04, 0.1), unlit=True),
         dict(kind="COLUMNS", base="#141a24", detail="#1a2130", level=-40, height=420, spacing=300, element_width=60, seed_value=4, parallax=(0.3, 0.45), unlit=True),
@@ -92,7 +92,7 @@ ARENAS = {
         dict(kind="CRYSTALS", base="#33285a", detail="#221a3a", accent="#6a56a0", level=0, height=150, spacing=520, element_width=50, seed_value=8, parallax=(0.8, 0.9)),
         dict(kind="FLOOR", floor="STONE", base="#110d16", detail="#1d1726", accent="#3a2e52", height=200),
     ], particles=[dict(y=-200, amount=24, life=6.0, dir=(0, -1), speed=(4, 10), color="#b9a6ff", alpha=0.35, w=900, h=220, scale=(1, 2))]),
-    "neon_rooftop": dict(name="NeonRooftop", ambient=(0.48, 0.52, 0.62), reflective=True, ambience="rooftop", layers=[
+    "neon_rooftop": dict(name="NeonRooftop", ambient=(0.48, 0.52, 0.62), reflective=True, mirror=0.25, steam=True, ambience="rooftop", layers=[
         dict(kind="SKY", base="#05070d", detail="#2e3a58", level=160, height=520, bands=5, parallax=(0.0, 0.05), unlit=True),
         dict(kind="TOWERS", base="#0a0e18", detail="#2a3448", accent=("#5fd4e6", 0.5), level=40, height=1300, spacing=160, element_width=140, seed_value=3, parallax=(0.2, 0.35), unlit=True),
         dict(kind="TOWERS", base="#070a12", detail="#34405a", accent=("#5fd4e6", 0.8), level=60, height=800, spacing=260, element_width=220, seed_value=12, parallax=(0.5, 0.65), unlit=True),
@@ -110,10 +110,11 @@ ARENAS = {
         dict(kind="TRUNKS", base="#0c1410", detail="#142019", accent="#2f6a52", level=0, height=900, spacing=420, element_width=96, seed_value=14, parallax=(0.65, 0.8)),
         dict(kind="FLOOR", floor="MOSS", base="#0f1a14", detail="#16261c", accent="#22382b", height=200),
     ], particles=[dict(y=0, amount=34, life=8.0, dir=(0, -1), speed=(8, 18), color="#6fe0b0", alpha=0.3, w=1000, h=10, scale=(1, 2))]),
-    "glass_salt_flats": dict(name="GlassSaltFlats", ambient=(0.62, 0.52, 0.52), reflective=True, ambience="salt", layers=[
+    "glass_salt_flats": dict(name="GlassSaltFlats", ambient=(0.62, 0.52, 0.52), reflective=True, mirror=0.16, salt_dust=True, ambience="salt", layers=[
         dict(kind="SKY", base="#1e1220", detail="#8a4a3c", level=110, height=420, bands=8, parallax=(0.0, 0.05), unlit=True),
         dict(kind="DISC", disc="SUN", base="#e89a5c", detail="#5a3030", level=40, radius=110, parallax=(0.03, 0.08), unlit=True),
         dict(kind="RIDGE", base="#2a1c22", detail="#3a2830", level=0, height=110, spacing=300, seed_value=7, parallax=(0.15, 0.25), unlit=True),
+        dict(kind="MIRAGE", accent=("#f0c8a8", 0.5), level=-4, height=70, bands=16, element_width=70, span=1400, parallax=(0.4, 1.0), unlit=True),
         dict(kind="FLOOR", floor="SALT", base="#24212a", detail="#3a3440", accent="#6a5a60", height=200),
     ], particles=[dict(y=-20, amount=40, life=5.0, dir=(1, -0.05), speed=(60, 110), color="#d8c8c0", alpha=0.2, w=1100, h=60, scale=(1, 2))]),
     "skyborne_deck": dict(name="SkyborneDeck", ambient=(0.5, 0.55, 0.66), reflective=False, ambience="deck", wind=1.0, layers=[
@@ -123,7 +124,7 @@ ARENAS = {
         dict(kind="SHIP", base="#0e131e", detail="#1a2232", accent="#5fd4e6", level=0, height=260, parallax=(0.85, 0.9)),
         dict(kind="FLOOR", floor="DECK", base="#141922", detail="#1f2633", accent="#8ea4c2", height=200),
     ], particles=[dict(y=-300, amount=40, life=0.9, dir=(-1, 0), spread=1, speed=(1300, 1600), streak=True, color="#cfd8e6", alpha=0.18, w=200, h=400, x=1300, scale=(1, 1))]),
-    "snowbound_peak": dict(name="SnowboundPeak", ambient=(0.62, 0.66, 0.72), reflective=False, ambience="peak", layers=[
+    "snowbound_peak": dict(name="SnowboundPeak", ambient=(0.62, 0.66, 0.72), reflective=False, footprints=True, ambience="peak", layers=[
         dict(kind="SKY", base="#2e3644", detail="#6e7888", level=160, height=520, bands=6, parallax=(0.0, 0.05), unlit=True),
         dict(kind="RIDGE", base="#56606f", detail="#9aa5b6", level=0, height=420, spacing=420, seed_value=2, parallax=(0.08, 0.15), unlit=True),
         dict(kind="RIDGE", base="#2c3442", detail="#c8d2de", level=0, height=260, spacing=320, seed_value=11, parallax=(0.25, 0.35), unlit=True),
@@ -133,7 +134,7 @@ ARENAS = {
         dict(y=-600, amount=140, life=2.2, dir=(1, 0.35), spread=8, speed=(420, 560), color="#e8ecf5", alpha=0.45, w=300, h=600, x=-900, scale=(1, 1)),
         dict(y=-500, amount=20, life=6.0, dir=(1, 0.4), spread=10, speed=(120, 200), color="#e8ecf5", alpha=0.6, w=300, h=500, x=-900, scale=(2, 3)),
     ]),
-    "eclipse_citadel": dict(name="EclipseCitadel", ambient=(0.3, 0.3, 0.34), reflective=True, ambience="citadel", layers=[
+    "eclipse_citadel": dict(name="EclipseCitadel", ambient=(0.3, 0.3, 0.34), reflective=True, mirror=0.2, ambience="citadel", layers=[
         dict(kind="SKY", base="#020203", detail="#0a090c", level=160, height=520, bands=3, parallax=(0.0, 0.04), unlit=True),
         dict(kind="DISC", disc="ECLIPSE", base="#000000", accent="#f2dcae", level=-210, radius=110, parallax=(0.04, 0.08), unlit=True),
         dict(kind="BRUTALIST", base="#121214", detail="#1c1c20", level=0, height=560, radius=240, spacing=180, element_width=120, parallax=(0.45, 0.6)),
@@ -172,6 +173,11 @@ def write_data(arena_id, spec):
              'script = ExtResource("1_script")', f'id = &"{arena_id}"', f'name_key = "ARENA_{key}"', f'phrase_key = "ARENA_PHRASE_{key}"',
              'scene = ExtResource("2_scene")', 'ambient = Color(%s, %s, %s, 1)' % spec["ambient"],
              f'reflective_floor = {"true" if spec["reflective"] else "false"}', f'wind = {spec.get("wind", 0.0)}',
+             f'fighter_reflection = {spec.get("mirror", 0.0)}',
+             f'knockback_dust = {"true" if spec.get("salt_dust") else "false"}',
+             f'footprints = {"true" if spec.get("footprints") else "false"}',
+             f'ripples = {"true" if spec.get("ripples") else "false"}',
+             f'rain_steam = {"true" if spec.get("steam") else "false"}',
              'music = ExtResource("3_music")', 'ambience = ExtResource("4_ambience")']
     with open(f"data/arenas/{arena_id}.tres", "w", encoding="utf-8", newline="\n") as handle:
         handle.write("\n".join(lines) + "\n")

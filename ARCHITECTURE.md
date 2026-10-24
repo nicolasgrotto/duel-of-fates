@@ -222,6 +222,8 @@ Implementação:
 - Cenas e `ArenaData` gerados por `tools/art/make_arenas.py` (paletas do content/ARENAS.md). Cada cena tem o nó `SkyAnchor` logo depois do céu, para o céu da Tempestade.
 - `DuelMode.ARENAS` lista as dez arenas na ordem do rodízio mais a Plataforma de Treino; Arcade e Sobrevivência usam as `ROTATION_SIZE` primeiras.
 - `ArenaData.wind` é repassado ao `FighterRig` e aos `ClothStrip` (rajada com tremulação).
+- `FighterReflection`: redesenha os sprites e tecidos do rig espelhados no chão, com o material de paleta do próprio rig, escurecidos (`ArenaData.fighter_reflection`, `reflection_shade`); z logo acima do cenário. Pegadas, ondulações, poeira de sal e vapor ficam no `DebrisLayer` (marcas em pool fixo, partículas com tom por instância).
+- `ArenaThumbnail` (`presentation/arena_thumbnail.gd`): a cena da arena num `SubViewport` de 300×170 pixels na grade do mundo, ampliada 2×, na etapa de arena da seleção.
 
 ### Áudio (fase 3)
 

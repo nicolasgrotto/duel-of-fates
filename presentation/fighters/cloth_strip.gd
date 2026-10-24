@@ -26,6 +26,8 @@ var _uvs: PackedVector2Array = []
 var _colors: PackedColorArray = []
 var _initialized: bool = false
 var _wind_clock: float = 0.0
+var _mirror: PackedVector2Array = PackedVector2Array([Vector2.ZERO, Vector2.ZERO, Vector2.ZERO, Vector2.ZERO])
+var _mirror_colors: PackedColorArray = PackedColorArray([Color.WHITE, Color.WHITE, Color.WHITE, Color.WHITE])
 
 
 func configure(spec: Dictionary, cloth_texture: Texture2D) -> void:
@@ -109,6 +111,27 @@ func _draw() -> void:
 		_uvs[2] = Vector2(1.0, t1)
 		_uvs[3] = Vector2(0.0, t1)
 		draw_primitive(_polygon, _colors, _uvs, texture)
+
+
+func draw_into(canvas: CanvasItem, transform: Transform2D, tint: Color) -> void:
+	if not _initialized or texture == null:
+		return
+	for i in _mirror_colors.size():
+		_mirror_colors[i] = tint
+	for i in segments:
+		var t0: float = float(i) / segments
+		var t1: float = float(i + 1) / segments
+		var side_a: Vector2 = _side(i) * lerpf(top_width, bottom_width, t0) * 0.5
+		var side_b: Vector2 = _side(i + 1) * lerpf(top_width, bottom_width, t1) * 0.5
+		_mirror[0] = transform * (_points[i] - side_a)
+		_mirror[1] = transform * (_points[i] + side_a)
+		_mirror[2] = transform * (_points[i + 1] + side_b)
+		_mirror[3] = transform * (_points[i + 1] - side_b)
+		_uvs[0] = Vector2(0.0, t0)
+		_uvs[1] = Vector2(1.0, t0)
+		_uvs[2] = Vector2(1.0, t1)
+		_uvs[3] = Vector2(0.0, t1)
+		canvas.draw_primitive(_mirror, _mirror_colors, _uvs, texture)
 
 
 func _side(index: int) -> Vector2:

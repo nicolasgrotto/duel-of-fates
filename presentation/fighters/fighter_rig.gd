@@ -26,6 +26,7 @@ var _cloth_anchors: Array[String] = []
 var _hilt: HiltView
 var _marks: CutMarks
 var _cuts: Array[String] = []
+var _layers: Array[CanvasItem] = []
 var _lost_main_hand: bool = false
 var _missing: MoveData.Limb = MoveData.Limb.NONE
 var _wound: FighterState.Wound = FighterState.Wound.NONE
@@ -347,6 +348,33 @@ func eye_position() -> Vector2:
 
 func shows_eyes() -> bool:
 	return character.eclipse_eyes and not visible_parts.has("mask") and _missing != MoveData.Limb.HEAD
+
+
+func draw_reflection(canvas: CanvasItem, flip: Transform2D, tint: Color) -> void:
+	if _layers.is_empty():
+		_build_layers()
+	for node in _layers:
+		if not node.is_visible_in_tree():
+			continue
+		if node is ClothStrip:
+			canvas.draw_set_transform_matrix(Transform2D.IDENTITY)
+			(node as ClothStrip).draw_into(canvas, flip, tint)
+		else:
+			var sprite: Sprite2D = node
+			canvas.draw_set_transform_matrix(flip * sprite.get_global_transform() * Transform2D(0.0, sprite.offset))
+			canvas.draw_texture((sprite.texture as CanvasTexture).diffuse_texture, Vector2.ZERO, tint)
+	canvas.draw_set_transform_matrix(Transform2D.IDENTITY)
+
+
+func _build_layers() -> void:
+	var entries: Array = []
+	for key in _sprites:
+		entries.append([_sprites[key].z_index, _sprites[key]])
+	for cloth in _cloths:
+		entries.append([cloth.z_index, cloth])
+	entries.sort_custom(func(a: Array, b: Array) -> bool: return a[0] < b[0])
+	for entry in entries:
+		_layers.append(entry[1])
 
 
 func sprite_snapshots() -> Array:

@@ -24,6 +24,7 @@ const PREVIEW_SCALE: float = 1.0
 const TITLE_TOP: float = 70.0
 const FOOTER_HEIGHT: float = 30.0
 const PREVIEW_FLOOR: float = 760.0
+const THUMBNAIL_CENTER: float = 520.0
 const INFO_WIDTH: float = 640.0
 const FOOTER_MARGIN: float = 36.0
 
@@ -51,6 +52,7 @@ var _set_label: Label
 var _editor: MenuList
 var _bars: AttributeBars
 var _preview: FighterPreview
+var _thumbnail: ArenaThumbnail
 var _look: Label
 var _blade: Label
 var _variant: Label
@@ -118,6 +120,9 @@ func _build() -> void:
 	_preview.position = Vector2(RIGHT, PREVIEW_FLOOR)
 	_preview.scale = Vector2.ONE * PREVIEW_SCALE
 	add_child(_preview)
+	_thumbnail = ArenaThumbnail.new()
+	_thumbnail.position = Vector2(RIGHT, THUMBNAIL_CENTER)
+	add_child(_thumbnail)
 	_look = _label(&"InfoLabel", Vector2(RIGHT - 200.0, PREVIEW_FLOOR + 40.0))
 	_blade = _label(&"InfoLabel", Vector2(RIGHT - 200.0, PREVIEW_FLOOR + 76.0))
 	_variant = _label(&"InfoLabel", Vector2(RIGHT - 200.0, PREVIEW_FLOOR + 112.0))
@@ -194,12 +199,14 @@ func _show_arena_step() -> void:
 func _on_highlighted(id: StringName) -> void:
 	if _step() == &"arena":
 		var arena: ArenaData = _arena(id)
+		_thumbnail.show_arena(arena)
 		_name.text = tr(arena.name_key) if arena != null else tr("SELECT_RANDOM_ARENA")
 		_style.text = tr(arena.phrase_key) if arena != null else tr("ARENA_PHRASE_RANDOM")
 		for label in [_path, _trait, _ability]:
 			label.text = ""
 		_clear_power_lines()
 		return
+	_thumbnail.show_arena(null)
 	_costume_index = 0
 	_blade_index = 0
 	_use_variant = false

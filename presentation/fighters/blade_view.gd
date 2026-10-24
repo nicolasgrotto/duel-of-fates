@@ -60,6 +60,10 @@ func set_blades(geometry: WeaponPose, main_trail: bool, second_trail: bool) -> v
 	_trail_active[1] = second_trail
 
 
+func point_along(weight: float) -> Vector2:
+	return _blades[0][0].lerp(_blades[0][1], weight)
+
+
 func center() -> Vector2:
 	return _blades[0][0].lerp(_blades[0][1], 0.5)
 

@@ -9,6 +9,14 @@ const CHUNK_POINTS: int = 5
 const DUST_ALPHA: float = 0.45
 
 enum Kind { DUST, CHUNK }
+enum Mark { FOOTPRINT, RIPPLE }
+
+const MARK_POOL: int = 40
+const FOOTPRINT_LIFE: float = 4.0
+const RIPPLE_LIFE: float = 0.9
+const RIPPLE_RADIUS: float = 26.0
+const STEP_DISTANCE: float = 26.0
+const STEAM_INTERVAL: float = 0.14
 
 var config: PowerVfxConfig
 var sim: MatchSimulation
@@ -17,7 +25,18 @@ var meteors: Array[Vector2] = [Vector2.ZERO, Vector2.ZERO]
 var meteor_times: PackedFloat32Array = PackedFloat32Array([-1.0, -1.0])
 var meteor_facing: PackedInt32Array = PackedInt32Array([1, 1])
 
+var views: Array[FighterView] = []
+var arena: ArenaData
+
 var _hover: PackedFloat32Array = PackedFloat32Array([0.0, 0.0])
+var _tints: PackedColorArray = []
+var _tint: Color = Color.WHITE
+var _marks: PackedVector2Array = []
+var _mark_ages: PackedFloat32Array = []
+var _mark_kinds: PackedInt32Array = []
+var _next_mark: int = 0
+var _last_step: PackedFloat32Array = PackedFloat32Array([0.0, 0.0])
+var _steam_clock: float = 0.0
 var _time: float = 0.0
 
 var _kinds: PackedInt32Array = []
@@ -41,6 +60,12 @@ func _ready() -> void:
 	_lives.fill(0.0)
 	_sizes.resize(POOL)
 	_spins.resize(POOL)
+	_tints.resize(POOL)
+	_tints.fill(PALETTE.dust)
+	_marks.resize(MARK_POOL)
+	_mark_ages.resize(MARK_POOL)
+	_mark_ages.fill(INF)
+	_mark_kinds.resize(MARK_POOL)
 	_shape.resize(CHUNK_POINTS)
 
 
@@ -71,6 +96,17 @@ func on_event(event: CombatEvent) -> void:
 		CombatEvent.Type.ROUND_STARTED:
 			meteor_times.fill(-1.0)
 			_lives.fill(0.0)
+			_mark_ages.fill(INF)
+		CombatEvent.Type.HIT, CombatEvent.Type.GUARD_BREAK:
+			if arena != null and arena.knockback_dust and event.target >= 0 and sim.fighters[event.target].on_ground:
+				var struck: FighterState = sim.fighters[event.target]
+				var push: float = float(sim.fighters[event.source].facing) if event.source >= 0 else 0.0
+				for puff in 4:
+					_tint = PALETTE.salt
+					_spawn(Kind.DUST, Vector2(struck.x - push * 6.0 * puff, floor_y), Vector2(push * _rng.randf_range(90.0, 180.0), -config.dust_rise * 0.5), config.dust_life, config.dust_size)
+				_tint = PALETTE.dust
+		CombatEvent.Type.LAND, CombatEvent.Type.DODGE:
+			_kick(event.source)
 
 
 func _on_power_active(event: CombatEvent) -> void:
@@ -94,6 +130,47 @@ func _on_power_active(event: CombatEvent) -> void:
 			meteor_facing[caster.index] = caster.facing
 
 
+func _kick(index: int) -> void:
+	if arena == null or index < 0:
+		return
+	var fighter: FighterState = sim.fighters[index]
+	if arena.footprints:
+		tinted_dust(Vector2(fighter.x, floor_y), 3, 10.0, 70.0, PALETTE.snow)
+	if arena.ripples:
+		_mark(Vector2(fighter.x, floor_y), Mark.RIPPLE)
+
+
+func _mark(at: Vector2, kind: Mark) -> void:
+	_marks[_next_mark] = at.snapped(Vector2(GRID, GRID))
+	_mark_ages[_next_mark] = 0.0
+	_mark_kinds[_next_mark] = kind
+	_next_mark = (_next_mark + 1) % MARK_POOL
+
+
+func _track_floor(delta: float) -> void:
+	if arena == null or sim == null:
+		return
+	for fighter in sim.fighters:
+		if not fighter.on_ground:
+			continue
+		if absf(fighter.x - _last_step[fighter.index]) >= STEP_DISTANCE:
+			_last_step[fighter.index] = fighter.x
+			if arena.footprints:
+				_mark(Vector2(fighter.x + _rng.randf_range(-4.0, 4.0), floor_y + GRID * 2.0), Mark.FOOTPRINT)
+			if arena.ripples:
+				_mark(Vector2(fighter.x, floor_y), Mark.RIPPLE)
+	if arena.rain_steam:
+		_steam_clock += delta
+		if _steam_clock >= STEAM_INTERVAL:
+			_steam_clock = 0.0
+			for view in views:
+				if view.blade != null and view.blade.length_ratio > 0.0:
+					var at: Vector2 = view.blade.point_along(_rng.randf_range(0.2, 1.0))
+					_tint = PALETTE.steam
+					_spawn(Kind.DUST, at, Vector2(_rng.randf_range(-10.0, 10.0), -config.dust_rise * 0.8), config.dust_life * 0.6, config.dust_size * 0.5)
+					_tint = PALETTE.dust
+
+
 func meteor_progress(index: int) -> float:
 	if meteor_times[index] < 0.0:
 		return -1.0
@@ -109,6 +186,12 @@ func rain_position(hazard: Hazard) -> Vector2:
 		return meteor + spread
 	var fall: float = clampf((elapsed - config.meteor_crack) / maxf(total - config.meteor_crack, 0.01), 0.0, 1.0)
 	return (meteor + spread).lerp(Vector2(hazard.x, floor_y), fall * fall)
+
+
+func tinted_dust(at: Vector2, count: int, spread: float, speed: float, tint: Color) -> void:
+	_tint = tint
+	dust(at, count, spread, speed)
+	_tint = PALETTE.dust
 
 
 func dust(at: Vector2, count: int, spread: float, speed: float) -> void:
@@ -127,6 +210,7 @@ func chunks(at: Vector2, count: int, speed: float, size: float, direction: float
 
 func _spawn(kind: Kind, at: Vector2, velocity: Vector2, life: float, size: float) -> void:
 	_kinds[_next] = kind
+	_tints[_next] = _tint if kind == Kind.DUST else PALETTE.dust
 	_positions[_next] = at
 	_velocities[_next] = velocity
 	_ages[_next] = 0.0
@@ -140,6 +224,9 @@ func _process(delta: float) -> void:
 	if config == null:
 		return
 	_time += delta
+	_track_floor(delta)
+	for i in MARK_POOL:
+		_mark_ages[i] += delta
 	for i in meteor_times.size():
 		if meteor_times[i] >= 0.0:
 			var before: float = meteor_times[i]
@@ -169,6 +256,7 @@ func _process(delta: float) -> void:
 
 
 func _draw() -> void:
+	_draw_marks()
 	if sim != null:
 		_draw_powers()
 	for i in POOL:
@@ -180,8 +268,8 @@ func _draw() -> void:
 			Kind.DUST:
 				var strength: float = ceilf((1.0 - progress) * FADE_STEPS) / FADE_STEPS
 				var radius: float = snappedf(_sizes[i] * (0.6 + progress), GRID)
-				draw_circle(at, radius, Color(PALETTE.dust, DUST_ALPHA * strength))
-				draw_circle(at + Vector2(-GRID, -GRID), radius * 0.5, Color(PALETTE.dust.lightened(0.2), DUST_ALPHA * strength))
+				draw_circle(at, radius, Color(_tints[i], DUST_ALPHA * strength))
+				draw_circle(at + Vector2(-GRID, -GRID), radius * 0.5, Color(_tints[i].lightened(0.2), DUST_ALPHA * strength))
 			Kind.CHUNK:
 				if progress > 0.8 and int(_ages[i] * 30.0) % 2 == 0:
 					continue
@@ -200,6 +288,22 @@ func draw_rock(canvas: CanvasItem, at: Vector2, size: float, angle: float, varia
 	rock_points(at, size, angle, variant, _shape)
 	canvas.draw_colored_polygon(_shape, PALETTE.rock)
 	canvas.draw_line(_shape[0], _shape[1], PALETTE.rock_light, GRID)
+
+
+func _draw_marks() -> void:
+	for i in MARK_POOL:
+		match _mark_kinds[i]:
+			Mark.FOOTPRINT:
+				if _mark_ages[i] < FOOTPRINT_LIFE:
+					var fade: float = ceilf((1.0 - _mark_ages[i] / FOOTPRINT_LIFE) * FADE_STEPS) / FADE_STEPS
+					draw_rect(Rect2(_marks[i], Vector2(GRID * 3.0, GRID)), Color(PALETTE.scar.lerp(PALETTE.snow, 0.4), 0.5 * fade))
+			Mark.RIPPLE:
+				if _mark_ages[i] < RIPPLE_LIFE:
+					var progress: float = _mark_ages[i] / RIPPLE_LIFE
+					var radius: float = snappedf(RIPPLE_RADIUS * (0.3 + progress), GRID)
+					var strength: float = ceilf((1.0 - progress) * FADE_STEPS) / FADE_STEPS
+					draw_rect(Rect2(_marks[i] + Vector2(-radius, GRID * 2.0), Vector2(radius * 2.0, GRID)), Color(PALETTE.ripple, 0.35 * strength))
+					draw_rect(Rect2(_marks[i] + Vector2(-radius * 0.6, GRID * 4.0), Vector2(radius * 1.2, GRID)), Color(PALETTE.ripple, 0.2 * strength))
 
 
 func _draw_powers() -> void:

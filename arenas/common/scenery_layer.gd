@@ -1,7 +1,7 @@
 class_name SceneryLayer
 extends Node2D
 
-enum Kind { SKY, DISC, RIDGE, TOWERS, COLUMNS, TRUNKS, CRYSTALS, CEILING, CLOUDS, SHIP, MONASTERY, BRUTALIST, RING, FLOOR }
+enum Kind { SKY, DISC, RIDGE, TOWERS, COLUMNS, TRUNKS, CRYSTALS, CEILING, CLOUDS, SHIP, MONASTERY, BRUTALIST, RING, FLOOR, MIRAGE }
 enum Disc { MOON, SUN, PLANET, ECLIPSE }
 enum Floor { STONE, WATER, ROOF, METAL, MOSS, SALT, DECK, SNOW, POLISHED }
 
@@ -31,16 +31,18 @@ const STAR_COUNT: int = 140
 @export var seed_value: int = 3
 
 var _offset: float = 0.0
+var _time: float = 0.0
 
 
 func _ready() -> void:
 	if not lit_by_blades:
 		light_mask = 0
-	set_process(drift != 0.0)
+	set_process(drift != 0.0 or kind == Kind.MIRAGE)
 
 
 func _process(delta: float) -> void:
 	_offset = fposmod(_offset + drift * delta, spacing * 4.0)
+	_time += delta
 	queue_redraw()
 
 
@@ -74,6 +76,8 @@ func _draw() -> void:
 			_draw_ring()
 		Kind.FLOOR:
 			_draw_floor()
+		Kind.MIRAGE:
+			_draw_mirage()
 
 
 func _rng() -> RandomNumberGenerator:
@@ -326,6 +330,19 @@ func _draw_ring() -> void:
 	for i in 3:
 		draw_arc(center, radius - i * GRID * 6.0, PI * 1.08, PI * 1.92, 96, base_color if i == 1 else detail_color, GRID * 4.0)
 	draw_arc(center, radius + GRID * 6.0, PI * 1.08, PI * 1.92, 96, Color(accent_color, 0.5), GRID)
+
+
+func _draw_mirage() -> void:
+	var rng: RandomNumberGenerator = _rng()
+	for i in bands:
+		var y: float = _snap(level - height * float(i) / bands)
+		var x: float = rng.randf_range(-span, span)
+		var width: float = _snap(element_width * rng.randf_range(0.5, 1.5))
+		var shimmer: float = sin(_time * 7.0 + i * 1.9)
+		if shimmer < 0.2:
+			continue
+		var wobble: float = _snap(sin(_time * 3.0 + i) * GRID * 2.0)
+		draw_rect(Rect2(x + wobble, y, width, GRID), Color(accent_color, accent_color.a * shimmer))
 
 
 func _draw_floor() -> void:

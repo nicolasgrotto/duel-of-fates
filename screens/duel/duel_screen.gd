@@ -7,6 +7,7 @@ const POWER_VFX: PowerVfxConfig = preload("res://data/balance/power_vfx_config.t
 const MODES: ModesConfig = preload("res://data/balance/modes_config.tres")
 const SKY_ANCHOR: NodePath = ^"SkyAnchor"
 const DEBRIS_DEPTH: int = 60
+const REFLECTION_DEPTH: int = -9
 const SKY_FALLBACK_DEPTH: int = -5
 const ENVIRONMENT: Environment = preload("res://presentation/duel_environment.tres")
 const PLAYER_INDEX: int = 0
@@ -36,6 +37,7 @@ var _desaturation: Desaturation
 var _audio: DuelAudio
 var _rumble: DuelRumble
 var _ai: Array[AiController] = []
+var _reflections: Array[FighterReflection] = []
 var _dummy: DummyController
 var _objective: DuelObjective
 var _awakened: Array[bool] = [false, false]
@@ -186,9 +188,18 @@ func _bind_presentation(simulation: MatchSimulation) -> void:
 		_views[i].set_blade_color(setup.blade_colors[i])
 		_views[i].rig.wind = setup.arena.wind
 		_views[i].reset_round(simulation.phase == MatchSimulation.Phase.INTRO)
+	if _reflections.is_empty() and setup.arena.fighter_reflection > 0.0:
+		for view in _views:
+			var reflection: FighterReflection = FighterReflection.new()
+			reflection.z_index = REFLECTION_DEPTH
+			reflection.setup(view, setup.arena.fighter_reflection, setup.arena.reflection_shade)
+			_world.add_child(reflection)
+			_reflections.append(reflection)
 	_effects.sim = simulation
 	_powers.sim = simulation
 	_debris.sim = simulation
+	_debris.views = _views
+	_debris.arena = setup.arena
 	_powers.views = _views
 	_powers.blade_colors = [setup.blade_colors[0], setup.blade_colors[1]]
 	_effects.blade_colors = [setup.blade_colors[0], setup.blade_colors[1]]

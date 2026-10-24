@@ -47,7 +47,21 @@ spacing = 300
 seed_value = 7
 lit_by_blades = false
 
-[node name="L3_floor" type="Node2D" parent="."]
+[node name="L3_mirage" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.4, 1.0)
+
+[node name="Layer" type="Node2D" parent="L3_mirage"]
+script = ExtResource("1_layer")
+kind = 14
+accent_color = Color(0.9412, 0.7843, 0.6588, 0.5)
+span = 1400
+level = -4
+height = 70
+element_width = 70
+bands = 16
+lit_by_blades = false
+
+[node name="L4_floor" type="Node2D" parent="."]
 script = ExtResource("1_layer")
 kind = 13
 base_color = Color(0.1412, 0.1294, 0.1647, 1.0)
