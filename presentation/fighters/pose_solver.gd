@@ -39,6 +39,9 @@ const HEAVY_SCALE: float = 1.6
 const ANTICIPATION_EASE: float = 2.4
 const SWING_SMOOTHING: float = 0.35
 const FOLLOW_SHARE: float = 0.35
+const SHOULDER_LEAD: float = 2.0
+const OFF_SWAY: float = 6.0
+const OFF_SWING: float = 40.0
 const ARC_CENTER: Vector2 = Vector2(-2.0, -34.0)
 const MAX_FROM_REACH: float = 60.0
 const HIT_DECAY: float = 9.0
@@ -88,6 +91,8 @@ var flip_progress: float = -1.0
 var landing_left: float = 0.0
 
 var _attack_key: int = -1
+var _guard_angle: float = 0.0
+var _guard_grip: Vector2 = Vector2.ZERO
 var _from_angle: float = 0.0
 var _from_grip: Vector2 = Vector2.ZERO
 var _body_shift: float = 0.0
@@ -122,6 +127,8 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 		guard_angle += WOUNDED_ARM_DROP
 		guard_grip += Vector2(-3.0, WOUNDED_ARM_DROP * 0.45)
 	_track_attack(fighter, pose, guard_angle, guard_grip)
+	_guard_angle = guard_angle
+	_guard_grip = guard_grip
 	if fighter.state != FighterState.State.HIT and clash_left == 0.0:
 		rebounding = false
 	_body_shift = 0.0
@@ -245,6 +252,8 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 		_place_off_hand(fighter, pose)
 	else:
 		pose.off_hand += pose.pelvis
+	if family.grip == MotionFamily.Grip.DUAL:
+		_place_second_blade(fighter, pose, off_free)
 
 
 func _walk(fighter: FighterState, pose: RigPose) -> void:
@@ -341,17 +350,20 @@ func _attack(fighter: FighterState, pose: RigPose, guard_angle: float, guard_gri
 			pose.back_foot.x -= 2.0 * power * eased
 		FighterState.Phase.ACTIVE:
 			var swing: float = lerpf(progress, smoothstep(0.0, 1.0, progress), SWING_SMOOTHING)
-			pose.blade_angle = lerpf(move.blade_angle_windup, move.blade_angle_strike, swing)
+			var body: float = 1.0 - pow(1.0 - swing, SHOULDER_LEAD)
+			var wrist: float = pow(swing, family.wrist_lag)
+			pose.blade_angle = lerpf(move.blade_angle_windup, move.blade_angle_strike, wrist)
 			pose.grip = _arc(windup_grip, strike_grip, swing)
-			lean = lerpf(family.windup_lean * power, family.strike_lean * power, swing)
-			crouch = lerpf(family.heavy_crouch * 0.4, family.heavy_crouch, swing) * power
-			_body_shift = lerpf(-family.windup_shift, family.lunge, swing) * power
-			pose.front_foot.x += step * swing
-			pose.back_foot.x -= 2.0 * power * (1.0 - swing)
+			lean = lerpf(family.windup_lean * power, family.strike_lean * power, body)
+			crouch = lerpf(family.heavy_crouch * 0.4, family.heavy_crouch, body) * power
+			_body_shift = lerpf(-family.windup_shift, family.lunge, body) * power
+			pose.front_foot.x += step * body
+			pose.back_foot.x -= 2.0 * power * (1.0 - body)
 			pose.trail = true
 		FighterState.Phase.RECOVERY:
-			var through: float = 1.0 - pow(1.0 - minf(progress / FOLLOW_SHARE, 1.0), 2.0)
-			var settle: float = smoothstep(FOLLOW_SHARE * 0.6, 1.0, progress)
+			var share: float = family.recover_share
+			var through: float = 1.0 - pow(1.0 - minf(progress / share, 1.0), 2.0)
+			var settle: float = smoothstep(share * 0.6, 1.0, progress)
 			var sweep: float = signf(move.blade_angle_strike - move.blade_angle_windup)
 			var follow: float = move.blade_angle_strike + sweep * family.follow_through * through
 			var follow_grip: Vector2 = strike_grip + Vector2(family.follow_through * 0.12, family.follow_through * 0.2 * sweep) * through
@@ -363,6 +375,8 @@ func _attack(fighter: FighterState, pose: RigPose, guard_angle: float, guard_gri
 			pose.front_foot.x += step * (1.0 - settle)
 			if family.finisher_twirl and _is_last_chain(fighter):
 				pose.blade_angle += 360.0 * smoothstep(0.1, 0.9, progress)
+			if family.one_hand_follow and heavy and settle < 1.0:
+				pose.off_hand = family.free_hand + Vector2(-family.follow_through * 0.3, -family.follow_through * 0.2) * (1.0 - settle)
 	if move.is_aerial():
 		_tuck(pose, 0.8)
 		_body_shift = 0.0
@@ -553,23 +567,39 @@ func _dodge(fighter: FighterState, pose: RigPose) -> Vector2:
 	return Vector2.ZERO
 
 
-func _place_off_hand(fighter: FighterState, pose: RigPose) -> void:
+func _place_off_hand(_fighter: FighterState, pose: RigPose) -> void:
 	var direction: Vector2 = pose.blade_direction()
+	if character.weapon.kind == WeaponData.Kind.LANCE:
+		pose.off_hand = pose.grip - direction * LANCE_SPACING
+		return
 	match family.grip:
 		MotionFamily.Grip.TWO_HANDED:
-			var spacing: float = LANCE_SPACING if character.weapon.kind == WeaponData.Kind.LANCE else OFF_HAND_SPACING
-			pose.off_hand = pose.grip - direction * spacing
+			pose.off_hand = pose.grip - direction * family.back_hand_spacing
 		MotionFamily.Grip.STAFF:
 			pose.off_hand = pose.grip - direction * STAFF_SPACING
 		MotionFamily.Grip.DUAL:
-			pose.off_hand = pose.pelvis + Vector2(-6.0, -34.0)
-			pose.off_blade_angle = 180.0 - pose.blade_angle * 0.4
-			if fighter.is_attacking() and fighter.chain_index % 2 == 1:
-				pose.off_hand = pose.grip + Vector2(6.0, 8.0)
-				pose.off_blade_angle = pose.blade_angle + 20.0
-				pose.off_trail = pose.trail
+			pose.off_hand = family.off_guard_hand + pose.pelvis
 		MotionFamily.Grip.ONE_HANDED:
-			pose.off_hand = RELAXED_HAND + pose.pelvis + Vector2(sin(time * 1.1) * 1.5, 0.0)
+			pose.off_hand = family.free_hand + pose.pelvis + Vector2(sin(time * 1.1) * 1.5, 0.0)
+
+
+func _place_second_blade(fighter: FighterState, pose: RigPose, off_free: bool) -> void:
+	var sway: float = sin(time * 1.7 + 1.3) * family.sway * 2.0
+	pose.off_blade_angle = family.off_guard_angle + sway
+	if not fighter.is_attacking() or fighter.move == null or off_free:
+		return
+	var move: MoveData = fighter.move
+	if move.kind == MoveData.Kind.LIGHT and fighter.chain_index % 2 == 1:
+		pose.off_hand = pose.grip + Vector2(-2.0, 4.0)
+		pose.off_blade_angle = pose.blade_angle
+		pose.off_trail = pose.trail
+		pose.grip = _guard_grip + pose.pelvis + Vector2(-OFF_SWAY, -OFF_SWAY)
+		pose.blade_angle = _guard_angle - OFF_SWING * 0.5
+		pose.trail = false
+		return
+	var swing: float = _progress(fighter, move) if fighter.move_phase == FighterState.Phase.ACTIVE else 0.0
+	pose.off_hand += Vector2(-OFF_SWAY * swing, OFF_SWAY * 0.5 * swing)
+	pose.off_blade_angle = family.off_guard_angle + OFF_SWING * swing
 
 
 static func _progress(fighter: FighterState, move: MoveData) -> float:

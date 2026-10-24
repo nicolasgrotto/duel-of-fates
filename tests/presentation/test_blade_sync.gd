@@ -50,10 +50,18 @@ func _blade_crosses_hitbox(data: CharacterData, move: MoveData) -> bool:
 		fighter.phase_ticks = tick
 		solver.solve(fighter, fighter, pose)
 		geometry.compute(data.weapon, pose)
-		for sample in SAMPLES + 1:
-			var point: Vector2 = geometry.blade_base.lerp(geometry.tip(), float(sample) / SAMPLES) * scale
-			if hitbox.has_point(Vector2(point.x, -point.y)):
-				return true
+		if _segment_in(geometry.blade_base, geometry.tip(), scale, hitbox):
+			return true
+		if data.weapon.kind == WeaponData.Kind.DUAL and _segment_in(geometry.second_base, geometry.second_base + geometry.second_direction * geometry.second_length, scale, hitbox):
+			return true
+	return false
+
+
+func _segment_in(base: Vector2, tip: Vector2, scale: float, hitbox: Rect2) -> bool:
+	for sample in SAMPLES + 1:
+		var point: Vector2 = base.lerp(tip, float(sample) / SAMPLES) * scale
+		if hitbox.has_point(Vector2(point.x, -point.y)):
+			return true
 	return false
 
 

@@ -19,3 +19,6 @@ strike_lean = 10.0
 follow_through = 4.0
 heavy_crouch = 8.0
 heavy_step = 8.0
+back_hand_spacing = 6.0
+wrist_lag = 1.0
+recover_share = 0.2

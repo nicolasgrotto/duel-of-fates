@@ -20,3 +20,7 @@ follow_through = 26.0
 heavy_crouch = 10.0
 heavy_step = 16.0
 lock_lean = 24.0
+free_hand = Vector2(-14, -26)
+wrist_lag = 1.8
+recover_share = 0.5
+one_hand_follow = true

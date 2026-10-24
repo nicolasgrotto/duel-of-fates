@@ -21,3 +21,4 @@ heavy_crouch = 14.0
 heavy_step = 6.0
 lock_crouch = 14.0
 double_jump_time = 0.5
+wrist_lag = 1.3

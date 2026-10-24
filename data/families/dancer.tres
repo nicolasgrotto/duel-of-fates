@@ -26,3 +26,7 @@ lock_lean = 14.0
 double_jump_turns = 2.0
 double_jump_time = 0.55
 double_jump_corkscrew = true
+free_hand = Vector2(-16, -40)
+wrist_lag = 1.6
+recover_share = 0.45
+one_hand_follow = true

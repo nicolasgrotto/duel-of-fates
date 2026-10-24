@@ -125,7 +125,7 @@ O desafio vale em qualquer duelo vencido contra a IA (Duelar ou Arcade, qualquer
 - **Habilidade — Marreta**: golpe muito lento e pesado, com armadura contra 2 golpes (leva metade do dano).
 - **Sequência**: 2 rápidos (curto de cima; ascendente pesado).
 - **IA**: anda em guarda até o alcance e solta a Marreta quando o oponente insiste em atacar.
-- **Visual**: túnica de armadura verde-oliva (`#3d4636`), corpo `#1f231c`, ombreiras grandes, ombros muito largos; cabeça raspada; duas placas no peito, caneleiras com joelheira, cinto escuro. Postura ereta. Lâmina mais grossa, quase horizontal na guarda. Cabo com empunhadura escura.
+- **Visual**: túnica de armadura verde-oliva (`#3d4636`), corpo `#1f231c`, ombreiras grandes, ombros muito largos; cabeça raspada; duas placas no peito, caneleiras com joelheira, cinto escuro. Postura ereta. Lâmina mais grossa, alta sobre o ombro na guarda (família Colosso). Cabo com empunhadura escura.
 - **Família — Colosso**: base larga e baixa, quase sem balanço, golpes curtos e secos no rápido, martelada sobre a cabeça no forte e na Marreta, agachando no impacto. Empurrão de ombro. Disputa enraizada, vitória curta.
 
 ## Vespa / Wasp
@@ -180,7 +180,7 @@ O desafio vale em qualquer duelo vencido contra a IA (Duelar ou Arcade, qualquer
 - **Habilidade — Forja**: apertar começa o golpe; **segurar** prende o golpe no fim da preparação e acumula carga (0,35 s por nível, até 3). Soltar libera. Nível 1 = dano normal; 2 = +35%; 3 = +70% e **quebra a guarda** de quem bloquear. No nível máximo o golpe sai sozinho. A lâmina brilha mais a cada nível: o oponente sempre vê a carga chegando e pode punir, esquivar ou empurrar.
 - **Sequência**: 2 rápidos.
 - **IA**: carrega o golpe quando o oponente está longe.
-- **Visual**: túnica de couro (`#4a3a30`), corpo `#211a15`, ombros largos; sem capuz, cabeça grande, barba curta; avental de couro escuro, braçadeiras grossas, cinto com fivela. Firme, pesada. **Lâmina muito larga** à frente. Cabo com guarda atravessada na base da lâmina.
+- **Visual**: túnica de couro (`#4a3a30`), corpo `#211a15`, ombros largos; sem capuz, cabeça grande, barba curta; avental de couro escuro, braçadeiras grossas, cinto com fivela. Firme, pesada. **Lâmina muito larga**, alta sobre o ombro na guarda. Cabo com guarda atravessada na base da lâmina.
 - **Família — Colosso**: como o Bastião.
 
 ## Garça / Heron
@@ -225,7 +225,7 @@ A Sombra depois de aceitar o Fluxo do Soberano. Mesma pessoa, mais perigosa.
 
 - Mais vida (150), forte mais pesado, mesmos traço e habilidade da Sombra.
 - No Arcade e na Sobrevivência, abaixo de metade da vida **desperta**: "A SOMBRA DESPERTA", letterbox pulsando, IA de chefe.
-- **Visual**: silhueta da Sombra com ombreiras, ombros mais largos, capa ainda mais escura, barra rasgada, placas no peito e lâmina mais grossa. Continua magenta.
+- **Visual**: silhueta da Sombra com ombreiras, ombros mais largos, capa ainda mais escura, barra rasgada, placas no peito e lâmina mais grossa. Guarda alta atrás da cabeça (a outra guarda do Agressor), para a silhueta se separar da Sombra. Continua magenta.
 - Não aparece na seleção.
 
 ## Secretos
