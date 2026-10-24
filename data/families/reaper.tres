@@ -24,3 +24,4 @@ flip_on_double_jump = true
 roll_on_dodge = true
 air_twirl = true
 wrist_lag = 1.4
+dash_twirl = true

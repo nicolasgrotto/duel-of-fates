@@ -6,7 +6,10 @@ func step(sim: MatchSimulation, fighter: FighterState, intent: Intent) -> void:
 	var move: MoveData = fighter.move
 	match fighter.move_phase:
 		FighterState.Phase.STARTUP:
-			decelerate(sim, fighter)
+			if move.dash_in_startup and fighter.on_ground:
+				fighter.vx = fighter.facing * move.lunge * fighter.agility_multiplier / maxf(move.startup, Ticks.DELTA)
+			else:
+				decelerate(sim, fighter)
 			if _try_feint(sim, fighter, move):
 				return
 			if fighter.phase_ticks + 1 >= move.startup_ticks() and _holds_charge(fighter, move, intent):
@@ -63,7 +66,9 @@ func _enter_active(sim: MatchSimulation, fighter: FighterState, move: MoveData) 
 	fighter.phase_ticks = 0
 	if move.throws_blade:
 		_throw_blade(sim, fighter, move)
-	if fighter.on_ground and move.lunge > 0.0 and move.active > 0.0:
+	if move.dash_in_startup:
+		fighter.vx = 0.0
+	elif fighter.on_ground and move.lunge > 0.0 and move.active > 0.0:
 		fighter.vx = fighter.facing * move.lunge * fighter.agility_multiplier / move.active
 	if move.dive_speed > 0.0 and fighter.is_airborne():
 		fighter.vy = -move.dive_speed

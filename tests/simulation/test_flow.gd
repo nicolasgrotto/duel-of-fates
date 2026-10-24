@@ -564,3 +564,22 @@ func test_without_powers_special_stays_the_ability() -> void:
 	duel.step(1)
 	assert_eq(duel.fighter(0).move.kind, MoveData.Kind.STANCE)
 	assert_almost(duel.fighter(0).flow, 0.0)
+
+
+func test_dash_slash_dashes_in_startup_and_cuts_at_the_end() -> void:
+	var duel: DuelFixture = _duel(&"guardian", &"shadow")
+	var dash: MoveData = duel.fighter(0).character.technique_forward
+	assert_eq(dash.id, &"dash_slash")
+	duel.place(260.0)
+	var start_x: float = duel.fighter(0).x
+	duel.intents[0].move_x = 1
+	duel.press(0, Intent.Command.SPECIAL)
+	duel.step(1)
+	duel.intents[0].move_x = 0
+	duel.step(dash.startup_ticks() - 1)
+	assert_eq(duel.fighter(0).move_phase, FighterState.Phase.STARTUP)
+	assert_gt(duel.fighter(0).x - start_x, dash.lunge * 0.8, "the dash happens before the cut")
+	assert_eq(duel.count_events(CombatEvent.Type.HIT), 0)
+	duel.step(dash.active_ticks() + 1)
+	assert_eq(duel.count_events(CombatEvent.Type.HIT), 1)
+	assert_lt(absf(duel.fighter(0).vx), 1.0, "the cut lands from a planted stance")

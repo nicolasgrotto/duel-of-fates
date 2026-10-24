@@ -131,7 +131,7 @@ Animação (apresentação):
 - [x] Postura, empunhadura e swing por família (tabela da ART_DIRECTION), incluindo as duas lâminas da Vespa
 - [x] Tipos de corte por passo da sequência de rápidos de cada família
 - [x] Guarda direcional visual e faíscas no ponto de contato
-- [ ] Avanço com corte em duas etapas
+- [x] Avanço com corte em duas etapas
 - [ ] Investida descendente (estocada para baixo ou corte que bate no chão)
 - [ ] Arremesso da lâmina com duas lâminas (Vespa)
 - [ ] Salto de transposição e recuperação acrobática

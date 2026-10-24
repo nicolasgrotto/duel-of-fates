@@ -76,8 +76,16 @@ const LIMP_DIP: float = 5.0
 const LIMP_STRIDE: float = 0.45
 const SPIN_GRIP: Vector2 = Vector2(22.0, -36.0)
 const SPIN_ANGLE: float = -6.0
-const DASH_WINDUP_GRIP: Vector2 = Vector2(-10.0, -40.0)
-const DASH_STRIKE_GRIP: Vector2 = Vector2(30.0, -22.0)
+const DASH_LOW_TUCK_GRIP: Vector2 = Vector2(-14.0, -6.0)
+const DASH_LOW_TUCK_ANGLE: float = 160.0
+const DASH_HIGH_TUCK_GRIP: Vector2 = Vector2(-6.0, -46.0)
+const DASH_HIGH_TUCK_ANGLE: float = -150.0
+const DASH_RISING_GRIP: Vector2 = Vector2(26.0, -50.0)
+const DASH_RISING_ANGLE: float = -60.0
+const DASH_FALLING_GRIP: Vector2 = Vector2(28.0, -14.0)
+const DASH_FALLING_ANGLE: float = 40.0
+const DASH_HOLD: float = 0.35
+const DASH_TWIRL_TURNS: float = 2.0
 const THROW_WINDUP_GRIP: Vector2 = Vector2(-14.0, -44.0)
 const THROW_RELEASE_GRIP: Vector2 = Vector2(40.0, -42.0)
 const THROW_CATCH_HAND: Vector2 = Vector2(30.0, -44.0)
@@ -127,6 +135,7 @@ var _lock_pulse: float = 0.0
 var clash_left: float = 0.0
 var rebounding: bool = false
 var block_line: MoveData.Cut = MoveData.Cut.HORIZONTAL
+var afterimage: bool = false
 
 
 func setup(data: CharacterData, art: FighterArt) -> void:
@@ -159,6 +168,7 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 		rebounding = false
 	_body_shift = 0.0
 	_head_snap = 0.0
+	afterimage = false
 	var breath: float = sin(time * 2.2) * family.breath * (2.0 if fighter.exhausted else 1.0)
 	var crouch: float = family.crouch + breath + LANDING_CROUCH * clampf(landing_left / LANDING_TIME, 0.0, 1.0)
 	var lean: float = family.lean + (6.0 if fighter.exhausted else 0.0)
@@ -384,6 +394,8 @@ func _attack(fighter: FighterState, pose: RigPose, guard_angle: float, guard_gri
 		pose.front_foot.x += family.heavy_step * amount
 		_body_shift = family.lunge * amount
 		return Vector2(4.0 * amount, 16.0 * amount)
+	if move.technique_style == MoveData.TechniqueStyle.DASH:
+		return _dash_slash(fighter, pose, move, guard_angle, guard_grip)
 	if move.technique_style != MoveData.TechniqueStyle.ARC:
 		return _technique(fighter, pose, move, guard_angle, guard_grip)
 	var heavy: bool = move.is_heavy()
@@ -448,6 +460,44 @@ func _attack(fighter: FighterState, pose: RigPose, guard_angle: float, guard_gri
 	return Vector2(crouch, lean)
 
 
+func _dash_slash(fighter: FighterState, pose: RigPose, move: MoveData, guard_angle: float, guard_grip: Vector2) -> Vector2:
+	var progress: float = _progress(fighter, move)
+	var descending: bool = family.dash_cut == MoveData.Cut.DESCENDING
+	var tuck_grip: Vector2 = DASH_HIGH_TUCK_GRIP if descending else DASH_LOW_TUCK_GRIP
+	var tuck_angle: float = DASH_HIGH_TUCK_ANGLE if descending else DASH_LOW_TUCK_ANGLE
+	var strike_grip: Vector2 = DASH_FALLING_GRIP if descending else DASH_RISING_GRIP
+	var strike_angle: float = DASH_FALLING_ANGLE if descending else DASH_RISING_ANGLE
+	match fighter.move_phase:
+		FighterState.Phase.STARTUP:
+			var ramp: float = 1.0 - pow(1.0 - minf(progress * 2.0, 1.0), 2.0)
+			pose.grip = _from_grip.lerp(tuck_grip, ramp)
+			pose.blade_angle = rad_to_deg(lerp_angle(deg_to_rad(_from_angle), deg_to_rad(tuck_angle), ramp))
+			if family.dash_twirl:
+				pose.blade_angle += 360.0 * DASH_TWIRL_TURNS * progress
+			pose.front_foot.x += 18.0 * ramp
+			pose.back_foot.x -= 18.0 * ramp
+			pose.back_foot.y = -6.0 * ramp
+			_body_shift = 12.0 * ramp
+			afterimage = progress > 0.2
+			return Vector2(20.0 * ramp, 34.0 * ramp)
+		FighterState.Phase.ACTIVE:
+			var swing: float = 1.0 - pow(1.0 - progress, 2.0)
+			pose.grip = _arc(tuck_grip, strike_grip, swing)
+			pose.blade_angle = lerpf(tuck_angle, strike_angle, swing)
+			pose.trail = true
+			pose.front_foot.x += 18.0
+			pose.back_foot.x -= 14.0
+			_body_shift = lerpf(12.0, 8.0, swing)
+			return Vector2(lerpf(20.0, 10.0, swing), lerpf(34.0, 6.0 if descending else -6.0, swing))
+	var settle: float = smoothstep(DASH_HOLD, 1.0, progress)
+	pose.grip = strike_grip.lerp(guard_grip, settle)
+	pose.blade_angle = rad_to_deg(lerp_angle(deg_to_rad(strike_angle), deg_to_rad(guard_angle), settle))
+	pose.front_foot.x += 18.0 * (1.0 - settle)
+	pose.back_foot.x -= 14.0 * (1.0 - settle)
+	_body_shift = 8.0 * (1.0 - settle)
+	return Vector2(10.0 * (1.0 - settle), (6.0 if descending else -6.0) * (1.0 - settle))
+
+
 static func _cut_turn(cut: MoveData.Cut, amount: float, active: bool) -> float:
 	match cut:
 		MoveData.Cut.HORIZONTAL:
@@ -485,15 +535,6 @@ func _technique(fighter: FighterState, pose: RigPose, move: MoveData, guard_angl
 			pose.turn = TAU * smoothstep(0.0, 1.0, swing) if active else 0.0
 			crouch = 8.0 * ramp
 			lean = 4.0 * ramp
-		MoveData.TechniqueStyle.DASH:
-			windup_grip = DASH_WINDUP_GRIP
-			strike_grip = DASH_STRIKE_GRIP
-			angle = lerpf(move.blade_angle_windup, move.blade_angle_strike, swing)
-			crouch = 16.0 * ramp
-			lean = 26.0 * ramp
-			pose.front_foot.x += 14.0 * ramp
-			pose.back_foot.x -= 12.0 * ramp
-			_body_shift = 10.0 * ramp
 		MoveData.TechniqueStyle.THROW:
 			windup_grip = THROW_WINDUP_GRIP
 			strike_grip = THROW_RELEASE_GRIP

@@ -22,3 +22,4 @@ heavy_step = 8.0
 back_hand_spacing = 6.0
 wrist_lag = 1.0
 recover_share = 0.2
+dash_cut = 1

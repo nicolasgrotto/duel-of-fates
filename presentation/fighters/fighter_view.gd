@@ -205,7 +205,7 @@ func _process(delta: float) -> void:
 	rig.set_wound(fighter.wound)
 	rig.set_blade_out(fighter.blade_out)
 	_update_blade()
-	if fighter.state == FighterState.State.DODGING and not reduced_effects:
+	if (fighter.state == FighterState.State.DODGING or _solver.afterimage) and not reduced_effects:
 		afterimages.capture(rig, delta)
 
 

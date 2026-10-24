@@ -158,7 +158,7 @@ Personagens com o mesmo jeito de lutar compartilham a base de animação.
 ### Técnicas
 
 - **Giro**: o corpo gira (frente → costas → frente) com a lâmina estendida quase na horizontal, passando pela frente, por trás e de volta.
-- **Avanço com corte** (revisão aprovada): **duas etapas**, como nos duelos de espadachim. 1) Arrancada: o corpo dispara rente e inclinado, a lâmina recolhida atrás do quadril, quase sem rastro, com imagens residuais. 2) Corte: no fim do avanço, um corte rápido e largo (diagonal de baixo para cima; o Guardião de cima para baixo; o Ceifador gira o bastão), com o rastro inteiro e uma pausa curta na pose final antes de voltar à guarda.
+- **Avanço com corte** (revisão aprovada): **duas etapas**, como nos duelos de espadachim. 1) Arrancada: o corpo dispara rente e inclinado, a lâmina recolhida atrás do quadril, quase sem rastro, com imagens residuais. 2) Corte: no fim do avanço, um corte rápido e largo (diagonal de baixo para cima; o Guardião de cima para baixo; o Ceifador gira o bastão), com o rastro inteiro e uma pausa curta na pose final antes de voltar à guarda. Implementado: a família escolhe o corte (`MotionFamily.dash_cut`; o Guardião desce) e o Ceifador gira o bastão na arrancada (`dash_twirl`); a pausa ocupa o primeiro terço da recovery.
 - **Arremesso da lâmina**: lâmina recua atrás do corpo, soltura com passo e braço estendido; a mão vazia acompanha a volta.
 - **Estocada**: lâmina recolhida no peito, braço todo estendido, passo longo.
 - **Corte ascendente**: corpo abaixa com a lâmina atrás do quadril e sobe com ela até acima da cabeça.

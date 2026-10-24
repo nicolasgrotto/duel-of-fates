@@ -215,6 +215,10 @@ Aprovado; implementação na revisão de combate. A saída técnica da disputa e
 - O rival fica preso 0,08 s na soltura e depois está livre: pode bloquear, **aparar** (tocar guarda na hora) ou esquivar. Aparado, o desengajamento segue a regra do parry de um rápido; errado, a recovery é punível.
 - A IA usa conforme a dificuldade (Fácil quase nunca, Difícil quando está perdendo a contagem).
 
+### Avanço com corte
+
+- A arrancada acontece na preparação (os 220 u do avanço em 0,2 s) e o ativo é só o corte, com o lutador plantado (`MoveData.dash_in_startup`). A hitbox continua existindo só no ativo; o alcance total (avanço + 100 u) e os tempos não mudam. Assim o que se vê (arrancada, depois corte) é o que acerta.
+
 ### Habilidades e traços: valores iniciais
 
 Os personagens em [content/CHARACTERS.md](content/CHARACTERS.md) não fixavam números; estes são os valores iniciais da fase 4 (ajustados pela matriz de equilíbrio):

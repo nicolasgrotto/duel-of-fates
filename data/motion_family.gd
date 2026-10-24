@@ -38,6 +38,8 @@ enum Grip { TWO_HANDED, ONE_HANDED, DUAL, STAFF }
 @export_range(0.4, 3.0) var wrist_lag: float = 1.0
 @export_range(0.1, 0.8) var recover_share: float = 0.35
 @export var one_hand_follow: bool = false
+@export var dash_cut: MoveData.Cut = MoveData.Cut.RISING
+@export var dash_twirl: bool = false
 
 @export_group("Air and dodges")
 @export var flip_on_double_jump: bool = true

@@ -46,6 +46,7 @@ enum TechniqueStyle { ARC, SPIN, DASH, THROW, THRUST, RISING, FLURRY, LUNGE, PLU
 @export var launch_speed: float = 0.0
 @export var throws_blade: bool = false
 @export var recovery_on_hit: float = -1.0
+@export var dash_in_startup: bool = false
 
 @export_group("Consequences")
 @export var can_blade_lock: bool = false
