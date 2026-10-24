@@ -7,6 +7,7 @@ const PERFECT_PARRY_TARGET: int = 2
 const PARRY_TARGET: int = 7
 const EVADE_TARGET: int = 2
 const SPIN_TARGET: int = 4
+const DISENGAGE_THINK_TICKS: int = 6
 const REACH_MARGIN: float = 20.0
 
 var difficulty: AiDifficultyData
@@ -55,7 +56,7 @@ func produce(sim: MatchSimulation, fighter_index: int, intent: Intent) -> void:
 		_reset_plan()
 		return
 	if me.state == FighterState.State.BLADE_LOCK:
-		_press_in_lock(sim, intent)
+		_press_in_lock(sim, me, intent)
 		return
 	_think_ticks -= 1
 	if _think_ticks <= 0:
@@ -490,6 +491,17 @@ func _execute_holds(me: FighterState, opponent: FighterState, sim: MatchSimulati
 	intent.hold(_hold_command)
 
 
+func _try_disengage(sim: MatchSimulation, me: FighterState, intent: Intent) -> bool:
+	if not BladeLockResolver.can_disengage(sim) or sim.lock_ticks % DISENGAGE_THINK_TICKS != 0:
+		return false
+	var losing: bool = me.lock_presses < sim.opponent_of(me).lock_presses
+	if not losing or me.vigor < BladeLockConfig.DISENGAGE_MOVE.vigor_cost or rng.randf() >= difficulty.disengage_chance:
+		return false
+	intent.press(Intent.Command.HEAVY)
+	decision = "disengage"
+	return true
+
+
 func _continue_chain(me: FighterState, intent: Intent) -> void:
 	if _chain_left <= 0 or me.move == null:
 		return
@@ -498,8 +510,10 @@ func _continue_chain(me: FighterState, intent: Intent) -> void:
 		_chain_left -= 1
 
 
-func _press_in_lock(sim: MatchSimulation, intent: Intent) -> void:
+func _press_in_lock(sim: MatchSimulation, me: FighterState, intent: Intent) -> void:
 	if sim.lock_ticks < Ticks.from_seconds(difficulty.lock_reaction):
+		return
+	if _try_disengage(sim, me, intent):
 		return
 	_lock_press_ticks -= 1
 	if _lock_press_ticks > 0:

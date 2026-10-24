@@ -179,6 +179,16 @@ rumble_weak = 0.3
 rumble_strong = 0.4
 rumble_duration = 0.1
 
+[sub_resource type="Resource" id="disengage"]
+script = ExtResource("2_recipe")
+sparks_min = 6
+sparks_max = 9
+spark_speed = 480.0
+spread_degrees = 90.0
+lift_degrees = -20.0
+shake = 2.0
+shake_duration = 0.08
+
 [sub_resource type="Resource" id="power_hit"]
 script = ExtResource("2_recipe")
 sparks_min = 6
@@ -245,3 +255,4 @@ technique_clash = SubResource("technique_clash")
 plunge_impact = SubResource("plunge_impact")
 blade_press_start = SubResource("blade_press_start")
 blade_press_end = SubResource("blade_press_end")
+disengage = SubResource("disengage")

@@ -97,6 +97,8 @@ func _recipe_for(event: CombatEvent) -> EffectRecipe:
 			return config.blade_press_start
 		CombatEvent.Type.BLADE_PRESS_ENDED:
 			return config.blade_press_end
+		CombatEvent.Type.DISENGAGE:
+			return config.disengage
 		CombatEvent.Type.DEATH:
 			return config.knockout
 		CombatEvent.Type.POWER_HIT:

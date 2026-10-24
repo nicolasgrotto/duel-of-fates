@@ -211,13 +211,14 @@ O momento mais físico do duelo: rostos próximos, lâminas cruzadas num X, trem
 
 ### Desengajamento
 
-Aprovado; implementação na revisão de combate. A saída técnica da disputa e da pressão, contra quem só aperta rápido.
+Implementado na fase 7.5 (`BladeLockResolver.disengage`, golpe em `data/characters/common/disengage.tres`, tipo `DISENGAGE`, números no grupo Disengage do `BladeLockConfig`). A saída técnica da disputa e da pressão, contra quem só aperta rápido.
 
 - **Ataque forte** durante a disputa ou a pressão, depois de 0,5 s dentro dela: o lutador gira o punho, solta a própria lâmina e corta por outro ângulo. Uma tentativa por disputa.
 - Custa 20 de Vigor. A disputa termina sem vencedor; os corpos se afastam só 60 u.
 - O corte: startup 0,10 s, active 0,10 s, recovery 0,30 s, 11 de dano, conta como rápido para guarda e parry, não encadeia sequência.
 - O rival fica preso 0,08 s na soltura e depois está livre: pode bloquear, **aparar** (tocar guarda na hora) ou esquivar. Aparado, o desengajamento segue a regra do parry de um rápido; errado, a recovery é punível.
-- A IA usa conforme a dificuldade (Fácil quase nunca, Difícil quando está perdendo a contagem).
+- A IA usa conforme a dificuldade, só quando está perdendo a contagem (`disengage_chance` a cada 0,1 s depois de meio segundo: Fácil 1%, Normal 12%, Difícil 50%, Chefe 60%).
+- O desengajamento divide a recarga de 4 s com a disputa e a pressão e solta o evento `disengage`. Sem Vigor, a ação é recusada e a disputa continua. **Treino guiado** da disputa: o último passo pede um desengajamento.
 
 ### Avanço com corte
 
@@ -343,7 +344,7 @@ Valores que fazem parte da regra porque mudam o tempo do duelo:
 
 ## 14. Eventos de combate
 
-A simulação emite eventos; efeitos, câmera, som, HUD, estatísticas e tutoriais reagem a eles: `attack_started`, `hit`, `block`, `guard_break`, `parry`, `perfect_parry`, `clash`, `technique_clash`, `blade_lock_started`, `blade_lock_pressed`, `blade_lock_ended`, `blade_press_started`, `blade_press_ended`, `shove`, `dodge`, `evade_success`, `response`, `action_rejected`, `exhaustion`, `exhaustion_recovered`, `wound`, `feint`, `armor_absorbed`, `power_started`, `power_active`, `power_hit`, `power_blocked`, `power_resisted`, `power_absorbed`, `projectile_*`, `death`, `round_started`, `round_ended`.
+A simulação emite eventos; efeitos, câmera, som, HUD, estatísticas e tutoriais reagem a eles: `attack_started`, `hit`, `block`, `guard_break`, `parry`, `perfect_parry`, `clash`, `technique_clash`, `blade_lock_started`, `blade_lock_pressed`, `blade_lock_ended`, `blade_press_started`, `blade_press_ended`, `disengage`, `shove`, `dodge`, `evade_success`, `response`, `action_rejected`, `exhaustion`, `exhaustion_recovered`, `wound`, `feint`, `armor_absorbed`, `power_started`, `power_active`, `power_hit`, `power_blocked`, `power_resisted`, `power_absorbed`, `projectile_*`, `death`, `round_started`, `round_ended`.
 
 ## 15. IA
 
@@ -407,7 +408,7 @@ Menu em dois níveis: **Jogar**, **Aprender**, **Extras**, **Opções**.
 ### Aprender
 
 - **Tutorial**: contra o boneco, sem rounds e sem morte. Uma instrução por vez, com as teclas do preset ativo; cada passo termina quando o jogador faz a ação: andar → rápido (2) → sequência → forte → guarda (2) → aparar fortes (2) → contra-ataque → empurrão → quebra de guarda → ferimento → disputa de lâminas → habilidade. No fim oferece o desafio de parry.
-- **Treinos guiados**: Esquiva em sequência (esquivar no instante, três seguidas, esquivar e punir, duas esquivas com giro contra o boneco que solta fortes), Exaustão e ferimento (exaurir-se, recuperar, quebrar a guarda do boneco, feri-lo), Disputa de lâminas (provocar e vencer três disputas, depois vencer uma pressão de lâminas).
+- **Treinos guiados**: Esquiva em sequência (esquivar no instante, três seguidas, esquivar e punir, duas esquivas com giro contra o boneco que solta fortes), Exaustão e ferimento (exaurir-se, recuperar, quebrar a guarda do boneco, feri-lo), Disputa de lâminas (provocar e vencer três disputas, depois vencer uma pressão de lâminas e desengajar de uma disputa).
 - **Treino**: contra o boneco, sem limite de rounds. Comportamento do boneco (parado, guarda, atacando), gravação de até 10 s de comandos do jogador e reprodução no boneco em loop, hitboxes visíveis, **dados de quadro** do último golpe (ex.: `Forte · bloqueado · −0,30 s`; negativo = o oponente age primeiro), comandos dos dois na tela.
 - **Desafio de parry**: 45 s contra o boneco, que só lança fortes em intervalos aleatórios. Parry vale 1 ponto, perfeito 2. Recorde salvo.
 - **Controles**: tabela de ações e teclas atuais.

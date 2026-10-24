@@ -85,6 +85,8 @@ func _matches(goal: LessonStep.Goal, event: CombatEvent, sim: MatchSimulation) -
 			return mine and event.type == CombatEvent.Type.EXHAUSTION
 		LessonStep.Goal.RECOVER:
 			return mine and event.type == CombatEvent.Type.EXHAUSTION_RECOVERED
+		LessonStep.Goal.DISENGAGE:
+			return mine and event.type == CombatEvent.Type.DISENGAGE
 		LessonStep.Goal.PRESS_WIN:
 			return mine and event.type == CombatEvent.Type.BLADE_PRESS_ENDED
 		LessonStep.Goal.SPIN_DODGE:

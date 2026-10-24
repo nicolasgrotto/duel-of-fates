@@ -35,4 +35,5 @@ extends Resource
 @export_group("Blade lock")
 @export var lock_reaction: float = 0.45
 @export var lock_presses_per_second: float = 9.0
+@export_range(0.0, 1.0) var disengage_chance: float = 0.1
 @export var awaken_below: float = 0.5

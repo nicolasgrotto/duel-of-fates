@@ -11,6 +11,9 @@ func enter(_sim: MatchSimulation, fighter: FighterState) -> void:
 
 func step(sim: MatchSimulation, fighter: FighterState, intent: Intent) -> void:
 	var lock_config: BladeLockConfig = sim.config.blade_lock
+	if intent.was_pressed(Intent.Command.HEAVY) and BladeLockResolver.can_disengage(sim):
+		BladeLockResolver.disengage(sim, fighter)
+		return
 	if fighter.lock_press_cooldown > 0:
 		fighter.lock_press_cooldown -= 1
 	var counts: bool = false
@@ -38,4 +41,4 @@ func exit(_sim: MatchSimulation, fighter: FighterState) -> void:
 
 
 func debug_lines(sim: MatchSimulation, fighter: FighterState) -> PackedStringArray:
-	return PackedStringArray(["%s  presses %d  ticks %d" % ["press" if fighter.lock_press else "lock", fighter.lock_presses, sim.lock_ticks]])
+	return PackedStringArray(["%s  presses %d  ticks %d  disengage %s" % ["press" if fighter.lock_press else "lock", fighter.lock_presses, sim.lock_ticks, "ready" if BladeLockResolver.can_disengage(sim) else "-"]])

@@ -175,6 +175,7 @@ BLADE_FORETOLD_ECLIPSE_0,Vermelho-ápice,Apex red
 MOVE_KIND_ABILITY,Habilidade,Ability
 MOVE_KIND_STANCE,Postura,Stance
 MOVE_KIND_TECHNIQUE,Técnica,Technique
+MOVE_KIND_DISENGAGE,Desengajamento,Disengage
 FRAME_RESPONSE,respondido,answered
 FRAME_ARMOR_ABSORBED,armadura,armor
 COSTUME_ORIGINAL,Original,Original
@@ -429,6 +430,7 @@ GUIDE_RECOVER,Recue e espere o Vigor voltar,Back off and wait for your Stamina t
 GUIDE_GUARD_BREAK,Quebre a guarda do boneco,Break the dummy's guard
 GUIDE_WOUND,Fira o boneco exausto,Wound the exhausted dummy
 GUIDE_LOCK,Vença três disputas de lâminas,Win three blade locks
+GUIDE_DISENGAGE,"Numa disputa ou pressão, depois de meio segundo, aperte {heavy_attack}: solte a lâmina e corte por outro ângulo","In a blade lock or press, after half a second, press {heavy_attack}: slip your blade free and cut from another angle"
 GUIDE_PRESS,"Troque rápidos colados com o boneco: no 3º choque ou parry seguido vem a pressão de lâminas. Vença com {light_attack}","Trade light attacks up close: the 3rd clash or parry in a row starts a blade press. Win it with {light_attack}"
 PARRY_CHALLENGE_BANNER,DESAFIO DE PARRY · RECORDE {best},PARRY CHALLENGE · BEST {best}
 PARRY_CHALLENGE_HINT,Apare os fortes com {block}: parry vale 1 · perfeito vale 2,Parry the heavies with {block}: parry is worth 1 · perfect is worth 2

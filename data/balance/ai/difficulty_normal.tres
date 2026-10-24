@@ -21,3 +21,4 @@ lock_reaction = 0.45
 lock_presses_per_second = 9.0
 power_chance = 0.35
 power_defense_chance = 0.4
+disengage_chance = 0.12

@@ -147,3 +147,30 @@ func test_ai_pushes_through_a_blade_press() -> void:
 		duel.step(1)
 	assert_eq(duel.count_events(CombatEvent.Type.BLADE_PRESS_ENDED), 1)
 	assert_eq(duel.last_event(CombatEvent.Type.BLADE_PRESS_ENDED)["source"], 0)
+
+
+func _disengages_while_losing(difficulty: AiDifficultyData, trials: int) -> int:
+	var total: int = 0
+	for trial in trials:
+		var duel: DuelFixture = DuelFixture.create(null, null, trial)
+		duel.skip_intro()
+		duel.place(40.0)
+		BladeLockResolver.start(duel.sim, duel.fighter(0), duel.fighter(1))
+		var ai: AiController = AiController.new(difficulty, DuelFixture.GUARDIAN.ai_profile, trial)
+		for tick in Ticks.from_seconds(DuelFixture.CONFIG.blade_lock.max_duration):
+			if not BladeLockResolver.is_active(duel.sim):
+				break
+			ai.produce(duel.sim, 0, duel.intents[0])
+			duel.intents[0].pressed &= ~Intent.Command.LIGHT
+			if tick % 9 == 0:
+				duel.press(1, Intent.Command.LIGHT)
+			duel.step(1)
+		total += duel.count_events(CombatEvent.Type.DISENGAGE)
+	return total
+
+
+func test_hard_ai_disengages_when_losing_the_count() -> void:
+	var eager: AiDifficultyData = HARD.duplicate()
+	eager.disengage_chance = 1.0
+	assert_gt(_disengages_while_losing(eager, 5), 3.0)
+	assert_lt(_disengages_while_losing(EASY, 10), 2.0)

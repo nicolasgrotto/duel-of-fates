@@ -160,6 +160,9 @@ func on_event(event: CombatEvent) -> void:
 		CombatEvent.Type.BLADE_LOCK_STARTED, CombatEvent.Type.BLADE_PRESS_STARTED:
 			_lock_loop.global_position = at
 			_lock_loop.play()
+		CombatEvent.Type.DISENGAGE:
+			_lock_loop.stop()
+			AudioDirector.play(&"lock_tie", at, 0.0, randf_range(1.1, 1.2))
 		CombatEvent.Type.BLADE_LOCK_ENDED, CombatEvent.Type.BLADE_PRESS_ENDED:
 			_lock_loop.stop()
 			AudioDirector.play(&"lock_tie" if event.source == CombatEvent.NO_FIGHTER else &"lock_win", at)

@@ -29,6 +29,27 @@ static func is_press(sim: MatchSimulation) -> bool:
 	return sim.fighters[0].lock_press
 
 
+static func can_disengage(sim: MatchSimulation) -> bool:
+	return is_active(sim) and sim.lock_ticks >= Ticks.from_seconds(sim.config.blade_lock.disengage_after)
+
+
+static func disengage(sim: MatchSimulation, fighter: FighterState) -> void:
+	var lock_config: BladeLockConfig = sim.config.blade_lock
+	var move: MoveData = BladeLockConfig.DISENGAGE_MOVE
+	if fighter.vigor < move.vigor_cost:
+		sim.reject_action(fighter)
+		return
+	var rival: FighterState = sim.opponent_of(fighter)
+	sim.lock_cooldown_ticks = Ticks.from_seconds(lock_config.cooldown)
+	var event: CombatEvent = sim.emit(CombatEvent.Type.DISENGAGE, fighter.index, rival.index)
+	event.position = Vector2((fighter.x + rival.x) * 0.5, sim.config.body_height * 0.6)
+	event.move = move
+	sim.change_state(rival, FighterState.State.HIT)
+	rival.stun_ticks = maxi(Ticks.from_seconds(lock_config.disengage_release), 1)
+	ActionStarter.start_attack(sim, fighter, move)
+	sim.push_apart(fighter, rival, lock_config.disengage_separation)
+
+
 static func step(sim: MatchSimulation) -> void:
 	if not is_active(sim):
 		return
