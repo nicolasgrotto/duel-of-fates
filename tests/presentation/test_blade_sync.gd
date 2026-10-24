@@ -3,7 +3,7 @@ extends TestCase
 const CHARACTERS_ROOT: String = "res://data/characters"
 const SAMPLES: int = 24
 const TOLERANCE: float = 12.0
-const UNSYNCED_STYLES: Array[MoveData.TechniqueStyle] = [MoveData.TechniqueStyle.THROW, MoveData.TechniqueStyle.SPIN]
+const UNSYNCED_STYLES: Array[MoveData.TechniqueStyle] = [MoveData.TechniqueStyle.THROW]
 
 
 func _characters() -> Array[CharacterData]:

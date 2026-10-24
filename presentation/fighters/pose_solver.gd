@@ -85,8 +85,6 @@ const KNEEL_DROP: float = 30.0
 const WOUNDED_ARM_DROP: float = 18.0
 const LIMP_DIP: float = 5.0
 const LIMP_STRIDE: float = 0.45
-const SPIN_GRIP: Vector2 = Vector2(22.0, -36.0)
-const SPIN_ANGLE: float = -6.0
 const DASH_LOW_TUCK_GRIP: Vector2 = Vector2(-14.0, -6.0)
 const DASH_LOW_TUCK_ANGLE: float = 160.0
 const DASH_HIGH_TUCK_GRIP: Vector2 = Vector2(-6.0, -46.0)
@@ -673,13 +671,6 @@ func _technique(fighter: FighterState, pose: RigPose, move: MoveData, guard_angl
 	var strike_grip: Vector2 = guard_grip
 	var angle: float = guard_angle
 	match move.technique_style:
-		MoveData.TechniqueStyle.SPIN:
-			windup_grip = SPIN_GRIP
-			strike_grip = SPIN_GRIP
-			angle = SPIN_ANGLE + sin(swing * TAU) * 8.0
-			pose.turn = TAU * smoothstep(0.0, 1.0, swing) if active else 0.0
-			crouch = 8.0 * ramp
-			lean = 4.0 * ramp
 		MoveData.TechniqueStyle.THROW:
 			windup_grip = THROW_WINDUP_GRIP
 			strike_grip = THROW_RELEASE_GRIP

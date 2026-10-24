@@ -25,6 +25,6 @@ blade_reach = 65.0
 finisher_limb = 2
 blade_angle_windup = -170.0
 blade_angle_strike = 50.0
-technique_style = 2
+technique_style = 1
 recovery_on_hit = 0.12
 dash_in_startup = true

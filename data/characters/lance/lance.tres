@@ -147,7 +147,7 @@ wound_limb = 0
 finisher_limb = 2
 blade_angle_windup = 6.0
 blade_angle_strike = -6.0
-technique_style = 7
+technique_style = 6
 counts_as_heavy = true
 
 [sub_resource type="Resource" id="lance_ability"]

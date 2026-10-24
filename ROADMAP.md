@@ -157,7 +157,7 @@ Retorno do autor (plano em sete frentes; bloco A sem tocar no trabalho do Codex,
 - [x] Tutorial: o passo da sequência fecha com o último rápido de qualquer sequência (o Guardião tem 2)
 - [x] Galeria: a Telecinese em Massa não reinicia antes de os pedaços caírem
 - [x] História: caminho da Aurora em azul e do Eclipse em vermelho
-- [x] Remover a técnica Giro (substitutos em CHARACTERS); falta tirar `TechniqueStyle.SPIN` e o caso dele do `PoseSolver` (bloco B)
+- [x] Remover a técnica Giro (substitutos em CHARACTERS; `TechniqueStyle.SPIN` e a pose dele também saíram)
 - [x] Finalizações cinematográficas no K.O. decisivo: regra na simulação (até a apresentação entrar, esses K.O.s caem sem cortar membro)
 - [ ] Escudo da Tempestade redesenhado (bloco B)
 - [ ] Puxão do jeito antigo: bola grande encolhendo em quem lança, sem fio (bloco B)

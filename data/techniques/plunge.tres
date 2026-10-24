@@ -25,6 +25,6 @@ blade_reach = 65.0
 finisher_limb = 0
 blade_angle_windup = -150.0
 blade_angle_strike = 80.0
-technique_style = 8
+technique_style = 7
 dive_speed = 900.0
 aerial_technique = true

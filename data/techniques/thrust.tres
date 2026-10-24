@@ -24,4 +24,4 @@ blade_reach = 75.0
 finisher_limb = 1
 blade_angle_windup = -10.0
 blade_angle_strike = 0.0
-technique_style = 4
+technique_style = 3
