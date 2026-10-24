@@ -88,6 +88,7 @@ func clear() -> void:
 	rig.set_charred(0.0)
 	rig.set_xray(0.0)
 	rig.show_hilt(true)
+	kind = Finisher.Kind.NONE
 	queue_free()
 
 

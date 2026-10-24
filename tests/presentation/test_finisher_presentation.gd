@@ -46,3 +46,12 @@ func test_finisher_kinds_choose_how_the_body_moves() -> void:
 	assert_false(player.moves_body())
 	assert_gt(player.fall_delay(), 0.0, "the x-ray plays before the charred body falls")
 	player.free()
+
+
+func test_cleared_finisher_stops_drawing_the_cut() -> void:
+	var player: FinisherPlayer = FinisherPlayer.new()
+	player.rig = _rig()
+	player.kind = Finisher.Kind.WAIST
+	player.clear()
+	assert_false(player.is_split(), "the queued player no longer draws the freed half")
+	player.rig.free()
