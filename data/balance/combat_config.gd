@@ -58,6 +58,13 @@ extends Resource
 @export var evade_invulnerable: float = 0.066
 @export var evade_duration: float = 0.4
 @export var evade_step: float = 14.0
+@export var spin_dodge_range: float = 60.0
+@export var spin_dodge_vigor: float = 28.0
+@export var spin_dodge_duration: float = 0.34
+@export var spin_dodge_invulnerable_start: float = 0.04
+@export var spin_dodge_invulnerable_end: float = 0.14
+@export var spin_dodge_recovery: float = 0.16
+@export var spin_dodge_clearance: float = 8.0
 
 @export_group("Traits")
 @export var sweet_spot_tip_ratio: float = 0.667

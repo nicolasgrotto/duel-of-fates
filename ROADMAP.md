@@ -5,7 +5,7 @@ Ordem de construção do jogo. Cada fase termina jogável e testada. Marque `[x]
 ## Ponto de continuidade
 
 - **Fase atual**: fase 7.5 (revisão de combate e animação), depois a fase 8 (acabamento), na branch `pixel-art`. Fases 0 a 7 e as duas etapas da migração para pixel art concluídas; a História tem as telas, os encontros e os quatro finais ligados (regras testadas; falta uma passada completa jogando).
-- **Próximo passo**: fase 7.5, na ordem da lista (correções, animação, poderes, regras novas). Depois a fase 8: passada de localização (revisar o EN da História) e trilha e ambiências por arena. Na História, falta o autor jogar a campanha inteira e ajustar a dificuldade dos encontros (`ai_offset` em STORY.md). Da migração, falta a revisão do autor jogando e medir a GPU numa máquina de referência com o editor fechado (a CPU já está medida). A branch `pixel-art` segue até o fim do projeto; só então o autor escolhe entre ela e a `phase-5-hd`.
+- **Próximo passo**: fase 7.5, regras novas: Pressão de lâminas e depois Desengajamento (correções, animação, poderes e a Esquiva com giro já concluídos). Depois a fase 8: passada de localização (revisar o EN da História) e trilha e ambiências por arena. Na História, falta o autor jogar a campanha inteira e ajustar a dificuldade dos encontros (`ai_offset` em STORY.md). Da migração, falta a revisão do autor jogando e medir a GPU numa máquina de referência com o editor fechado (a CPU já está medida). A branch `pixel-art` segue até o fim do projeto; só então o autor escolhe entre ela e a `phase-5-hd`.
 - **Pendências conhecidas**:
   - Equilíbrio com Poderes: no Normal, Guardião 63% contra Sombra 37% (100 duelos), rounds de ~10,5 s; o Raio responde por boa parte dos acertos. Rodar a matriz com Poderes e ajustar custos, `power_chance` da IA e o Raio.
   - A IA não usa o Truque Mental de forma tática (lança quando está ao alcance) e não guarda medidor para o quarto poder.
@@ -144,7 +144,7 @@ Poderes (apresentação):
 - [x] Telecinese em Massa: cinemática de ~1,5 s com congelamento determinístico
 
 Regras novas (simulação, testes, IA, Tutorial e Treinos guiados, overlay F3):
-- [ ] Esquiva com giro
+- [x] Esquiva com giro
 - [ ] Pressão de lâminas (3º contato seguido entre rápidos; o parry conta e dá 1 de vantagem)
 - [ ] Desengajamento
 

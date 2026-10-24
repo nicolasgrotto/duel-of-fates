@@ -94,7 +94,7 @@ Arquivos e pastas em `snake_case`; classes com `class_name` em `PascalCase`.
 | `simulation/fighter_state.gd` (`FighterState`) | dados puros do lutador; enums `State`, `Phase`, `Action`, `DodgeKind`, `Wound` |
 | `simulation/intent.gd` (`Intent`) | direção + comandos segurados/apertados (`Intent.Command`), empacotáveis num `int` para gravação |
 | `simulation/action_starter.gd` | buffer de entrada (0,15 s, prioridade esquiva > empurrão > forte > rápido > guarda) e início de ações com custo de Vigor |
-| `simulation/states/` | um `StateLogic` por estado: `GroundState` (IDLE/WALKING), `AirState`, `AttackState` (ATTACKING/HEAVY_ATTACK), `BlockState`, `DodgeState`, `BladeLockState`, `RecoilState` (HIT/STAGGERED/STUNNED), `DeadState` |
+| `simulation/states/` | um `StateLogic` por estado (o `DodgeState` cobre esquiva, dash aéreo, esquiva de precisão, avanço e a esquiva com giro `SPIN`: invulnerabilidade atrasada, deslocamento que atravessa o corpo até o outro lado, virada no fim do deslocamento): `GroundState` (IDLE/WALKING), `AirState`, `AttackState` (ATTACKING/HEAVY_ATTACK), `BlockState`, `DodgeState`, `BladeLockState`, `RecoilState` (HIT/STAGGERED/STUNNED), `DeadState` |
 | `simulation/combat/` | `ClashResolver`, `BladeLockResolver`, `HitResolver` (acerto, guarda, parry, parry perfeito, empurrão, esquiva de precisão), `BodyResolver` (corpos e paredes), `Consequences` (exaustão, ferimento, membro da finalização), `CombatGeometry` (caixas) |
 | `simulation/rules/match_rules.gd` | capacidades por modo: `rounds_to_win`, `exhaustion`, `wounds`, `blade_lock`, `finishers`, `endless` |
 
@@ -182,6 +182,7 @@ Implementação:
 - `AiController` (`controllers/ai/`): pensa a cada `reaction_time` com variação, por prioridade (defender → punir → empurrar → recuperar → atacar → posicionar), agenda o toque de parry pela fase do golpe visível do oponente, continua a sequência só quando o golpe conectou, pressiona na disputa depois do tempo de reação, e usa `AiHabitMemory` (memória de hábitos com janela em segundos) no Difícil e no Chefe. Perfis em `AiProfileData`, dificuldades em `AiDifficultyData`.
 - `DummyController`: parado, em guarda, atacando ou reproduzindo uma gravação (`IntentRecording` relativa à frente do lutador, então a gravação espelha no boneco).
 - `ReplayController`: reproduz uma `IntentRecording` absoluta.
+- Esquiva com giro na IA: `AiController._try_spin_dodge` (forte na preparação, colado, `AiDifficultyData.spin_dodge_chance` cheia encurralado e reduzida por `spin_dodge_open_ratio` no meio da arena).
 - `AiPowers` (`controllers/ai/ai_powers.gd`): funções puras que a IA consulta — espaço pronto (medidor, nível, recargas), poder desejável pela situação (zona, distância, auto-reforço, cura, fuga apanhando), defesa (Absorção/Barreira contra o poder que vem), ameaça de marca no chão e de projétil. O `AiController` agenda o toque com direção (`_press_direction`) e segura o canal (`_channel_ticks`). Chances em `AiDifficultyData` (`power_chance`, `power_defense_chance`) e preferências em `AiProfileData` (`power_bias`, `technique_bias`).
 - `GalleryCaster` e `GalleryTarget` (Galeria de poderes): o lançador repete o poder ou a técnica escolhida; o alvo fica parado, em guarda, com Barreira, com Absorção, no ar ou atacando com Raio.
 

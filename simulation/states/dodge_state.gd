@@ -24,6 +24,8 @@ func step(sim: MatchSimulation, fighter: FighterState, _intent: Intent) -> void:
 			_set_velocity(sim, fighter)
 			if fighter.state_ticks >= Ticks.from_seconds(fighter.character.ability.dash_duration):
 				finish_to_neutral(sim, fighter)
+		FighterState.DodgeKind.SPIN:
+			_step_spin(sim, fighter)
 
 
 func exit(_sim: MatchSimulation, fighter: FighterState) -> void:
@@ -44,6 +46,30 @@ func _set_velocity(sim: MatchSimulation, fighter: FighterState) -> void:
 		FighterState.DodgeKind.EVADE:
 			if fighter.evade_window_ticks > 0:
 				fighter.vx = fighter.dodge_direction * config.evade_step / Ticks.to_seconds(fighter.evade_window_ticks)
+
+
+static func spin_travel_ticks(config: CombatConfig) -> int:
+	return Ticks.from_seconds(config.spin_dodge_duration - config.spin_dodge_recovery)
+
+
+static func is_spinning_through(config: CombatConfig, fighter: FighterState) -> bool:
+	return fighter.state == FighterState.State.DODGING and fighter.dodge_kind == FighterState.DodgeKind.SPIN and fighter.state_ticks <= spin_travel_ticks(config)
+
+
+func _step_spin(sim: MatchSimulation, fighter: FighterState) -> void:
+	var config: CombatConfig = sim.config
+	var travel_ticks: int = spin_travel_ticks(config)
+	if fighter.state_ticks == Ticks.from_seconds(config.spin_dodge_invulnerable_start):
+		fighter.invulnerable_ticks = Ticks.from_seconds(config.spin_dodge_invulnerable_end - config.spin_dodge_invulnerable_start)
+	if fighter.state_ticks <= travel_ticks:
+		fighter.vx = fighter.dodge_direction * fighter.dodge_travel / Ticks.to_seconds(travel_ticks)
+	if fighter.state_ticks == travel_ticks:
+		var opponent: FighterState = sim.opponent_of(fighter)
+		fighter.vx = 0.0
+		if opponent.x != fighter.x:
+			fighter.facing = int(signf(opponent.x - fighter.x))
+	if fighter.state_ticks >= Ticks.from_seconds(config.spin_dodge_duration):
+		finish_to_neutral(sim, fighter)
 
 
 func _step_evade(sim: MatchSimulation, fighter: FighterState) -> void:

@@ -423,6 +423,7 @@ TUT_ABILITY,Use a habilidade do lutador com {special},Use your fighter's ability
 GUIDE_EVADE_ONE,Toque {evade} no instante do golpe: esquiva de precisão,Tap {evade} right as the blow lands: precision evade
 GUIDE_EVADE_STREAK,Faça três esquivas de precisão seguidas,Chain three precision evades
 GUIDE_EVADE_PUNISH,Esquive e acerte o boneco logo em seguida,Evade and hit the dummy right after
+GUIDE_EVADE_SPIN,"Colado no boneco, segure para a frente e toque {dodge}: esquiva com giro para o outro lado (duas vezes)","Up close, hold forward and tap {dodge}: spin dodge to the other side (twice)"
 GUIDE_EXHAUST,Ataque sem parar até o Vigor acabar e você ficar exausto,Keep attacking until your Stamina runs out and you are exhausted
 GUIDE_RECOVER,Recue e espere o Vigor voltar,Back off and wait for your Stamina to return
 GUIDE_GUARD_BREAK,Quebre a guarda do boneco,Break the dummy's guard

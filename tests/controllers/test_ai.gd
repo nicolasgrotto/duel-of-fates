@@ -102,3 +102,35 @@ func test_ai_jumps_over_a_fracture() -> void:
 				jumps += 1
 				break
 	assert_gt(jumps, 5.0)
+
+
+func _spin_dodges_when_cornered(difficulty: AiDifficultyData, trials: int) -> int:
+	var profile: AiProfileData = DuelFixture.GUARDIAN.ai_profile.duplicate()
+	profile.ability_bias = 0.0
+	profile.defense = 1.0
+	var spins: int = 0
+	for trial in trials:
+		var duel: DuelFixture = DuelFixture.create(null, null, trial)
+		duel.skip_intro()
+		var limit: float = duel.sim.config.half_width() - duel.sim.config.body_width * 0.5
+		duel.fighter(0).x = -limit
+		duel.fighter(1).x = -limit + duel.sim.config.body_width + 30.0
+		var ai: AiController = AiController.new(difficulty, profile, trial)
+		duel.press(1, Intent.Command.HEAVY)
+		duel.step(1)
+		for tick in 40:
+			ai.produce(duel.sim, 0, duel.intents[0])
+			duel.step(1)
+			if duel.fighter(0).dodge_kind == FighterState.DodgeKind.SPIN:
+				spins += 1
+				break
+	return spins
+
+
+func test_cornered_ai_spins_out_under_a_heavy() -> void:
+	var eager: AiDifficultyData = HARD.duplicate()
+	eager.defend_chance = 1.0
+	eager.parry_chance = 0.0
+	eager.spin_dodge_chance = 1.0
+	assert_gt(_spin_dodges_when_cornered(eager, 10), 5.0)
+	assert_eq(_spin_dodges_when_cornered(EASY, 20), 0)

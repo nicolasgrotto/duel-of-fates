@@ -1,6 +1,7 @@
 class_name PoseSolver
 extends RefCounted
 
+const COMBAT: CombatConfig = preload("res://data/balance/combat_config.tres")
 const HIP_HEIGHT_FALLBACK: float = 72.0
 const BLOCK_GRIP: Vector2 = Vector2(18.0, -36.0)
 const BLOCK_ANGLE: float = -84.0
@@ -139,6 +140,8 @@ const FLIP_EASE: float = 0.6
 const FLIP_GRIP: Vector2 = Vector2(20.0, -30.0)
 const FLIP_BLADE_ANGLE: float = -10.0
 const TUMBLE_LIFT: float = 26.0
+const SPIN_DODGE_GRIP: Vector2 = Vector2(-2.0, -18.0)
+const SPIN_DODGE_ANGLE: float = 110.0
 const SKID_CROUCH: float = 22.0
 const SKID_LEAN: float = -20.0
 const SKID_HAND: Vector2 = Vector2(-22.0, -2.0)
@@ -857,6 +860,15 @@ func _dodge(fighter: FighterState, pose: RigPose) -> Vector2:
 		FighterState.DodgeKind.EVADE:
 			pose.back_foot.x -= 8.0
 			return Vector2(12.0, -24.0 if fighter.evade_streak % 2 == 0 else -16.0)
+		FighterState.DodgeKind.SPIN:
+			var travel: float = clampf(float(fighter.state_ticks) / maxf(DodgeState.spin_travel_ticks(COMBAT), 1.0), 0.0, 1.0)
+			var low: float = 1.0 if travel < 1.0 else 1.0 - clampf(float(fighter.state_ticks - DodgeState.spin_travel_ticks(COMBAT)) / maxf(Ticks.from_seconds(COMBAT.spin_dodge_recovery), 1.0), 0.0, 1.0)
+			pose.turn = PI * smoothstep(0.0, 1.0, travel) if travel < 1.0 else 0.0
+			pose.grip = SPIN_DODGE_GRIP
+			pose.blade_angle = SPIN_DODGE_ANGLE
+			_tuck(pose, 0.35 * low)
+			afterimage = travel < 1.0
+			return Vector2(20.0 * low, 18.0 * low)
 	return Vector2.ZERO
 
 

@@ -13,6 +13,9 @@ extends Resource
 @export_range(0.0, 1.0) var defend_chance: float = 0.5
 @export_range(0.0, 1.0) var parry_chance: float = 0.3
 @export_range(0.0, 1.0) var perfect_parry_chance: float = 0.05
+@export_range(0.0, 1.0) var spin_dodge_chance: float = 0.2
+@export var spin_dodge_corner: float = 140.0
+@export_range(0.0, 1.0) var spin_dodge_open_ratio: float = 0.3
 
 @export_group("Offense")
 @export_range(0.0, 1.0) var shove_chance: float = 0.3

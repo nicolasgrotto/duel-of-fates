@@ -6,6 +6,7 @@ enum Plan { WAIT, APPROACH, RETREAT, GUARD }
 const PERFECT_PARRY_TARGET: int = 2
 const PARRY_TARGET: int = 7
 const EVADE_TARGET: int = 2
+const SPIN_TARGET: int = 4
 const REACH_MARGIN: float = 20.0
 
 var difficulty: AiDifficultyData
@@ -99,7 +100,7 @@ func _think(sim: MatchSimulation, me: FighterState, opponent: FighterState) -> v
 		return
 	if _try_flow_defense(sim, me, opponent):
 		return
-	if _try_defend(me, opponent, gap):
+	if _try_defend(sim, me, opponent, gap):
 		return
 	if _try_ability(me, opponent, gap):
 		return
@@ -118,7 +119,7 @@ func _think(sim: MatchSimulation, me: FighterState, opponent: FighterState) -> v
 	_position(me, opponent, gap)
 
 
-func _try_defend(me: FighterState, opponent: FighterState, gap: float) -> bool:
+func _try_defend(sim: MatchSimulation, me: FighterState, opponent: FighterState, gap: float) -> bool:
 	if not opponent.is_attacking() or opponent.move == null or opponent.move_phase != FighterState.Phase.STARTUP:
 		return false
 	var move: MoveData = opponent.move
@@ -147,10 +148,25 @@ func _try_defend(me: FighterState, opponent: FighterState, gap: float) -> bool:
 			if delay >= 0:
 				_schedule(Intent.Command.BLOCK, delay, 0, Plan.GUARD, guard_ticks - delay, "perfect parry" if perfect else "parry")
 				return true
+		if _try_spin_dodge(sim, me, gap, ticks_to_active):
+			return true
 		if rng.randf() < profile.dodge_bias * 0.5 and ticks_to_active - 1 - EVADE_TARGET >= 0:
 			_schedule(Intent.Command.EVADE, ticks_to_active - 1 - EVADE_TARGET, 0, Plan.WAIT, 0, "evade")
 			return true
 	_set_plan(Plan.GUARD, guard_ticks, "guard")
+	return true
+
+
+func _try_spin_dodge(sim: MatchSimulation, me: FighterState, gap: float, ticks_to_active: int) -> bool:
+	var delay: int = ticks_to_active - 1 - SPIN_TARGET
+	if gap > sim.config.spin_dodge_range or delay < 0 or me.vigor < sim.config.spin_dodge_vigor:
+		return false
+	var behind: float = sim.config.half_width() + me.x * me.facing
+	var chance: float = difficulty.spin_dodge_chance * (1.0 if behind <= difficulty.spin_dodge_corner else difficulty.spin_dodge_open_ratio)
+	if rng.randf() >= chance:
+		return false
+	_schedule(Intent.Command.DODGE, delay, 0, Plan.WAIT, 0, "spin dodge")
+	_press_direction = 1
 	return true
 
 

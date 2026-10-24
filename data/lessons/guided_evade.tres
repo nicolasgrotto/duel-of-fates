@@ -24,9 +24,16 @@ goal = 14
 count = 1
 dummy = 2
 
+[sub_resource type="Resource" id="step_3"]
+script = ExtResource("2_step")
+text_key = "GUIDE_EVADE_SPIN"
+goal = 17
+count = 2
+dummy = 4
+
 [resource]
 script = ExtResource("1_lesson")
 id = &"guided_evade"
 title_key = "LESSON_GUIDED_EVADE"
 done_key = "LESSON_GUIDED_DONE"
-steps = Array[ExtResource("2_step")]([SubResource("step_0"), SubResource("step_1"), SubResource("step_2")])
+steps = Array[ExtResource("2_step")]([SubResource("step_0"), SubResource("step_1"), SubResource("step_2"), SubResource("step_3")])

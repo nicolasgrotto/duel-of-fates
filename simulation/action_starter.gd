@@ -271,6 +271,13 @@ static func _start_dodge(sim: MatchSimulation, fighter: FighterState, intent: In
 		fighter.dodge_kind = FighterState.DodgeKind.AIR
 		fighter.dodge_direction = intent.move_x if intent.move_x != 0 else fighter.facing
 		fighter.vy = maxf(fighter.vy, config.air_dash_lift)
+	elif _spin_dodge_travel(sim, fighter, intent) > 0.0:
+		if not sim.spend_vigor(fighter, config.spin_dodge_vigor * leg_multiplier):
+			return Result.REJECTED
+		fighter.dodge_kind = FighterState.DodgeKind.SPIN
+		fighter.dodge_direction = fighter.facing
+		fighter.dodge_travel = _spin_dodge_travel(sim, fighter, intent)
+		fighter.invulnerable_ticks = 0
 	else:
 		if not sim.spend_vigor(fighter, config.dodge_vigor * leg_multiplier):
 			return Result.REJECTED
@@ -278,8 +285,23 @@ static func _start_dodge(sim: MatchSimulation, fighter: FighterState, intent: In
 		fighter.dodge_direction = intent.move_x if intent.move_x != 0 else -fighter.facing
 		fighter.invulnerable_ticks = Ticks.from_seconds(config.dodge_invulnerable)
 	sim.change_state(fighter, FighterState.State.DODGING)
-	sim.emit(CombatEvent.Type.DODGE, fighter.index, CombatEvent.NO_FIGHTER).heavy = fighter.is_airborne()
+	var event: CombatEvent = sim.emit(CombatEvent.Type.DODGE, fighter.index, CombatEvent.NO_FIGHTER)
+	event.heavy = fighter.is_airborne()
+	event.amount = fighter.dodge_kind
 	return Result.STARTED
+
+
+static func _spin_dodge_travel(sim: MatchSimulation, fighter: FighterState, intent: Intent) -> float:
+	if intent.move_x != fighter.facing:
+		return 0.0
+	var config: CombatConfig = sim.config
+	var opponent: FighterState = sim.opponent_of(fighter)
+	if not opponent.is_alive() or CombatGeometry.gap(config, fighter, opponent) > config.spin_dodge_range:
+		return 0.0
+	var landing: float = opponent.x + fighter.facing * (config.body_width + config.spin_dodge_clearance)
+	if absf(landing) > config.half_width() - config.body_width * 0.5:
+		return 0.0
+	return absf(landing - fighter.x)
 
 
 static func _start_evade(sim: MatchSimulation, fighter: FighterState) -> Result:

@@ -159,13 +159,15 @@ Ataque rápido apertado enquanto o oponente está desequilibrado por um parry pe
 
 ### Esquiva com giro
 
-Aprovada; implementação na revisão de combate (ROADMAP).
+Implementada na fase 7.5 (`DodgeKind.SPIN`, números em `CombatConfig`, grupo Dodge).
 
 - **Frente + esquiva** no chão com o oponente a até ~60 u (borda a borda): em vez do dash, o lutador gira o corpo, atravessa o oponente e troca de lado, pousando já virado para ele.
 - Mais arriscada que a esquiva comum: 28 de Vigor, duração 0,34 s, invulnerável só de 0,04 a 0,14 s, recovery final de 0,16 s vulnerável.
 - Sem espaço atrás do oponente (parede), vira a esquiva comum para a frente.
 - Longe do oponente, frente + esquiva continua sendo o dash comum.
 - Quem é atravessado pode virar normalmente no quadro seguinte; não há ataque garantido pelas costas. Um golpe que já estava no active continua acertando só pela frente.
+- O pouso fica a 8 u além do corpo do oponente; os corpos se atravessam só durante o deslocamento (0,18 s). A perna ferida encarece o giro como a esquiva (× 1,2).
+- **IA**: contra um forte já na preparação e colada, gira para fora quando está encurralada (parede a até 140 u atrás); longe da parede, com 30% dessa chance (`spin_dodge_chance`: Fácil 3%, Normal 20%, Difícil 45%, Chefe 60%).
 
 ### Esquiva de precisão
 
@@ -403,7 +405,7 @@ Menu em dois níveis: **Jogar**, **Aprender**, **Extras**, **Opções**.
 ### Aprender
 
 - **Tutorial**: contra o boneco, sem rounds e sem morte. Uma instrução por vez, com as teclas do preset ativo; cada passo termina quando o jogador faz a ação: andar → rápido (2) → sequência → forte → guarda (2) → aparar fortes (2) → contra-ataque → empurrão → quebra de guarda → ferimento → disputa de lâminas → habilidade. No fim oferece o desafio de parry.
-- **Treinos guiados**: Esquiva em sequência (esquivar no instante, três seguidas, esquivar e punir), Exaustão e ferimento (exaurir-se, recuperar, quebrar a guarda do boneco, feri-lo), Disputa de lâminas (provocar e vencer três disputas).
+- **Treinos guiados**: Esquiva em sequência (esquivar no instante, três seguidas, esquivar e punir, duas esquivas com giro contra o boneco que solta fortes), Exaustão e ferimento (exaurir-se, recuperar, quebrar a guarda do boneco, feri-lo), Disputa de lâminas (provocar e vencer três disputas).
 - **Treino**: contra o boneco, sem limite de rounds. Comportamento do boneco (parado, guarda, atacando), gravação de até 10 s de comandos do jogador e reprodução no boneco em loop, hitboxes visíveis, **dados de quadro** do último golpe (ex.: `Forte · bloqueado · −0,30 s`; negativo = o oponente age primeiro), comandos dos dois na tela.
 - **Desafio de parry**: 45 s contra o boneco, que só lança fortes em intervalos aleatórios. Parry vale 1 ponto, perfeito 2. Recorde salvo.
 - **Controles**: tabela de ações e teclas atuais.

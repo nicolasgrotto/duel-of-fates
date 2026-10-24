@@ -19,7 +19,7 @@ enum State {
 	HELD,
 }
 enum Phase { NONE, STARTUP, ACTIVE, RECOVERY }
-enum DodgeKind { NONE, GROUND, AIR, EVADE, DASH }
+enum DodgeKind { NONE, GROUND, AIR, EVADE, DASH, SPIN }
 enum Action { NONE, JUMP, BLOCK, LIGHT, HEAVY, SHOVE, EVADE, DODGE, SPECIAL, POWER, FOURTH }
 enum Wound { NONE, ARM, LEG }
 
@@ -67,6 +67,7 @@ var chain_index: int = 0
 
 var dodge_kind: DodgeKind = DodgeKind.NONE
 var dodge_direction: int = 0
+var dodge_travel: float = 0.0
 var invulnerable_ticks: int = 0
 var evade_window_ticks: int = 0
 var evade_succeeded: bool = false

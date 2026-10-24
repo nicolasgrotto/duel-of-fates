@@ -65,3 +65,21 @@ func test_lesson_and_challenge_texts_exist() -> void:
 			var challenge: ChallengeData = load("res://data/challenges/" + name)
 			assert_true(keys.has(challenge.title_key) and keys.has(challenge.description_key), String(challenge.id))
 			assert_true(challenge.arena != null, String(challenge.id))
+
+
+func test_guided_evade_ends_with_spin_dodges() -> void:
+	var lesson: LessonData = load("res://data/lessons/guided_evade.tres")
+	assert_eq(lesson.steps[lesson.steps.size() - 1].goal, LessonStep.Goal.SPIN_DODGE)
+	var single: LessonData = LessonData.new()
+	single.steps = [lesson.steps[lesson.steps.size() - 1]]
+	var fixture: DuelFixture = DuelFixture.create()
+	fixture.skip_intro()
+	var tracker: LessonTracker = LessonTracker.new(single, null, TRAINING)
+	for attempt in single.steps[0].count:
+		fixture.place(30.0)
+		fixture.intents[0].move_x = 1
+		fixture.press(0, Intent.Command.DODGE)
+		_feed(fixture, tracker, 1)
+		fixture.intents[0].move_x = 0
+		_feed(fixture, tracker, 40)
+	assert_true(tracker.done)

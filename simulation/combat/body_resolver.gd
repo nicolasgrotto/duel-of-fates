@@ -4,7 +4,7 @@ class_name BodyResolver
 static func resolve(sim: MatchSimulation) -> void:
 	var a: FighterState = sim.fighters[0]
 	var b: FighterState = sim.fighters[1]
-	if _passes_through(a) or _passes_through(b):
+	if _passes_through(sim.config, a) or _passes_through(sim.config, b):
 		return
 	var config: CombatConfig = sim.config
 	if absf(a.y - b.y) >= config.body_height:
@@ -43,11 +43,13 @@ static func _limit(sim: MatchSimulation) -> float:
 	return sim.config.half_width() - sim.config.body_width * 0.5
 
 
-static func _passes_through(fighter: FighterState) -> bool:
+static func _passes_through(config: CombatConfig, fighter: FighterState) -> bool:
 	if fighter.is_air_dashing() or not fighter.is_alive():
 		return true
 	if fighter.state != FighterState.State.DODGING:
 		return false
+	if fighter.dodge_kind == FighterState.DodgeKind.SPIN:
+		return DodgeState.is_spinning_through(config, fighter)
 	if fighter.dodge_kind == FighterState.DodgeKind.DASH:
 		return fighter.character.ability.dash_through
 	return fighter.dodge_kind == FighterState.DodgeKind.GROUND and fighter.character.dodge_passes_through

@@ -9,6 +9,7 @@ name_key = "DIFFICULTY_EASY"
 reaction_time = 0.45
 defend_chance = 0.2
 parry_chance = 0.0
+spin_dodge_chance = 0.03
 perfect_parry_chance = 0.0
 shove_chance = 0.1
 attack_warning = 0.25
