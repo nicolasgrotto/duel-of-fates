@@ -27,3 +27,4 @@ off_guard_hand = Vector2(-10, -18)
 off_guard_angle = 150.0
 wrist_lag = 1.3
 recover_share = 0.4
+acrobatic_recovery = true

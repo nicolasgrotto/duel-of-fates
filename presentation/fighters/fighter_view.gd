@@ -138,9 +138,16 @@ func on_event(event: CombatEvent) -> void:
 			if event.source == fighter.index or event.target == fighter.index:
 				_solver.clash_left = PoseSolver.CLASH_RECOIL_TIME
 				_solver.rebounding = true
+				if event.type == CombatEvent.Type.TECHNIQUE_CLASH:
+					_solver.start_tumble()
 		CombatEvent.Type.HIT, CombatEvent.Type.GUARD_BREAK, CombatEvent.Type.BLADE_LOCK_ENDED:
 			if event.target == fighter.index and not reduced_effects:
 				_flash_left = effects.hit_flash_duration
+			if event.type == CombatEvent.Type.BLADE_LOCK_ENDED and event.target == fighter.index:
+				_solver.start_tumble()
+		CombatEvent.Type.POWER_HIT:
+			if event.target == fighter.index and event.power != null and (event.power.kind == PowerData.Kind.REPULSE or event.power.kind == PowerData.Kind.SUPREME_PUSH):
+				_solver.start_tumble()
 		CombatEvent.Type.ATTACK_STARTED:
 			if event.source == fighter.index and event.heavy:
 				blade.glint = effects.heavy_glint
@@ -184,8 +191,9 @@ func _process(delta: float) -> void:
 	if fighter.freeze_ticks > 0 and fighter.state == FighterState.State.HIT:
 		shake = randf_range(-HIT_SHAKE, HIT_SHAKE)
 	position = _previous.lerp(_current, alpha) + Vector2(shake, 0.0)
-	scale.x = fighter.facing
 	_advance_solver(delta)
+	_check_vault()
+	scale.x = -fighter.facing if _solver.vault_turned() and _solver.vault_progress < 1.0 and not fighter.on_ground else fighter.facing
 	var frozen: bool = fighter.state == FighterState.State.HELD and not fighter.held_by_choke
 	if not frozen:
 		_solver.solve(fighter, opponent, _target)
@@ -220,6 +228,17 @@ static func _turn_factor(turn: float) -> float:
 		return 1.0
 	var factor: float = cos(turn)
 	return signf(factor) * maxf(absf(factor), MIN_TURN_WIDTH) if factor != 0.0 else MIN_TURN_WIDTH
+
+
+func _check_vault() -> void:
+	if fighter.on_ground:
+		_solver.vault_progress = -1.0
+		return
+	if _solver.vault_progress >= 0.0 or fighter.state != FighterState.State.JUMPING:
+		return
+	var crossed: bool = (opponent.x - fighter.x) * fighter.facing < 0.0
+	if crossed and fighter.y > opponent.y + fighter.character.family.stance_width:
+		_solver.vault_progress = 0.0
 
 
 func _advance_solver(delta: float) -> void:

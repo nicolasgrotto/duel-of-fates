@@ -134,7 +134,7 @@ Animação (apresentação):
 - [x] Avanço com corte em duas etapas
 - [x] Investida descendente (estocada para baixo ou corte que bate no chão)
 - [x] Arremesso da lâmina com duas lâminas (Vespa)
-- [ ] Salto de transposição e recuperação acrobática
+- [x] Salto de transposição e recuperação acrobática
 
 Poderes (apresentação):
 - [ ] Repulsão (pose da palma)

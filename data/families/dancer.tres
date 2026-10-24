@@ -31,3 +31,4 @@ wrist_lag = 1.6
 recover_share = 0.45
 one_hand_follow = true
 plunge_pirouette = true
+acrobatic_recovery = true

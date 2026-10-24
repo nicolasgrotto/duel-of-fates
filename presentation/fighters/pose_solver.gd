@@ -126,6 +126,10 @@ const JUMP_APEX_SPEED: float = 260.0
 const FLIP_EASE: float = 0.6
 const FLIP_GRIP: Vector2 = Vector2(20.0, -30.0)
 const FLIP_BLADE_ANGLE: float = -10.0
+const TUMBLE_LIFT: float = 26.0
+const SKID_CROUCH: float = 22.0
+const SKID_LEAN: float = -20.0
+const SKID_HAND: Vector2 = Vector2(-22.0, -2.0)
 
 var character: CharacterData
 var family: MotionFamily
@@ -133,6 +137,8 @@ var hip_height: float = HIP_HEIGHT_FALLBACK
 var time: float = 0.0
 var walk_phase: float = 0.0
 var flip_progress: float = -1.0
+var vault_progress: float = -1.0
+var tumble_left: float = 0.0
 var landing_left: float = 0.0
 
 var _attack_key: int = -1
@@ -161,6 +167,9 @@ func advance(delta: float) -> void:
 	time += delta
 	landing_left = maxf(landing_left - delta, 0.0)
 	clash_left = maxf(clash_left - delta, 0.0)
+	tumble_left = maxf(tumble_left - delta, 0.0)
+	if vault_progress >= 0.0:
+		vault_progress = minf(vault_progress + delta / family.vault_time, 1.0)
 	_lock_pulse = maxf(_lock_pulse - delta * LOCK_PULSE_DECAY, 0.0)
 
 
@@ -287,6 +296,9 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 			pose.off_hand = THROW_CATCH_HAND + DUAL_THROW_OFFSET
 	if fighter.is_airborne() and fighter.state != FighterState.State.JUMPING:
 		_tuck(pose, 0.7)
+	if tumble_left > 0.0 and fighter.on_ground:
+		crouch = _tumble(pose, crouch)
+		lean = SKID_LEAN * tumble_left / family.tumble_time if not family.acrobatic_recovery else lean
 	pose.pelvis = Vector2(_body_shift, -hip_height + crouch)
 	if clash_left > 0.0:
 		var recoil: float = clash_left / CLASH_RECOIL_TIME
@@ -366,6 +378,31 @@ func _blade_lock(fighter: FighterState, opponent: FighterState, pose: RigPose) -
 	return Vector2(family.lock_crouch - pressure * 4.0, lean)
 
 
+func start_tumble() -> void:
+	tumble_left = family.tumble_time
+
+
+func is_vaulting() -> bool:
+	return vault_progress >= 0.0 and vault_progress < 1.0
+
+
+func vault_turned() -> bool:
+	return vault_progress >= 0.5
+
+
+func _tumble(pose: RigPose, crouch: float) -> float:
+	var progress: float = 1.0 - tumble_left / family.tumble_time
+	if family.acrobatic_recovery:
+		_tuck(pose, sin(progress * PI))
+		pose.spin = -TAU * ease(progress, -1.6)
+		return crouch - sin(progress * PI) * TUMBLE_LIFT
+	var skid: float = 1.0 - smoothstep(0.5, 1.0, progress)
+	pose.off_hand = SKID_HAND + Vector2(0.0, hip_height - crouch - SKID_CROUCH * skid)
+	pose.open_hand = true
+	pose.back_foot.x -= 10.0 * skid
+	return crouch + SKID_CROUCH * skid
+
+
 func _jump_pose(fighter: FighterState, pose: RigPose) -> void:
 	var rise: float = clampf(fighter.vy / JUMP_APEX_SPEED, -1.0, 1.0)
 	if rise > 0.0:
@@ -374,6 +411,13 @@ func _jump_pose(fighter: FighterState, pose: RigPose) -> void:
 	else:
 		_tuck(pose, 1.0 + rise * 0.45)
 		pose.front_foot += Vector2(4.0, 6.0) * -rise
+	if is_vaulting():
+		var roll: float = ease(vault_progress, FLIP_EASE)
+		_tuck(pose, 1.0)
+		pose.grip = FLIP_GRIP
+		pose.blade_angle = FLIP_BLADE_ANGLE
+		pose.spin = TAU * roll if not vault_turned() else -TAU * (1.0 - roll)
+		return
 	if flip_progress >= 0.0 and flip_progress < 1.0 and family.flip_on_double_jump:
 		var turn: float = ease(flip_progress, FLIP_EASE)
 		_tuck(pose, 1.0)
