@@ -116,7 +116,7 @@ Título no alto, lista à esquerda, detalhe à direita (nome e até seis linhas)
 
 ### Galeria de poderes
 
-Cena de duelo sem rounds nem barras de vida; só o medidor de Fluxo de quem lança. Painel no topo: nome do poder entre `‹ ›` (na cor do lado), descrição curta, linha do lado ("Aurora · lado da luz"), tier, alvo e repetição; tiers como quatro chips sublinhados na cor do tier. Comandos no rodapé.
+Cena de duelo sem rounds nem barras de vida; só o medidor de Fluxo de quem lança. Painel no topo: nome do poder entre `‹ ›` (na cor do lado), descrição curta, linha do lado ("Aurora · lado da luz"), tier, alvo e repetição; tiers como quatro chips sublinhados na cor do tier. Comandos no rodapé. `F` (gamepad: ombro esquerdo) liga a **Finalização**: nos poderes e técnicas que têm finalização cinematográfica, a linha de detalhes mostra "Finalização · ligada/desligada" e, ligada, o alvo fica parado com a vida baixa e morre na cinemática; o round recomeça sozinho e, com a repetição, a demonstração volta.
 
 ### Opções
 

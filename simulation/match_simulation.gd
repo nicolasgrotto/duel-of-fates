@@ -305,7 +305,7 @@ func apply_damage(fighter: FighterState, amount: float) -> bool:
 		return false
 	fighter.heal_ticks = 0
 	fighter.ticks_since_damage = 0
-	if rules.endless:
+	if rules.endless and not rules.endless_finishers:
 		fighter.health = maxf(fighter.health - amount, 1.0)
 		return false
 	fighter.health = maxf(fighter.health - amount, 0.0)
@@ -331,7 +331,7 @@ func kill(victim: FighterState, killer: FighterState, move: MoveData, power: Pow
 
 
 func is_deciding(killer: FighterState) -> bool:
-	return killer.round_wins + 1 >= rules.rounds_to_win
+	return rules.endless_finishers or killer.round_wins + 1 >= rules.rounds_to_win
 
 
 func _pass_behind(killer: FighterState, victim: FighterState) -> void:
@@ -447,6 +447,9 @@ func _advance_phase() -> void:
 
 
 func _after_ko() -> void:
+	if rules.endless:
+		_start_round()
+		return
 	for fighter in fighters:
 		if fighter.round_wins >= rules.rounds_to_win:
 			match_winner = fighter.index
@@ -477,7 +480,7 @@ func _tick_timers(fighter: FighterState) -> void:
 	_regenerate(fighter)
 	Consequences.step_exhaustion(self, fighter)
 	FlowStatuses.step(self, fighter)
-	if rules.endless and fighter.ticks_since_damage >= Ticks.from_seconds(config.endless_refill_delay):
+	if rules.endless and not rules.endless_finishers and fighter.ticks_since_damage >= Ticks.from_seconds(config.endless_refill_delay):
 		fighter.health = fighter.max_health
 
 
@@ -548,6 +551,7 @@ func _check_round_end() -> void:
 		return
 	if a_dead != b_dead:
 		round_winner = 1 if a_dead else 0
-		fighters[round_winner].round_wins += 1
+		if not rules.endless:
+			fighters[round_winner].round_wins += 1
 	_set_phase(Phase.KO)
 	emit(CombatEvent.Type.ROUND_ENDED, round_winner, CombatEvent.NO_FIGHTER if round_winner == NO_WINNER else 1 - round_winner)

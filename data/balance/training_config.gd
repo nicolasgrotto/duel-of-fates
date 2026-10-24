@@ -14,4 +14,5 @@ extends Resource
 @export var gallery_pause: float = 1.0
 @export var gallery_max_time: float = 10.0
 @export var gallery_target_level: int = 5
+@export var gallery_finisher_health: float = 1.0
 @export_range(0.1, 1.0) var gallery_reach_ratio: float = 0.7

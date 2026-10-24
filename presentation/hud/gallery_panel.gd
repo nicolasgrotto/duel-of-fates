@@ -38,6 +38,8 @@ var _entries: Array[Resource] = []
 var _entry_index: int = 0
 var _tier: int = 2
 var _repeat: bool = true
+var _finishers: bool = false
+var _round: int = 0
 var _wait: int = 0
 var _pause: int = 0
 var _cast_requested: bool = true
@@ -105,7 +107,8 @@ func _build() -> void:
 	_footer.text = ControlHints.line(PackedStringArray([
 		"← →  " + tr("HINT_GALLERY_ENTRY"), "↑ ↓  " + tr("HINT_GALLERY_TIER"),
 		ControlHints.hint(&"gallery_target", "HINT_GALLERY_TARGET"), ControlHints.hint(&"gallery_repeat", "HINT_GALLERY_REPEAT"),
-		ControlHints.hint(&"gallery_swap", "HINT_GALLERY_SWAP"), ControlHints.hint(&"ui_accept", "HINT_GALLERY_CAST"),
+		ControlHints.hint(&"gallery_swap", "HINT_GALLERY_SWAP"), ControlHints.hint(&"gallery_finisher", "HINT_GALLERY_FINISHER"),
+		ControlHints.hint(&"ui_accept", "HINT_GALLERY_CAST"),
 		ControlHints.hint(&"p1_pause", "HINT_PAUSE"),
 	]))
 
@@ -134,6 +137,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		_restart()
 	elif event.is_action_pressed(&"gallery_repeat"):
 		_repeat = not _repeat
+	elif event.is_action_pressed(&"gallery_finisher"):
+		_finishers = not _finishers
+		_restart()
 	elif event.is_action_pressed(&"gallery_swap"):
 		caster_index = 1 - caster_index
 		runner.controllers = controllers()
@@ -162,6 +168,9 @@ func on_ticked() -> void:
 	var sim: MatchSimulation = runner.sim
 	if sim.phase != MatchSimulation.Phase.FIGHT:
 		return
+	if sim.round_number != _round:
+		_round = sim.round_number
+		_cast_requested = _cast_requested or _repeat
 	_wait -= 1
 	if _wait > 0 and demonstrating(sim):
 		_pause = Ticks.from_seconds(config.gallery_pause)
@@ -208,11 +217,23 @@ func _stage(sim: MatchSimulation) -> void:
 		_close_in(sim, power.targeted_reach(fighter.flow_tier))
 	elif not technique.throws_blade:
 		_close_in(sim, technique.reach + technique.lunge)
-	var target_powers: Array[PowerData] = [CATALOG.find(TARGET_POWERS.get(target.behavior, &"")), null, null]
+	var finishing: bool = _finishers and has_finisher(entry)
+	sim.rules.endless_finishers = finishing
+	target.finishing = finishing
+	if finishing:
+		other.health = minf(config.gallery_finisher_health, other.max_health)
+	var target_powers: Array[PowerData] = [null if finishing else CATALOG.find(TARGET_POWERS.get(target.behavior, &"")), null, null]
 	other.equip_powers(target_powers)
 	caster.perform(power, technique)
 	_wait = Ticks.from_seconds(config.gallery_max_time)
 	_pause = Ticks.from_seconds(config.gallery_pause)
+
+
+static func has_finisher(entry: Resource) -> bool:
+	var power: PowerData = entry as PowerData
+	if power != null:
+		return power.finisher != Finisher.Kind.NONE
+	return (entry as MoveData).cinematic_finisher != Finisher.Kind.NONE
 
 
 func _close_in(sim: MatchSimulation, reach: float) -> void:
@@ -238,7 +259,10 @@ func _refresh(sim: MatchSimulation) -> void:
 		var active: bool = tier == _tier
 		_chips[tier].modulate.a = 1.0 if active else 0.4
 		_underlines[tier].modulate.a = 1.0 if active else 0.25
-	_details.text = ControlHints.line(PackedStringArray([
+	var details: PackedStringArray = PackedStringArray([
 		tr("GALLERY_TARGET").format({"target": tr(TARGET_KEYS[target.behavior])}),
 		tr("GALLERY_REPEAT_ON" if _repeat else "GALLERY_REPEAT_OFF"),
-	]))
+	])
+	if has_finisher(entry):
+		details.append(tr("GALLERY_FINISHER_ON" if _finishers else "GALLERY_FINISHER_OFF"))
+	_details.text = ControlHints.line(details)

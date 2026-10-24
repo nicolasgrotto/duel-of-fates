@@ -95,3 +95,47 @@ func test_mass_telekinesis_demonstration_lasts_until_the_rocks_land() -> void:
 	assert_gt(finished_at, 0, "the demonstration ends on its own")
 	assert_gt(fixture.count_events(CombatEvent.Type.HAZARD_TRIGGERED), 0, "the rocks land before the gallery restages")
 	panel.free()
+
+
+func _finish(entry: Resource) -> Dictionary:
+	fixture.step_until(func() -> bool: return fixture.sim.phase == MatchSimulation.Phase.FIGHT, 900)
+	panel._entry_index = panel._entries.find(entry)
+	panel._stage(fixture.sim)
+	fixture.clear_log()
+	for tick in MAX_TICKS:
+		panel.caster.produce(fixture.sim, 0, fixture.intents[0])
+		panel.target.produce(fixture.sim, 1, fixture.intents[1])
+		fixture.step(1)
+		if fixture.count_events(CombatEvent.Type.DEATH) > 0:
+			break
+	return fixture.last_event(CombatEvent.Type.DEATH)
+
+
+func test_finisher_toggle_plays_each_cinematic_finisher() -> void:
+	panel._finishers = true
+	var entries: Array[Resource] = []
+	entries.assign(panel._entries.filter(GalleryPanel.has_finisher))
+	assert_gt(entries.size(), 0)
+	for entry in entries:
+		var expected: Finisher.Kind = (entry as PowerData).finisher if entry is PowerData else (entry as MoveData).cinematic_finisher
+		var death: Dictionary = _finish(entry)
+		assert_false(death.is_empty(), "%s kills the gallery target" % entry.id)
+		assert_eq(death.get("finisher", Finisher.Kind.NONE), expected, "%s plays its cinematic finisher" % entry.id)
+	panel.free()
+
+
+func test_gallery_target_survives_without_the_finisher_toggle() -> void:
+	var death: Dictionary = _finish(CATALOG.find(&"lightning"))
+	assert_true(death.is_empty(), "the target cannot die while the toggle is off")
+	assert_false(fixture.sim.rules.endless_finishers)
+	panel.free()
+
+
+func test_gallery_finisher_restarts_the_round_without_ending_the_match() -> void:
+	panel._finishers = true
+	_finish(CATALOG.find(&"repulse"))
+	var restarted: bool = fixture.step_until(func() -> bool: return fixture.sim.phase == MatchSimulation.Phase.FIGHT and fixture.fighter(1).is_alive(), 900)
+	assert_true(restarted, "the round starts again after the finisher")
+	assert_eq(fixture.count_events(CombatEvent.Type.MATCH_ENDED), 0)
+	assert_eq(fixture.fighter(0).round_wins, 0)
+	panel.free()

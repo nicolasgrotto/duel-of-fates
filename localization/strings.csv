@@ -297,11 +297,14 @@ GALLERY_TARGET_AIR,No ar,In the air
 GALLERY_TARGET_LIGHTNING,Atacando com Raio,Attacking with Lightning
 GALLERY_REPEAT_ON,Repetição · ligada,Repeat · on
 GALLERY_REPEAT_OFF,Repetição · desligada,Repeat · off
+GALLERY_FINISHER_ON,Finalização · ligada,Finisher · on
+GALLERY_FINISHER_OFF,Finalização · desligada,Finisher · off
 HINT_GALLERY_ENTRY,poder,power
 HINT_GALLERY_TIER,tier,tier
 HINT_GALLERY_TARGET,alvo,target
 HINT_GALLERY_REPEAT,repetição,repeat
 HINT_GALLERY_SWAP,lançador,caster
+HINT_GALLERY_FINISHER,finalização,finisher
 HINT_GALLERY_CAST,lançar,cast
 MENU_PLAY,Jogar,Play
 MENU_LEARN,Aprender,Learn

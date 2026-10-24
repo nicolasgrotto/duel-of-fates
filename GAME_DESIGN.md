@@ -436,7 +436,7 @@ Menu em dois níveis: **Jogar**, **Aprender**, **Extras**, **Opções**.
   - *Tempestade no convés*: Vespa contra Soberano, Convés em Voo, Normal, com Poderes. "Sobreviva à Tempestade e vença."
   - *Último fôlego*: Bastião contra Forja, Cume Nevado, Normal, sem Poderes, começando com 35% de vida.
   - *Sob o eclipse*: Ceifador contra Espelho, Cidadela do Eclipse, Difícil, com Poderes. "Duas lâminas contra o reflexo, no escuro."
-- **Galeria de poderes**: cena de duelo sem rounds para ver cada poder e técnica em cada tier, contra alvos diferentes (parado, em guarda, com Barreira, com Absorção, no ar, atacando com Raio), com repetição automática e troca de lançador.
+- **Galeria de poderes**: cena de duelo sem rounds para ver cada poder e técnica em cada tier, contra alvos diferentes (parado, em guarda, com Barreira, com Absorção, no ar, atacando com Raio), com repetição automática e troca de lançador. Um botão liga a demonstração da finalização cinematográfica dos poderes e técnicas que a têm (regra `MatchRules.endless_finishers`: no modo sem fim o golpe pode matar, todo K.O. conta como decisivo e o round recomeça sem placar).
 - **Galeria da História**: encontros vencidos e finais alcançados, revistos com as falas; o que não foi visto aparece como `???`.
 
 ## 17. Progressão e desbloqueios

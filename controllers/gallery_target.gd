@@ -6,10 +6,13 @@ enum Behavior { STAND, GUARD, BARRIER, ABSORPTION, AIR, LIGHTNING }
 const POWERED: Array[Behavior] = [Behavior.BARRIER, Behavior.ABSORPTION, Behavior.LIGHTNING]
 
 var behavior: Behavior = Behavior.STAND
+var finishing: bool = false
 
 
 func produce(sim: MatchSimulation, fighter_index: int, intent: Intent) -> void:
 	intent.clear()
+	if finishing:
+		return
 	var fighter: FighterState = sim.fighters[fighter_index]
 	match behavior:
 		Behavior.GUARD:
@@ -25,7 +28,7 @@ func produce(sim: MatchSimulation, fighter_index: int, intent: Intent) -> void:
 
 
 func uses_power() -> bool:
-	return POWERED.has(behavior)
+	return POWERED.has(behavior) and not finishing
 
 
 func debug_lines() -> PackedStringArray:

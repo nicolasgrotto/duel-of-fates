@@ -93,6 +93,7 @@ func step(count: int = 1) -> void:
 				"target": event.target,
 				"amount": event.amount,
 				"limb": event.limb,
+				"finisher": event.finisher,
 				"heavy": event.heavy,
 				"tick": sim.tick,
 			})

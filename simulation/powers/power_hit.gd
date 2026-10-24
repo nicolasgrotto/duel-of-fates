@@ -100,7 +100,7 @@ static func _hit(sim: MatchSimulation, caster: FighterState, target: FighterStat
 
 
 static func _executes(sim: MatchSimulation, caster: FighterState, target: FighterState, power: PowerData) -> bool:
-	if power == null or power.execute_below <= 0.0 or target.health > power.execute_below or sim.rules.endless:
+	if power == null or power.execute_below <= 0.0 or target.health > power.execute_below or (sim.rules.endless and not sim.rules.endless_finishers):
 		return false
 	return Consequences.finisher_for(sim, null, power, sim.is_deciding(caster)) != Finisher.Kind.NONE
 

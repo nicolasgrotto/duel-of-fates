@@ -48,11 +48,12 @@ Use Aprender › Treino com o boneco parado (`F5` alterna o comportamento). Troq
 
 ## 3. Poderes
 
-Galeria de poderes (↑ ↓ mudam o tier, `T` troca o alvo, `X` troca o lançador).
+Galeria de poderes (↑ ↓ mudam o tier, `T` troca o alvo, `X` troca o lançador, `F` liga a finalização).
 
 | # | Como testar | Esperado | Onde ajustar |
 | --- | --- | --- | --- |
 | 3.1 | Repulsão nos quatro tiers, lançando dos dois lados | palma recolhe junto ao peito, depois estende com recuo do ombro; um grande arco de ar nasce na palma, cresce em altura, tem borda fina clara, corpo translúcido e ecos fracos; termina no mesmo alcance em todos os tiers | `PoseSolver._repulse`; grupo Repulse and fracture de `PowerVfxConfig` (`repulse_*`) |
+| 3.1b | Ligue a Finalização (`F`) e passe por Raio, Repulsão, Repulsão Suprema, Puxão, Corte de Fluxo, Estrangular e pelas técnicas Avanço com corte, Investida descendente, Corte ascendente e Arremesso da lâmina | a linha de detalhes mostra "Finalização · ligada" só nessas entradas; o alvo fica parado e morre na cinemática de cada uma; o round recomeça sozinho e a demonstração repete; nos outros poderes nada muda | `TrainingConfig.gallery_finisher_health`; cinemáticas: grupo Finishers do `EffectsConfig` |
 | 3.2 | Puxão | mão estende aberta e puxa em garra; uma bola grande na mão de quem lança encolhe muito rápido; nada atrás do alvo e sem fio | `PowerVfxConfig.pull_orb_radius`, `pull_orb_time`, `pull_orb_core`, `pull_orb_tier_growth` |
 | 3.3 | Raio nos tiers 3 e 4 (lançador Sombra) | 2 e 3 feixes abertos em leque, saindo dos dedos, separados no meio do caminho e chegando em alturas diferentes do corpo | grupo Lightning do `PowerVfxConfig` |
 | 3.4 | Corte de Fluxo nos tiers 2 e 4 | preparação com a lâmina atrás da cabeça, arco inteiro até a lâmina bater no chão, onde nasce a onda; no tier 4 o segundo corte vem 0,35 s depois, também com o arco completo | `data/powers/flow_cleave.tres` (`apex_repeat_delay`) |

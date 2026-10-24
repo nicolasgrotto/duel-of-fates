@@ -77,6 +77,7 @@ const MENU_KEYS: Dictionary = {
 	"gallery_target": [KEY_T],
 	"gallery_repeat": [KEY_R],
 	"gallery_swap": [KEY_X],
+	"gallery_finisher": [KEY_F],
 }
 
 const MENU_BUTTONS: Dictionary = {
@@ -86,6 +87,7 @@ const MENU_BUTTONS: Dictionary = {
 	"gallery_target": [JOY_BUTTON_Y],
 	"gallery_repeat": [JOY_BUTTON_X],
 	"gallery_swap": [JOY_BUTTON_RIGHT_SHOULDER],
+	"gallery_finisher": [JOY_BUTTON_LEFT_SHOULDER],
 }
 
 const ALL_DEVICES: int = -1
