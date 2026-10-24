@@ -31,6 +31,7 @@ extends Resource
 @export_group("Flow")
 @export_range(0.0, 1.0) var power_chance: float = 0.35
 @export_range(0.0, 1.0) var power_defense_chance: float = 0.4
+@export var save_for_fourth: bool = false
 
 @export_group("Blade lock")
 @export var lock_reaction: float = 0.45

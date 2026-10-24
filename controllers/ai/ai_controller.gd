@@ -265,7 +265,7 @@ func _try_flow_defense(sim: MatchSimulation, me: FighterState, opponent: Fighter
 func _try_power(sim: MatchSimulation, me: FighterState, opponent: FighterState, gap: float) -> bool:
 	if rng.randf() > difficulty.power_chance * lerpf(0.4, 1.6, profile.power_bias):
 		return false
-	var slot: int = AiPowers.offensive_slot(sim, me, opponent, gap)
+	var slot: int = AiPowers.offensive_slot(sim, me, opponent, gap, difficulty.save_for_fourth)
 	if slot == AiPowers.NO_SLOT:
 		return false
 	_schedule_power(me, slot, Ticks.from_seconds(difficulty.attack_warning), "power " + String(me.powers[slot].id))

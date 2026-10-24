@@ -12,8 +12,10 @@ const DIRECTIONS: Array[int] = [0, 1, -1, 0]
 const ZONE_KINDS: Array[PowerData.Kind] = [PowerData.Kind.FRACTURE, PowerData.Kind.STORM, PowerData.Kind.MASS_TELEKINESIS]
 const RANGED_KINDS: Array[PowerData.Kind] = [PowerData.Kind.THROW, PowerData.Kind.FLOW_CLEAVE]
 const CLOSE_KINDS: Array[PowerData.Kind] = [
-	PowerData.Kind.LIGHTNING, PowerData.Kind.FREEZE, PowerData.Kind.CHOKE, PowerData.Kind.MIND_TWIST, PowerData.Kind.PULL,
+	PowerData.Kind.LIGHTNING, PowerData.Kind.FREEZE, PowerData.Kind.CHOKE, PowerData.Kind.PULL,
 ]
+const TWIST_LOW_VIGOR: float = 0.35
+const SLOT_ORDER: Array[int] = [FighterState.FOURTH_SLOT, 0, 1, 2]
 const SELF_KINDS: Array[PowerData.Kind] = [
 	PowerData.Kind.FOCUS, PowerData.Kind.WRATH, PowerData.Kind.SANCTUARY, PowerData.Kind.ARSENAL,
 ]
@@ -37,11 +39,22 @@ static func hold_ticks(power: PowerData) -> int:
 	return Ticks.from_seconds(power.max_channel) if power.is_channeled() else 0
 
 
-static func offensive_slot(sim: MatchSimulation, me: FighterState, opponent: FighterState, gap: float) -> int:
-	for slot in FighterState.POWER_SLOTS:
-		if is_ready(sim, me, slot) and _wants(me, opponent, gap, me.powers[slot]):
-			return slot
+static func offensive_slot(sim: MatchSimulation, me: FighterState, opponent: FighterState, gap: float, save_for_fourth: bool = false) -> int:
+	for slot in SLOT_ORDER:
+		if not is_ready(sim, me, slot) or not _wants(me, opponent, gap, me.powers[slot]):
+			continue
+		if save_for_fourth and spends_fourth_reserve(me, slot):
+			continue
+		return slot
 	return NO_SLOT
+
+
+static func spends_fourth_reserve(me: FighterState, slot: int) -> bool:
+	var fourth: PowerData = me.powers[FighterState.FOURTH_SLOT]
+	if slot == FighterState.FOURTH_SLOT or fourth == null or me.flow_level < fourth.min_level:
+		return false
+	var cost: float = me.powers[slot].cost_for(me.flow_level)
+	return me.flow - cost < fourth.cost_for(me.flow_level)
 
 
 static func escape_slot(sim: MatchSimulation, me: FighterState) -> int:
@@ -101,6 +114,8 @@ static func _wants(me: FighterState, opponent: FighterState, gap: float, power: 
 			return gap > FAR_GAP
 		return gap > FAR_GAP and not _status_active(me, power.kind)
 	match power.kind:
+		PowerData.Kind.MIND_TWIST:
+			return gap <= reach and opponent.twisted_ticks == 0 and _commits_to_a_direction(opponent)
 		PowerData.Kind.REPULSE:
 			return gap <= reach * 0.6 and (opponent.is_attacking() or me.vigor_ratio() < 0.4)
 		PowerData.Kind.SUPREME_PUSH:
@@ -110,6 +125,12 @@ static func _wants(me: FighterState, opponent: FighterState, gap: float, power: 
 		PowerData.Kind.DRAIN:
 			return gap <= reach and opponent.flow > DRAIN_ABOVE
 	return false
+
+
+static func _commits_to_a_direction(opponent: FighterState) -> bool:
+	if opponent.state == FighterState.State.WALKING:
+		return true
+	return opponent.is_free() and opponent.vigor_ratio() < TWIST_LOW_VIGOR
 
 
 static func _status_active(me: FighterState, kind: PowerData.Kind) -> bool:

@@ -22,3 +22,4 @@ lock_presses_per_second = 14.0
 power_chance = 0.55
 power_defense_chance = 0.75
 disengage_chance = 0.6
+save_for_fourth = true

@@ -363,6 +363,7 @@ A IA controla o oponente pela mesma **intenção** do jogador. Ela só pede aç�
   5. **Atacar**: no alcance e sem recarga, rápido ou forte conforme o perfil.
   6. **Guardar**: no alcance e sem poder atacar, segura a guarda por antecipação.
   7. **Posicionar**: fora do alcance, aproxima; perto demais para o perfil, recua ou espera.
+- Truque Mental só quando o oponente está andando ou recuando com pouco Vigor (inverter a direção de quem está parado não muda nada). No Difícil e no Chefe, quem tem quarto poder não gasta medidor em outro poder se isso o deixar abaixo do custo do quarto, e lança o quarto primeiro quando ele está pronto (`AiDifficultyData.save_for_fourth`).
 - Usa poderes e técnicas equipados: acompanha projéteis em voo, foge das marcas da Tempestade e da Telecinese, pula a Fratura, evita Raio contra Absorção, tenta quebrar Barreira com empurrão e pune a preparação de Cura e Foco.
 - **Justiça**: a IA só vê o que o jogador vê (estado e fase do golpe), nunca o input. Não reage mais rápido que o `reaction_time` e não apara um rápido por reação.
 - Usa um gerador aleatório com seed; nos testes a seed é fixa e o comportamento é reproduzível.
