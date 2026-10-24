@@ -15,3 +15,4 @@ extends Resource
 @export_group("Boss")
 @export var boss_letterbox: float = 1.5
 @export var boss_message_seconds: float = 1.5
+@export_range(0.0, 1.0) var boss_music_floor: float = 0.7

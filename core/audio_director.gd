@@ -89,6 +89,7 @@ func play_music(music: MusicData) -> void:
 		_layer_target[i] = _layer_db[i]
 		_music_stream.set_sync_stream_volume(i, _layer_db[i])
 	_music.stream = _music_stream
+	_music.pitch_scale = music.pitch
 	_music.play()
 
 

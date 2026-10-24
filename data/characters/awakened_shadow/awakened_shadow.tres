@@ -20,6 +20,7 @@
 [ext_resource type="Resource" path="res://data/techniques/plunge.tres" id="t_plunge"]
 [ext_resource type="Resource" path="res://data/techniques/spin.tres" id="t_spin"]
 
+[ext_resource type="Resource" path="res://data/audio/boss_music.tres" id="theme_music"]
 [sub_resource type="Resource" id="awakened_shadow_light_1"]
 script = ExtResource("2_move")
 id = &"awakened_shadow_light_1"
@@ -228,6 +229,7 @@ powers = Array[ExtResource("14_power")]([ExtResource("p_lightning"), ExtResource
 technique_forward = ExtResource("t_dash_slash")
 technique_back = ExtResource("t_spin")
 technique_air = ExtResource("t_plunge")
+theme = ExtResource("theme_music")
 ai_profile = ExtResource("9_ai")
 path = 1
 style_key = "STYLE_AWAKENED_SHADOW"

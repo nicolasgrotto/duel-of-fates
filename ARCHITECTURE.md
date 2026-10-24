@@ -242,7 +242,7 @@ Implementação:
 - Barramentos em `default_bus_layout.tres`: Music, Effects, Blades, Interface, Ambience. Music, Effects e Ambience têm um passa-baixas desligado que o `AudioDirector` liga para abafar o mundo (parry perfeito, K.O.); Blades nunca é abafado.
 - `AudioDirector` (autoload): pool de `AudioStreamPlayer2D` (estéreo pela posição na tela), sons de interface, música em camadas sincronizadas (`AudioStreamSynchronized`: base, percussão e tensão, abrindo conforme a vida mais baixa), ambiência da arena, abafar e abaixar a música.
 - `DuelAudio` (apresentação): reage aos eventos de combate, mantém o zumbido de cada lâmina (tom por `WeaponData.hum_pitch`, mais alto e agudo no active), o atrito contínuo da disputa, passos e a batida de vida baixa do jogador.
-- `SoundBank` (`data/audio/sound_bank.tres`) liga ids a arquivos; `MusicData` agrupa as camadas; `ArenaData` aponta música e ambiência.
+- `SoundBank` (`data/audio/sound_bank.tres`) liga ids a arquivos; `MusicData` agrupa as camadas e o tom (`pitch`, aplicado ao player de música); `ArenaData` aponta música (variações em `data/audio/arena_music/`) e ambiência. `DuelScreen.duel_music(setup)` escolhe o `CharacterData.theme` do adversário (depois o do jogador) antes da música da arena; o `DuelAudio.intensity_floor` sobe no despertar do chefe.
 
 Implementação provisória (fases 1 e 2, arte de formas simples, substituída na fase 3):
 

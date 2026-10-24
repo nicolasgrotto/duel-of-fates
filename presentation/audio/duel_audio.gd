@@ -75,6 +75,7 @@ const HAZARD_MARKS: Dictionary = {
 var sim: MatchSimulation
 var views: Array[FighterView] = []
 var player_index: int = 0
+var intensity_floor: float = 0.0
 
 var _hums: Array[AudioStreamPlayer2D] = []
 var _hum_pitch: PackedFloat32Array = []
@@ -239,7 +240,7 @@ func _process(delta: float) -> void:
 		lowest = minf(lowest, fighter.health_ratio())
 	if BladeLockResolver.is_active(sim):
 		AudioDirector.duck_music(LOCK_DUCK)
-	AudioDirector.set_music_intensity(1.0 - lowest)
+	AudioDirector.set_music_intensity(maxf(1.0 - lowest, intensity_floor))
 	_update_heartbeat(delta)
 
 

@@ -13,6 +13,9 @@ RATE = 44100
 MUSIC_RATE = 32000
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 RNG = np.random.default_rng(1977)
+AMBIENCE_RATE = 22050
+AMBIENCE_SECONDS = 10.0
+THEME_RATE = 22050
 
 
 def t_axis(seconds, rate=RATE):
@@ -239,6 +242,120 @@ def ambience():
     save("ambience/refinery.wav", loop_crossfade(hiss + pings + rumble, 1.0, rate), rate, 0.5)
 
 
+def scatter(seconds, times, voice, rate):
+    out = np.zeros(int(seconds * rate))
+    for start in times:
+        part = voice()
+        begin = int(start * rate)
+        end = min(begin + part.size, out.size)
+        out[begin:end] += part[: end - begin]
+    return out
+
+
+def drop_voice(rate, low=900, high=2200):
+    length = 0.12
+    freq = RNG.uniform(low, high)
+    return sweep(freq, freq * 0.55, length, 0.6, rate) * envelope(length, 0.001, 4.0, rate)
+
+
+def bell_voice(rate, base, length=3.0):
+    return partials([base, base * 2.76, base * 5.4], length, [1.2, 2.0, 3.4], rate)
+
+
+def slow_wave(t, rate_hz, depth=0.4, phase=0.0):
+    return 1.0 - depth + depth * (0.5 + 0.5 * np.sin(2 * math.pi * rate_hz * t + phase))
+
+
+def save_ambience(name, signal, peak=0.5):
+    save("ambience/%s.wav" % name, loop_crossfade(signal, 1.0, AMBIENCE_RATE), AMBIENCE_RATE, peak)
+
+
+def arena_ambiences():
+    rate = AMBIENCE_RATE
+    total = AMBIENCE_SECONDS + 1.0
+    t = t_axis(total, rate)
+    random_times = lambda count: sorted(RNG.uniform(0.2, AMBIENCE_SECONDS, count))
+    flow = lowpass(noise(total, rate), 700, rate) * slow_wave(t, 0.13) * 1.4
+    drops = scatter(total, random_times(14), lambda: drop_voice(rate), rate) * 0.5
+    save_ambience("sanctuary", flow + drops)
+    drips = scatter(total, random_times(9), lambda: drop_voice(rate, 1400, 2800), rate) * 0.6
+    crystal = scatter(total, random_times(4), lambda: bell_voice(rate, RNG.uniform(1800, 2600), 3.5) * 0.12, rate)
+    cave = lowpass(noise(total, rate), 80, rate) * 1.2
+    save_ambience("crystal_mine", drips + crystal + cave)
+    rain = highpass(noise(total, rate), 1800, rate) * 0.5 * slow_wave(t, 0.07, 0.2)
+    city = lowpass(noise(total, rate), 220, rate) * 0.9
+    horns = scatter(total, random_times(2), lambda: string_voice(RNG.uniform(140, 190), 1.6, rate) * 0.05, rate)
+    save_ambience("neon_rooftop", rain + city + horns)
+    hum = (np.sin(2 * math.pi * 55 * t) + 0.4 * np.sin(2 * math.pi * 110.4 * t)) * slow_wave(t, 0.09, 0.5) * 0.25
+    creaks = scatter(total, random_times(2), lambda: partials([410, 655, 980], 1.4, [3, 4, 6], rate) * 0.08, rate)
+    save_ambience("orbital_ring", hum + creaks, 0.3)
+    chirp_t = t_axis(0.25, rate)
+    chirp = lambda: np.sin(2 * math.pi * RNG.uniform(3800, 5200) * chirp_t) * (0.5 + 0.5 * np.sign(np.sin(2 * math.pi * 28 * chirp_t))) * envelope(0.25, 0.02, 1.5, rate) * 0.12
+    insects = scatter(total, random_times(26), chirp, rate)
+    leaves = bandpass(noise(total, rate), 1200, 4500, rate) * slow_wave(t, 0.2, 0.8) * 0.5
+    save_ambience("luminous_forest", insects + leaves, 0.4)
+    wind = bandpass(noise(total, rate), 250, 1400, rate) * slow_wave(t, 0.06, 0.6) * 1.2
+    sand = highpass(crackle(total, 0.01, rate), 3000, rate) * 0.6
+    save_ambience("glass_salt_flats", wind + sand)
+    gale = bandpass(noise(total, rate), 180, 2200, rate) * slow_wave(t, 0.17, 0.7, 1.0) * 1.4
+    engine = lowpass(saw(46, total, rate) + 0.5 * saw(92.5, total, rate), 260, rate) * slow_wave(t, 0.5, 0.15) * 0.5
+    save_ambience("skyborne_deck", gale + engine, 0.55)
+    blizzard = bandpass(noise(total, rate), 400, 6000, rate) * slow_wave(t, 0.11, 0.75, 2.0)
+    bells = scatter(total, [2.0, 7.5], lambda: bell_voice(rate, 310, 4.0) * 0.06, rate)
+    save_ambience("snowbound_peak", blizzard + bells)
+    room = lowpass(noise(total, rate), 120, rate) * 0.8
+    echo = lambda: np.concatenate([np.zeros(1)] + [bandpass(noise(0.05, rate), 300, 2000, rate) * 0.5 ** k for k in range(6)]) * 0.25
+    echoes = scatter(total, random_times(3), lambda: lowpass(np.concatenate([echo(), np.zeros(int(0.4 * rate))]), 1500, rate), rate)
+    save_ambience("eclipse_citadel", room + echoes, 0.35)
+
+
+def choir_voice(freq, length, rate):
+    t = t_axis(length, rate)
+    tone = sum(saw(freq * detune, length, rate) for detune in (0.996, 1.0, 1.005)) / 3.0
+    vowel = bandpass(tone, 500, 1200, rate) * 1.6 + lowpass(tone, 400, rate) * 0.4
+    swell = np.minimum(t / 1.5, 1.0) * np.minimum((length - t) / 1.2, 1.0)
+    return vowel * swell
+
+
+def bell_note(freq, length, rate):
+    return bell_voice(rate, freq, length)
+
+
+def theme(name, harmony, bpm, pad_voice, accent_voice, accents, hits, rate=THEME_RATE):
+    seconds = 16.0
+    beat = 60.0 / bpm
+    pad = []
+    for bar, (root, fifth) in enumerate(harmony):
+        start = bar * 4.0
+        pad += [(start, 4.4, root, 1.0), (start, 4.4, fifth, 0.6), (start, 4.4, root * 2, 0.3)]
+    base = music_layer(seconds + 0.6, pad, pad_voice, rate)
+    base += music_layer(seconds + 0.6, [(time, 2.5, freq, 0.35) for time, freq in accents], accent_voice, rate)
+    save("music/%s_base.wav" % name, loop_crossfade(base, 0.6, rate), rate, 0.7)
+    drum_notes = []
+    step = 0.0
+    while step < seconds:
+        for offset, freq, gain in hits:
+            time = step + offset * beat
+            if time < seconds:
+                drum_notes.append((time, 0.5, freq, gain))
+        step += 4 * beat
+    drums = music_layer(seconds + 0.6, drum_notes, drum_voice, rate)
+    save("music/%s_percussion.wav" % name, loop_crossfade(drums, 0.6, rate), rate, 0.7)
+    tension = music_layer(seconds + 0.6, [(bar * 4.0, 4.3, root * 4, 0.6) for bar, (root, _fifth) in enumerate(harmony)] + [(bar * 4.0 + 2.0, 2.2, fifth * 4, 0.3) for bar, (_root, fifth) in enumerate(harmony)], tremolo_voice, rate)
+    save("music/%s_tension.wav" % name, loop_crossfade(tension, 0.6, rate), rate, 0.55)
+
+
+def themes():
+    e2, c2, d2, g2 = 82.41, 65.41, 73.42, 98.0
+    theme("sacred", [(e2, e2 * 1.5), (c2, c2 * 1.5), (d2, d2 * 1.5), (e2, e2 * 1.5)], 64.0, string_voice, bell_note,
+        [(0.0, 659.3), (2.0, 587.3), (4.0, 523.3), (8.0, 587.3), (10.0, 659.3), (12.0, 493.9)],
+        [(0.0, 55.0, 0.9), (2.0, 70.0, 0.5)])
+    c2b, ab1, f2, g1 = 65.41, 51.91, 87.31, 49.0
+    theme("boss", [(c2b, c2b * 1.5), (ab1, ab1 * 1.5), (f2, f2 * 1.5), (g1 * 2, g1 * 3)], 66.0, choir_voice, string_voice,
+        [(0.0, 261.6), (4.0, 207.7), (8.0, 174.6), (12.0, 196.0)],
+        [(0.0, 48.0, 1.0), (1.0, 62.0, 0.6), (1.5, 62.0, 0.5), (2.0, 48.0, 1.0), (3.0, 75.0, 0.7), (3.5, 75.0, 0.6)])
+
+
 def power_sounds():
     rumble = lambda seconds, cutoff=140: lowpass(noise(seconds), cutoff) * 2.5
     save("powers/cast.wav", bandpass(noise(0.3), 400, 2600) * envelope(0.3, 0.2, 1.0) * 0.5 + 0.4 * sweep(220, 520, 0.3) * envelope(0.3, 0.2, 1.0))
@@ -300,4 +417,6 @@ if __name__ == "__main__":
     music()
     ambience()
     power_sounds()
+    arena_ambiences()
+    themes()
     print("audio written")

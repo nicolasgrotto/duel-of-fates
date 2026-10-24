@@ -1,8 +1,8 @@
 [gd_resource type="Resource" script_class="ArenaData" format=3]
 
 [ext_resource type="Script" path="res://data/arena_data.gd" id="1_script"]
-[ext_resource type="Resource" path="res://data/audio/duel_music.tres" id="3_music"]
-[ext_resource type="AudioStream" path="res://assets/audio/ambience/refinery.wav" id="4_ambience"]
+[ext_resource type="Resource" path="res://data/audio/arena_music/orbital_ring.tres" id="3_music"]
+[ext_resource type="AudioStream" path="res://assets/audio/ambience/orbital_ring.wav" id="4_ambience"]
 [ext_resource type="PackedScene" path="res://arenas/orbital_ring/orbital_ring.tscn" id="2_scene"]
 
 [resource]

@@ -1,8 +1,8 @@
 [gd_resource type="Resource" script_class="ArenaData" format=3]
 
 [ext_resource type="Script" path="res://data/arena_data.gd" id="1_script"]
-[ext_resource type="Resource" path="res://data/audio/duel_music.tres" id="3_music"]
-[ext_resource type="AudioStream" path="res://assets/audio/ambience/refinery.wav" id="4_ambience"]
+[ext_resource type="Resource" path="res://data/audio/arena_music/glass_salt_flats.tres" id="3_music"]
+[ext_resource type="AudioStream" path="res://assets/audio/ambience/glass_salt_flats.wav" id="4_ambience"]
 [ext_resource type="PackedScene" path="res://arenas/glass_salt_flats/glass_salt_flats.tscn" id="2_scene"]
 
 [resource]

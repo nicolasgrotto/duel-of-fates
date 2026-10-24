@@ -19,6 +19,7 @@
 [ext_resource type="Resource" path="res://data/techniques/rising_cut.tres" id="t_rising_cut"]
 [ext_resource type="Resource" path="res://data/techniques/spin.tres" id="t_spin"]
 
+[ext_resource type="Resource" path="res://data/audio/boss_music.tres" id="theme_music"]
 [sub_resource type="Resource" id="sovereign_light_1"]
 script = ExtResource("2_move")
 id = &"sovereign_light_1"
@@ -207,6 +208,7 @@ ability = SubResource("sovereign_ability")
 powers = Array[ExtResource("14_power")]([ExtResource("p_lightning"), ExtResource("p_storm"), ExtResource("p_choke")])
 technique_forward = ExtResource("t_rising_cut")
 technique_back = ExtResource("t_spin")
+theme = ExtResource("theme_music")
 ai_profile = ExtResource("9_ai")
 path = 1
 style_key = "STYLE_SOVEREIGN"

@@ -137,7 +137,7 @@ func _build_scene() -> void:
 	add_child(_debug)
 	_audio = DuelAudio.new()
 	add_child(_audio)
-	AudioDirector.play_music(setup.arena.music)
+	AudioDirector.play_music(duel_music(setup))
 	AudioDirector.play_ambience(setup.arena.ambience)
 	_runner = TickRunner.new()
 	add_child(_runner)
@@ -149,6 +149,13 @@ func _build_scene() -> void:
 	add_child(_rumble)
 	_rumble.setup(setup.controllers, setup.player_slots)
 	_effects.rumbled.connect(_rumble.on_rumbled)
+
+
+static func duel_music(duel: DuelSetup) -> MusicData:
+	for i in [1, 0]:
+		if i < duel.characters.size() and duel.characters[i].theme != null:
+			return duel.characters[i].theme
+	return duel.arena.music
 
 
 func _build_controllers() -> Array[FighterController]:
@@ -269,6 +276,7 @@ func _check_awakening() -> void:
 		if _ai[i].awakened and not _awakened[i]:
 			_awakened[i] = true
 			_hud.announce(tr("HUD_BOSS_AWAKENS"), MODES.boss_message_seconds)
+			_audio.intensity_floor = MODES.boss_music_floor
 			_screen.pulse_letterbox(MODES.boss_letterbox)
 
 

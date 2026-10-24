@@ -2,7 +2,7 @@
 
 Segue [DESIGN.md](../DESIGN.md). Som e música são parte da sensação do duelo: o choque precisa ser **ouvido** tanto quanto visto.
 
-> Implementado na fase 3: sons sintetizados (sem amostras) por `tools/audio/synth_audio.py`, barramentos, zumbido por personagem, disputa, abafar no parry perfeito e no K.O., música em três camadas (base, percussão, tensão) que abrem com a vida mais baixa, batida de vida baixa e ambiência da Plataforma de Refino. Tema próprio de chefe e ambiências das outras arenas ficam para as fases 4 a 8.
+> Implementado na fase 3: sons sintetizados (sem amostras) por `tools/audio/synth_audio.py`, barramentos, zumbido por personagem, disputa, abafar no parry perfeito e no K.O., música em três camadas (base, percussão, tensão) que abrem com a vida mais baixa, batida de vida baixa e ambiência da Plataforma de Refino. Fase 8: ambiência própria das dez arenas (`assets/audio/ambience/<arena>.wav`, 10 s em laço, 22 kHz), tema sagrado (Santuário, Floresta, Cume) e tema de chefe (Cidadela e os personagens com `CharacterData.theme`: Sombra Desperta, Soberano, Ancião e as duas variantes do Predestinado; o tema do adversário vence o da arena). A variação por arena vem de `MusicData.pitch` (transposição de até três semitons, que também muda levemente o andamento) sobre os três temas. No despertar do chefe, a música passa a tocar com pelo menos `ModesConfig.boss_music_floor` de intensidade (percussão e tensão abertas).
 
 ## Regras
 

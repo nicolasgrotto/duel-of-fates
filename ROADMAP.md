@@ -149,7 +149,7 @@ Regras novas (simulação, testes, IA, Tutorial e Treinos guiados, overlay F3):
 ## Fase 8 — Acabamento
 
 - [ ] Localização completa PT-BR e EN
-- [ ] Trilha e ambiências de todas as arenas
+- [x] Trilha e ambiências de todas as arenas (ambiência própria nas dez, temas duelo, sagrado e chefe com variação de tom por arena, tema de chefe nos personagens-chefe)
 - [x] Acessibilidade (efeitos reduzidos, remapeamento, legendas): efeitos reduzidos e "Segurar para disputar" já existiam; remapeamento do gamepad na tela Teclas e botões; o jogo não tem voz, então todas as falas já são texto
 - [ ] Desempenho medido e estável a 60 FPS
 - [ ] Exportação e build de release

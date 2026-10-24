@@ -20,6 +20,7 @@
 [ext_resource type="Resource" path="res://data/techniques/thrust.tres" id="t_thrust"]
 [ext_resource type="Resource" path="res://data/characters/foretold_eclipse/foretold_eclipse.tres" id="13_variant"]
 
+[ext_resource type="Resource" path="res://data/audio/boss_music.tres" id="theme_music"]
 [sub_resource type="Resource" id="foretold_light_1"]
 script = ExtResource("2_move")
 id = &"foretold_light_1"
@@ -212,6 +213,7 @@ ability = SubResource("foretold_ability")
 powers = Array[ExtResource("14_power")]([ExtResource("p_repulse"), ExtResource("p_throw"), ExtResource("p_barrier")])
 fourth_power = ExtResource("p_mass_telekinesis")
 technique_forward = ExtResource("t_thrust")
+theme = ExtResource("theme_music")
 ai_profile = ExtResource("9_ai")
 path = 0
 style_key = "STYLE_FORETOLD"

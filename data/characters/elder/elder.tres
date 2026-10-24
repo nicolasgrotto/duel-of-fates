@@ -19,6 +19,7 @@
 [ext_resource type="Resource" path="res://data/techniques/spin.tres" id="t_spin"]
 [ext_resource type="Resource" path="res://data/techniques/thrust.tres" id="t_thrust"]
 
+[ext_resource type="Resource" path="res://data/audio/boss_music.tres" id="theme_music"]
 [sub_resource type="Resource" id="elder_light_1"]
 script = ExtResource("2_move")
 id = &"elder_light_1"
@@ -260,6 +261,7 @@ ability = SubResource("elder_ability")
 powers = Array[ExtResource("14_power")]([ExtResource("p_repulse"), ExtResource("p_heal"), ExtResource("p_barrier")])
 technique_forward = ExtResource("t_thrust")
 technique_back = ExtResource("t_spin")
+theme = ExtResource("theme_music")
 ai_profile = ExtResource("9_ai")
 path = 0
 style_key = "STYLE_ELDER"

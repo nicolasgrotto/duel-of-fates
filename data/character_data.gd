@@ -53,6 +53,9 @@ enum Path { AURORA, ECLIPSE }
 @export var technique_back: MoveData
 @export var technique_air: MoveData
 
+@export_group("Audio")
+@export var theme: MusicData
+
 @export_group("AI")
 @export var ai_profile: AiProfileData
 
