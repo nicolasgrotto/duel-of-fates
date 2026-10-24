@@ -52,6 +52,7 @@ enum TechniqueStyle { ARC, SPIN, DASH, THROW, THRUST, RISING, FLURRY, LUNGE, PLU
 @export var can_blade_lock: bool = false
 @export var wound_limb: Limb = Limb.NONE
 @export var finisher_limb: Limb = Limb.ARM
+@export var cinematic_finisher: Finisher.Kind = Finisher.Kind.NONE
 
 @export_group("Presentation")
 @export var blade_angle_windup: float = -120.0

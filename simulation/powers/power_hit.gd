@@ -63,7 +63,7 @@ static func _guard(sim: MatchSimulation, caster: FighterState, target: FighterSt
 	var event: CombatEvent = _event(sim, CombatEvent.Type.POWER_BLOCKED, caster, target, power, impact)
 	event.amount = damage
 	if damage > 0.0 and sim.apply_damage(target, damage):
-		sim.kill(target, caster, null)
+		sim.kill(target, caster, null, power)
 		return
 	sim.drain_vigor(target, impact.guard_vigor * band.guard_vigor_ratio)
 	target.vx = direction * absf(impact.push) * band.guard_slide_ratio * signf(impact.push if impact.push != 0.0 else 1.0)
@@ -86,8 +86,10 @@ static func _hit(sim: MatchSimulation, caster: FighterState, target: FighterStat
 	if damage > 0.0 and not impact.periodic and impact.grants_flow:
 		sim.gain_flow(target, flow.gain_on_hurt)
 		sim.gain_flow(caster, flow.gain_on_hit)
-	if lethal:
-		sim.kill(target, caster, null)
+	if lethal or _executes(sim, caster, target, power):
+		if not lethal:
+			sim.apply_damage(target, target.health)
+		sim.kill(target, caster, null, power)
 		return
 	if stagger > 0.0:
 		_recoil(sim, target, FighterState.State.STAGGERED, stagger)
@@ -95,6 +97,12 @@ static func _hit(sim: MatchSimulation, caster: FighterState, target: FighterStat
 		_recoil(sim, target, FighterState.State.HIT, hold)
 	if push != 0.0:
 		target.vx = direction * push
+
+
+static func _executes(sim: MatchSimulation, caster: FighterState, target: FighterState, power: PowerData) -> bool:
+	if power == null or power.execute_below <= 0.0 or target.health > power.execute_below or sim.rules.endless:
+		return false
+	return Consequences.finisher_for(sim, null, power, sim.is_deciding(caster)) != Finisher.Kind.NONE
 
 
 static func _recoil(sim: MatchSimulation, fighter: FighterState, state: FighterState.State, seconds: float) -> void:

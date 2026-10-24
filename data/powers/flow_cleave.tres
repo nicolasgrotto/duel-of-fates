@@ -6,6 +6,7 @@
 [resource]
 script = ExtResource("1_script")
 id = &"flow_cleave"
+finisher = 2
 name_key = "POWER_FLOW_CLEAVE"
 description_key = "POWER_FLOW_CLEAVE_TEXT"
 path = 1

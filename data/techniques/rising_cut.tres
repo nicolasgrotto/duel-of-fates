@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_script")
 id = &"rising_cut"
+cinematic_finisher = 3
 kind = 10
 startup = 0.3
 active = 0.14

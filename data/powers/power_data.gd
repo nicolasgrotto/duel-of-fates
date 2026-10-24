@@ -50,6 +50,10 @@ enum Kind {
 @export var level_cost: PackedFloat32Array = []
 @export var level_cooldown: PackedFloat32Array = []
 
+@export_group("Finisher")
+@export var finisher: Finisher.Kind = Finisher.Kind.NONE
+@export var execute_below: float = 0.0
+
 @export_group("Defense")
 @export var guard_blocks: bool = true
 @export var guard_damage_ratio: float = 0.0

@@ -14,3 +14,5 @@ extends Resource
 @export_group("Finishers")
 @export var head_finisher_chance: float = 0.3
 @export var head_on_deciding_heavy: bool = true
+@export var cinematic_ko_time: float = 1.6
+@export var dash_through_clearance: float = 24.0

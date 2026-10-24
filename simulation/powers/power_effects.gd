@@ -281,7 +281,7 @@ static func _choke_step(sim: MatchSimulation, caster: FighterState, target: Figh
 	target.vy = 0.0
 	target.on_ground = false
 	if sim.apply_damage(target, power.damage * band.scale * Ticks.DELTA):
-		sim.kill(target, caster, null)
+		sim.kill(target, caster, null, power)
 		end_channel(sim, caster)
 
 

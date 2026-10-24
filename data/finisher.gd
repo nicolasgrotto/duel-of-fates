@@ -1,0 +1,3 @@
+class_name Finisher
+
+enum Kind { NONE, DASH_THROUGH, WAIST, VERTICAL, DIAGONAL, PULL_CUT, CHARRED, BLAST, CHOKED }

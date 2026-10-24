@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_script")
 id = &"dash_slash"
+cinematic_finisher = 1
 kind = 10
 startup = 0.2
 active = 0.12

@@ -6,6 +6,7 @@
 [resource]
 script = ExtResource("1_script")
 id = &"supreme_push"
+finisher = 7
 name_key = "POWER_SUPREME_PUSH"
 description_key = "POWER_SUPREME_PUSH_TEXT"
 path = 0

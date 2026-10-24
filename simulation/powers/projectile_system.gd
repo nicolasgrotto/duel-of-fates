@@ -112,7 +112,7 @@ static func _blade_hit(sim: MatchSimulation, projectile: Projectile, owner: Figh
 	event.amount = damage
 	var lethal: bool = sim.apply_damage(target, damage)
 	if lethal:
-		sim.kill(target, owner, null)
+		sim.kill(target, owner, null, null, move)
 		return
 	sim.change_state(target, FighterState.State.HIT)
 	target.stun_ticks = Ticks.from_seconds(move.hitstun)

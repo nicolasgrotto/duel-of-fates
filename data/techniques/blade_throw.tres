@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_script")
 id = &"blade_throw"
+cinematic_finisher = 4
 kind = 10
 startup = 0.25
 active = 0.1

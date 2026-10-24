@@ -59,6 +59,7 @@ var amount: float = 0.0
 var heavy: bool = false
 var position: Vector2 = Vector2.ZERO
 var limb: MoveData.Limb = MoveData.Limb.NONE
+var finisher: Finisher.Kind = Finisher.Kind.NONE
 var from_front: bool = true
 var frame_advantage: int = 0
 var combo: int = 0
@@ -74,6 +75,7 @@ func reset() -> void:
 	heavy = false
 	position = Vector2.ZERO
 	limb = MoveData.Limb.NONE
+	finisher = Finisher.Kind.NONE
 	from_front = true
 	frame_advantage = 0
 	combo = 0

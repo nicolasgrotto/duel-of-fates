@@ -143,6 +143,7 @@ var blade_out: bool = false
 
 var finisher_limb: MoveData.Limb = MoveData.Limb.NONE
 var finisher_from_front: bool = true
+var finisher_kind: Finisher.Kind = Finisher.Kind.NONE
 
 
 func setup(fighter_index: int, data: CharacterData, config: CombatConfig) -> void:
@@ -282,6 +283,7 @@ func reset_for_round(start_x: float, start_facing: int) -> void:
 	ticks_since_damage = 0
 	finisher_limb = MoveData.Limb.NONE
 	finisher_from_front = true
+	finisher_kind = Finisher.Kind.NONE
 	buffered_direction = 0
 	chord_command = 0
 	chord_ticks = 0

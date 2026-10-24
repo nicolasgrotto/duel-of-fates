@@ -6,6 +6,7 @@
 [resource]
 script = ExtResource("1_script")
 id = &"repulse"
+finisher = 7
 name_key = "POWER_REPULSE"
 description_key = "POWER_REPULSE_TEXT"
 path = 0

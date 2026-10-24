@@ -6,6 +6,7 @@
 [resource]
 script = ExtResource("1_script")
 id = &"lightning"
+finisher = 6
 name_key = "POWER_LIGHTNING"
 description_key = "POWER_LIGHTNING_TEXT"
 path = 2

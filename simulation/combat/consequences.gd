@@ -33,6 +33,16 @@ static func try_wound(sim: MatchSimulation, attacker: FighterState, defender: Fi
 	event.limb = move.wound_limb
 
 
+static func finisher_for(sim: MatchSimulation, move: MoveData, power: PowerData, deciding: bool) -> Finisher.Kind:
+	if not sim.rules.finishers or not deciding:
+		return Finisher.Kind.NONE
+	if power != null:
+		return power.finisher
+	if move != null:
+		return move.cinematic_finisher
+	return Finisher.Kind.NONE
+
+
 static func finisher_limb(sim: MatchSimulation, move: MoveData, deciding: bool) -> MoveData.Limb:
 	if not sim.rules.finishers or move == null or move.is_aerial():
 		return MoveData.Limb.NONE

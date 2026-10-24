@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_script")
 id = &"plunge"
+cinematic_finisher = 3
 kind = 10
 startup = 0.12
 active = 0.36

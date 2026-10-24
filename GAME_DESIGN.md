@@ -308,6 +308,20 @@ Com o poder Foco ativo, um lutador **parado em guarda, sem nenhum comando**, esq
 - No K.O. que decide a partida (último round; em modos de um round, qualquer K.O.): **forte, forte de avanço e Corte ascendente sempre levam a cabeça** (golpe final legível, `ConsequenceConfig.head_on_deciding_heavy`); os demais golpes de lâmina têm **30%** de chance de a cabeça sair no lugar do membro.
 - Apresentação (não muda o resultado): pelas costas sai o membro de trás.
 - Golpe aéreo, lâmina arremessada, empurrão, poderes e dano periódico terminam num K.O. normal.
+- **Finalizações cinematográficas** (fase 8, decisão do autor): só no K.O. que decide a partida e com a opção Finalizações ligada, quando o golpe ou o poder que mata tem uma cinemática própria. Ela substitui o corte de membro. Nos rounds anteriores, o K.O. corta o membro como antes, e o lutador volta no round seguinte com a parte robótica (apresentação).
+
+| Fonte | Finalização | Quando |
+| --- | --- | --- |
+| Avanço com corte | corte na cintura passando: quem corta para atrás da vítima | o acerto do corte mata |
+| Corte de Fluxo | corte na cintura | a onda mata |
+| Investida descendente, Corte ascendente | corte vertical, as metades caem para os lados | o golpe mata |
+| Arremesso da lâmina | corte diagonal na parte de cima | a lâmina mata, na ida ou na volta |
+| Raio | eletrocutado (esqueleto aparece) e corpo carbonizado | um pulso do Raio mata; dano de outra fonte não conta |
+| Repulsão, Repulsão Suprema | explosão de brasa, o corpo é arremessado longe | a onda mata |
+| Puxão | puxado e cortado ao meio | o Puxão acerta com a vida do alvo em até 12 (`PowerData.execute_below`): a execução é garantida |
+| Estrangular | estalo de energia no pescoço e queda | o estrangulamento mata |
+
+  O K.O. com cinemática dura mais `ConsequenceConfig.cinematic_ko_time` (1,6 s). No Avanço com corte, quem corta é posto 24 u atrás da vítima no instante da morte (determinístico).
 - Sempre estilizado: sem sangue, corte cauterizado em brasa, cabeça sem rosto visível. A opção Finalizações desliga o desenho sem mudar nenhum resultado; o replay mostra o mesmo corte.
 
 ## 11. Atributos
