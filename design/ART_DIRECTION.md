@@ -51,7 +51,33 @@ Uma cor por personagem, espaçada no círculo cromático. **Sem moral**: nenhuma
 
 A cor vem do tier de quem lança: Tênue `#9cc4ff`, Firme `#5d8dff`, Profundo `#b26bff`, Ápice `#ff2b45`. Nunca da lâmina. O lado de um poder (na interface) usa Aurora `#5aa2ff` e Eclipse `#ff4458`.
 
-### Interface
+### Revisão de animação aprovada (próxima etapa)
+
+Decisões do autor para a revisão de combate e animação (ver ROADMAP, fase 7.5). Só apresentação, salvo onde GAME_DESIGN indica regra nova. Referência de sensação: duelos técnicos, velozes e acrobáticos, com coreografia de esgrima e artes marciais; cada família com o seu corpo e temperamento.
+
+**Postura e empunhadura por família** (a forma de segurar decide a silhueta):
+
+| Família | Guarda | Empunhadura | Swing |
+| --- | --- | --- | --- |
+| Guardião (defensivo) | compacta e firme, lâmina diagonal à frente do rosto, cotovelos perto do corpo | duas mãos, a de trás no pomo | curto e econômico, volta rápida à guarda, bloqueios sucessivos |
+| Esgrimista (técnico) | perfil estreito, braço da frente estendido, ponta para o rival | uma mão; a livre recuada atrás do corpo, na altura do ombro | estocadas e paradas curtas, punho mais que ombro |
+| Agressor (ofensivo) | tronco à frente, lâmina baixa e para trás ou alta atrás da cabeça | duas mãos ao carregar, uma mão nos giros | arcos longos com quadril e passo grande, follow-through largo |
+| Colosso (pesado) | base larga, lâmina alta sobre o ombro | duas mãos sempre | descendentes pesados, peso caindo na perna da frente |
+| Dançarina (acrobático) | base alta e leve, lâmina para trás | troca de mão nos giros | arcos com o corpo inteiro, giros e piruetas |
+| Vespa (duas lâminas) | uma lâmina alta à frente, a outra baixa e invertida atrás | uma lâmina em cada mão, com posição própria | as duas alternam: uma corta enquanto a outra guarda, nunca as duas paradas no mesmo ângulo |
+
+- Mão de trás presa ao cabo por IK nas empunhaduras de duas mãos; nas de uma mão, a mão livre tem pose própria (equilíbrio, palma aberta nos poderes).
+- **Cadeia ombro → cotovelo → punho**: o swing começa no ombro e no quadril, o cotovelo segue e o punho chega por último, girando a lâmina; a lâmina percorre o arco inteiro, sem pular de pose a pose.
+- **Tipos de corte**: cada passo da sequência de rápidos de cada família recebe um tipo (horizontal no tronco, descendente, ascendente diagonal, estocada, giro como fecho), sem repetir dentro da sequência. O forte é sempre o mais comprometido (descendente ou giro largo).
+- **Escalas de tempo** (referência a 60 FPS): golpe rápido 6–12 quadros, combo ou contra-ataque 12–24, acrobacia ou disputa 24–48. Sempre antecipação, impacto (hitstop) e recuperação, com silhueta clara em cada fase.
+- **Guarda direcional (só visual)**: a pose de bloqueio acompanha o arco do golpe que chega (alto, médio, baixo, estocada) e as faíscas nascem no ponto de contato real. A regra continua uma guarda só (defesa alta/baixa segue descartada no DESIGN.md).
+- **Salto de transposição**: ao passar por cima do oponente no pulo, cambalhota para a frente e aterrissagem já virado para ele.
+- **Recuperação acrobática (só visual)**: nas separações longas (perder a disputa, choque grande, Repulsão), as famílias ágeis (Dançarina, Vespa, Ceifador) caem com mortal para trás e pousam em guarda; as outras derrapam com a mão no chão. O tempo de punição não muda.
+- **Esquiva com giro**: rotação baixa e curta atravessando o oponente (o corpo achata como no Giro), a lâmina recolhida junto ao corpo; pouso virado.
+- **Pressão de lâminas**: como a disputa, mas mais baixa e móvel: as lâminas encostadas mudam de inclinação a cada pressão e os corpos andam meio passo. **Desengajamento**: rotação do punho que solta a lâmina por baixo e corta por outro ângulo, com rastro curto.
+- **Arremesso da lâmina com duas lâminas (Vespa)**: as duas saem com 0,06 s de intervalo, em arcos espelhados (uma um pouco acima, outra abaixo), cada uma girando no próprio sentido, e voltam cada uma para a sua mão; os braços acompanham as duas idas e voltas.
+
+## Interface
 
 Fundo `#05070d`, texto `#e8ecf5`, texto secundário `#8a94ab`, destaque `#9fb4d9`, perigo `#e5484d`. Cor saturada só para informação crítica.
 
@@ -131,13 +157,13 @@ Personagens com o mesmo jeito de lutar compartilham a base de animação.
 ### Técnicas
 
 - **Giro**: o corpo gira (frente → costas → frente) com a lâmina estendida quase na horizontal, passando pela frente, por trás e de volta.
-- **Avanço com corte**: avanço baixo com corte diagonal de baixo para cima; o Guardião corta de cima para baixo; o Ceifador gira o bastão.
+- **Avanço com corte** (revisão aprovada): **duas etapas**, como nos duelos de espadachim. 1) Arrancada: o corpo dispara rente e inclinado, a lâmina recolhida atrás do quadril, quase sem rastro, com imagens residuais. 2) Corte: no fim do avanço, um corte rápido e largo (diagonal de baixo para cima; o Guardião de cima para baixo; o Ceifador gira o bastão), com o rastro inteiro e uma pausa curta na pose final antes de voltar à guarda.
 - **Arremesso da lâmina**: lâmina recua atrás do corpo, soltura com passo e braço estendido; a mão vazia acompanha a volta.
 - **Estocada**: lâmina recolhida no peito, braço todo estendido, passo longo.
 - **Corte ascendente**: corpo abaixa com a lâmina atrás do quadril e sobe com ela até acima da cabeça.
 - **Rajada**: quatro idas e voltas rápidas alternando a altura.
-- **Varredura**: corpo baixo, joelho da frente dobrado, lâmina rente ao chão.
-- **Investida descendente**: no ar, joelhos encolhidos, lâmina para baixo e para a frente até o chão.
+- **Investida da Haste** (substitui a Varredura): haste recolhida na altura do quadril, passo longo e braço da frente esticado até a ponta; a mão de trás empurra o cabo.
+- **Investida descendente** (revisão aprovada): no alto do pulo, o corpo se encolhe e vira para baixo com a lâmina erguida (antecipação curta); depois desce numa **estocada para baixo** (ponta à frente do corpo, duas mãos no cabo) ou num **corte descendente** que termina batendo a lâmina no chão (ou no oponente, se ele estiver embaixo). No pouso: faíscas e poeira no ponto em que a lâmina toca o chão, joelho dobrado e pausa curta antes da recovery. Por família: Agressor e Ceifador com o corte descendente; Dançarina com a estocada após uma pirueta.
 - **Contraguarda (Guardião)**: desvio para cima com faíscas, meio passo atrás, estocada curta.
 - Na grade, o Giro é feito achatando o corpo na horizontal (frente → perfil fino → costas → frente) enquanto a lâmina encurta em escorço ao passar por trás; a mão livre abre a palma em poderes, empurrão e estrangulamento (peça `hand_open`).
 
@@ -154,7 +180,7 @@ Personagens com o mesmo jeito de lutar compartilham a base de animação.
 - **Perna**: fica a coxa; canela e pé saem girando.
 - **Cabeça**: o corpo cai sem a cabeça, com brasa no pescoço; a cabeça rola com capuz, máscara ou cabelo, sem rosto visível, e para no chão.
 - A peça sai para longe de quem cortou, gira, pousa e fica no chão até o round acabar. Pontas cortadas em brasa que esfria em ~1,2 s. **Sem sangue**.
-- A peça sai do lado certo: pela frente, o membro da frente; pelas costas, o de trás. A Varredura leva as duas canelas.
+- A peça sai do lado certo: pela frente, o membro da frente; pelas costas, o de trás.
 - **Queda pelo corte**: sem cabeça, o corpo cai de joelhos e depois tomba para a frente; sem perna, desaba rápido para trás; sem braço (ou sem finalização), cai para trás.
 - **Brasa**: no coto, uma tampa em brasa (núcleo amarelo-quente `#ffd27a`, borda laranja `#ff7a2a`) esfria até cicatriz escura `#3a1a10` em ~1,6 s, pinga faíscas no primeiro 0,7 s e solta fumaça por ~3 s. A peça voa com rastro de brasa, solta fumaça ao pousar, e a cabeça rola pelo chão.
 - **Ferimento** (braço/perna) durante o round: talho cauterizado diagonal sobre o membro (borda vermelho-escura `#5a1410`, núcleo em brasa pulsando devagar), brasas subindo de vez em quando e sombra leve no membro, até a Cura terminar ou o round acabar. Braço ferido: guarda mais baixa. Perna ferida: manca (passada curta e o corpo afunda quando o peso cai nela).

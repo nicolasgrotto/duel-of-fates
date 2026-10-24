@@ -157,6 +157,16 @@ Ataque rápido apertado enquanto o oponente está desequilibrado por um parry pe
 - Dash rápido para a direção segurada; sem direção, para trás. Custa ~20 de Vigor, dura ~0,28 s, percorre ~170 u, invulnerável nos primeiros ~0,18 s, vulnerável no fim.
 - O dash aéreo dura ~0,18 s e percorre ~190 u (valores iniciais).
 
+### Esquiva com giro
+
+Aprovada; implementação na revisão de combate (ROADMAP).
+
+- **Frente + esquiva** no chão com o oponente a até ~60 u (borda a borda): em vez do dash, o lutador gira o corpo, atravessa o oponente e troca de lado, pousando já virado para ele.
+- Mais arriscada que a esquiva comum: 28 de Vigor, duração 0,34 s, invulnerável só de 0,04 a 0,14 s, recovery final de 0,16 s vulnerável.
+- Sem espaço atrás do oponente (parede), vira a esquiva comum para a frente.
+- Longe do oponente, frente + esquiva continua sendo o dash comum.
+- Quem é atravessado pode virar normalmente no quadro seguinte; não há ataque garantido pelas costas. Um golpe que já estava no active continua acertando só pela frente.
+
 ### Esquiva de precisão
 
 - Baixo (separada da esquiva). No chão, **não custa Vigor**, recua muito pouco, fica invulnerável por apenas ~0,066 s e tem recovery de até 0,4 s.
@@ -171,6 +181,17 @@ Ataque rápido apertado enquanto o oponente está desequilibrado por um parry pe
 - **Forte contra forte** elegíveis iniciam a **disputa de lâminas**.
 - **Choque entre técnicas de lâmina**: as duas são interrompidas num choque grande, os dois recuam 420 u, ficam desequilibrados por 0,4 s e perdem 12 de Vigor.
 
+### Pressão de lâminas
+
+Aprovada; implementação na revisão de combate. Uma disputa curta que nasce da troca de rápidos, para o choque de rápidos virar um evento de vez em quando, nunca por sorte.
+
+- **Contador de contatos**: conta os contatos de lâmina seguidos entre os dois lutadores envolvendo rápidos: um choque rápido contra rápido ou um **parry de um rápido**. Zera depois de 0,6 s sem contato e com qualquer acerto, forte, técnica, esquiva, empurrão ou poder.
+- **Entrada**: no **3º contato seguido**, com os corpos a até 90 u, abre a pressão (estado `BLADE_LOCK`, variante curta). Divide a recarga de 4 s com a disputa.
+- **Parry no 3º contato**: quem aparou entra na pressão com **1 pressão de vantagem**. O parry continua premiando quem lê o golpe.
+- **Durante**: as mesmas regras da disputa (aperto do rápido = pressão, teto de 15 por segundo, opção "Segurar para disputar"), mas mais curta: vence quem abrir **3 de vantagem**, tempo máximo de 1,5 s.
+- **Vitória**: o perdedor leva 4 de dano, perde 20 de Vigor e fica `STAGGERED` por 0,3 s; os dois se separam 300 u. Empate: só separa.
+- Evento próprio (`blade_press`) para efeitos, som e câmera mais contidos que a disputa.
+
 ### Disputa de lâminas
 
 O momento mais físico do duelo: rostos próximos, lâminas cruzadas num X, tremor e som crescente.
@@ -184,6 +205,16 @@ O momento mais físico do duelo: rostos próximos, lâminas cruzadas num X, trem
 - **Acessibilidade**: a opção "Segurar para disputar" permite segurar o rápido; conta 6 pressões por segundo, abaixo do teto, para incluir quem não pode apertar repetidamente sem empatar com quem aperta.
 - A IA só começa a pressionar depois de um tempo de reação (Fácil 0,6 s, Normal 0,45 s, Difícil e chefe 0,3 s).
 
+### Desengajamento
+
+Aprovado; implementação na revisão de combate. A saída técnica da disputa e da pressão, contra quem só aperta rápido.
+
+- **Ataque forte** durante a disputa ou a pressão, depois de 0,5 s dentro dela: o lutador gira o punho, solta a própria lâmina e corta por outro ângulo. Uma tentativa por disputa.
+- Custa 20 de Vigor. A disputa termina sem vencedor; os corpos se afastam só 60 u.
+- O corte: startup 0,10 s, active 0,10 s, recovery 0,30 s, 11 de dano, conta como rápido para guarda e parry, não encadeia sequência.
+- O rival fica preso 0,08 s na soltura e depois está livre: pode bloquear, **aparar** (tocar guarda na hora) ou esquivar. Aparado, o desengajamento segue a regra do parry de um rápido; errado, a recovery é punível.
+- A IA usa conforme a dificuldade (Fácil quase nunca, Difícil quando está perdendo a contagem).
+
 ### Habilidades e traços: valores iniciais
 
 Os personagens em [content/CHARACTERS.md](content/CHARACTERS.md) não fixavam números; estes são os valores iniciais da fase 4 (ajustados pela matriz de equilíbrio):
@@ -195,7 +226,7 @@ Os personagens em [content/CHARACTERS.md](content/CHARACTERS.md) não fixavam n�
 | Marreta (Bastião) | startup 0,55 s, 32 de dano, 30 de Vigor, armadura contra 2 golpes recebendo metade do dano, conta como forte |
 | Zumbido (Vespa) | 240 u em 0,26 s, invulnerável por 0,2 s, atravessa, 16 de Vigor |
 | Postura de Espera (Espelho) | postura 0,5 s, recovery 0,5 s, 20 de Vigor; efeito de parry perfeito e contra-ataque |
-| Varredura (Haste, Soberano) | startup 0,42 s, alcance 190 u rente ao chão, 20 de dano, conta como forte, finalização de perna |
+| Investida da Haste (Haste, Soberano) | substitui a Varredura (removida): lunge longo com a ponta, startup 0,30 s, avanço de 160 u, alcance 60 u além do forte, 18 de dano, conta como forte, o Ponto doce vale; finalização de perna |
 | Brasa Viva (Brasa) | postura 0,4 s, recovery 0,45 s, 14 de Vigor; resposta com startup 0,08 s e 13 de dano (o bônus de punição se soma) |
 | Forja (Forja) | startup 0,28 s; segurar prende o golpe; nível a cada 0,3 s até 3; +35% de dano por nível; nível 3 quebra a guarda |
 | Voo da Garça (Garça) | salto de 300 u/s para a frente e 1050 u/s para cima, 14 de Vigor; permite os aéreos |
@@ -263,9 +294,9 @@ Com o poder Foco ativo, um lutador **parado em guarda, sem nenhum comando**, esq
 ## 10. Finalizações
 
 - Um K.O. por **golpe de lâmina corpo a corpo** separa um membro do derrotado.
-- O golpe decide o membro: **perna** no 3º rápido, forte de avanço, Giro, Avanço com corte e Varredura; **braço** nos demais (inclusive na disputa). A orientação decide o lado (pela frente, o membro da frente; pelas costas, o de trás).
+- O golpe decide o membro: **perna** no 3º rápido, forte de avanço, Giro, Avanço com corte e Investida da Haste; **braço** nos demais (inclusive na disputa). A orientação decide o lado (pela frente, o membro da frente; pelas costas, o de trás).
 - No K.O. que decide a partida (último round; em modos de um round, qualquer K.O.): **forte, forte de avanço, Giro e Corte ascendente sempre levam a cabeça** (golpe final legível, `ConsequenceConfig.head_on_deciding_heavy`); os demais golpes de lâmina têm **30%** de chance de a cabeça sair no lugar do membro.
-- Apresentação (não muda o resultado): a Varredura leva as duas pernas; pelas costas sai o membro de trás.
+- Apresentação (não muda o resultado): pelas costas sai o membro de trás.
 - Golpe aéreo, lâmina arremessada, empurrão, poderes e dano periódico terminam num K.O. normal.
 - Sempre estilizado: sem sangue, corte cauterizado em brasa, cabeça sem rosto visível. A opção Finalizações desliga o desenho sem mudar nenhum resultado; o replay mostra o mesmo corte.
 

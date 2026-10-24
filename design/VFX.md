@@ -80,6 +80,12 @@ Sem câmera lenta, sem dessaturação, sem tela sobreposta. A tensão vem da pos
 Sempre na cor do tier de quem lança. Tiers mais altos mudam a **forma** (mais feixes, ondas maiores, mais pedras), nunca o alcance real.
 
 - **Preparação de qualquer poder**: brilho na mão da frente que cresce até o instante ativo. É o aviso para o oponente.
+- **Revisão aprovada dos poderes** (próxima etapa, ROADMAP fase 7.5):
+  - **Repulsão**: a pose atual está estranha. Passa a ser palma aberta empurrando com o corpo (passo atrás, braço estendido de uma vez, recuo do ombro), com as ondas saindo da palma.
+  - **Puxão**: hoje aparece uma bola atrás do oponente e nada em quem lança. Passa a ser a mão do lançador em garra puxando para trás, brilho na mão e um fio de energia da mão até o alvo que se recolhe junto com ele; no alvo, só um contorno curto. Sem esfera atrás do alvo.
+  - **Raio, tiers 3 e 4**: os feixes estão juntos demais e parecem um feixe grosso. Abrir em leque, com origem nos dedos (desvio de alguns pixels), ângulos distintos (mínimo ~6 px de separação no meio do caminho), fases de tremor diferentes e chegada em pontos diferentes do corpo.
+  - **Telecinese em Massa**: a cinemática passa rápido demais, parece acelerada. Alvo de ~1,5 s (subida ~0,45 s, meteoro rachando ~0,6 s, descida ~0,45 s). Para caber sem mudar o resultado, o poder ganha um congelamento determinístico da simulação no evento ativo (como um hitstop longo, em dado do poder), e a cinemática roda dentro dele.
+  - **Corte de Fluxo**: o swing precisa ser grande: preparação com a lâmina bem atrás e acima da cabeça e arco inteiro até a lâmina bater no chão, de onde nasce o arco de energia. No tier 4, os cortes seguidos ficam espaçados (no mínimo 0,35 s entre eles, em dado), cada um com o arco completo.
 - **Repulsão**: três ondas em forma de chevron ">" saem da mão em sequência e viajam até o alcance real, como cunhas de ar comprimido, com poeira subindo do chão.
 - **Repulsão Suprema**: as ondas da Repulsão para os dois lados, com anel completo e poeira; como fuga, só um estouro curto e claro.
 - **Puxão**: anel que nasce no alcance e se fecha na mão.

@@ -53,16 +53,16 @@ Direções relativas à frente do lutador. Técnicas usam Direção + Habilidade
 | Vespa | Repulsão | Arremesso | Barreira | — | Rajada | Arremesso da lâmina | — |
 | Espelho | Repulsão | Arremesso | Barreira | — | Estocada | Giro | — |
 | Haste | Raio | Puxão | Arremesso | — | Estocada | Giro | — |
-| Brasa | Raio | Puxão | Congelar | — | Avanço com corte | Varredura | — |
+| Brasa | Raio | Puxão | Congelar | — | Avanço com corte | Corte ascendente | — |
 | Forja | Raio | Puxão | Arremesso | — | Arremesso da lâmina | Corte ascendente | — |
 | Garça | Repulsão | Arremesso | Absorção | — | — | Giro | Investida descendente |
 | Ceifador | Repulsão | Puxão | Ira | — | Avanço com corte | Arremesso da lâmina | Investida descendente |
-| Eco | Raio | Puxão | Arremesso | — | Rajada | Varredura | — |
+| Eco | Raio | Puxão | Arremesso | — | Rajada | Giro | — |
 | Sombra Desperta | Raio | Puxão | Estrangular | — | Avanço com corte | Giro | Investida descendente |
 | Soberano | Raio | Tempestade | Estrangular | — | Corte ascendente | Giro | — |
 | Ancião | Repulsão | Cura | Barreira | — | Estocada | Giro | — |
 | Predestinado (Aurora) | Repulsão | Arremesso | Barreira | Telecinese em Massa | Estocada | — | — |
-| Predestinado (Eclipse) | Raio | Puxão | Estrangular | Arsenal Telecinético | Varredura | — | — |
+| Predestinado (Eclipse) | Raio | Puxão | Estrangular | Arsenal Telecinético | Avanço com corte | — | — |
 
 Na seleção de Duelar, 2 Jogadores e Treino, o jogador pode trocar para um conjunto **Personalizado**: os mesmos espaços, preenchidos com poderes do Fluxo comum e do seu caminho, sem repetir e respeitando o nível mínimo de cada poder.
 
@@ -155,11 +155,11 @@ O desafio vale em qualquer duelo vencido contra a IA (Duelar ou Arcade, qualquer
 **A distância.** Uma lâmina presa a uma haste longa como uma lança: perigosa na ponta, fraca colada.
 
 - **Traço — Ponto doce**: acerto com a ponta (último terço do alcance) dá +50% de dano; de muito perto (primeiro quarto), 60%.
-- **Habilidade — Varredura**: golpe de alcance enorme e startup lento.
+- **Habilidade — Investida da Haste**: lunge longo com a ponta (substitui a Varredura, removida do jogo).
 - **Sequência**: 2 rápidos (estocada; ascendente).
 - **IA**: mantém distância para acertar com a ponta.
 - **Visual**: túnica cinza-violeta (`#3b3348`), corpo `#1c1924`; sem capuz; cabelo curto; cinto na cor do acabamento. Ereta, longe do oponente. **Cabo de mais de um metro**, como uma lança, com faixas escuras ao longo. Lâmina violeta.
-- **Família — Esgrimista**: como o Espelho, com a estocada da Haste virando um lunge longo e a Varredura baixa e longa.
+- **Família — Esgrimista**: como o Espelho, com a estocada da Haste virando um lunge longo e a Investida da Haste longa e reta.
 
 ## Brasa / Ember
 
@@ -236,7 +236,7 @@ Os três têm **potencial**: o teto de todos os atributos sobe (+1, +2, +3), e a
 
 **O imperador sombrio.** Pressiona com Raio e Estrangular, cobre a aproximação com a Tempestade, mas o corpo é lento.
 
-- Base de jogo da Haste: ponto doce e Varredura; 2 rápidos.
+- Base de jogo da Haste: ponto doce e Investida da Haste; 2 rápidos.
 - Potencial +2 (até 9).
 - **Visual**: manto preto até o chão (`#211c27`, um tom acima do preto puro para a silhueta ler), corpo `#131016`; capuz fundo com o rosto na sombra, só os olhos do Eclipse visíveis; sem ombreiras; tronco curvado para a frente, ombros estreitos; gola alta e mangas largas. Lâmina carmesim.
 - **Trajes**: Original; **Legado** (final secreto): capa `#34394a`, capa longa e máscara.
@@ -258,7 +258,7 @@ Os três têm **potencial**: o teto de todos os atributos sobe (+1, +2, +3), e a
 
 - Base de jogo do Eco: finta e Passo-reflexo. 2 rápidos (de cima; reverso de baixo para cima). Movimento da família Guardião.
 - Potencial +3 (até 10). Lâmina e Vigor no teto.
-- **Duas variantes**, escolhidas na seleção: **Aurora** (Repulsão, Arremesso, Barreira, quarto poder Telecinese em Massa; técnica Estocada) e **Eclipse** (Raio, Puxão, Estrangular, quarto poder Arsenal Telecinético; técnica Varredura; cabo com pomo curvado e olhos do Eclipse). O **quarto poder** usa Poder + Habilidade juntos.
+- **Duas variantes**, escolhidas na seleção: **Aurora** (Repulsão, Arremesso, Barreira, quarto poder Telecinese em Massa; técnica Estocada) e **Eclipse** (Raio, Puxão, Estrangular, quarto poder Arsenal Telecinético; técnica Avanço com corte; cabo com pomo curvado e olhos do Eclipse). O **quarto poder** usa Poder + Habilidade juntos.
 - **Visual base**: túnica clara cor de areia (`#c9c3b5`), corpo `#2a2f3a`, acabamento azul (`#6fb2ff`); sem capuz; cinto com fivela e botas escuras. Lâmina azul-aurora.
 - **Trajes**:
   - **Ocaso** (final secreto): presença austera de quem já passou pelo fim; capuz levantado, manto longo, túnica em camadas, luvas de bronze escurecido. Manto `#1c1a20`, corpo `#26222b`, acabamento bronze fosco `#7a6650`.

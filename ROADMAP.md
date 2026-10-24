@@ -4,8 +4,8 @@ Ordem de construção do jogo. Cada fase termina jogável e testada. Marque `[x]
 
 ## Ponto de continuidade
 
-- **Fase atual**: fase 8 (acabamento) na branch `pixel-art`. Fases 0 a 7 e as duas etapas da migração para pixel art concluídas; a História tem as telas, os encontros e os quatro finais ligados (regras testadas; falta uma passada completa jogando).
-- **Próximo passo**: fase 8, começando pela passada de localização (revisar o EN da História) e pela trilha e ambiências por arena. Na História, falta o autor jogar a campanha inteira e ajustar a dificuldade dos encontros (`ai_offset` em STORY.md). Da migração, falta a revisão do autor jogando e medir a GPU numa máquina de referência com o editor fechado (a CPU já está medida). A branch `pixel-art` segue até o fim do projeto; só então o autor escolhe entre ela e a `phase-5-hd`.
+- **Fase atual**: fase 7.5 (revisão de combate e animação), depois a fase 8 (acabamento), na branch `pixel-art`. Fases 0 a 7 e as duas etapas da migração para pixel art concluídas; a História tem as telas, os encontros e os quatro finais ligados (regras testadas; falta uma passada completa jogando).
+- **Próximo passo**: fase 7.5, na ordem da lista (correções, animação, poderes, regras novas). Depois a fase 8: passada de localização (revisar o EN da História) e trilha e ambiências por arena. Na História, falta o autor jogar a campanha inteira e ajustar a dificuldade dos encontros (`ai_offset` em STORY.md). Da migração, falta a revisão do autor jogando e medir a GPU numa máquina de referência com o editor fechado (a CPU já está medida). A branch `pixel-art` segue até o fim do projeto; só então o autor escolhe entre ela e a `phase-5-hd`.
 - **Pendências conhecidas**:
   - Equilíbrio com Poderes: no Normal, Guardião 63% contra Sombra 37% (100 duelos), rounds de ~10,5 s; o Raio responde por boa parte dos acertos. Rodar a matriz com Poderes e ajustar custos, `power_chance` da IA e o Raio.
   - A IA não usa o Truque Mental de forma tática (lança quando está ao alcance) e não guarda medidor para o quarto poder.
@@ -118,6 +118,35 @@ Segunda etapa da migração (pedido do autor depois da prova de conceito; a bran
 - [x] Encontros, rotas, finais, diálogos
 - [x] Galeria da História
 - [x] Secretos liberados pela campanha
+
+## Fase 7.5 — Revisão de combate e animação
+
+Aprovada pelo autor. Decisões em GAME_DESIGN (Esquiva com giro, Pressão de lâminas, Desengajamento, Investida da Haste), ART_DIRECTION ("Revisão de animação aprovada" e Técnicas) e VFX ("Revisão aprovada dos poderes"). Fazer na ordem, um commit por item, testando cada um.
+
+Correções:
+- [ ] Galeria de poderes: Dreno, Congelar, Truque Mental e Estrangular não acertam o alvo (investigar a posição do alvo no `GalleryPanel` e as condições de acerto desses poderes)
+- [ ] Remover a Varredura (técnica da Brasa, do Eco e do Predestinado Eclipse; habilidade da Haste e do Soberano) e pôr os substitutos de CHARACTERS.md (Corte ascendente, Giro, Avanço com corte, Investida da Haste), com IA, galeria, Tutorial e testes
+
+Animação (apresentação):
+- [ ] Postura, empunhadura e swing por família (tabela da ART_DIRECTION), incluindo as duas lâminas da Vespa
+- [ ] Tipos de corte por passo da sequência de rápidos de cada família
+- [ ] Guarda direcional visual e faíscas no ponto de contato
+- [ ] Avanço com corte em duas etapas
+- [ ] Investida descendente (estocada para baixo ou corte que bate no chão)
+- [ ] Arremesso da lâmina com duas lâminas (Vespa)
+- [ ] Salto de transposição e recuperação acrobática
+
+Poderes (apresentação):
+- [ ] Repulsão (pose da palma)
+- [ ] Puxão (efeito em quem lança, sem bola atrás do alvo)
+- [ ] Raio tiers 3 e 4 em leque
+- [ ] Corte de Fluxo com swing grande e tier 4 espaçado
+- [ ] Telecinese em Massa: cinemática de ~1,5 s com congelamento determinístico
+
+Regras novas (simulação, testes, IA, Tutorial e Treinos guiados, overlay F3):
+- [ ] Esquiva com giro
+- [ ] Pressão de lâminas (3º contato seguido entre rápidos; o parry conta e dá 1 de vantagem)
+- [ ] Desengajamento
 
 ## Fase 8 — Acabamento
 
