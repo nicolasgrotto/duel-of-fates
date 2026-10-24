@@ -12,7 +12,6 @@ extends Resource
 
 @export_group("Power gallery")
 @export var gallery_pause: float = 1.0
-@export var gallery_technique_time: float = 2.0
-@export var gallery_max_time: float = 8.0
+@export var gallery_max_time: float = 10.0
 @export var gallery_target_level: int = 5
 @export_range(0.1, 1.0) var gallery_reach_ratio: float = 0.7

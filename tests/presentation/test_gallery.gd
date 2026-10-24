@@ -74,3 +74,24 @@ func test_every_technique_reaches_the_standing_target() -> void:
 			fixture.step(1)
 		assert_gt(fixture.count_events(CombatEvent.Type.HIT), 0, "%s hits the gallery target" % technique.id)
 	panel.free()
+
+
+func test_mass_telekinesis_demonstration_lasts_until_the_rocks_land() -> void:
+	panel._entry_index = panel._entries.find(CATALOG.find(&"mass_telekinesis"))
+	panel._stage(fixture.sim)
+	fixture.clear_log()
+	var started: bool = false
+	var finished_at: int = -1
+	for tick in Ticks.from_seconds(TRAINING.gallery_max_time):
+		panel.caster.produce(fixture.sim, 0, fixture.intents[0])
+		panel.target.produce(fixture.sim, 1, fixture.intents[1])
+		fixture.step(1)
+		var busy: bool = panel.demonstrating(fixture.sim)
+		started = started or busy
+		if started and not busy:
+			finished_at = tick
+			break
+	assert_true(started)
+	assert_gt(finished_at, 0, "the demonstration ends on its own")
+	assert_gt(fixture.count_events(CombatEvent.Type.HAZARD_TRIGGERED), 0, "the rocks land before the gallery restages")
+	panel.free()

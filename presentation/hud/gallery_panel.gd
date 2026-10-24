@@ -39,6 +39,7 @@ var _entry_index: int = 0
 var _tier: int = 2
 var _repeat: bool = true
 var _wait: int = 0
+var _pause: int = 0
 var _cast_requested: bool = true
 var _name: Label
 var _description: Label
@@ -154,6 +155,7 @@ func _select(index: int) -> void:
 func _restart() -> void:
 	_cast_requested = true
 	_wait = 0
+	_pause = 0
 
 
 func on_ticked() -> void:
@@ -161,9 +163,30 @@ func on_ticked() -> void:
 	if sim.phase != MatchSimulation.Phase.FIGHT:
 		return
 	_wait -= 1
-	if _wait <= 0 and (_repeat or _cast_requested):
+	if _wait > 0 and demonstrating(sim):
+		_pause = Ticks.from_seconds(config.gallery_pause)
+	else:
+		_pause -= 1
+	if (_cast_requested or _pause <= 0) and (_repeat or _cast_requested):
 		_stage(sim)
 	_refresh(sim)
+
+
+func demonstrating(sim: MatchSimulation) -> bool:
+	if sim.cinematic_ticks > 0:
+		return true
+	var fighter: FighterState = sim.fighters[caster_index]
+	if fighter.is_casting() or fighter.is_attacking() or fighter.blade_out or fighter.rain_ticks > 0:
+		return true
+	if sim.fighters[1 - caster_index].state == FighterState.State.HELD:
+		return true
+	for hazard in sim.hazards:
+		if hazard.active:
+			return true
+	for projectile in sim.projectiles:
+		if projectile.active and projectile.kind != Projectile.Kind.ARSENAL:
+			return true
+	return false
 
 
 func _stage(sim: MatchSimulation) -> void:
@@ -188,7 +211,8 @@ func _stage(sim: MatchSimulation) -> void:
 	var target_powers: Array[PowerData] = [CATALOG.find(TARGET_POWERS.get(target.behavior, &"")), null, null]
 	other.equip_powers(target_powers)
 	caster.perform(power, technique)
-	_wait = _duration(power)
+	_wait = Ticks.from_seconds(config.gallery_max_time)
+	_pause = Ticks.from_seconds(config.gallery_pause)
 
 
 func _close_in(sim: MatchSimulation, reach: float) -> void:
@@ -200,13 +224,6 @@ func _close_in(sim: MatchSimulation, reach: float) -> void:
 	var second: FighterState = sim.fighters[1]
 	first.x = -half
 	second.x = half
-
-
-func _duration(power: PowerData) -> int:
-	if power == null:
-		return Ticks.from_seconds(config.gallery_technique_time)
-	var seconds: float = power.startup + maxf(power.max_channel, power.duration) + power.recovery + config.gallery_pause
-	return Ticks.from_seconds(minf(seconds, config.gallery_max_time))
 
 
 func _refresh(sim: MatchSimulation) -> void:
