@@ -209,6 +209,12 @@ func _process(delta: float) -> void:
 		afterimages.capture(rig, delta)
 
 
+func blade_segment() -> PackedVector2Array:
+	if _geometry.blade_length <= 0.0 or blade.length_ratio <= 0.0:
+		return PackedVector2Array()
+	return PackedVector2Array([_geometry.blade_base, _geometry.tip()])
+
+
 static func _turn_factor(turn: float) -> float:
 	if turn == 0.0:
 		return 1.0

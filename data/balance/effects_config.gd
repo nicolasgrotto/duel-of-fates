@@ -26,6 +26,7 @@ extends Resource
 @export var spark_drag: float = 2.5
 @export var spark_length: float = 0.022
 @export var ring_duration: float = 0.25
+@export var blade_contact_snap: float = 40.0
 
 @export_group("Framing")
 @export var fighter_screen_ratio: float = 0.27

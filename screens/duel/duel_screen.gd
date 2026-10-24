@@ -196,6 +196,7 @@ func _bind_presentation(simulation: MatchSimulation) -> void:
 			_world.add_child(reflection)
 			_reflections.append(reflection)
 	_effects.sim = simulation
+	_effects.views = _views
 	_powers.sim = simulation
 	_debris.sim = simulation
 	_debris.views = _views

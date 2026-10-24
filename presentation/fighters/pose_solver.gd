@@ -4,6 +4,14 @@ extends RefCounted
 const HIP_HEIGHT_FALLBACK: float = 72.0
 const BLOCK_GRIP: Vector2 = Vector2(18.0, -36.0)
 const BLOCK_ANGLE: float = -84.0
+const BLOCK_HIGH_GRIP: Vector2 = Vector2(14.0, -54.0)
+const BLOCK_HIGH_ANGLE: float = -14.0
+const BLOCK_LOW_GRIP: Vector2 = Vector2(18.0, -16.0)
+const BLOCK_LOW_ANGLE: float = 74.0
+const BLOCK_THRUST_GRIP: Vector2 = Vector2(22.0, -32.0)
+const BLOCK_THRUST_ANGLE: float = -46.0
+const HIGH_WINDUP_LIMIT: float = -100.0
+const LOW_WINDUP_LIMIT: float = 45.0
 const LOCK_GRIP: Vector2 = Vector2(22.0, -44.0)
 const LOCK_ANGLE: float = -62.0
 const HIT_GRIP: Vector2 = Vector2(6.0, -20.0)
@@ -118,6 +126,7 @@ var _lock_presses: int = 0
 var _lock_pulse: float = 0.0
 var clash_left: float = 0.0
 var rebounding: bool = false
+var block_line: MoveData.Cut = MoveData.Cut.HORIZONTAL
 
 
 func setup(data: CharacterData, art: FighterArt) -> void:
@@ -179,9 +188,8 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 			lean += extra.y
 			off_free = fighter.move != null and fighter.move.kind == MoveData.Kind.SHOVE
 		FighterState.State.BLOCKING:
-			pose.grip = BLOCK_GRIP
-			pose.blade_angle = BLOCK_ANGLE
-			crouch += 4.0
+			_block(opponent, pose)
+			crouch += 4.0 if block_line != MoveData.Cut.RISING else 8.0
 		FighterState.State.DODGING:
 			var dodge: Vector2 = _dodge(fighter, pose)
 			crouch += dodge.x
@@ -271,6 +279,36 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 		pose.off_hand += pose.pelvis
 	if family.grip == MotionFamily.Grip.DUAL:
 		_place_second_blade(fighter, pose, off_free)
+
+
+func _block(opponent: FighterState, pose: RigPose) -> void:
+	if opponent.is_attacking() and opponent.move != null and opponent.move.is_blade():
+		block_line = threat_line(opponent.move)
+	match block_line:
+		MoveData.Cut.DESCENDING:
+			pose.grip = BLOCK_HIGH_GRIP
+			pose.blade_angle = BLOCK_HIGH_ANGLE
+		MoveData.Cut.RISING:
+			pose.grip = BLOCK_LOW_GRIP
+			pose.blade_angle = BLOCK_LOW_ANGLE
+		MoveData.Cut.THRUST:
+			pose.grip = BLOCK_THRUST_GRIP
+			pose.blade_angle = BLOCK_THRUST_ANGLE
+		_:
+			pose.grip = BLOCK_GRIP
+			pose.blade_angle = BLOCK_ANGLE
+
+
+static func threat_line(move: MoveData) -> MoveData.Cut:
+	if move.cut != MoveData.Cut.ARC:
+		return MoveData.Cut.HORIZONTAL if move.cut == MoveData.Cut.SPIN else move.cut
+	if move.technique_style == MoveData.TechniqueStyle.THRUST or move.technique_style == MoveData.TechniqueStyle.LUNGE or move.technique_style == MoveData.TechniqueStyle.FLURRY:
+		return MoveData.Cut.THRUST
+	if move.blade_angle_windup <= HIGH_WINDUP_LIMIT:
+		return MoveData.Cut.DESCENDING
+	if move.blade_angle_windup >= LOW_WINDUP_LIMIT:
+		return MoveData.Cut.RISING
+	return MoveData.Cut.HORIZONTAL
 
 
 func _walk(fighter: FighterState, pose: RigPose) -> void:

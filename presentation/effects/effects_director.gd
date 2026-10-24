@@ -15,6 +15,7 @@ var config: EffectsConfig
 var sim: MatchSimulation
 var reduced: bool = false
 var blade_colors: Array[Color] = [Color.WHITE, Color.WHITE]
+var views: Array[FighterView] = []
 
 var _positions: PackedVector2Array = []
 var _velocities: PackedVector2Array = []
@@ -53,7 +54,7 @@ func on_event(event: CombatEvent) -> void:
 	var recipe: EffectRecipe = _recipe_for(event)
 	if recipe == null:
 		return
-	var contact: Vector2 = Vector2(event.position.x, -event.position.y)
+	var contact: Vector2 = _blade_contact(event, Vector2(event.position.x, -event.position.y))
 	var direction: float = _direction(event)
 	_burst(recipe, contact, direction, event)
 	if recipe.ring_radius > 0.0:
@@ -103,6 +104,24 @@ func _recipe_for(event: CombatEvent) -> EffectRecipe:
 		CombatEvent.Type.PROJECTILE_REFLECTED:
 			return config.parry
 	return null
+
+
+func _blade_contact(event: CombatEvent, fallback: Vector2) -> Vector2:
+	match event.type:
+		CombatEvent.Type.BLOCK, CombatEvent.Type.PARRY, CombatEvent.Type.PERFECT_PARRY, CombatEvent.Type.CLASH:
+			pass
+		_:
+			return fallback
+	if views.size() < 2 or event.source < 0 or event.target < 0:
+		return fallback
+	var attacker: PackedVector2Array = views[event.source].blade_segment()
+	var defender: PackedVector2Array = views[event.target].blade_segment()
+	if attacker.is_empty() or defender.is_empty():
+		return fallback
+	var closest: PackedVector2Array = Geometry2D.get_closest_points_between_segments(attacker[0], attacker[1], defender[0], defender[1])
+	if closest[0].distance_to(closest[1]) > config.blade_contact_snap:
+		return fallback
+	return (closest[0] + closest[1]) * 0.5
 
 
 func _direction(event: CombatEvent) -> float:
