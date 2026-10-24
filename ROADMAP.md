@@ -165,6 +165,7 @@ Retorno do autor (plano em sete frentes; bloco A sem tocar no trabalho do Codex,
 - [x] Próteses robóticas nos membros perdidos em rounds anteriores
 - [x] Finalizações cinematográficas: apresentação (corte na cintura, vertical, diagonal, Puxão com corte, Raio com esqueleto e corpo carbonizado, explosão de brasa da Repulsão, Estrangular)
 - [x] Personalização do protagonista da História (cabelos, barbas, cosméticos, armadura de placas clara) e trajes do Predestinado mais próximos do arquétipo
+- [x] Arremesso da lâmina: no K.O. a lâmina terminava o voo parada girando; agora os projéteis seguem voando sem colidir durante o K.O. (`ProjectileSystem.drift`) e a lâmina volta à mão
 - [x] Galeria: botão de Finalização (`F`) para ver a finalização cinematográfica dos poderes e técnicas que a têm
 
 - [x] Localização completa PT-BR e EN (todas as chaves nos dois idiomas, garantido por `test_translations`; passada de revisão do inglês: nenhum texto em português na coluna EN, falas da História polidas em STORY.md e no CSV)

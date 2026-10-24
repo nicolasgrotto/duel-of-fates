@@ -132,6 +132,8 @@ func step(first_intent: Intent, second_intent: Intent) -> void:
 		BladeLockResolver.step(self)
 		BladePress.observe(self)
 		_check_round_end()
+	elif phase == Phase.KO:
+		ProjectileSystem.drift(self)
 	if lock_cooldown_ticks > 0:
 		lock_cooldown_ticks -= 1
 

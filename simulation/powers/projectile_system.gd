@@ -16,6 +16,12 @@ static func step(sim: MatchSimulation) -> void:
 			_collide(sim, projectile, owner, target)
 
 
+static func drift(sim: MatchSimulation) -> void:
+	for projectile in sim.projectiles:
+		if projectile.active:
+			_move(sim, projectile, sim.fighters[projectile.owner])
+
+
 static func _move(sim: MatchSimulation, projectile: Projectile, owner: FighterState) -> void:
 	var step: float = projectile.vx * Ticks.DELTA
 	if projectile.kind == Projectile.Kind.BLADE and projectile.returning:
