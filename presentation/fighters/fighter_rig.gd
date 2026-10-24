@@ -57,14 +57,8 @@ func build(data: CharacterData, look: CostumeData) -> void:
 	art = data.art
 	costume = look
 	visible_parts = costume.parts_for(art)
-	shader_material = ShaderMaterial.new()
-	shader_material.shader = MATERIAL_SHADER
-	shader_material.set_shader_parameter(&"palette", costume.colors)
-	shader_material.set_shader_parameter(&"charred_color", PALETTE.charred_body)
-	shader_material.set_shader_parameter(&"xray_color", PALETTE.xray_body)
-	prosthetic_material = shader_material.duplicate() as ShaderMaterial
-	prosthetic_material.set_shader_parameter(&"prosthetic", true)
-	prosthetic_material.set_shader_parameter(&"prosthetic_color", PALETTE.prosthetic_metal)
+	shader_material = _body_material(false)
+	prosthetic_material = _body_material(true)
 	scale = Vector2.ONE * art.dim("scale")
 	z_index = BODY_DEPTH
 	_skeleton = Skeleton2D.new()
@@ -260,6 +254,17 @@ func set_blade_out(out: bool) -> void:
 
 func set_flash(amount: float) -> void:
 	_set_parameter(&"flash", amount)
+
+
+func _body_material(prosthetic: bool) -> ShaderMaterial:
+	var body: ShaderMaterial = ShaderMaterial.new()
+	body.shader = MATERIAL_SHADER
+	body.set_shader_parameter(&"palette", costume.colors)
+	body.set_shader_parameter(&"charred_color", PALETTE.charred_body)
+	body.set_shader_parameter(&"xray_color", PALETTE.xray_body)
+	body.set_shader_parameter(&"prosthetic", prosthetic)
+	body.set_shader_parameter(&"prosthetic_color", PALETTE.prosthetic_metal)
+	return body
 
 
 func set_clip(enabled: bool, point: Vector2 = Vector2.ZERO, normal: Vector2 = Vector2.DOWN) -> void:
