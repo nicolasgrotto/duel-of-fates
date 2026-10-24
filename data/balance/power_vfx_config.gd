@@ -28,6 +28,12 @@ extends Resource
 @export var fracture_dust: int = 3
 @export var shove_dust: int = 3
 
+@export_group("Lightning")
+@export var lightning_finger_gap: float = 4.0
+@export var lightning_target_gap: float = 26.0
+@export var lightning_fan_bow: float = 14.0
+@export var lightning_phase_step: float = 0.017
+
 @export_group("Flow cleave")
 @export var cleave_height: float = 170.0
 @export var cleave_base_width: float = 26.0

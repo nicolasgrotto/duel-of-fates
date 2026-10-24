@@ -32,6 +32,7 @@ var sky: StormSky
 var _sky_flash: float = 0.0
 var _meteor_seen: PackedFloat32Array = PackedFloat32Array([-1.0, -1.0])
 var _cleave_points: PackedVector2Array = []
+var _beam_rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
 var _kinds: PackedInt32Array = []
 var _positions: PackedVector2Array = []
@@ -277,10 +278,13 @@ func _draw_channel(fighter: FighterState, view: FighterView, color: Color) -> vo
 		PowerData.Kind.LIGHTNING:
 			if PowerEffects.in_front(sim, fighter, target, fighter.power.reach):
 				var beams: int = int(fighter.power.tier_value(fighter.flow_tier))
-				for i in beams:
-					_draw_beam(hand, views[target.index].chest_position(), color, _beam_seed * 7 + i, 2.5)
-				if fighter.flow_tier == 1:
-					_draw_beam(hand, views[target.index].body_center(), color, _beam_seed * 5 + 3, 1.5)
+				var chest: Vector2 = views[target.index].chest_position()
+				if beams <= 1:
+					_draw_beam(hand, chest, color, _beam_seed * 7, 2.5)
+					if fighter.flow_tier == 1:
+						_draw_beam(hand, views[target.index].body_center(), color, _beam_seed * 5 + 3, 1.5)
+				else:
+					_draw_lightning_fan(hand, chest, beams, color)
 		PowerData.Kind.DRAIN:
 			var from: Vector2 = views[target.index].chest_position()
 			for i in 8:
@@ -461,6 +465,15 @@ func _draw_bursts() -> void:
 				draw_polyline(PackedVector2Array([tip + Vector2(back, -26.0), tip, tip + Vector2(back, 26.0)]), color, 4.0)
 
 
+func _draw_lightning_fan(hand: Vector2, chest: Vector2, beams: int, color: Color) -> void:
+	for i in beams:
+		var spread: float = float(i) - (beams - 1) * 0.5
+		var origin: Vector2 = hand + Vector2(0.0, spread * vfx.lightning_finger_gap)
+		var arrival: Vector2 = chest + Vector2(0.0, spread * vfx.lightning_target_gap)
+		var phase: int = int((_time + i * vfx.lightning_phase_step) / BEAM_REFRESH)
+		_draw_beam(origin, arrival, color, phase * 7 + i * 31, 2.5 if i == 0 else 2.0, Vector2(0.0, spread * vfx.lightning_fan_bow))
+
+
 func _draw_tether(caster_index: int, reach: float, color: Color, progress: float) -> void:
 	var caster: FighterState = sim.fighters[caster_index]
 	var hand: Vector2 = views[caster_index].hand_position(false)
@@ -472,14 +485,14 @@ func _draw_tether(caster_index: int, reach: float, color: Color, progress: float
 	_draw_beam(hand, end, Color(color, strength), _beam_seed * 3 + caster_index, 1.2)
 
 
-func _draw_beam(from: Vector2, to: Vector2, color: Color, seed_value: int, width: float) -> void:
-	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
-	rng.seed = seed_value
+func _draw_beam(from: Vector2, to: Vector2, color: Color, seed_value: int, width: float, bow: Vector2 = Vector2.ZERO) -> void:
+	_beam_rng.seed = seed_value
 	var points: PackedVector2Array = [from]
 	var normal: Vector2 = (to - from).orthogonal().normalized()
+	var jitter: float = BEAM_JITTER if bow == Vector2.ZERO else BEAM_JITTER * 0.5
 	for i in range(1, BEAM_SEGMENTS):
 		var t: float = float(i) / BEAM_SEGMENTS
-		points.append(from.lerp(to, t) + normal * rng.randf_range(-BEAM_JITTER, BEAM_JITTER))
+		points.append(from.lerp(to, t) + bow * sin(PI * t) + normal * _beam_rng.randf_range(-jitter, jitter))
 	points.append(to)
 	draw_polyline(points, Color(color, color.a * 0.45), width * 3.0)
 	draw_polyline(points, Color(Color.WHITE, color.a * 0.9), width)
