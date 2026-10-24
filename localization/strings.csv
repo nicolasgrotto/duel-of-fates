@@ -438,7 +438,7 @@ LESSON_GUIDED_DONE,TREINO CONCLUÍDO,TRAINING COMPLETE
 LESSON_PROGRESS,Passo {step} de {total} · {done} / {count},Step {step} of {total} · {done} / {count}
 TUT_WALK,Ande com {move_left} e {move_right},Walk with {move_left} and {move_right}
 TUT_LIGHT,Acerte dois ataques rápidos com {light_attack},Land two light attacks with {light_attack}
-TUT_CHAIN,Toque {light_attack} em ritmo e feche a sequência de três golpes,Tap {light_attack} in rhythm and finish the three hit chain
+TUT_CHAIN,Toque {light_attack} em ritmo e feche a sequência de rápidos,Tap {light_attack} in rhythm and finish your light chain
 TUT_HEAVY,Acerte um ataque forte com {heavy_attack},Land a heavy attack with {heavy_attack}
 TUT_GUARD,Segure {block} e bloqueie dois ataques do boneco,Hold {block} and block two of the dummy's attacks
 TUT_PARRY,Toque {block} no instante em que o forte chega: aparar,Tap {block} right as the heavy lands: parry

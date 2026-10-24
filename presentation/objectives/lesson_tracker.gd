@@ -56,7 +56,7 @@ func _matches(goal: LessonStep.Goal, event: CombatEvent, sim: MatchSimulation) -
 		LessonStep.Goal.LIGHT_HIT:
 			return mine and event.type == CombatEvent.Type.HIT and move != null and move.kind == MoveData.Kind.LIGHT
 		LessonStep.Goal.CHAIN_HIT:
-			return mine and event.type == CombatEvent.Type.HIT and move != null and sim.fighters[player].character.light_chain.find(move) >= 2
+			return mine and event.type == CombatEvent.Type.HIT and move != null and _closes_chain(sim.fighters[player].character, move)
 		LessonStep.Goal.HEAVY_HIT:
 			return mine and event.type == CombatEvent.Type.HIT and event.heavy
 		LessonStep.Goal.BLOCK:
@@ -92,6 +92,11 @@ func _matches(goal: LessonStep.Goal, event: CombatEvent, sim: MatchSimulation) -
 		LessonStep.Goal.SPIN_DODGE:
 			return mine and event.type == CombatEvent.Type.DODGE and int(event.amount) == FighterState.DodgeKind.SPIN
 	return false
+
+
+static func _closes_chain(character: CharacterData, move: MoveData) -> bool:
+	var chain: Array[MoveData] = character.light_chain
+	return chain.size() > 1 and chain.find(move) == chain.size() - 1
 
 
 func _advance() -> void:

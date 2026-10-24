@@ -83,3 +83,21 @@ func test_guided_evade_ends_with_spin_dodges() -> void:
 		fixture.intents[0].move_x = 0
 		_feed(fixture, tracker, 40)
 	assert_true(tracker.done)
+
+
+func test_chain_step_closes_with_the_last_light_of_a_two_hit_chain() -> void:
+	var lesson: LessonData = LessonData.new()
+	var step: LessonStep = LessonStep.new()
+	step.goal = LessonStep.Goal.CHAIN_HIT
+	lesson.steps = [step]
+	var fixture: DuelFixture = DuelFixture.create()
+	fixture.skip_intro()
+	fixture.place(40.0)
+	assert_eq(fixture.fighter(0).character.light_chain.size(), 2, "the guardian chain has two lights")
+	var tracker: LessonTracker = LessonTracker.new(lesson, null, TRAINING)
+	fixture.press(0, Intent.Command.LIGHT)
+	for tick in 40:
+		if fixture.fighter(0).move_phase == FighterState.Phase.RECOVERY:
+			fixture.press(0, Intent.Command.LIGHT)
+		_feed(fixture, tracker, 1)
+	assert_true(tracker.done)
