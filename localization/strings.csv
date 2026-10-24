@@ -511,7 +511,7 @@ STORY_ROOFTOP_WASP_B2,O Soberano paga bem por quem me vence. Pena que ninguém v
 STORY_ROOFTOP_WASP_B3,Não vim pelo pagamento.,I did not come for the money.
 STORY_ROOFTOP_WASP_B4,Então eu fico com o pagamento.,Then I will take the money.
 STORY_ROOFTOP_WASP_A1,Rápido demais até para mim...,Too fast even for me...
-STORY_ROOFTOP_WASP_A2,Algo muda no Fluxo de {name}: agora cabe um segundo poder.,Something shifts in the Flow of {name}: there is room for a second power now.
+STORY_ROOFTOP_WASP_A2,Algo muda no Fluxo de {name}: agora cabe um segundo poder.,{name}'s Flow shifts: there is room for a second power now.
 STORY_EMBER_MINE_TITLE,Brasa na Mina,Ember in the Mine
 STORY_EMBER_MINE_B1,Os cristais da mina guardam a cor de cada lâmina que passa.,The crystals of the mine keep the color of every blade that passes.
 STORY_EMBER_MINE_B2,Eu leio cada golpe antes de ele nascer. Mostre o seu.,I read every strike before it is born. Show me yours.
@@ -528,24 +528,24 @@ STORY_SHADOW_TITLE,Sombra,Shadow
 STORY_SHADOW_B1,O Soberano viu você chegando. Ele me mandou terminar o serviço.,The Sovereign saw you coming. He sent me to finish the job.
 STORY_SHADOW_B2,Ainda dá tempo de sair do lado dele.,There is still time to leave his side.
 STORY_SHADOW_A1,Isso não acabou. O Fluxo dele me deu mais do que você imagina.,This is not over. His Flow gave me more than you think.
-STORY_SHADOW_A2,O Fluxo de {name} se aprofunda: agora cabe um terceiro poder.,The Flow of {name} grows deeper: there is room for a third power now.
+STORY_SHADOW_A2,O Fluxo de {name} se aprofunda: agora cabe um terceiro poder.,{name}'s Flow grows deeper: there is room for a third power now.
 STORY_SHADOW_AWAKENS_TITLE,A Sombra Desperta,The Shadow Awakens
 STORY_SHADOW_AWAKENS_B1,"Na Mina de Cristal, a Sombra volta, maior e mais escura.","In the Crystal Mine, the Shadow returns, bigger and darker."
 STORY_SHADOW_AWAKENS_B2,Agora eu entendo o que ele prometeu.,Now I understand what he promised.
 STORY_SHADOW_AWAKENS_A1,O Soberano... espera no Anel.,The Sovereign... waits on the Ring.
 STORY_SHADOW_AWAKENS_A2,O caminho para o Anel Orbital está aberto.,The way to the Orbital Ring is open.
 STORY_SOVEREIGN_TITLE,O Soberano,The Sovereign
-STORY_SOVEREIGN_B1,"No Anel Orbital, o Fluxo gira em volta de um único duelista.","On the Orbital Ring, the Flow turns around a single duelist."
-STORY_SOVEREIGN_B2,Sete duelos. Você chegou mais longe do que todos.,Seven duels. You came further than anyone.
+STORY_SOVEREIGN_B1,"No Anel Orbital, o Fluxo gira em volta de um único duelista.","On the Orbital Ring, the Flow revolves around a single duelist."
+STORY_SOVEREIGN_B2,Sete duelos. Você chegou mais longe do que todos.,Seven duels. You have come further than anyone.
 STORY_SOVEREIGN_B3,Vim devolver o Fluxo a quem ele pertence.,I came to give the Flow back to those it belongs to.
-STORY_SOVEREIGN_B4,Então venha. Mostre que é digno do Anel.,Then come. Show that you are worthy of the Ring.
+STORY_SOVEREIGN_B4,Então venha. Mostre que é digno do Anel.,Then come. Prove that you are worthy of the Ring.
 STORY_SOVEREIGN_A1,Impossível... ninguém me tocava assim há anos.,Impossible... no one has touched me like that in years.
 STORY_ECLIPSE_FORETOLD_TITLE,O Predestinado do Eclipse,The Eclipse Foretold
-STORY_ECLIPSE_FORETOLD_B1,Você venceu quase sem sangrar. Então ainda resta o meu herdeiro.,You won almost without bleeding. Then my heir is still left.
+STORY_ECLIPSE_FORETOLD_B1,Você venceu quase sem sangrar. Então ainda resta o meu herdeiro.,You won almost unscathed. Then my heir remains.
 STORY_ECLIPSE_FORETOLD_B2,Ele me criou para este duelo. Disse que a Aurora tinha me abandonado.,He made me for this duel. He said the Aurora had abandoned me.
 STORY_ECLIPSE_FORETOLD_B3,A Aurora não abandona ninguém. Ainda dá tempo de escolher.,The Aurora abandons no one. There is still time to choose.
 STORY_ECLIPSE_FORETOLD_A1,O Fluxo... está quieto. Pela primeira vez.,The Flow... is quiet. For the first time.
-STORY_REAPER_TEST_TITLE,A Prova do Ceifador,The Reaper Test
+STORY_REAPER_TEST_TITLE,A Prova do Ceifador,The Reaper's Test
 STORY_REAPER_TEST_B1,"No Anel Orbital, o Soberano observa de longe.","On the Orbital Ring, the Sovereign watches from afar."
 STORY_REAPER_TEST_B2,Ele quer um novo aprendiz. Eu fui o último a pedir esse lugar.,He wants a new apprentice. I was the last one to ask for that place.
 STORY_REAPER_TEST_B3,Então hoje o lugar muda de dono.,Then today the place changes hands.
@@ -556,7 +556,7 @@ STORY_MIRROR_TEMPLE_B1,"No Santuário Alagado, cada golpe volta refletido.","In 
 STORY_MIRROR_TEMPLE_B2,O Ancião não quer guerra. Volte enquanto pode.,The Elder does not want war. Turn back while you can.
 STORY_MIRROR_TEMPLE_B3,Ele esconde alguma coisa. Vou descobrir o quê.,He is hiding something. I will find out what.
 STORY_MIRROR_TEMPLE_A1,Você não é o que o Soberano pensa.,You are not what the Sovereign thinks.
-STORY_MIRROR_TEMPLE_A2,O Fluxo de {name} se aprofunda: agora cabe um terceiro poder.,The Flow of {name} grows deeper: there is room for a third power now.
+STORY_MIRROR_TEMPLE_A2,O Fluxo de {name} se aprofunda: agora cabe um terceiro poder.,{name}'s Flow grows deeper: there is room for a third power now.
 STORY_ROOFTOP_HERON_TITLE,A Garça do Telhado,The Rooftop Heron
 STORY_ROOFTOP_HERON_B1,"No Telhado Neon, alguém salta entre as antenas.","On the Neon Rooftop, someone leaps between the antennas."
 STORY_ROOFTOP_HERON_B2,O Ancião me treinou. Ele me pediu para não lutar com você.,The Elder trained me. He asked me not to fight you.
@@ -569,7 +569,7 @@ STORY_ELDER_B3,Ninguém me mandou. Vim porque quis.,No one sent me. I came becau
 STORY_ELDER_B4,Então mostre o que você quer de verdade.,Then show me what you really want.
 STORY_ELDER_A1,Forte... mais forte do que eu temia.,Strong... stronger than I feared.
 STORY_AURORA_FORETOLD_TITLE,O Predestinado da Aurora,The Aurora Foretold
-STORY_AURORA_FORETOLD_B1,Você venceu quase sem sangrar. Então está na hora de conhecer quem eu escondi.,You won almost without bleeding. Then it is time to meet the one I hid.
+STORY_AURORA_FORETOLD_B1,Você venceu quase sem sangrar. Então está na hora de conhecer quem eu escondi.,You won almost unscathed. Then it is time to meet the one I hid.
 STORY_AURORA_FORETOLD_B2,O Ancião me escondeu dos dois lados. Dizem que eu nasci para equilibrar o Fluxo.,The Elder hid me from both sides. They say I was born to balance the Flow.
 STORY_AURORA_FORETOLD_B3,Então vamos ver para que lado ele pende.,Then let us see which way it leans.
 STORY_AURORA_FORETOLD_A1,Você luta pelo Eclipse... mas não como ele.,You fight for the Eclipse... but not like him.

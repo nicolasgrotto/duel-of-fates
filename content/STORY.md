@@ -152,7 +152,7 @@ Personagens que falam: Narrador, Guardião, Eco, Vespa, Brasa, Bastião, Sombra,
 | Quem | PT-BR | EN |
 | --- | --- | --- |
 | Vespa | Rápido demais até para mim... | Too fast even for me... |
-| Narrador | Algo muda no Fluxo de {name}: agora cabe um segundo poder. | Something shifts in the Flow of {name}: there is room for a second power now. |
+| Narrador | Algo muda no Fluxo de {name}: agora cabe um segundo poder. | {name}'s Flow shifts: there is room for a second power now. |
 
 #### 4. Brasa na Mina / Ember in the Mine
 
@@ -204,7 +204,7 @@ Personagens que falam: Narrador, Guardião, Eco, Vespa, Brasa, Bastião, Sombra,
 | Quem | PT-BR | EN |
 | --- | --- | --- |
 | Sombra | Isso não acabou. O Fluxo dele me deu mais do que você imagina. | This is not over. His Flow gave me more than you think. |
-| Narrador | O Fluxo de {name} se aprofunda: agora cabe um terceiro poder. | The Flow of {name} grows deeper: there is room for a third power now. |
+| Narrador | O Fluxo de {name} se aprofunda: agora cabe um terceiro poder. | {name}'s Flow grows deeper: there is room for a third power now. |
 
 #### 7A. A Sombra Desperta / The Shadow Awakens
 
@@ -228,10 +228,10 @@ Personagens que falam: Narrador, Guardião, Eco, Vespa, Brasa, Bastião, Sombra,
 
 | Quem | PT-BR | EN |
 | --- | --- | --- |
-| Narrador | No Anel Orbital, o Fluxo gira em volta de um único duelista. | On the Orbital Ring, the Flow turns around a single duelist. |
-| Soberano | Sete duelos. Você chegou mais longe do que todos. | Seven duels. You came further than anyone. |
+| Narrador | No Anel Orbital, o Fluxo gira em volta de um único duelista. | On the Orbital Ring, the Flow revolves around a single duelist. |
+| Soberano | Sete duelos. Você chegou mais longe do que todos. | Seven duels. You have come further than anyone. |
 | Protagonista | Vim devolver o Fluxo a quem ele pertence. | I came to give the Flow back to those it belongs to. |
-| Soberano | Então venha. Mostre que é digno do Anel. | Then come. Show that you are worthy of the Ring. |
+| Soberano | Então venha. Mostre que é digno do Anel. | Then come. Prove that you are worthy of the Ring. |
 
 **Depois**
 
@@ -245,7 +245,7 @@ Personagens que falam: Narrador, Guardião, Eco, Vespa, Brasa, Bastião, Sombra,
 
 | Quem | PT-BR | EN |
 | --- | --- | --- |
-| Soberano | Você venceu quase sem sangrar. Então ainda resta o meu herdeiro. | You won almost without bleeding. Then my heir is still left. |
+| Soberano | Você venceu quase sem sangrar. Então ainda resta o meu herdeiro. | You won almost unscathed. Then my heir remains. |
 | Predestinado | Ele me criou para este duelo. Disse que a Aurora tinha me abandonado. | He made me for this duel. He said the Aurora had abandoned me. |
 | Protagonista | A Aurora não abandona ninguém. Ainda dá tempo de escolher. | The Aurora abandons no one. There is still time to choose. |
 
@@ -257,7 +257,7 @@ Personagens que falam: Narrador, Guardião, Eco, Vespa, Brasa, Bastião, Sombra,
 
 ### Caminho do Eclipse
 
-#### 5E. A Prova do Ceifador / The Reaper Test
+#### 5E. A Prova do Ceifador / The Reaper's Test
 
 **Antes**
 
@@ -289,7 +289,7 @@ Personagens que falam: Narrador, Guardião, Eco, Vespa, Brasa, Bastião, Sombra,
 | Quem | PT-BR | EN |
 | --- | --- | --- |
 | Espelho | Você não é o que o Soberano pensa. | You are not what the Sovereign thinks. |
-| Narrador | O Fluxo de {name} se aprofunda: agora cabe um terceiro poder. | The Flow of {name} grows deeper: there is room for a third power now. |
+| Narrador | O Fluxo de {name} se aprofunda: agora cabe um terceiro poder. | {name}'s Flow grows deeper: there is room for a third power now. |
 
 #### 7E. A Garça do Telhado / The Rooftop Heron
 
@@ -330,7 +330,7 @@ Personagens que falam: Narrador, Guardião, Eco, Vespa, Brasa, Bastião, Sombra,
 
 | Quem | PT-BR | EN |
 | --- | --- | --- |
-| Ancião | Você venceu quase sem sangrar. Então está na hora de conhecer quem eu escondi. | You won almost without bleeding. Then it is time to meet the one I hid. |
+| Ancião | Você venceu quase sem sangrar. Então está na hora de conhecer quem eu escondi. | You won almost unscathed. Then it is time to meet the one I hid. |
 | Predestinado | O Ancião me escondeu dos dois lados. Dizem que eu nasci para equilibrar o Fluxo. | The Elder hid me from both sides. They say I was born to balance the Flow. |
 | Protagonista | Então vamos ver para que lado ele pende. | Then let us see which way it leans. |
 
