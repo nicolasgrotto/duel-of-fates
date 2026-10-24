@@ -21,6 +21,8 @@ const OPTION_LABELS: Dictionary = {
 	&"next": "RESULT_NEXT",
 	&"retry": "RESULT_RETRY",
 	&"parry_challenge": "MENU_PARRY_CHALLENGE",
+	&"continue": "RESULT_CONTINUE",
+	&"story": "RESULT_STORY",
 }
 
 var mode: DuelMode

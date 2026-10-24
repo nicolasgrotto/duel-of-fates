@@ -96,9 +96,10 @@ Tela cheia sem HUD, letterbox fechado, "REPLAY" à esquerda na barra de baixo e 
 
 - **Hub** `HISTÓRIA`: menu à esquerda (Continuar · Capítulo N: título, Evoluir atributos / Ver atributos, Poderes, Nova/Recomeçar campanha, Voltar); à direita, nome, caminho, estilo, poderes, atributos e o protagonista em guarda. Linha de status (dificuldade e duelos vencidos, ou "Campanha concluída").
 - **Novo duelista**: mesma composição; o subtítulo mostra o passo (`2/6 · Caminho do Fluxo`) e a prévia muda com a opção destacada. Campo de texto para o nome digitado.
-- **Atributos**: seis notas; subtítulo com pontos e total (`Pontos para investir: 4 · total 22/30`); aviso fixo "Pontos investidos são definitivos". Subir além do permitido toca o som de recusa.
-- **Poderes**: uma linha por espaço (`Poder · Repulsão`, `Trás + Poder · fechado` com "Abre ao vencer: Sombra"); descrição e custo do poder destacado.
+- **Atributos**: lista centralizada com as seis notas (`Vida · 3`) e Pronto; subtítulo com pontos livres e total (`Pontos livres: 4 · total 22`); aviso fixo "Pontos investidos são definitivos" na cor de perigo. Sem pontos ou com a nota em 7, o som de recusa. Logo depois da criação, a tela abre para distribuir os pontos iniciais.
+- **Poderes**: uma linha por espaço (`Poder · ‹ Repulsão ›`, `Trás + Poder · fechado · abre no capítulo 6`); ← → ou Enter trocam o poder sem repetir; descrição e custo do poder destacado embaixo.
 - **Diálogo**: arena do encontro ao fundo, escurecida, com os dois duelistas; título do capítulo no alto; faixa escura embaixo com o nome de quem fala (destaque, espaçado) e a fala, com fade a cada linha. Narração sem nome.
+- **Final**: barras de letterbox, título do final em destaque e as falas do narrador surgindo uma a uma (1,6 s); confirmar adianta e depois volta ao hub.
 
 ### Treino, Tutorial e desafios
 
@@ -111,7 +112,7 @@ Tela cheia sem HUD, letterbox fechado, "REPLAY" à esquerda na barra de baixo e 
 
 ### Listas (Treinos guiados, Desafios, Galeria da História)
 
-Título no alto, lista à esquerda, detalhe à direita (nome e até seis linhas). Desafios mostram o recorde. Itens não vistos da galeria aparecem como `???` com a dica de onde se liberam, sem nomes.
+Título no alto, lista à esquerda, detalhe à direita (nome e até seis linhas). Desafios mostram o recorde. Itens não vistos da galeria aparecem como `???` com a dica de onde se liberam, sem nomes. A Galeria da História tem duas colunas: encontros (`1 · O Teste`, `5A`, `9E` para os secretos) e finais; ← → troca de coluna e a dica fica sob os finais.
 
 ### Galeria de poderes
 

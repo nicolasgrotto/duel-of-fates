@@ -4,8 +4,8 @@ Ordem de construção do jogo. Cada fase termina jogável e testada. Marque `[x]
 
 ## Ponto de continuidade
 
-- **Fase atual**: fase 6 (arenas e modos) na branch `pixel-art`. Fases 0 a 5 e as duas etapas da migração para pixel art concluídas.
-- **Próximo passo**: segunda etapa da migração concluída (modelos, animações, poderes, menu). Falta a revisão do autor jogando e medir a GPU numa máquina de referência com o editor fechado (a CPU já está medida). A branch `pixel-art` segue até o fim do projeto; só então o autor escolhe entre ela e a `phase-5-hd`.
+- **Fase atual**: fase 8 (acabamento) na branch `pixel-art`. Fases 0 a 7 e as duas etapas da migração para pixel art concluídas; a História tem as telas, os encontros e os quatro finais ligados (regras testadas; falta uma passada completa jogando).
+- **Próximo passo**: fase 8, começando pela passada de localização (revisar o EN da História) e pela trilha e ambiências por arena. Na História, falta o autor jogar a campanha inteira e ajustar a dificuldade dos encontros (`ai_offset` em STORY.md). Da migração, falta a revisão do autor jogando e medir a GPU numa máquina de referência com o editor fechado (a CPU já está medida). A branch `pixel-art` segue até o fim do projeto; só então o autor escolhe entre ela e a `phase-5-hd`.
 - **Pendências conhecidas**:
   - Equilíbrio com Poderes: no Normal, Guardião 63% contra Sombra 37% (100 duelos), rounds de ~10,5 s; o Raio responde por boa parte dos acertos. Rodar a matriz com Poderes e ajustar custos, `power_chance` da IA e o Raio.
   - A IA não usa o Truque Mental de forma tática (lança quando está ao alcance) e não guarda medidor para o quarto poder.
@@ -114,10 +114,10 @@ Segunda etapa da migração (pedido do autor depois da prova de conceito; a bran
 
 ## Fase 7 — História
 
-- [ ] Criação do protagonista, hub, atributos, poderes
-- [ ] Encontros, rotas, finais, diálogos
-- [ ] Galeria da História
-- [ ] Secretos liberados pela campanha
+- [x] Criação do protagonista, hub, atributos, poderes
+- [x] Encontros, rotas, finais, diálogos
+- [x] Galeria da História
+- [x] Secretos liberados pela campanha
 
 ## Fase 8 — Acabamento
 

@@ -10,6 +10,13 @@ const SCREENS: Dictionary = {
 	&"options": "res://screens/options/options_screen.tscn",
 	&"keys": "res://screens/controls/key_config_screen.tscn",
 	&"controls": "res://screens/controls/controls_screen.tscn",
+	&"story_hub": "res://screens/story/story_hub.tscn",
+	&"story_new": "res://screens/story/story_new.tscn",
+	&"story_attributes": "res://screens/story/story_attributes.tscn",
+	&"story_powers": "res://screens/story/story_powers.tscn",
+	&"story_gallery": "res://screens/story/story_gallery.tscn",
+	&"dialogue": "res://screens/story/dialogue_screen.tscn",
+	&"ending": "res://screens/story/ending_screen.tscn",
 }
 const FADE_SECONDS: float = 0.18
 const SETTLE_FRAMES: int = 2

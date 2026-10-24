@@ -555,3 +555,50 @@ ENDING_FOREST_YIELDS_2,Mas {name} sente um Fluxo escondido em algum lugar. Talve
 ENDING_BALANCE_TITLE,O Equilíbrio,Balance
 ENDING_BALANCE_1,O Predestinado baixa a lâmina.,The Foretold lowers the blade.
 ENDING_BALANCE_2,"{name} poderia entregar o Predestinado ao Soberano. Em vez disso, deixa o Fluxo em equilíbrio.","{name} could deliver the Foretold to the Sovereign. Instead, they leave the Flow in balance."
+HINT_RAISE,investir ponto,spend point
+MENU_STORY,História,Story
+MENU_STORY_GALLERY,Galeria da História,Story gallery
+STORY_HUB_TITLE,HISTÓRIA,STORY
+STORY_NEW_TITLE,NOVA CAMPANHA,NEW CAMPAIGN
+STORY_STEP_NAME,Nome,Name
+STORY_STEP_PATH,Caminho do Fluxo,Path of the Flow
+STORY_STEP_STYLE,Estilo de luta,Fighting style
+STORY_STEP_LOOK,Visual,Look
+STORY_STEP_COLOR,Cor da lâmina,Blade color
+STORY_STEP_DIFFICULTY,Dificuldade,Difficulty
+STORY_TYPE_NAME,Digitar um nome…,Type a name…
+STORY_PATH_AURORA,Caminho da Aurora,Path of the Aurora
+STORY_PATH_ECLIPSE,Caminho do Eclipse,Path of the Eclipse
+STORY_PROTAGONIST,Protagonista,Protagonist
+STORY_CONTINUE,Continuar · Capítulo {chapter} · {title},Continue · Chapter {chapter} · {title}
+STORY_SEE_ENDING,Rever o final,See the ending again
+STORY_RAISE,Evoluir atributos · {points} pontos,Raise attributes · {points} points
+STORY_VIEW_ATTRIBUTES,Atributos,Attributes
+STORY_POWERS,Poderes,Powers
+STORY_RESTART,Nova campanha,New campaign
+STORY_DONE,Campanha concluída,Campaign complete
+STORY_STATUS,{difficulty} · {wins} encontros vencidos,{difficulty} · {wins} encounters won
+STORY_ATTRIBUTES_TITLE,ATRIBUTOS,ATTRIBUTES
+STORY_POINTS,Pontos livres: {points} · total {total},Free points: {points} · total {total}
+STORY_POINTS_FINAL,Pontos investidos são definitivos,Spent points are permanent
+STORY_DONE_BUTTON,Pronto,Done
+STORY_POWERS_TITLE,PODERES,POWERS
+STORY_SLOT_CLOSED,fechado,locked
+STORY_SLOT_OPENS_3,abre no capítulo 3,opens at chapter 3
+STORY_SLOT_OPENS_6,abre no capítulo 6,opens at chapter 6
+STORY_COST,Custo,Cost
+STORY_BANNER,CAPÍTULO {chapter} · {title},CHAPTER {chapter} · {title}
+STORY_CHAPTER_WON,CAPÍTULO VENCIDO,CHAPTER WON
+STORY_NOTE_POINTS,+{points} pontos de atributo,+{points} attribute points
+STORY_NOTE_POWER,Poder aprendido: {power},Power learned: {power}
+STORY_NOTE_SLOT,Novo espaço de poder,New power slot
+STORY_GALLERY_TITLE,GALERIA DA HISTÓRIA,STORY GALLERY
+STORY_GALLERY_HINT,Vença encontros e conclua finais na História para revê-los aqui,Win encounters and reach endings in Story to see them again here
+RESULT_CONTINUE,Continuar,Continue
+RESULT_STORY,Voltar à História,Back to Story
+STYLE_TECHNIQUE,Técnica,Technique
+STYLE_FURY,Fúria,Fury
+STYLE_FLIGHT,Voo,Flight
+LOOK_WANDERER,Errante,Wanderer
+LOOK_WATCHER,Vigia,Watcher
+LOOK_PILGRIM,Peregrino,Pilgrim

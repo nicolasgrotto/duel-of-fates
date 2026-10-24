@@ -2,8 +2,8 @@ class_name ArenaThumbnail
 extends Node2D
 
 const UPSCALE_SHADER: Shader = preload("res://presentation/camera/pixel_upscale.gdshader")
-const GRID: Vector2i = Vector2i(300, 170)
-const PIXEL_SCALE: float = 2.0
+var grid: Vector2i = Vector2i(300, 170)
+var pixel_scale: float = 2.0
 const UNITS_PER_PIXEL: float = 2.0
 const CAMERA_HEIGHT: float = -130.0
 
@@ -15,7 +15,7 @@ var _arena: ArenaData
 
 func _ready() -> void:
 	_viewport = SubViewport.new()
-	_viewport.size = GRID
+	_viewport.size = grid
 	_viewport.transparent_bg = false
 	_viewport.snap_2d_transforms_to_pixel = true
 	_viewport.snap_2d_vertices_to_pixel = true
@@ -32,12 +32,21 @@ func _ready() -> void:
 	var display: Sprite2D = Sprite2D.new()
 	display.texture = _viewport.get_texture()
 	display.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-	display.scale = Vector2.ONE * PIXEL_SCALE
+	display.scale = Vector2.ONE * pixel_scale
 	var upscale: ShaderMaterial = ShaderMaterial.new()
 	upscale.shader = UPSCALE_SHADER
 	display.material = upscale
 	add_child(display)
 	visible = false
+
+
+func configure(size: Vector2i, scale_factor: float) -> void:
+	grid = size
+	pixel_scale = scale_factor
+
+
+func add_to_world(node: Node) -> void:
+	_viewport.add_child(node)
 
 
 func show_arena(arena: ArenaData) -> void:
@@ -53,4 +62,5 @@ func show_arena(arena: ArenaData) -> void:
 		return
 	_scene = arena.scene.instantiate()
 	_viewport.add_child(_scene)
+	_viewport.move_child(_scene, 0)
 	_ambient.color = arena.ambient

@@ -2,7 +2,7 @@
 
 STORY.md stays the single source of the story: this tool reads its dialogue tables and endings,
 writes data/story/encounters/*.tres, data/story/endings/*.tres and data/story/campaign.tres, and
-replaces the STORY_ and ENDING_ rows of localization/strings.csv.
+replaces the encounter and ending rows of localization/strings.csv.
 
 Usage (from the project root): python tools/story/make_story.py
 """
@@ -158,11 +158,16 @@ def write_campaign():
         handle.write("\n".join(lines) + "\n")
 
 
+def generated(key):
+    owned = tuple(f"STORY_{spec[1].upper()}_" for spec in ENCOUNTERS)
+    return key.startswith("ENDING_") or key.startswith(owned)
+
+
 def write_strings(strings):
     path = "localization/strings.csv"
     with open(path, encoding="utf-8", newline="") as handle:
         rows = list(csv.reader(handle))
-    kept = [row for row in rows if not (row and (row[0].startswith("STORY_") or row[0].startswith("ENDING_")))]
+    kept = [row for row in rows if not (row and generated(row[0]))]
     buffer = io.StringIO()
     writer = csv.writer(buffer, lineterminator="\n")
     writer.writerows(kept + [list(s) for s in strings])

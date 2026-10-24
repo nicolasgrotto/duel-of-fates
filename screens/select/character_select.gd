@@ -219,7 +219,7 @@ func _current_character() -> CharacterData:
 	if id == RANDOM or not _characters.has(id):
 		return null
 	var data: CharacterData = _characters[id]
-	if _use_variant and data.variant != null:
+	if _use_variant and Unlocks.is_variant_unlocked(data):
 		return data.variant
 	return data
 
@@ -251,7 +251,7 @@ func _refresh_character() -> void:
 	_look.text = tr("SELECT_LOOK").format({"name": tr(costume.name_key), "index": _costume_index % costumes.size() + 1, "count": costumes.size()})
 	var blade_key: String = data.blade_color_keys[_blade_index % data.blade_colors.size()]
 	_blade.text = tr("SELECT_BLADE").format({"name": tr(blade_key), "index": _blade_index % data.blade_colors.size() + 1, "count": data.blade_colors.size()})
-	_variant.text = tr("SELECT_VARIANT").format({"name": tr("VARIANT_ECLIPSE" if _use_variant else "VARIANT_AURORA")}) if base.variant != null else ""
+	_variant.text = tr("SELECT_VARIANT").format({"name": tr("VARIANT_ECLIPSE" if _use_variant else "VARIANT_AURORA")}) if Unlocks.is_variant_unlocked(base) else ""
 	var requirement: String = _next_requirement(base, data)
 	_requirement.text = tr("SELECT_REQUIREMENT").format({"requirement": tr(requirement)}) if requirement != "" else ""
 
@@ -383,7 +383,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		AudioDirector.play_ui(&"ui_move")
 		_refresh_character()
 	elif _step() != &"arena" and event.is_action_pressed(&"menu_variant") and _current_character() != null:
-		if _characters[_list.current_id()].variant != null:
+		if Unlocks.is_variant_unlocked(_characters[_list.current_id()]):
 			_use_variant = not _use_variant
 			_blade_index = 0
 			_custom.clear()

@@ -5,6 +5,9 @@ const CHALLENGE_COLOR: int = 2
 const SECRETS_KEY: String = "secrets:all"
 const WARDROBE_KEY: String = "wardrobe:all"
 const ARCADE_REQUIREMENTS: Array[String] = ["REQUIREMENT_TRAVELER", "REQUIREMENT_ARCADE"]
+const STORY_REQUIREMENTS: Dictionary = {
+	"REQUIREMENT_SENTINEL": "ending:any", "REQUIREMENT_STORY": "ending:any", "REQUIREMENT_SECRET_ENDING": "ending:secret",
+}
 
 
 static func color_key(data: CharacterData, index: int) -> String:
@@ -20,11 +23,17 @@ static func is_color_unlocked(data: CharacterData, index: int) -> bool:
 
 
 static func is_costume_unlocked(data: CharacterData, costume: CostumeData) -> bool:
-	return costume.requirement_key == "" or SaveService.is_unlocked(WARDROBE_KEY) or SaveService.is_unlocked(costume_key(data, costume))
+	if costume.requirement_key == "" or SaveService.is_unlocked(WARDROBE_KEY) or SaveService.is_unlocked(costume_key(data, costume)):
+		return true
+	return STORY_REQUIREMENTS.has(costume.requirement_key) and SaveService.is_unlocked(STORY_REQUIREMENTS[costume.requirement_key])
 
 
 static func is_character_unlocked(data: CharacterData) -> bool:
 	return not data.secret or SaveService.is_unlocked(SECRETS_KEY) or SaveService.is_unlocked("character:%s" % data.id)
+
+
+static func is_variant_unlocked(data: CharacterData) -> bool:
+	return data.variant != null and (SaveService.is_unlocked(SECRETS_KEY) or SaveService.is_unlocked("character:%s" % data.variant.id))
 
 
 static func color_requirement(data: CharacterData, index: int) -> String:
