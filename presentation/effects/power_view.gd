@@ -20,7 +20,7 @@ const CLEAVE_LAYERS: Array[Vector2] = [Vector2(2.4, 0.28), Vector2(1.2, 0.8), Ve
 const METEOR_CRACKS: int = 5
 const SHOCKWAVE_SEGMENTS: int = 16
 
-enum Burst { WAVE, RING_IN, RING_OUT, BOLT, FLASH, SHOCKWAVE, TETHER, OUTLINE }
+enum Burst { WAVE, RING_IN, RING_OUT, BOLT, FLASH, SHOCKWAVE, PULL_ORB }
 
 var sim: MatchSimulation
 var views: Array[FighterView] = []
@@ -53,6 +53,7 @@ var _time: float = 0.0
 var _beam_clock: float = 0.0
 var _beam_seed: int = 0
 var _storm: float = 0.0
+var _storm_bolt_flash: float = 0.0
 
 
 func _ready() -> void:
@@ -97,11 +98,7 @@ func on_event(event: CombatEvent) -> void:
 		CombatEvent.Type.POWER_HIT:
 			if event.source < 0:
 				return
-			var color: Color = tier_color(sim.fighters[event.source].flow_tier)
-			if event.power != null and event.power.kind == PowerData.Kind.PULL:
-				_burst(Burst.OUTLINE, at, event.target, vfx.pull_outline_time, 0.0, color)
-			else:
-				_burst(Burst.FLASH, at, 0.0, 0.12, 34.0, color)
+			_burst(Burst.FLASH, at, 0.0, 0.12, 34.0, tier_color(sim.fighters[event.source].flow_tier))
 		CombatEvent.Type.HAZARD_TRIGGERED:
 			_on_hazard(event, at)
 		CombatEvent.Type.PROJECTILE_REFLECTED:
@@ -119,7 +116,7 @@ func _on_power_active(event: CombatEvent) -> void:
 			for side in [-1.0, 1.0]:
 				_start_shockwave(caster, event.power.reach, side, true)
 		PowerData.Kind.PULL:
-			_burst(Burst.TETHER, hand, caster.index, vfx.pull_tether_time, event.power.tier_value(caster.flow_tier), color)
+			_burst(Burst.PULL_ORB, hand, caster.index, vfx.pull_orb_time, vfx.pull_orb_radius * (1.0 + caster.flow_tier * vfx.pull_orb_tier_growth), color)
 		PowerData.Kind.FRACTURE:
 			_burst(Burst.FLASH, Vector2(hand.x, 0.0), 0.0, 0.2, 60.0, color)
 		PowerData.Kind.HEAL, PowerData.Kind.FOCUS, PowerData.Kind.WRATH, PowerData.Kind.SANCTUARY:
@@ -211,9 +208,11 @@ func _update_storm(delta: float) -> void:
 			if fighter.power_kind_active(PowerData.Kind.STORM):
 				sky.color = tier_color(fighter.flow_tier)
 	var flash: float = _sky_flash
+	_storm_bolt_flash = 0.0
 	for i in POOL:
 		if _lives[i] > 0.0 and _kinds[i] == Burst.BOLT:
-			flash = maxf(flash, 1.0 - _ages[i] / _lives[i])
+			_storm_bolt_flash = maxf(_storm_bolt_flash, 1.0 - _ages[i] / _lives[i])
+	flash = maxf(flash, _storm_bolt_flash)
 	ambient.color = base_ambient.darkened(STORM_DARKEN * _storm).lerp(base_ambient, flash * 0.6)
 
 
@@ -318,10 +317,7 @@ func _draw_channel(fighter: FighterState, view: FighterView, color: Color) -> vo
 				var t: float = fmod(_time * 1.5 + i / 8.0, 1.0)
 				draw_circle(from.lerp(hand, t), 2.5 * (1.0 - t * 0.5), Color(color, 0.8 - 0.5 * t))
 		PowerData.Kind.STORM:
-			for i in 3:
-				var angle: float = _time * 4.0 + i * TAU / 3.0
-				var from: Vector2 = center + Vector2(cos(angle) * 46.0, sin(angle) * 80.0)
-				_draw_beam(from, center + Vector2(cos(angle + 0.8) * 46.0, sin(angle + 0.8) * 80.0), color, _beam_seed + i, 1.5)
+			_draw_storm_shield(fighter, center, color)
 		PowerData.Kind.CHOKE:
 			draw_circle(hand, 6.0, Color(color, 0.5))
 
@@ -481,10 +477,8 @@ func _draw_bursts() -> void:
 				draw_circle(at, radius * 0.45, Color(_colors[i], 0.45 * strength))
 			Burst.BOLT:
 				_draw_beam(at + Vector2(0.0, -_sizes[i]), at, _colors[i] * Color(1, 1, 1, 1.0 - progress), i * 13 + _beam_seed, 3.0)
-			Burst.TETHER:
-				_draw_tether(int(_directions[i]), _sizes[i], _colors[i], progress)
-			Burst.OUTLINE:
-				_draw_ellipse(views[int(_directions[i])].body_center(), Vector2(30.0, 82.0) * (1.0 + progress * 0.15), color, 2.0)
+			Burst.PULL_ORB:
+				_draw_pull_orb(int(_directions[i]), _sizes[i], _colors[i], progress)
 			Burst.SHOCKWAVE:
 				_draw_shockwave(i, progress)
 
@@ -570,15 +564,54 @@ func _draw_lightning_fan(hand: Vector2, chest: Vector2, beams: int, color: Color
 		_draw_beam(origin, arrival, color, phase * 7 + i * 31, 2.5 if i == 0 else 2.0, Vector2(0.0, spread * vfx.lightning_fan_bow))
 
 
-func _draw_tether(caster_index: int, reach: float, color: Color, progress: float) -> void:
-	var caster: FighterState = sim.fighters[caster_index]
+func _draw_pull_orb(caster_index: int, radius: float, color: Color, progress: float) -> void:
 	var hand: Vector2 = views[caster_index].hand_position(false)
-	var target: Vector2 = views[1 - caster_index].chest_position()
-	var span: float = minf(absf(target.x - hand.x), reach + sim.config.body_width)
-	var end: Vector2 = Vector2(hand.x + caster.facing * span, lerpf(hand.y, target.y, 0.8))
+	var size: float = snappedf(radius * (1.0 - ease(progress, 0.45)), GRID)
+	if size <= 0.0:
+		return
 	var strength: float = ceilf((1.0 - progress) * FADE_STEPS) / FADE_STEPS
-	draw_circle(hand, 5.0 + 3.0 * strength, Color(color, 0.6 * strength))
-	_draw_beam(hand, end, Color(color, strength), _beam_seed * 3 + caster_index, 1.2)
+	draw_circle(hand, size, Color(color, 0.22 * strength))
+	draw_arc(hand, size, 0.0, TAU, 32, Color(color, 0.8 * strength), GRID)
+	draw_circle(hand, size * vfx.pull_orb_core, Color(Color.WHITE, 0.5 * strength))
+
+
+func _draw_storm_shield(fighter: FighterState, center: Vector2, color: Color) -> void:
+	var radii: Vector2 = vfx.storm_shell * (1.0 + fighter.flow_tier * vfx.storm_tier_growth)
+	var glow: float = 1.0 + _storm_bolt_flash * vfx.storm_bolt_glow
+	var flicker: float = 0.7 + 0.3 * float(int(_time * vfx.storm_flicker_rate) % 3) / 2.0
+	_fill_ellipse(center, radii, Color(color, vfx.storm_fill_alpha * glow))
+	for band in vfx.storm_shell_alpha.size():
+		var inset: Vector2 = Vector2.ONE * vfx.storm_shell_spacing * band
+		_draw_ellipse(center, radii - inset, Color(color, minf(vfx.storm_shell_alpha[band] * flicker * glow, 1.0)), GRID)
+	for i in vfx.storm_arcs:
+		var start: float = _time * vfx.storm_arc_speed * (1.0 if i % 2 == 0 else -1.3) + i * TAU / vfx.storm_arcs
+		_storm_arc(center, radii, start, vfx.storm_arc_span, Color(Color.WHITE, 0.85), _beam_seed * 11 + i)
+	var floor_y: float = 0.0
+	if center.y + radii.y >= floor_y - radii.y * 0.2:
+		_beam_rng.seed = _beam_seed * 5 + fighter.index
+		for i in vfx.storm_ground_sparks:
+			var x: float = center.x + _beam_rng.randf_range(-radii.x, radii.x) * 0.7
+			draw_rect(Rect2(Vector2(x, floor_y - GRID).snapped(Vector2(GRID, GRID)), Vector2(GRID, GRID)), Color(color, 0.9))
+
+
+func _storm_arc(center: Vector2, radii: Vector2, start: float, span: float, color: Color, seed_value: int) -> void:
+	_beam_rng.seed = seed_value
+	var points: PackedVector2Array = []
+	var steps: int = 6
+	for k in steps + 1:
+		var angle: float = start + span * float(k) / steps
+		var wobble: float = _beam_rng.randf_range(-vfx.storm_arc_jitter, vfx.storm_arc_jitter) if k > 0 and k < steps else 0.0
+		points.append(center + Vector2(cos(angle) * (radii.x + wobble), sin(angle) * (radii.y + wobble)))
+	draw_polyline(points, Color(color, color.a * 0.35), GRID * 2.0)
+	draw_polyline(points, color, GRID * 0.5)
+
+
+func _fill_ellipse(center: Vector2, radii: Vector2, color: Color) -> void:
+	var points: PackedVector2Array = []
+	for i in 32:
+		var angle: float = i * TAU / 32.0
+		points.append(center + Vector2(cos(angle) * radii.x, sin(angle) * radii.y))
+	draw_colored_polygon(points, color)
 
 
 func _draw_beam(from: Vector2, to: Vector2, color: Color, seed_value: int, width: float, bow: Vector2 = Vector2.ZERO) -> void:

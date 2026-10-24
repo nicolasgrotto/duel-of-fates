@@ -159,8 +159,8 @@ Retorno do autor (plano em sete frentes; bloco A sem tocar no trabalho do Codex,
 - [x] História: caminho da Aurora em azul e do Eclipse em vermelho
 - [x] Remover a técnica Giro (substitutos em CHARACTERS; `TechniqueStyle.SPIN` e a pose dele também saíram)
 - [x] Finalizações cinematográficas no K.O. decisivo: regra na simulação (até a apresentação entrar, esses K.O.s caem sem cortar membro)
-- [ ] Escudo da Tempestade redesenhado (bloco B)
-- [ ] Puxão do jeito antigo: bola grande encolhendo em quem lança, sem fio (bloco B)
+- [x] Escudo da Tempestade redesenhado
+- [x] Puxão do jeito antigo: bola grande encolhendo em quem lança, sem fio
 - [ ] Próteses robóticas nos membros perdidos em rounds anteriores (bloco B)
 - [ ] Finalizações cinematográficas: apresentação (corte na cintura, vertical, diagonal, Puxão com corte, Raio com esqueleto e corpo carbonizado, explosão de brasa da Repulsão, Estrangular) (bloco B)
 - [ ] Personalização do protagonista da História (cabelos, barbas, cosméticos, armadura de placas clara) e trajes do Predestinado mais próximos do arquétipo (bloco B)

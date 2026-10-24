@@ -39,8 +39,10 @@ extends Resource
 @export var repulse_streak_gap: float = 6.0
 @export var repulse_streak_alpha: float = 0.24
 @export var repulse_reduced_alpha: float = 0.7
-@export var pull_tether_time: float = 0.32
-@export var pull_outline_time: float = 0.2
+@export var pull_orb_radius: float = 46.0
+@export var pull_orb_time: float = 0.22
+@export var pull_orb_core: float = 0.35
+@export var pull_orb_tier_growth: float = 0.12
 @export var repulse_dust: int = 8
 @export var repulse_reduced_dust: int = 2
 @export var fracture_chunks: int = 5
@@ -71,6 +73,20 @@ extends Resource
 @export var meteor_crack: float = 0.95
 @export var rain_chunks: int = 7
 @export var rain_dust: int = 4
+
+@export_group("Storm shield")
+@export var storm_shell: Vector2 = Vector2(44.0, 86.0)
+@export var storm_tier_growth: float = 0.08
+@export var storm_fill_alpha: float = 0.06
+@export var storm_shell_alpha: PackedFloat32Array = PackedFloat32Array([0.5, 0.26, 0.12])
+@export var storm_shell_spacing: float = 6.0
+@export var storm_flicker_rate: float = 14.0
+@export var storm_arcs: int = 5
+@export var storm_arc_span: float = 0.7
+@export var storm_arc_speed: float = 3.2
+@export var storm_arc_jitter: float = 5.0
+@export var storm_ground_sparks: int = 3
+@export var storm_bolt_glow: float = 0.5
 
 @export_group("Storm sky")
 @export var sky_top: float = -760.0
