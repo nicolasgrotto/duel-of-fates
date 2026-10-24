@@ -30,6 +30,7 @@ var _lost_main_hand: bool = false
 var _missing: MoveData.Limb = MoveData.Limb.NONE
 var _wound: FighterState.Wound = FighterState.Wound.NONE
 var _open_hand: bool = false
+var _back_arm_in_front: bool = false
 
 var chest: Vector2 = Vector2.ZERO
 var head_base: Vector2 = Vector2.ZERO
@@ -149,6 +150,7 @@ func apply(pose: RigPose, facing: int, delta: float) -> void:
 	back_hand = pose.off_hand
 	front_elbow = _arm("front", front_shoulder, front_hand, pose.front_elbow_hint.rotated(pose.torso_angle))
 	back_elbow = _arm("back", back_shoulder, back_hand, pose.back_elbow_hint.rotated(pose.torso_angle))
+	_set_back_arm_depth(pose.hand_spacing > 0.0 or ArmGeometry.to_body(back_hand, pose).x > 0.0)
 	var hip_front: Vector2 = pelvis + Vector2(3.0, 0.0)
 	var hip_back: Vector2 = pelvis + Vector2(-3.0, 0.0)
 	front_knee = _leg("front", hip_front, pose.front_foot)
@@ -157,6 +159,17 @@ func apply(pose: RigPose, facing: int, delta: float) -> void:
 	_hilt.update_pose(pose, front_hand, back_hand)
 	_simulate_cloths(pose, pelvis, facing, delta)
 	_update_marks(delta)
+
+
+func _set_back_arm_depth(in_front: bool) -> void:
+	if _back_arm_in_front == in_front:
+		return
+	_back_arm_in_front = in_front
+	if _sprites.has("forearm_back:forearm"):
+		(_sprites["forearm_back:forearm"] as Sprite2D).z_index = 10 if in_front else -9
+	if _sprites.has("hand_back:hand"):
+		(_sprites["hand_back:hand"] as Sprite2D).z_index = 15 if in_front else -8
+	_layers.clear()
 
 
 func _set_open_hand(open: bool) -> void:

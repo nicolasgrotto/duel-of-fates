@@ -22,6 +22,7 @@ enum Grip { TWO_HANDED, ONE_HANDED, DUAL, STAFF }
 @export_group("Arms")
 @export_range(0.5, 0.98) var arm_reach: float = 0.92
 @export_range(0.9, 0.999) var arm_extension: float = 0.985
+@export var arm_fold_margin: float = 4.0
 @export var front_elbow: Vector2 = Vector2(-0.25, 1.0)
 @export var back_elbow: Vector2 = Vector2(-1.0, 0.6)
 @export var windup_elbow: Vector2 = Vector2(-1.0, 0.3)

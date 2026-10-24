@@ -244,5 +244,5 @@ costumes = Array[ExtResource("4_costume")]([SubResource("awakened_shadow_costume
 blade_colors = PackedColorArray(1.0000, 0.2471, 0.6196, 1)
 blade_color_keys = PackedStringArray("BLADE_AWAKENED_SHADOW_0")
 guard_angle = -150.0
-guard_grip = Vector2(-2.0, -46.0)
+guard_grip = Vector2(-16, -58)
 eclipse_eyes = true

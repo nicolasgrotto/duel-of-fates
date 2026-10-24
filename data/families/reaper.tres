@@ -27,3 +27,6 @@ wrist_lag = 1.4
 dash_twirl = true
 plunge_cut = 1
 acrobatic_recovery = true
+staff_hand_spacing = 14.0
+front_elbow = Vector2(-0.25, 1)
+back_elbow = Vector2(-0.8, 1)

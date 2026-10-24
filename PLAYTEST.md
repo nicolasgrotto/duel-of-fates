@@ -43,6 +43,8 @@ Use Aprender › Treino com o boneco parado (`F5` alterna o comportamento). Troq
 | 2.9 | **Vespa**, trás + `I` (Arremesso da lâmina), longe do boneco | as duas lâminas saem com um pequeno intervalo, em arcos espelhados, girando em sentidos opostos, e voltam; as mãos ficam estendidas esperando | `PowerVfxConfig.dual_throw_delay`, `dual_throw_arc` |
 | 2.10 | Colado no boneco, pulo duplo para a frente passando por cima dele | cambalhota ao passar e pouso já virado para o boneco | `MotionFamily.vault_time` |
 | 2.11 | Leve uma Repulsão (Galeria ou Duelar) com **Vespa, Garça ou Ceifador**, e depois com **Bastião ou Guardião** | as ágeis fazem mortal para trás e pousam em guarda; as outras derrapam com a mão no chão; o tempo de punição é o mesmo | `MotionFamily.acrobatic_recovery`, `tumble_time` |
+| 2.12 | Com cada família, ande para os dois lados, faça rápidos, forte, guarda, esquivas e técnicas; observe também atingido e atordoado | mãos acompanham o tronco, cotovelos dobram com folga, cabo fica nas mãos durante as transições; o antebraço de trás aparece sobre a roupa ao segurar o cabo; nenhuma mão solta da arma ao virar | `MotionFamily.arm_reach`, `arm_extension`, `arm_fold_margin`, `front_elbow`, `back_elbow`, `windup_elbow`; `ArmGeometry` |
+| 2.13 | Compare as guardas altas de **Bastião, Forja, Garça e Sombra Desperta**, a vertical do **Espelho**, a invertida da **Brasa** e as duas lâminas da **Vespa** | mãos fora do rosto, guardas distintas; Esgrimista e Golpeador equilibram com a mão livre atrás e relaxam essa mão ao andar; a Haste conserva **duas mãos** no cabo longo | `guard_grip`/`guard_angle` dos personagens; `free_hand`, `walk_free_hand`, `off_guard_hand` nas famílias |
 
 ## 3. Poderes
 

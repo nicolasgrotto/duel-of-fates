@@ -21,6 +21,9 @@ func _check_reach(data: CharacterData, pose: RigPose, context: String) -> void:
 		var hand: Vector2 = pose.grip if front else pose.off_hand
 		var shoulder: Vector2 = ArmGeometry.shoulder(pose, data.art, front)
 		assert_true(shoulder.distance_to(hand) <= radius + 0.01, "%s %s arm %s" % [data.id, context, front])
+		var hint: Vector2 = pose.front_elbow_hint if front else pose.back_elbow_hint
+		var elbow: Vector2 = TwoBoneIk.solve(shoulder, hand, data.art.dim("upper_arm"), data.art.dim("forearm"), hint.rotated(pose.torso_angle))
+		assert_almost(elbow.distance_to(hand), data.art.dim("forearm"), 0.02, "%s %s forearm %s" % [data.id, context, front])
 	if pose.hand_spacing > 0.0:
 		var geometry: WeaponPose = WeaponPose.new()
 		geometry.compute(data.weapon, pose)

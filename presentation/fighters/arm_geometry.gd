@@ -21,13 +21,24 @@ static func constrain(pose: RigPose, character: CharacterData) -> void:
 	var back: Vector2 = shoulder(pose, art, false)
 	var length: float = art.dim("upper_arm") + art.dim("forearm")
 	var radius: float = length * lerpf(character.family.arm_reach, character.family.arm_extension, pose.arm_extension)
+	var minimum: float = absf(art.dim("upper_arm") - art.dim("forearm")) + character.family.arm_fold_margin
 	if pose.hand_spacing > 0.0:
 		var offset: Vector2 = pose.blade_direction() * pose.hand_spacing
 		pose.grip = _within_both(pose.grip, front, back + offset, radius)
+		for pass_index in 2:
+			pose.grip = _unfold(pose.grip, front, minimum, pose.torso_angle)
+			pose.grip = _unfold(pose.grip, back + offset, minimum, pose.torso_angle)
 		pose.off_hand = pose.grip - offset
 	else:
-		pose.grip = front + (pose.grip - front).limit_length(radius)
-		pose.off_hand = back + (pose.off_hand - back).limit_length(radius)
+		pose.grip = _unfold(front + (pose.grip - front).limit_length(radius), front, minimum, pose.torso_angle)
+		pose.off_hand = _unfold(back + (pose.off_hand - back).limit_length(radius), back, minimum, pose.torso_angle)
+
+
+static func _unfold(point: Vector2, root: Vector2, minimum: float, angle: float) -> Vector2:
+	var offset: Vector2 = (point - root).rotated(-angle)
+	if offset.length_squared() < minimum * minimum:
+		offset.y = sqrt(maxf(minimum * minimum - offset.x * offset.x, 0.0))
+	return root + offset.rotated(angle)
 
 
 static func _within_both(point: Vector2, first: Vector2, second: Vector2, radius: float) -> Vector2:
