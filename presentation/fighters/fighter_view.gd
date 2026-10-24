@@ -198,6 +198,8 @@ func _process(delta: float) -> void:
 	if not frozen:
 		_solver.solve(fighter, opponent, _target)
 		var follow: float = ATTACK_FOLLOW if fighter.is_attacking() else POSE_FOLLOW
+		if fighter.state == FighterState.State.CASTING and fighter.power != null and fighter.power.kind == PowerData.Kind.REPULSE and fighter.power_phase != FighterState.Phase.STARTUP:
+			follow = ATTACK_FOLLOW
 		if _snap_pose:
 			_pose.copy_from(_target)
 			_snap_pose = false

@@ -20,10 +20,29 @@ extends Resource
 @export var throw_impact_chunks: int = 6
 
 @export_group("Repulse and fracture")
-@export var repulse_palm_offset: float = 30.0
+@export var repulse_wave_time: float = 0.38
+@export var repulse_travel_share: float = 0.8
+@export var repulse_start_height: float = 72.0
+@export var repulse_end_height: float = 156.0
+@export var repulse_tier_height: float = 8.0
+@export var repulse_width: float = 12.0
+@export var repulse_tier_width: float = 2.0
+@export var repulse_bow_ratio: float = 0.22
+@export var repulse_edge_width: float = 2.0
+@export var repulse_edge_light: float = 0.6
+@export var repulse_band_alpha: PackedFloat32Array = PackedFloat32Array([0.34, 0.2, 0.1])
+@export var repulse_echo_tier: int = 2
+@export var repulse_echo_spacing: float = 18.0
+@export var repulse_echo_alpha: float = 0.28
+@export var repulse_ground_streaks: int = 3
+@export var repulse_streak_length: float = 26.0
+@export var repulse_streak_gap: float = 6.0
+@export var repulse_streak_alpha: float = 0.24
+@export var repulse_reduced_alpha: float = 0.7
 @export var pull_tether_time: float = 0.32
 @export var pull_outline_time: float = 0.2
 @export var repulse_dust: int = 8
+@export var repulse_reduced_dust: int = 2
 @export var fracture_chunks: int = 5
 @export var fracture_dust: int = 3
 @export var shove_dust: int = 3

@@ -11,7 +11,7 @@ Legenda: ✅ ficou bom · ⚠️ funciona mas a sensação ou o número precisa 
    godot --headless --path . --import
    godot --headless --path . --script res://tools/run_tests.gd
    ```
-   **Esperado**: `Tests: 213 passed, 0 failed`.
+   **Esperado**: `Tests: 225 passed, 0 failed`.
 2. Abra o jogo pelo editor (F5). Na tela de abertura, digite o segredo **O Equilíbrio** (← ← → → ↑ ↓ ↑ ↓) para liberar os secretos e a variante Eclipse do Predestinado. Isso grava o save real; se não quiser, use um perfil de usuário de teste ou faça backup de `user://progress.cfg`.
 3. Teclas padrão do J1: `A`/`D` andar, `W`/`Espaço` pular, `J` rápido, `K` forte, `L` guarda (tocar apara), `Shift` esquiva, `S` esquiva de precisão, `I` habilidade (frente ou trás + `I` = técnicas), `U` poder, `U`+`I` quarto poder, `F3` debug. No Treino: `F5` comportamento do boneco, `F6` gravar, `F7` reproduzir.
 4. Deixe o **F3** ligado nos testes de regra: ele mostra estado, fase do golpe, `contacts` (contador da Pressão), `cinematic`, `reserve` (reserva de Defesa) e `disengage ready`.
@@ -32,7 +32,7 @@ Use Aprender › Treino com o boneco parado (`F5` alterna o comportamento). Troq
 
 | # | Como testar | Esperado | Onde ajustar |
 | --- | --- | --- | --- |
-| 2.1 | Olhe a guarda parada de cada família | Guardião/Ancião/Predestinado: lâmina diagonal à frente do rosto, mão de trás no pomo · Esgrimista (Espelho, Haste, Soberano): braço da frente estendido, mão livre atrás na altura do ombro; o Espelho mantém a lâmina vertical · Agressor: Sombra com guarda baixa à frente · Colosso (Bastião, Forja): lâmina alta sobre o ombro · Dançarina (Garça): lâmina para trás · Vespa: uma lâmina alta à frente, a outra baixa e invertida atrás | guarda: `guard_angle` e `guard_grip` em cada personagem; mãos: `MotionFamily` em `data/families/*.tres` (`back_hand_spacing`, `free_hand`, `off_guard_hand`, `off_guard_angle`) |
+| 2.1 | Olhe a guarda parada de cada família | Guardião/Ancião/Predestinado: lâmina diagonal à frente do rosto, mão de trás no pomo · Esgrimista: Espelho com lâmina vertical e Soberano com lâmina à frente, ambos com mão livre atrás; Haste com duas mãos no cabo longo · Agressor: Sombra com guarda baixa à frente e Sombra Desperta alta atrás da cabeça · Colosso (Bastião, Forja): lâmina alta sobre o ombro · Dançarina (Garça): lâmina para trás · Golpeador: Brasa com empunhadura invertida · Vespa: uma lâmina alta à frente, a outra baixa e invertida atrás · Ceifador: bastão atravessado | guarda: `guard_angle` e `guard_grip` em cada personagem; mãos: `MotionFamily` em `data/families/*.tres` (`back_hand_spacing`, `free_hand`, `off_guard_hand`, `off_guard_angle`) |
 | 2.2 | Teste da silhueta: com o brilho da arena baixo, os personagens continuam distinguíveis pela forma de segurar? | sim | idem |
 | 2.3 | Sequência de rápidos (`J` repetido colado no boneco) com cada família | cada passo com um corte diferente (descendente, ascendente, estocada, horizontal com o tronco torcendo, giro como fecho) e o corpo indo na frente do punho | tipo de corte: `cut` de cada golpe; atraso do punho: `MotionFamily.wrist_lag`; volta à guarda: `recover_share` |
 | 2.4 | **Vespa**, sequência de 5 rápidos | as duas lâminas alternam: nos passos 2 e 4 a lâmina de trás conduz o corte e a da frente sobe para a guarda; o 5º fecha com giro | `PoseSolver._place_second_blade` (apresentação) |
@@ -52,11 +52,12 @@ Galeria de poderes (↑ ↓ mudam o tier, `T` troca o alvo, `X` troca o lançado
 
 | # | Como testar | Esperado | Onde ajustar |
 | --- | --- | --- | --- |
-| 3.1 | Repulsão | palma recolhe junto ao peito, depois o braço estende de uma vez com recuo do ombro; as ondas saem da palma | `PoseSolver._repulse`; origem das ondas: `PowerVfxConfig.repulse_palm_offset` |
+| 3.1 | Repulsão nos quatro tiers, lançando dos dois lados | palma recolhe junto ao peito, depois estende com recuo do ombro; um grande arco de ar nasce na palma, cresce em altura, tem borda fina clara, corpo translúcido e ecos fracos; termina no mesmo alcance em todos os tiers | `PoseSolver._repulse`; grupo Repulse and fracture de `PowerVfxConfig` (`repulse_*`) |
 | 3.2 | Puxão | mão estende aberta e fecha em garra puxando; fio de energia da mão até o alvo, encurtando enquanto ele é puxado; só um contorno curto no alvo; **sem bola atrás do alvo** | `PowerVfxConfig.pull_tether_time`, `pull_outline_time` |
 | 3.3 | Raio nos tiers 3 e 4 (lançador Sombra) | 2 e 3 feixes abertos em leque, saindo dos dedos, separados no meio do caminho e chegando em alturas diferentes do corpo | grupo Lightning do `PowerVfxConfig` |
 | 3.4 | Corte de Fluxo nos tiers 2 e 4 | preparação com a lâmina atrás da cabeça, arco inteiro até a lâmina bater no chão, onde nasce a onda; no tier 4 o segundo corte vem 0,35 s depois, também com o arco completo | `data/powers/flow_cleave.tres` (`apex_repeat_delay`) |
 | 3.5 | Telecinese em Massa (Predestinado Aurora, `U`+`I` no Duelar, ou na Galeria no tier 3 ou 4) | câmera sobe (~0,45 s), meteoro é puxado e racha (~0,6 s), câmera desce acompanhando os pedaços (~0,45 s); o duelo fica congelado durante a subida e o meteoro (F3: `cinematic`); nada parece acelerado | congelamento: `data/powers/mass_telekinesis.tres` (`cinematic_freeze`); câmera e meteoro: `PowerVfxConfig.mass_rise`, `mass_hold`, `mass_descend`, `meteor_crack` |
+| 3.6 | Repulsão Suprema e depois as duas Repulsões com **efeitos reduzidos** | Suprema solta os arcos `(` e `)` a partir do corpo; com redução, a onda principal continua legível, sem ecos, riscos extras ou flashes e com menos poeira; o alcance e o resultado do golpe não mudam | `repulse_reduced_alpha`, `repulse_reduced_dust`, `repulse_echo_*` em `PowerVfxConfig` |
 
 ## 4. Regras novas
 

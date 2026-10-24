@@ -20,6 +20,7 @@ const STEAM_INTERVAL: float = 0.14
 
 var config: PowerVfxConfig
 var sim: MatchSimulation
+var reduced: bool = false
 var floor_y: float = 0.0
 var meteors: Array[Vector2] = [Vector2.ZERO, Vector2.ZERO]
 var meteor_times: PackedFloat32Array = PackedFloat32Array([-1.0, -1.0])
@@ -115,13 +116,15 @@ func _on_power_active(event: CombatEvent) -> void:
 	var caster: FighterState = sim.fighters[event.source]
 	match event.power.kind:
 		PowerData.Kind.REPULSE:
-			for i in config.repulse_dust:
-				var reach: float = event.power.reach * (i + 1.0) / config.repulse_dust
+			var count: int = config.repulse_reduced_dust if reduced else config.repulse_dust
+			for i in count:
+				var reach: float = event.power.reach * (i + 1.0) / count
 				dust(Vector2(caster.x + caster.facing * reach, floor_y), 1, 6.0, 30.0)
 		PowerData.Kind.SUPREME_PUSH:
+			var count: int = (config.repulse_reduced_dust if reduced else config.repulse_dust) / 2
 			for side in [-1.0, 1.0]:
-				for i in config.repulse_dust / 2:
-					dust(Vector2(caster.x + side * event.power.reach * (i + 1.0) / (config.repulse_dust / 2), floor_y), 1, 6.0, 40.0)
+				for i in count:
+					dust(Vector2(caster.x + side * event.power.reach * (i + 1.0) / count, floor_y), 1, 6.0, 40.0)
 		PowerData.Kind.FRACTURE:
 			dust(Vector2(caster.x + caster.facing * 30.0, floor_y), config.fracture_dust + 2, 12.0, 120.0)
 			chunks(Vector2(caster.x + caster.facing * 30.0, floor_y), 3, 300.0, 4.0)

@@ -2,6 +2,7 @@ class_name PowerView
 extends Node2D
 
 const PALETTE: UiPalette = preload("res://ui/palette.tres")
+const EFFECTS: EffectsConfig = preload("res://data/balance/effects_config.tres")
 const POOL: int = 48
 const BEAM_SEGMENTS: int = 9
 const BEAM_JITTER: float = 9.0
@@ -17,8 +18,9 @@ const CLEAVE_SEGMENTS: int = 10
 const CLEAVE_GROW: float = 70.0
 const CLEAVE_LAYERS: Array[Vector2] = [Vector2(2.4, 0.28), Vector2(1.2, 0.8), Vector2(0.4, 1.0)]
 const METEOR_CRACKS: int = 5
+const SHOCKWAVE_SEGMENTS: int = 16
 
-enum Burst { WAVE, RING_IN, RING_OUT, BOLT, FLASH, CHEVRONS, TETHER, OUTLINE }
+enum Burst { WAVE, RING_IN, RING_OUT, BOLT, FLASH, SHOCKWAVE, TETHER, OUTLINE }
 
 var sim: MatchSimulation
 var views: Array[FighterView] = []
@@ -28,6 +30,7 @@ var base_ambient: Color = Color.WHITE
 var vfx: PowerVfxConfig
 var debris: DebrisLayer
 var sky: StormSky
+var reduced: bool = false
 
 var _sky_flash: float = 0.0
 var _meteor_seen: PackedFloat32Array = PackedFloat32Array([-1.0, -1.0])
@@ -41,6 +44,10 @@ var _ages: PackedFloat32Array = []
 var _lives: PackedFloat32Array = []
 var _sizes: PackedFloat32Array = []
 var _colors: PackedColorArray = []
+var _tiers: PackedInt32Array = []
+var _pending_sources: PackedInt32Array = []
+var _wave_from_body: PackedByteArray = []
+var _wave_ends: PackedFloat32Array = []
 var _next: int = 0
 var _time: float = 0.0
 var _beam_clock: float = 0.0
@@ -59,6 +66,11 @@ func _ready() -> void:
 	_lives.resize(POOL)
 	_sizes.resize(POOL)
 	_colors.resize(POOL)
+	_tiers.resize(POOL)
+	_pending_sources.resize(POOL)
+	_pending_sources.fill(-1)
+	_wave_from_body.resize(POOL)
+	_wave_ends.resize(POOL)
 	_lives.fill(0.0)
 
 
@@ -102,13 +114,10 @@ func _on_power_active(event: CombatEvent) -> void:
 	var hand: Vector2 = views[caster.index].hand_position(false)
 	match event.power.kind:
 		PowerData.Kind.REPULSE:
-			var palm: Vector2 = views[caster.index].chest_position() + Vector2(caster.facing * vfx.repulse_palm_offset, 0.0)
-			for i in 3:
-				_burst(Burst.CHEVRONS, palm, caster.facing, 0.35 + i * 0.06, event.power.reach * (0.6 + i * 0.2), color)
+			_start_shockwave(caster, event.power.reach, caster.facing, false)
 		PowerData.Kind.SUPREME_PUSH:
-			_burst(Burst.RING_OUT, views[caster.index].body_center(), 0.0, 0.35, event.power.reach, color)
 			for side in [-1.0, 1.0]:
-				_burst(Burst.CHEVRONS, views[caster.index].body_center(), side, 0.35, event.power.reach, color)
+				_start_shockwave(caster, event.power.reach, side, true)
 		PowerData.Kind.PULL:
 			_burst(Burst.TETHER, hand, caster.index, vfx.pull_tether_time, event.power.tier_value(caster.flow_tier), color)
 		PowerData.Kind.FRACTURE:
@@ -130,7 +139,18 @@ func _on_hazard(event: CombatEvent, at: Vector2) -> void:
 			_burst(Burst.RING_OUT, at, 0.0, 0.3, 70.0, color)
 
 
-func _burst(kind: Burst, at: Vector2, direction: float, life: float, size: float, color: Color) -> void:
+func _start_shockwave(caster: FighterState, reach: float, direction: float, from_body: bool) -> void:
+	var index: int = _burst(Burst.SHOCKWAVE, Vector2.ZERO, direction, vfx.repulse_wave_time, reach, tier_color(caster.flow_tier))
+	_tiers[index] = caster.flow_tier
+	_pending_sources[index] = caster.index
+	_wave_from_body[index] = int(from_body)
+	_wave_ends[index] = caster.x + direction * (reach + sim.config.body_width * 0.5)
+
+
+func _burst(kind: Burst, at: Vector2, direction: float, life: float, size: float, color: Color) -> int:
+	if reduced and kind == Burst.FLASH:
+		return -1
+	var index: int = _next
 	_kinds[_next] = kind
 	_positions[_next] = at
 	_directions[_next] = direction
@@ -138,7 +158,9 @@ func _burst(kind: Burst, at: Vector2, direction: float, life: float, size: float
 	_lives[_next] = life
 	_sizes[_next] = size
 	_colors[_next] = color
+	_pending_sources[_next] = -1
 	_next = (_next + 1) % POOL
+	return index
 
 
 func _process(delta: float) -> void:
@@ -149,6 +171,11 @@ func _process(delta: float) -> void:
 		_beam_seed += 1
 	for i in POOL:
 		if _lives[i] > 0.0:
+			if _pending_sources[i] >= 0:
+				var view: FighterView = views[_pending_sources[i]]
+				_positions[i] = view.body_center() if _wave_from_body[i] != 0 else view.hand_position(false)
+				_pending_sources[i] = -1
+				continue
 			_ages[i] += delta
 			if _ages[i] >= _lives[i]:
 				_lives[i] = 0.0
@@ -437,7 +464,7 @@ func _draw_hazard(hazard: Hazard) -> void:
 
 func _draw_bursts() -> void:
 	for i in POOL:
-		if _lives[i] <= 0.0:
+		if _lives[i] <= 0.0 or _pending_sources[i] >= 0:
 			continue
 		var progress: float = _ages[i] / _lives[i]
 		var color: Color = Color(_colors[i], 1.0 - progress)
@@ -458,11 +485,80 @@ func _draw_bursts() -> void:
 				_draw_tether(int(_directions[i]), _sizes[i], _colors[i], progress)
 			Burst.OUTLINE:
 				_draw_ellipse(views[int(_directions[i])].body_center(), Vector2(30.0, 82.0) * (1.0 + progress * 0.15), color, 2.0)
-			Burst.CHEVRONS:
-				var reach: float = _sizes[i] * progress
-				var tip: Vector2 = at + Vector2(_directions[i] * reach, 0.0)
-				var back: float = -_directions[i] * 18.0
-				draw_polyline(PackedVector2Array([tip + Vector2(back, -26.0), tip, tip + Vector2(back, 26.0)]), color, 4.0)
+			Burst.SHOCKWAVE:
+				_draw_shockwave(i, progress)
+
+
+func shockwave_tip(index: int, progress: float) -> Vector2:
+	var travel: float = clampf(progress / vfx.repulse_travel_share, 0.0, 1.0)
+	return Vector2(lerpf(_positions[index].x, _wave_ends[index], travel), _positions[index].y)
+
+
+func shockwave_height(tier: int, progress: float) -> float:
+	var travel: float = clampf(progress / vfx.repulse_travel_share, 0.0, 1.0)
+	return lerpf(vfx.repulse_start_height, vfx.repulse_end_height + tier * vfx.repulse_tier_height, travel)
+
+
+func shockwave_echoes(tier: int) -> int:
+	return 0 if reduced else 2 if tier >= vfx.repulse_echo_tier else 1
+
+
+static func shockwave_point(tip: Vector2, direction: float, height: float, bow: float, along: float, inset: float) -> Vector2:
+	var taper: float = maxf(1.0 - along * along, 0.0)
+	return (tip + Vector2(-direction * (bow * along * along + inset * taper), along * height * 0.5)).snapped(Vector2.ONE * GRID)
+
+
+func _draw_shockwave(index: int, progress: float) -> void:
+	var tier: int = _tiers[index]
+	var direction: float = _directions[index]
+	var tip: Vector2 = shockwave_tip(index, progress)
+	var height: float = shockwave_height(tier, progress)
+	var width: float = vfx.repulse_width + tier * vfx.repulse_tier_width
+	var strength: float = ceilf((1.0 - progress) * EFFECTS.fade_steps) / EFFECTS.fade_steps
+	if reduced:
+		strength *= vfx.repulse_reduced_alpha
+	var travel: float = absf(tip.x - _positions[index].x)
+	for echo in range(shockwave_echoes(tier), 0, -1):
+		var lag: float = minf(vfx.repulse_echo_spacing * echo, travel)
+		if lag < vfx.repulse_echo_spacing * echo:
+			continue
+		_draw_air_arc(tip - Vector2(direction * lag, 0.0), direction, height, width, _colors[index], strength * pow(vfx.repulse_echo_alpha, echo), false)
+	_draw_air_arc(tip, direction, height, width, _colors[index], strength, true)
+	if reduced:
+		return
+	for streak in vfx.repulse_ground_streaks:
+		var lag: float = streak * vfx.repulse_streak_gap
+		var start: Vector2 = Vector2(tip.x - direction * lag, -GRID - streak * vfx.repulse_streak_gap).snapped(Vector2.ONE * GRID)
+		var length: float = minf(vfx.repulse_streak_length, maxf(travel - lag, 0.0))
+		draw_line(start, (start - Vector2(direction * length, 0.0)).snapped(Vector2.ONE * GRID), Color(_colors[index], strength * vfx.repulse_streak_alpha), GRID)
+
+
+func _draw_air_arc(tip: Vector2, direction: float, height: float, width: float, color: Color, strength: float, edge: bool) -> void:
+	var bow: float = height * vfx.repulse_bow_ratio
+	var bands: int = vfx.repulse_band_alpha.size()
+	for band in bands:
+		for segment in SHOCKWAVE_SEGMENTS:
+			var a: float = -1.0 + 2.0 * segment / SHOCKWAVE_SEGMENTS
+			var b: float = -1.0 + 2.0 * (segment + 1) / SHOCKWAVE_SEGMENTS
+			var outer: float = width * band / bands
+			var inner: float = width * (band + 1) / bands
+			var points: PackedVector2Array = PackedVector2Array([
+				shockwave_point(tip, direction, height, bow, a, outer),
+				shockwave_point(tip, direction, height, bow, b, outer),
+				shockwave_point(tip, direction, height, bow, b, inner),
+				shockwave_point(tip, direction, height, bow, a, inner),
+			])
+			var polygon: PackedVector2Array = Geometry2D.convex_hull(points)
+			if polygon.size() < 4:
+				continue
+			polygon.resize(polygon.size() - 1)
+			draw_colored_polygon(polygon, Color(color, vfx.repulse_band_alpha[band] * strength))
+	var line: PackedVector2Array = []
+	for segment in SHOCKWAVE_SEGMENTS + 1:
+		var along: float = -1.0 + 2.0 * segment / SHOCKWAVE_SEGMENTS
+		line.append(shockwave_point(tip, direction, height, bow, along, 0.0))
+	var rim: Color = color.lerp(PALETTE.spark_hot, vfx.repulse_edge_light) if edge else color
+	draw_polyline(line, Color(rim, strength), vfx.repulse_edge_width, false)
 
 
 func _draw_lightning_fan(hand: Vector2, chest: Vector2, beams: int, color: Color) -> void:

@@ -4,3 +4,23 @@
 
 [resource]
 script = ExtResource("1_script")
+repulse_wave_time = 0.38
+repulse_travel_share = 0.8
+repulse_start_height = 72.0
+repulse_end_height = 156.0
+repulse_tier_height = 8.0
+repulse_width = 12.0
+repulse_tier_width = 2.0
+repulse_bow_ratio = 0.22
+repulse_edge_width = 2.0
+repulse_edge_light = 0.6
+repulse_band_alpha = PackedFloat32Array(0.34, 0.2, 0.1)
+repulse_echo_tier = 2
+repulse_echo_spacing = 18.0
+repulse_echo_alpha = 0.28
+repulse_ground_streaks = 3
+repulse_streak_length = 26.0
+repulse_streak_gap = 6.0
+repulse_streak_alpha = 0.24
+repulse_reduced_alpha = 0.7
+repulse_reduced_dust = 2

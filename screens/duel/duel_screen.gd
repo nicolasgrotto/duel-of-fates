@@ -107,11 +107,13 @@ func _build_scene() -> void:
 		_views.append(view)
 	_debris = DebrisLayer.new()
 	_debris.config = POWER_VFX
+	_debris.reduced = Settings.reduced_effects
 	_debris.z_index = DEBRIS_DEPTH
 	_world.add_child(_debris)
 	_powers = PowerView.new()
 	_powers.z_index = 10
 	_powers.vfx = POWER_VFX
+	_powers.reduced = Settings.reduced_effects
 	_powers.debris = _debris
 	_powers.sky = _sky
 	_sky.flashed.connect(_powers.on_sky_flash)
