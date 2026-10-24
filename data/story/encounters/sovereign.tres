@@ -1,0 +1,53 @@
+[gd_resource type="Resource" script_class="EncounterData" format=3]
+
+[ext_resource type="Script" path="res://data/story/encounter_data.gd" id="1_encounter"]
+[ext_resource type="Script" path="res://data/story/dialogue_line.gd" id="2_line"]
+[ext_resource type="Resource" path="res://data/arenas/orbital_ring.tres" id="3_arena"]
+
+[sub_resource type="Resource" id="before_0"]
+script = ExtResource("2_line")
+speaker = &"narrator"
+text_key = "STORY_SOVEREIGN_B1"
+path = 0
+
+[sub_resource type="Resource" id="before_1"]
+script = ExtResource("2_line")
+speaker = &"sovereign"
+text_key = "STORY_SOVEREIGN_B2"
+path = 0
+
+[sub_resource type="Resource" id="before_2"]
+script = ExtResource("2_line")
+speaker = &"protagonist"
+text_key = "STORY_SOVEREIGN_B3"
+path = 0
+
+[sub_resource type="Resource" id="before_3"]
+script = ExtResource("2_line")
+speaker = &"sovereign"
+text_key = "STORY_SOVEREIGN_B4"
+path = 0
+
+[sub_resource type="Resource" id="after_0"]
+script = ExtResource("2_line")
+speaker = &"sovereign"
+text_key = "STORY_SOVEREIGN_A1"
+path = 0
+
+[resource]
+script = ExtResource("1_encounter")
+id = &"sovereign"
+chapter = 8
+title_key = "STORY_SOVEREIGN_TITLE"
+route = 1
+opponent = &"sovereign"
+arena = ExtResource("3_arena")
+ai_offset = 0
+boss_ai = false
+milestone = false
+awards_points = false
+power_aurora = &""
+power_eclipse = &""
+unlocks = PackedStringArray("character:sovereign")
+before = Array[ExtResource("2_line")]([SubResource("before_0"), SubResource("before_1"), SubResource("before_2"), SubResource("before_3")])
+after = Array[ExtResource("2_line")]([SubResource("after_0")])

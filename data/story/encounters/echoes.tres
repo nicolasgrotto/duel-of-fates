@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="EncounterData" format=3]
+
+[ext_resource type="Script" path="res://data/story/encounter_data.gd" id="1_encounter"]
+[ext_resource type="Script" path="res://data/story/dialogue_line.gd" id="2_line"]
+[ext_resource type="Resource" path="res://data/arenas/luminous_forest.tres" id="3_arena"]
+
+[sub_resource type="Resource" id="before_0"]
+script = ExtResource("2_line")
+speaker = &"narrator"
+text_key = "STORY_ECHOES_B1"
+path = 0
+
+[sub_resource type="Resource" id="before_1"]
+script = ExtResource("2_line")
+speaker = &"echo"
+text_key = "STORY_ECHOES_B2"
+path = 0
+
+[sub_resource type="Resource" id="after_0"]
+script = ExtResource("2_line")
+speaker = &"echo"
+text_key = "STORY_ECHOES_A1"
+path = 0
+
+[sub_resource type="Resource" id="after_1"]
+script = ExtResource("2_line")
+speaker = &"echo"
+text_key = "STORY_ECHOES_A2"
+path = 0
+
+[resource]
+script = ExtResource("1_encounter")
+id = &"echoes"
+chapter = 2
+title_key = "STORY_ECHOES_TITLE"
+route = 0
+opponent = &"echo"
+arena = ExtResource("3_arena")
+ai_offset = -1
+boss_ai = false
+milestone = false
+awards_points = true
+power_aurora = &"barrier"
+power_eclipse = &"pull"
+unlocks = PackedStringArray()
+before = Array[ExtResource("2_line")]([SubResource("before_0"), SubResource("before_1")])
+after = Array[ExtResource("2_line")]([SubResource("after_0"), SubResource("after_1")])

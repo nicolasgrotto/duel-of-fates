@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="EndingData" format=3]
+
+[ext_resource type="Script" path="res://data/story/ending_data.gd" id="1_ending"]
+
+[resource]
+script = ExtResource("1_ending")
+id = &"heir_returns"
+title_key = "ENDING_HEIR_RETURNS_TITLE"
+secret = true
+lines = PackedStringArray("ENDING_HEIR_RETURNS_1", "ENDING_HEIR_RETURNS_2")
+unlocks = PackedStringArray("character:elder", "ending:any", "ending:secret")

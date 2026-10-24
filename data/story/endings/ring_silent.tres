@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="EndingData" format=3]
+
+[ext_resource type="Script" path="res://data/story/ending_data.gd" id="1_ending"]
+
+[resource]
+script = ExtResource("1_ending")
+id = &"ring_silent"
+title_key = "ENDING_RING_SILENT_TITLE"
+secret = false
+lines = PackedStringArray("ENDING_RING_SILENT_1", "ENDING_RING_SILENT_2")
+unlocks = PackedStringArray("character:elder", "ending:any")

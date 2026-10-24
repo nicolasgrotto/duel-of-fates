@@ -10,6 +10,7 @@ var survival_best: int = 0
 var parry_best: int = 0
 var challenge_best: Dictionary = {}
 var unlocked: Dictionary = {}
+var campaign: Dictionary = {}
 
 
 func _ready() -> void:
@@ -22,6 +23,7 @@ func reset() -> void:
 	parry_best = 0
 	challenge_best = {}
 	unlocked = {}
+	campaign = {}
 
 
 func load_progress() -> void:
@@ -37,6 +39,7 @@ func load_progress() -> void:
 	parry_best = file.get_value(SECTION, "parry_best", 0)
 	challenge_best = file.get_value(SECTION, "challenge_best", {})
 	unlocked = file.get_value(SECTION, "unlocked", {})
+	campaign = file.get_value(SECTION, "campaign", {})
 
 
 func save_progress() -> void:
@@ -47,6 +50,7 @@ func save_progress() -> void:
 	file.set_value(SECTION, "parry_best", parry_best)
 	file.set_value(SECTION, "challenge_best", challenge_best)
 	file.set_value(SECTION, "unlocked", unlocked)
+	file.set_value(SECTION, "campaign", campaign)
 	file.save(path)
 
 

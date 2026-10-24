@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="CampaignData" format=3]
+
+[ext_resource type="Script" path="res://data/story/campaign_data.gd" id="1_campaign"]
+[ext_resource type="Script" path="res://data/story/encounter_data.gd" id="2_encounter"]
+[ext_resource type="Resource" path="res://data/story/encounters/trial.tres" id="e_trial"]
+[ext_resource type="Resource" path="res://data/story/encounters/echoes.tres" id="e_echoes"]
+[ext_resource type="Resource" path="res://data/story/encounters/rooftop_wasp.tres" id="e_rooftop_wasp"]
+[ext_resource type="Resource" path="res://data/story/encounters/ember_mine.tres" id="e_ember_mine"]
+[ext_resource type="Resource" path="res://data/story/encounters/sanctuary_wall.tres" id="e_sanctuary_wall"]
+[ext_resource type="Resource" path="res://data/story/encounters/shadow.tres" id="e_shadow"]
+[ext_resource type="Resource" path="res://data/story/encounters/shadow_awakens.tres" id="e_shadow_awakens"]
+[ext_resource type="Resource" path="res://data/story/encounters/sovereign.tres" id="e_sovereign"]
+[ext_resource type="Resource" path="res://data/story/encounters/eclipse_foretold.tres" id="e_eclipse_foretold"]
+[ext_resource type="Resource" path="res://data/story/encounters/reaper_test.tres" id="e_reaper_test"]
+[ext_resource type="Resource" path="res://data/story/encounters/mirror_temple.tres" id="e_mirror_temple"]
+[ext_resource type="Resource" path="res://data/story/encounters/rooftop_heron.tres" id="e_rooftop_heron"]
+[ext_resource type="Resource" path="res://data/story/encounters/elder.tres" id="e_elder"]
+[ext_resource type="Resource" path="res://data/story/encounters/aurora_foretold.tres" id="e_aurora_foretold"]
+[ext_resource type="Resource" path="res://data/story/endings/ring_silent.tres" id="n_ring_silent"]
+[ext_resource type="Resource" path="res://data/story/endings/heir_returns.tres" id="n_heir_returns"]
+[ext_resource type="Resource" path="res://data/story/endings/forest_yields.tres" id="n_forest_yields"]
+[ext_resource type="Resource" path="res://data/story/endings/balance.tres" id="n_balance"]
+
+[resource]
+script = ExtResource("1_campaign")
+common = Array[ExtResource("2_encounter")]([ExtResource("e_trial"), ExtResource("e_echoes"), ExtResource("e_rooftop_wasp"), ExtResource("e_ember_mine")])
+aurora = Array[ExtResource("2_encounter")]([ExtResource("e_sanctuary_wall"), ExtResource("e_shadow"), ExtResource("e_shadow_awakens"), ExtResource("e_sovereign")])
+eclipse = Array[ExtResource("2_encounter")]([ExtResource("e_reaper_test"), ExtResource("e_mirror_temple"), ExtResource("e_rooftop_heron"), ExtResource("e_elder")])
+aurora_secret = ExtResource("e_eclipse_foretold")
+eclipse_secret = ExtResource("e_aurora_foretold")
+aurora_normal_ending = ExtResource("n_ring_silent")
+aurora_secret_ending = ExtResource("n_heir_returns")
+eclipse_normal_ending = ExtResource("n_forest_yields")
+eclipse_secret_ending = ExtResource("n_balance")

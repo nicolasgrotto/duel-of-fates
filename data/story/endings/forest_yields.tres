@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="EndingData" format=3]
+
+[ext_resource type="Script" path="res://data/story/ending_data.gd" id="1_ending"]
+
+[resource]
+script = ExtResource("1_ending")
+id = &"forest_yields"
+title_key = "ENDING_FOREST_YIELDS_TITLE"
+secret = false
+lines = PackedStringArray("ENDING_FOREST_YIELDS_1", "ENDING_FOREST_YIELDS_2")
+unlocks = PackedStringArray("character:sovereign", "ending:any")

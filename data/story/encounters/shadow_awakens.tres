@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="EncounterData" format=3]
+
+[ext_resource type="Script" path="res://data/story/encounter_data.gd" id="1_encounter"]
+[ext_resource type="Script" path="res://data/story/dialogue_line.gd" id="2_line"]
+[ext_resource type="Resource" path="res://data/arenas/crystal_mine.tres" id="3_arena"]
+
+[sub_resource type="Resource" id="before_0"]
+script = ExtResource("2_line")
+speaker = &"narrator"
+text_key = "STORY_SHADOW_AWAKENS_B1"
+path = 0
+
+[sub_resource type="Resource" id="before_1"]
+script = ExtResource("2_line")
+speaker = &"awakened_shadow"
+text_key = "STORY_SHADOW_AWAKENS_B2"
+path = 0
+
+[sub_resource type="Resource" id="after_0"]
+script = ExtResource("2_line")
+speaker = &"awakened_shadow"
+text_key = "STORY_SHADOW_AWAKENS_A1"
+path = 0
+
+[sub_resource type="Resource" id="after_1"]
+script = ExtResource("2_line")
+speaker = &"narrator"
+text_key = "STORY_SHADOW_AWAKENS_A2"
+path = 0
+
+[resource]
+script = ExtResource("1_encounter")
+id = &"shadow_awakens"
+chapter = 7
+title_key = "STORY_SHADOW_AWAKENS_TITLE"
+route = 1
+opponent = &"awakened_shadow"
+arena = ExtResource("3_arena")
+ai_offset = 0
+boss_ai = false
+milestone = false
+awards_points = true
+power_aurora = &"pull"
+power_eclipse = &""
+unlocks = PackedStringArray()
+before = Array[ExtResource("2_line")]([SubResource("before_0"), SubResource("before_1")])
+after = Array[ExtResource("2_line")]([SubResource("after_0"), SubResource("after_1")])
