@@ -108,3 +108,51 @@ func test_catalog_and_old_save_drop_removed_power() -> void:
 	var campaign: StoryCampaign = StoryCampaign.from_dict(saved)
 	assert_eq(campaign.learned.size(), 1)
 	assert_eq(campaign.equipped[0], &"repulse")
+
+
+func _waves(duel: DuelFixture) -> int:
+	return duel.count_events(CombatEvent.Type.PROJECTILE_SPAWNED)
+
+
+func test_pressing_again_throws_a_second_wave_once() -> void:
+	var duel: DuelFixture = _duel()
+	duel.place(500.0)
+	var vigor: float = duel.fighter(0).vigor
+	_start(duel)
+	duel.step_until(func() -> bool: return duel.fighter(0).is_active(), 30)
+	duel.press(0, Intent.Command.SPECIAL)
+	duel.step()
+	duel.release(0)
+	assert_true(duel.step_until(func() -> bool: return _waves(duel) == 2, 60), "the follow-up throws a second wave")
+	assert_eq(duel.fighter(0).move, CUT.follow_up)
+	assert_almost(duel.fighter(0).vigor, vigor - CUT.vigor_cost - CUT.follow_up.vigor_cost, 2.0)
+	duel.press(0, Intent.Command.SPECIAL)
+	duel.step()
+	duel.release(0)
+	duel.step(40)
+	assert_eq(_waves(duel), 2, "only two waves in a row")
+
+
+func test_without_a_second_press_only_one_wave_leaves() -> void:
+	var duel: DuelFixture = _duel()
+	duel.place(500.0)
+	_start(duel)
+	duel.step(60)
+	assert_eq(_waves(duel), 1)
+
+
+func test_wave_grows_with_the_flow_tier() -> void:
+	var sizes: Array[float] = []
+	for level in [1, 4, 7, 10]:
+		var duel: DuelFixture = _duel()
+		duel.place(500.0)
+		duel.set_level(0, level)
+		_start(duel)
+		duel.step_until(func() -> bool: return _waves(duel) == 1, 30)
+		for wave in duel.sim.projectiles:
+			if wave.active and wave.kind == Projectile.Kind.CLEAVE:
+				sizes.append(wave.size)
+	assert_eq(sizes.size(), 4)
+	assert_almost(sizes[0], CUT.projectile_size)
+	for i in 3:
+		assert_gt(sizes[i + 1], sizes[i], "tier %d wave is larger" % (i + 2))

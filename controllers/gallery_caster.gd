@@ -44,6 +44,8 @@ func _technique_step(fighter: FighterState, tick: int, intent: Intent) -> void:
 	if tick == 0:
 		intent.move_x = fighter.facing
 		intent.press(Intent.Command.SPECIAL)
+	elif technique.follow_up != null and tick == technique.startup_ticks() + technique.active_ticks():
+		intent.press(Intent.Command.SPECIAL)
 
 
 func debug_lines() -> PackedStringArray:

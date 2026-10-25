@@ -391,6 +391,8 @@ godot --headless --path . --script res://tools/simulate.gd -- --duels 100 --diff
 
 `MoveData.TechniqueStyle.WAVE` lança um projétil CLEAVE no primeiro tick ativo; velocidade, tamanho e alcance ficam no MoveData. O projétil referencia o golpe, resolve dano de Lâmina, guarda e finalização pelo caminho físico, sem desarmar o lutador. O parry perfeito troca o dono e a cor; o Arsenal intercepta. O valor 12 do enum PowerData.Kind fica reservado como `UNUSED_FLOW_CLEAVE` para preservar os inteiros dos recursos. Saves descartam ids de poderes desconhecidos. A seleção edita também os três espaços de técnicas; duplica CharacterData apenas para o duelo, sem alterar o elenco ou salvar conjuntos personalizados.
 
+`MoveData.follow_up` encadeia um segundo golpe: `AttackState._try_chain` o inicia quando há Especial no buffer durante o golpe, com `chain_index + 1` (a pose do segundo corte lê esse índice para girar a lâmina de volta). O segundo corte é `data/techniques/projected_cut_follow.tres`, sem `follow_up`, então são no máximo dois. `MoveData.projectile_growth` aumenta o tamanho do projétil por tier de Fluxo de quem lança; `PowerView` escala a onda pela razão entre `Projectile.size` e `projectile_size`. A IA decide no início da técnica se fará o segundo corte (`technique_bias`, Vigor para os dois). A Galeria demonstra os dois.
+
 
 ### Pontos e árvores da História
 

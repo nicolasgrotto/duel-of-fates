@@ -27,6 +27,7 @@ var _press_delay: int = 0
 var _after_press_plan: Plan = Plan.WAIT
 var _after_press_ticks: int = 0
 var _chain_left: int = 0
+var _wants_follow_up: bool = false
 var _lock_press_ticks: int = 0
 var _hold_command: int = 0
 var _hold_until_gap: float = 0.0
@@ -80,6 +81,7 @@ func _reset_plan() -> void:
 	_plan = Plan.WAIT
 	_press_command = 0
 	_chain_left = 0
+	_wants_follow_up = false
 	_lock_press_ticks = 0
 	_hold_command = 0
 	_followup_command = 0
@@ -341,6 +343,8 @@ func _try_technique(sim: MatchSimulation, me: FighterState, gap: float) -> bool:
 		return false
 	_schedule(Intent.Command.SPECIAL, Ticks.from_seconds(difficulty.attack_warning), 0, Plan.WAIT, 0, "technique " + String(technique.id))
 	_press_direction = 1 if pick == 0 else -1
+	if technique.follow_up != null:
+		_wants_follow_up = me.vigor >= technique.vigor_cost + technique.follow_up.vigor_cost and rng.randf() < profile.technique_bias
 	return true
 
 
@@ -561,7 +565,13 @@ func _try_disengage(sim: MatchSimulation, me: FighterState, intent: Intent) -> b
 
 
 func _continue_chain(me: FighterState, intent: Intent) -> void:
-	if _chain_left <= 0 or me.move == null:
+	if me.move == null:
+		return
+	if _wants_follow_up and me.move.follow_up != null and me.move_phase == FighterState.Phase.RECOVERY:
+		intent.press(Intent.Command.SPECIAL)
+		_wants_follow_up = false
+		return
+	if _chain_left <= 0:
 		return
 	if me.move.kind == MoveData.Kind.LIGHT and me.move_connected and me.move_phase == FighterState.Phase.RECOVERY:
 		intent.press(Intent.Command.LIGHT)

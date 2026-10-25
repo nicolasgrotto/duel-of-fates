@@ -1031,6 +1031,8 @@ func _projected_cut(fighter: FighterState, pose: RigPose) -> Vector2:
 	var move: MoveData = fighter.move
 	if fighter.move_phase == FighterState.Phase.STARTUP:
 		var progress: float = clampf(float(fighter.phase_ticks) / maxf(move.startup_ticks(), 1.0), 0.0, 1.0)
+		if fighter.chain_index > 0:
+			return _cleave_rewind(progress, pose)
 		if progress < CLEAVE_WINDUP_SHARE:
 			var lift: float = ease(progress / CLEAVE_WINDUP_SHARE, 0.5)
 			pose.grip = pose.grip.lerp(CLEAVE_HIGH_GRIP, lift)
@@ -1046,6 +1048,17 @@ func _projected_cut(fighter: FighterState, pose: RigPose) -> Vector2:
 	pose.front_foot.x += 14.0 * (1.0 - settle)
 	pose.trail = fighter.move_phase == FighterState.Phase.ACTIVE
 	return Vector2(22.0 * (1.0 - settle), 26.0 * (1.0 - settle))
+
+
+func _cleave_rewind(progress: float, pose: RigPose) -> Vector2:
+	var rewind: float = 1.0 - CLEAVE_WINDUP_SHARE
+	if progress < rewind:
+		var lift: float = ease(progress / rewind, 0.5)
+		pose.grip = CLEAVE_FLOOR_GRIP.lerp(CLEAVE_HIGH_GRIP, lift)
+		pose.blade_angle = lerpf(CLEAVE_FLOOR_ANGLE, CLEAVE_HIGH_ANGLE + 360.0, lift)
+		pose.trail = true
+		return Vector2(22.0 * (1.0 - lift), 26.0 * (1.0 - lift) - 10.0 * lift)
+	return _cleave_swing((progress - rewind) / CLEAVE_WINDUP_SHARE, pose)
 
 
 func _cleave_swing(amount: float, pose: RigPose) -> Vector2:

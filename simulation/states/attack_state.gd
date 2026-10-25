@@ -103,6 +103,8 @@ func _try_feint(sim: MatchSimulation, fighter: FighterState, move: MoveData) -> 
 
 func _try_chain(sim: MatchSimulation, fighter: FighterState) -> bool:
 	var move: MoveData = fighter.move
+	if _try_follow_up(sim, fighter, move):
+		return true
 	if move.kind != MoveData.Kind.LIGHT or not fighter.move_connected:
 		return false
 	if fighter.buffered_action != FighterState.Action.LIGHT:
@@ -114,6 +116,13 @@ func _try_chain(sim: MatchSimulation, fighter: FighterState) -> bool:
 	ActionStarter.consume(fighter)
 	ActionStarter.start_attack(sim, fighter, chain[next_index], next_index)
 	return true
+
+
+func _try_follow_up(sim: MatchSimulation, fighter: FighterState, move: MoveData) -> bool:
+	if move.follow_up == null or fighter.buffered_action != FighterState.Action.SPECIAL:
+		return false
+	ActionStarter.consume(fighter)
+	return ActionStarter.start_attack(sim, fighter, move.follow_up, fighter.chain_index + 1) == ActionStarter.Result.STARTED
 
 
 func debug_lines(_sim: MatchSimulation, fighter: FighterState) -> PackedStringArray:
@@ -135,4 +144,5 @@ func _project_wave(sim: MatchSimulation, fighter: FighterState, move: MoveData) 
 	projectile.damage = move.damage * fighter.blade_multiplier
 	projectile.vx = fighter.facing * move.projectile_speed
 	projectile.max_distance = move.projectile_range
-	projectile.size = move.projectile_size
+	projectile.tier = fighter.flow_tier
+	projectile.size = move.projectile_size * (1.0 + move.projectile_growth * fighter.flow_tier)
