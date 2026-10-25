@@ -18,3 +18,4 @@ extends Resource
 @export var head_on_deciding_heavy: bool = true
 @export var cinematic_ko_time: float = 1.6
 @export var dash_through_clearance: float = 24.0
+@export var execution_clearance: float = 16.0

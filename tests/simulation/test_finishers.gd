@@ -164,3 +164,12 @@ func test_every_heavy_has_a_cinematic_finisher() -> void:
 		var data: CharacterData = DuelFixture.character(id)
 		assert_ne(data.heavy.cinematic_finisher, Finisher.Kind.NONE, String(id))
 		assert_ne(data.forward_heavy.cinematic_finisher, Finisher.Kind.NONE, String(id))
+
+
+func test_stab_stops_the_lunge_in_front_of_the_victim() -> void:
+	var duel: DuelFixture = _duel(&"mirror", &"shadow")
+	_heavy(duel, true)
+	var gap: float = absf(duel.fighter(0).x - duel.fighter(1).x)
+	duel.step(60)
+	assert_almost(absf(duel.fighter(0).x - duel.fighter(1).x), gap, 0.5, "the cutter does not slide through the body")
+	assert_true(gap >= duel.sim.config.body_width + duel.sim.config.consequences.execution_clearance - 0.01)

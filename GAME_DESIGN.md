@@ -327,7 +327,7 @@ Com o poder Foco ativo, um lutador **parado em guarda, sem nenhum comando**, esq
 | Puxão | puxado e cortado ao meio | o Puxão acerta com a vida do alvo em até 12 (`PowerData.execute_below`): a execução é garantida |
 | Estrangular | estalo de energia no pescoço e queda | o estrangulamento mata |
 
-  O K.O. com cinemática dura mais `ConsequenceConfig.cinematic_ko_time` (1,6 s). No Avanço com corte, quem corta é posto 24 u atrás da vítima no instante da morte (determinístico).
+  O K.O. com cinemática dura mais `ConsequenceConfig.cinematic_ko_time` (1,6 s). No Avanço com corte, quem corta é posto 24 u atrás da vítima no instante da morte (determinístico). Na execução, na tesoura e na estocada, os dois param no instante da morte (sem o avanço do golpe nem o recuo da vítima) e quem corta fica pelo menos `ConsequenceConfig.execution_clearance` (16 u) à frente da vítima.
 - Sempre estilizado: sem sangue, corte cauterizado em brasa, cabeça sem rosto visível. A opção Finalizações desliga o desenho sem mudar nenhum resultado; o replay mostra o mesmo corte.
 
 ## 11. Atributos

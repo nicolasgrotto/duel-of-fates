@@ -326,6 +326,8 @@ func kill(victim: FighterState, killer: FighterState, move: MoveData, power: Pow
 	cinematic_ko = victim.finisher_kind != Finisher.Kind.NONE
 	if victim.finisher_kind == Finisher.Kind.DASH_THROUGH:
 		_pass_behind(killer, victim)
+	elif Finisher.is_execution(victim.finisher_kind) or victim.finisher_kind == Finisher.Kind.STAB:
+		_hold_in_front(killer, victim)
 	change_state(victim, FighterState.State.DEAD)
 	var event: CombatEvent = emit(CombatEvent.Type.DEATH, killer.index, victim.index)
 	event.move = move if thrown == null else thrown
@@ -357,6 +359,17 @@ func _pass_behind(killer: FighterState, victim: FighterState) -> void:
 	var limit: float = config.half_width() - config.body_width * 0.5
 	killer.x = clampf(victim.x + side * (config.body_width + config.consequences.dash_through_clearance), -limit, limit)
 	killer.vx = 0.0
+
+
+func _hold_in_front(killer: FighterState, victim: FighterState) -> void:
+	killer.vx = 0.0
+	victim.vx = 0.0
+	var minimum: float = config.body_width + config.consequences.execution_clearance
+	if absf(killer.x - victim.x) >= minimum:
+		return
+	var side: float = signf(killer.x - victim.x) if killer.x != victim.x else -float(killer.facing)
+	var limit: float = config.half_width() - config.body_width * 0.5
+	killer.x = clampf(victim.x + side * minimum, -limit, limit)
 
 
 func capture() -> Dictionary:
