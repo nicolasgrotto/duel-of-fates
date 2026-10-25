@@ -164,3 +164,5 @@ Se houver versão para celular: joystick flutuante à esquerda, seis botões cir
 - Barras grossas ou HUD cobrindo a luta.
 - Mais de uma fonte.
 - Texto escrito no código.
+
+O editor de conjunto da seleção inclui Frente, Trás e Ar para técnicas, com o mesmo ciclo por setas dos poderes e restauração do conjunto base. Corte Projetado pode ocupar qualquer um desses espaços; técnicas exclusivamente aéreas só entram em Ar.

@@ -48,7 +48,7 @@ Cada poder tem uma identidade sonora reconhecível e curta:
 - **Telecinese em Massa**: ronco subindo, rocha rachando, assobio descendo a cada marca, estrondo no impacto.
 - **Ira**: tom grave crescente; cada armadura gasta, baque grave rasgado.
 - **Dreno**: sucção grave. **Arsenal**: ronco subindo, lançamento cortante, bloqueio metálico.
-- **Corte de Fluxo**: corte com zumbido subindo; devolução com tom metálico claro.
+- **Corte Projetado**: corte com zumbido subindo; devolução com tom metálico claro.
 - **Resistido**: impacto abafado numa "parede".
 
 > Implementado na fase 5: todos os sons acima sintetizados em `assets/audio/powers/` (Fratura, Tempestade e Telecinese têm som na invocação, nas marcas e nos impactos; a Barreira, o Raio e o Dreno são loops enquanto o canal dura). Prioridade de mixagem: poderes 3 dB abaixo dos golpes.

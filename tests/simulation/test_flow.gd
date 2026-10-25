@@ -301,25 +301,6 @@ func test_mass_telekinesis_rains_impacts() -> void:
 	assert_gt(duel.count_events(CombatEvent.Type.POWER_HIT), 0.0)
 
 
-func test_perfect_parry_returns_the_flow_cleave() -> void:
-	var duel: DuelFixture = _duel()
-	duel.place(300.0)
-	duel.give_power(0, &"flow_cleave")
-	duel.cast(0)
-	var close: bool = duel.step_until(func() -> bool:
-		for projectile in duel.sim.projectiles:
-			if projectile.active and absf(projectile.x - duel.fighter(1).x) < 70.0:
-				return true
-		return false, 120)
-	assert_true(close)
-	duel.press(1, Intent.Command.BLOCK)
-	duel.step(1)
-	duel.step(60)
-	assert_eq(duel.count_events(CombatEvent.Type.PROJECTILE_REFLECTED), 1)
-	assert_gt(duel.count_events(CombatEvent.Type.POWER_HIT), 0.0)
-	assert_lt(duel.fighter(0).health, duel.fighter(0).max_health)
-
-
 func test_lightning_pulses_while_held() -> void:
 	var duel: DuelFixture = _duel(&"shadow", &"guardian")
 	duel.place(200.0)
@@ -617,23 +598,6 @@ func test_dash_slash_dashes_in_startup_and_cuts_at_the_end() -> void:
 	duel.step(dash.active_ticks() + 1)
 	assert_eq(duel.count_events(CombatEvent.Type.HIT), 1)
 	assert_lt(absf(duel.fighter(0).vx), 1.0, "the cut lands from a planted stance")
-
-
-func test_apex_flow_cleave_spaces_its_two_cuts() -> void:
-	var duel: DuelFixture = _duel(&"foretold", &"shadow")
-	duel.place(500.0)
-	var cleave: PowerData = duel.give_power(0, &"flow_cleave")
-	duel.set_level(0, 10)
-	duel.cast(0)
-	var spawns: Array[int] = []
-	for tick in cleave.startup_ticks() + cleave.recovery_ticks_at(true) + 12:
-		duel.step(1)
-		var last: Dictionary = duel.last_event(CombatEvent.Type.PROJECTILE_SPAWNED)
-		if not last.is_empty() and not spawns.has(last["tick"]):
-			spawns.append(last["tick"])
-	assert_eq(spawns.size(), 2)
-	assert_true(spawns.size() == 2 and spawns[1] - spawns[0] >= Ticks.from_seconds(cleave.apex_repeat_delay), "the second cut waits for its own full arc")
-	assert_ne(duel.fighter(0).state, FighterState.State.CASTING)
 
 
 func test_mass_telekinesis_freezes_the_duel_for_its_cinematic() -> void:

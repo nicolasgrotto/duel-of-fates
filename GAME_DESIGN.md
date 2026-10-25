@@ -323,7 +323,7 @@ Com o poder Foco ativo, um lutador **parado em guarda, sem nenhum comando**, esq
 | Forte e forte de avanço da Vespa | **tesoura**: o mesmo desarme; as duas lâminas se fecham em X no pescoço | o golpe mata |
 | Forte de avanço de Espelho, Haste e Soberano | **estocada**: a lâmina atravessa o peito e fica um instante, sai e a vítima cai de joelhos e tomba para a frente | o golpe mata |
 | Avanço com corte | corte na cintura passando: quem corta para atrás da vítima | o acerto do corte mata |
-| Corte de Fluxo | corte na cintura | a onda mata |
+| Corte Projetado | corte na cintura | a onda mata |
 | Investida descendente, Corte ascendente | corte vertical, as metades caem para os lados | o golpe mata |
 | Arremesso da lâmina | corte diagonal na parte de cima | a lâmina mata, na ida ou na volta |
 | Raio | eletrocutado (esqueleto aparece) e corpo carbonizado | um pulso do Raio mata; dano de outra fonte não conta |

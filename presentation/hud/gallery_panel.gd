@@ -216,7 +216,7 @@ func _stage(sim: MatchSimulation) -> void:
 		fighter.character.technique_air = technique
 	if power != null:
 		_close_in(sim, power.targeted_reach(fighter.flow_tier))
-	elif not technique.throws_blade:
+	elif not technique.throws_blade and technique.projectile_range <= 0.0:
 		_close_in(sim, technique.reach + technique.lunge)
 	var finishing: bool = _finishers and has_finisher(entry)
 	sim.rules.endless_finishers = finishing

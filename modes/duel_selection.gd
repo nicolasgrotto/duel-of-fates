@@ -29,7 +29,7 @@ func apply_to(setup: DuelSetup) -> void:
 
 
 func _keep_mirror_matches_apart(setup: DuelSetup) -> void:
-	if setup.characters[0] != setup.characters[1] or setup.blade_colors[0] != setup.blade_colors[1]:
+	if setup.characters[0].id != setup.characters[1].id or setup.blade_colors[0] != setup.blade_colors[1]:
 		return
 	var colors: PackedColorArray = setup.characters[1].blade_colors
 	if colors.size() > 1:

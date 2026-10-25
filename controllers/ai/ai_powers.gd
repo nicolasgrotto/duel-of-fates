@@ -10,7 +10,7 @@ const THREAT_MARGIN: float = 40.0
 const THREAT_TICKS: int = 18
 const DIRECTIONS: Array[int] = [0, 1, -1, 0]
 const ZONE_KINDS: Array[PowerData.Kind] = [PowerData.Kind.FRACTURE, PowerData.Kind.STORM, PowerData.Kind.MASS_TELEKINESIS]
-const RANGED_KINDS: Array[PowerData.Kind] = [PowerData.Kind.THROW, PowerData.Kind.FLOW_CLEAVE]
+const RANGED_KINDS: Array[PowerData.Kind] = [PowerData.Kind.THROW]
 const CLOSE_KINDS: Array[PowerData.Kind] = [
 	PowerData.Kind.LIGHTNING, PowerData.Kind.FREEZE, PowerData.Kind.CHOKE, PowerData.Kind.PULL,
 ]

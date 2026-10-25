@@ -66,6 +66,8 @@ func _enter_active(sim: MatchSimulation, fighter: FighterState, move: MoveData) 
 	fighter.phase_ticks = 0
 	if move.throws_blade:
 		_throw_blade(sim, fighter, move)
+	elif move.technique_style == MoveData.TechniqueStyle.WAVE:
+		_project_wave(sim, fighter, move)
 	if move.dash_in_startup:
 		fighter.vx = 0.0
 	elif fighter.on_ground and move.lunge > 0.0 and move.active > 0.0:
@@ -122,3 +124,15 @@ func debug_lines(_sim: MatchSimulation, fighter: FighterState) -> PackedStringAr
 		"%s  %s %d" % [fighter.move.id, phase_name.to_lower(), fighter.phase_ticks],
 		"chain %d  connected %s  hit %s" % [fighter.chain_index, fighter.move_connected, fighter.move_hit_done],
 	])
+
+
+func _project_wave(sim: MatchSimulation, fighter: FighterState, move: MoveData) -> void:
+	fighter.move_hit_done = true
+	var projectile: Projectile = sim.spawn_projectile(Projectile.Kind.CLEAVE, fighter, null)
+	if projectile == null:
+		return
+	projectile.move = move
+	projectile.damage = move.damage * fighter.blade_multiplier
+	projectile.vx = fighter.facing * move.projectile_speed
+	projectile.max_distance = move.projectile_range
+	projectile.size = move.projectile_size

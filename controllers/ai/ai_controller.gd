@@ -283,6 +283,8 @@ func _try_technique(sim: MatchSimulation, me: FighterState, gap: float) -> bool:
 	var reach: float = technique.reach + technique.lunge
 	if technique.throws_blade:
 		reach = sim.config.flow.blade_throw_base
+	elif technique.projectile_range > 0.0:
+		reach = technique.projectile_range
 	if gap > reach or gap < reach * 0.3:
 		return false
 	_schedule(Intent.Command.SPECIAL, Ticks.from_seconds(difficulty.attack_warning), 0, Plan.WAIT, 0, "technique " + String(technique.id))

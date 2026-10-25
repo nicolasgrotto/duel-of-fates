@@ -92,7 +92,7 @@ Fundo `#05070d`, texto `#e8ecf5`, texto secundário `#8a94ab`, destaque `#9fb4d9
 
 ### Ícones de poder
 
-Os vinte poderes recebem glifos originais de 24×24 pixels, em `assets/ui/powers/<id>.png`, gerados deterministicamente por `tools/art/make_power_icons.py`. Silhuetas distintas representam a função: onda de empurrão, garra que puxa, arco de escudo, raio, cristal de gelo, aperto no pescoço e assim por diante. Tons planos e borda escura de um pixel, reutilizando o cálculo de borda do pintor; sem gradiente ou desenho cartunesco. A fonte de cores é `UiPalette`: Aurora `#5aa2ff`, Eclipse `#ff4458`, comuns no destaque `#9fb4d9`, borda no fundo e luz no texto. A tela mostra ×3 em 1080p (×2 em 720p), com filtro nearest; o detalhe pode ampliar para ×6. Estado bloqueado usa modulação secundária e moldura/legenda, sem cor nova. O ícone pertence ao próprio `PowerData`, para futura reutilização na Galeria e no HUD, sem catálogo paralelo.
+Os dezenove poderes recebem glifos originais de 24×24 pixels, em `assets/ui/powers/<id>.png`, gerados deterministicamente por `tools/art/make_power_icons.py`. Silhuetas distintas representam a função: onda de empurrão, garra que puxa, arco de escudo, raio, cristal de gelo, aperto no pescoço e assim por diante. Tons planos e borda escura de um pixel, reutilizando o cálculo de borda do pintor; sem gradiente ou desenho cartunesco. A fonte de cores é `UiPalette`: Aurora `#5aa2ff`, Eclipse `#ff4458`, comuns no destaque `#9fb4d9`, borda no fundo e luz no texto. A tela mostra ×3 em 1080p (×2 em 720p), com filtro nearest; o detalhe pode ampliar para ×6. Estado bloqueado usa modulação secundária e moldura/legenda, sem cor nova. O ícone pertence ao próprio `PowerData`, para futura reutilização na Galeria e no HUD, sem catálogo paralelo.
 
 ## A lâmina
 
@@ -178,6 +178,7 @@ Personagens com o mesmo jeito de lutar compartilham a base de animação.
 ### Técnicas
 
 - **Avanço com corte** (revisão aprovada): **duas etapas**, como nos duelos de espadachim. 1) Arrancada: o corpo dispara rente e inclinado, a lâmina recolhida atrás do quadril, quase sem rastro, com imagens residuais. 2) Corte: no fim do avanço, um corte rápido e largo (diagonal de baixo para cima; o Guardião de cima para baixo; o Ceifador gira o bastão), com o rastro inteiro e uma pausa curta na pose final antes de voltar à guarda. Implementado: a família escolhe o corte (`MotionFamily.dash_cut`; o Guardião desce) e o Ceifador gira o bastão na arrancada (`dash_twirl`); a pausa ocupa o primeiro terço da recovery.
+- **Corte Projetado**: preparação alta atrás da cabeça, corte amplo até o chão e uma onda na cor da lâmina, sem repetição por tier.
 - **Arremesso da lâmina**: lâmina recua atrás do corpo, soltura com passo e braço estendido; a mão vazia acompanha a volta.
 - **Estocada**: lâmina recolhida no peito, braço todo estendido, passo longo.
 - **Corte ascendente**: corpo abaixa com a lâmina atrás do quadril e sobe com ela até acima da cabeça.
@@ -207,7 +208,7 @@ Personagens com o mesmo jeito de lutar compartilham a base de animação.
 - **Próteses** (fase 8, decisão do autor): o braço ou a perna perdidos num K.O. que não decide a partida voltam no round seguinte como **prótese robótica** até o fim da partida: o antebraço e a mão (ou a canela e a bota), que são as peças cortadas, trocam a paleta pelo metal (`UiPalette.prosthetic_metal`, material de prótese do rig), com a luz das lâminas por cima. Só apresentação.
 - **Finalizações cinematográficas** (K.O. decisivo; regra em GAME_DESIGN, seção 10): o corpo é cortado por um plano no shader do lutador e uma segunda cópia do rig, na mesma pose, mostra a outra metade; as metades se separam com física própria da apresentação e a borda do corte fica em brasa (amarelo-quente → laranja → cicatriz) soltando fumaça. Sem sangue.
   - **Avanço com corte**: rastro reto e claro pelo caminho; quem corta aparece parado atrás da vítima com a lâmina estendida na horizontal (~1,1 s); a vítima fica de pé um instante, a metade de cima desliza devagar pelo corte, tomba e cai; a de baixo desaba.
-  - **Corte de Fluxo**: o mesmo corte na cintura, sem o rastro de quem corta.
+  - **Corte Projetado**: o mesmo corte na cintura, sem o rastro de quem corta.
   - **Investida descendente e Corte ascendente**: corte vertical; as duas metades caem para os lados.
   - **Arremesso da lâmina**: corte diagonal na parte de cima, que escorrega e cai.
   - **Puxão**: a vítima chega puxada e é cortada ao meio; as metades seguem voando para trás de quem puxou.

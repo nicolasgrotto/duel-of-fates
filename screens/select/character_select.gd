@@ -35,6 +35,7 @@ var _costume_index: int = 0
 var _blade_index: int = 0
 var _use_variant: bool = false
 var _custom: Array[PowerData] = []
+var _techniques: Array[MoveData] = []
 var _editing: bool = false
 
 var _title: Label
@@ -211,6 +212,7 @@ func _on_highlighted(id: StringName) -> void:
 	_blade_index = 0
 	_use_variant = false
 	_custom.clear()
+	_techniques.clear()
 	_refresh_character()
 
 
@@ -270,7 +272,7 @@ func _show_powers(data: CharacterData) -> void:
 	for slot in _power_lines.size():
 		var power: PowerData = equipped[slot]
 		_power_lines[slot].text = tr(POWER_LINE_KEYS[slot]).format({"name": tr(power.name_key)}) if power != null else ""
-	var techniques: Array[MoveData] = [data.technique_forward, data.technique_back, data.technique_air]
+	var techniques: Array[MoveData] = _techniques if not _techniques.is_empty() else [data.technique_forward, data.technique_back, data.technique_air]
 	for i in techniques.size():
 		var technique: MoveData = techniques[i]
 		_technique_lines[i].text = tr(TECHNIQUE_LINE_KEYS[i]).format({"name": tr(PowerCatalog.technique_key(technique))}) if technique != null else ""
@@ -282,6 +284,9 @@ func _show_powers(data: CharacterData) -> void:
 func _open_editor() -> void:
 	if _custom.is_empty():
 		_custom = CATALOG.base_set(_current_character())
+	if _techniques.is_empty():
+		var data: CharacterData = _current_character()
+		_techniques = [data.technique_forward, data.technique_back, data.technique_air]
 	_editing = true
 	_info.visible = false
 	_editor.visible = true
@@ -289,6 +294,8 @@ func _open_editor() -> void:
 	_editor.clear_items()
 	for slot in PowerCatalog.SET_SIZE:
 		_editor.add_item(StringName(str(slot)), "")
+	for slot in TECHNIQUE_LINE_KEYS.size():
+		_editor.add_item(StringName("technique_%d" % slot), "")
 	_editor.add_item(EDIT_RESET, tr("SELECT_EDIT_RESET"))
 	_editor.add_item(EDIT_DONE, tr("SELECT_EDIT_DONE"))
 	_refresh_editor()
@@ -309,22 +316,34 @@ func _close_editor() -> void:
 
 
 func _refresh_editor() -> void:
+	_refresh_technique_editor()
 	for slot in PowerCatalog.SET_SIZE:
 		var power: PowerData = _custom[slot]
 		var power_name: String = "‹ %s ›" % (tr(power.name_key) if power != null else "—")
 		_editor.set_item_text(StringName(str(slot)), tr(POWER_LINE_KEYS[slot]).format({"name": power_name}))
 
 
+func _refresh_technique_editor() -> void:
+	for slot in _techniques.size():
+		var technique: MoveData = _techniques[slot]
+		_editor.set_item_text(StringName("technique_%d" % slot), tr(TECHNIQUE_LINE_KEYS[slot]).format({"name": "‹ %s ›" % (tr(PowerCatalog.technique_key(technique)) if technique != null else "—")}))
+
+
 func _on_power_adjusted(id: StringName, step: int) -> void:
 	if id == EDIT_RESET or id == EDIT_DONE:
 		return
-	CATALOG.cycle(_custom, int(String(id)), step, _current_character())
+	if String(id).begins_with("technique_"):
+		CATALOG.cycle_technique(_techniques, int(String(id).get_slice("_", 1)), step)
+	else:
+		CATALOG.cycle(_custom, int(String(id)), step, _current_character())
 	_refresh_editor()
 
 
 func _on_power_chosen(id: StringName) -> void:
 	if id == EDIT_RESET:
 		_custom = CATALOG.base_set(_current_character())
+		var data: CharacterData = _current_character()
+		_techniques = [data.technique_forward, data.technique_back, data.technique_air]
 		_refresh_editor()
 		return
 	_close_editor()
@@ -387,6 +406,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			_use_variant = not _use_variant
 			_blade_index = 0
 			_custom.clear()
+			_techniques.clear()
 			AudioDirector.play_ui(&"ui_move")
 			_refresh_character()
 
@@ -423,6 +443,11 @@ func _store_character(id: StringName) -> void:
 		_costume_index = 0
 		_blade_index = 0
 	var costumes: Array[CostumeData] = costume_source.costumes if not costume_source.costumes.is_empty() else data.costumes
+	if id != RANDOM and not _techniques.is_empty():
+		data = data.duplicate() as CharacterData
+		data.technique_forward = _techniques[0]
+		data.technique_back = _techniques[1]
+		data.technique_air = _techniques[2]
 	mode.selection.characters[slot] = data
 	mode.selection.costumes[slot] = costumes[_costume_index % costumes.size()]
 	mode.selection.blade_colors[slot] = data.blade_colors[_blade_index % data.blade_colors.size()]

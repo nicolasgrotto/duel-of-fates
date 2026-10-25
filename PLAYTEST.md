@@ -225,3 +225,11 @@ Abra `http://localhost:8000` (Chrome e Firefox). **Esperado**: carrega, áudio s
 ## Como devolver
 
 Para cada item ⚠️ ou ❌, escreva: número, personagem, arena, o que fez, o que esperava e o que aconteceu. Um vídeo curto ou print ajuda muito nos itens de animação.
+
+## Tasks 01–03 — Progressão e Corte Projetado
+
+| Caso | Ação | Resultado esperado | Validação automatizada/local |
+| --- | --- | --- | --- |
+| 01.1 | Seleção: editar Frente, Trás ou Ar até Corte Projetado, nos dois caminhos | Uma onda, 24 de Vigor, sem custo de Fluxo; lâmina permanece na mão | Testes de simulação e catálogo; 32 capturas em `build/task01_renders/` |
+| 01.2 | Bloquear, devolver com parry perfeito e matar no K.O. decisivo | Guarda gasta Vigor; onda troca dono/cor; corte na cintura; Arsenal intercepta | Testes e contact sheet inspecionada |
+| 01.3 | Carregar campanha antiga com `flow_cleave` | Id removido é descartado sem erro; espaço preenchido com poder conhecido | Teste de migração |

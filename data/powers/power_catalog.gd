@@ -54,3 +54,12 @@ func cycle(current: Array[PowerData], slot: int, step: int, character: Character
 	if other >= 0 and other != slot:
 		current[other] = current[slot]
 	current[slot] = next
+
+
+func cycle_technique(current: Array[MoveData], slot: int, step: int) -> void:
+	var choices: Array[MoveData] = []
+	for technique in techniques:
+		if slot == 2 or not technique.is_aerial():
+			choices.append(technique)
+	var index: int = choices.find(current[slot])
+	current[slot] = choices[posmod(index + step, choices.size())]

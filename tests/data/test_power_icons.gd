@@ -19,4 +19,4 @@ func test_every_power_has_its_own_consistent_icon() -> void:
 		assert_false(pixels.has(signature), "%s has a unique silhouette" % power.id)
 		pixels[signature] = power.id
 		kinds[power.kind] = true
-	assert_eq(kinds.size(), PowerData.Kind.size())
+	assert_eq(kinds.size(), PowerData.Kind.size() - 1)

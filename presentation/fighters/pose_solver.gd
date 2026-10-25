@@ -679,6 +679,8 @@ func _attack(fighter: FighterState, pose: RigPose, guard_angle: float, guard_gri
 		pose.front_foot.x += family.heavy_step * amount
 		_body_shift = family.lunge * amount
 		return Vector2(4.0 * amount, 16.0 * amount)
+	if move.technique_style == MoveData.TechniqueStyle.WAVE:
+		return _projected_cut(fighter, pose)
 	if move.technique_style == MoveData.TechniqueStyle.DASH:
 		return _dash_slash(fighter, pose, move, guard_angle, guard_grip)
 	if move.technique_style == MoveData.TechniqueStyle.PLUNGE:
@@ -938,7 +940,7 @@ func _cast(fighter: FighterState, pose: RigPose) -> Vector2:
 		progress = 1.0 - clampf(float(fighter.power_ticks) / maxf(power.recovery_ticks(), 1.0), 0.0, 1.0)
 	elif fighter.power_phase == FighterState.Phase.ACTIVE:
 		progress = 1.0
-	pose.open_hand = power.kind != PowerData.Kind.FLOW_CLEAVE
+	pose.open_hand = true
 	var tremor: Vector2 = Vector2(sin(time * 41.0), cos(time * 37.0)) * TREMOR if fighter.state == FighterState.State.CHANNELING else Vector2.ZERO
 	match power.kind:
 		PowerData.Kind.REPULSE:
@@ -959,8 +961,6 @@ func _cast(fighter: FighterState, pose: RigPose) -> Vector2:
 			pose.off_hand = RELAXED_HAND.lerp(SELF_HAND, progress)
 			pose.blade_angle = lerpf(pose.blade_angle, INVOKE_ANGLE, progress * 0.6)
 			return Vector2(4.0 * progress, 0.0)
-		PowerData.Kind.FLOW_CLEAVE:
-			return _flow_cleave(fighter, pose)
 	pose.off_hand = RELAXED_HAND.lerp(CAST_HAND, progress) + tremor
 	pose.grip = pose.grip.lerp(CAST_GRIP, progress)
 	pose.blade_angle = lerpf(pose.blade_angle, CAST_ANGLE, progress)
@@ -1004,10 +1004,10 @@ func _pull(fighter: FighterState, pose: RigPose) -> Vector2:
 	return Vector2(6.0 * (1.0 - settle), -14.0 * yank * (1.0 - settle))
 
 
-func _flow_cleave(fighter: FighterState, pose: RigPose) -> Vector2:
-	var power: PowerData = fighter.power
-	if fighter.power_phase == FighterState.Phase.STARTUP:
-		var progress: float = clampf(float(fighter.power_ticks) / maxf(power.startup_ticks(), 1.0), 0.0, 1.0)
+func _projected_cut(fighter: FighterState, pose: RigPose) -> Vector2:
+	var move: MoveData = fighter.move
+	if fighter.move_phase == FighterState.Phase.STARTUP:
+		var progress: float = clampf(float(fighter.phase_ticks) / maxf(move.startup_ticks(), 1.0), 0.0, 1.0)
 		if progress < CLEAVE_WINDUP_SHARE:
 			var lift: float = ease(progress / CLEAVE_WINDUP_SHARE, 0.5)
 			pose.grip = pose.grip.lerp(CLEAVE_HIGH_GRIP, lift)
@@ -1015,21 +1015,13 @@ func _flow_cleave(fighter: FighterState, pose: RigPose) -> Vector2:
 			pose.back_foot.x -= 8.0 * lift
 			return Vector2(2.0 * lift, -10.0 * lift)
 		return _cleave_swing((progress - CLEAVE_WINDUP_SHARE) / (1.0 - CLEAVE_WINDUP_SHARE), pose)
-	var seconds: float = Ticks.to_seconds(fighter.power_ticks)
-	var repeat: float = power.apex_repeat_delay if fighter.flow_tier >= PowerEffects.APEX_TIER else 0.0
-	if seconds < repeat:
-		var rewind: float = repeat * (1.0 - CLEAVE_WINDUP_SHARE)
-		if seconds < rewind:
-			var lift: float = ease(seconds / rewind, 0.5)
-			pose.grip = CLEAVE_FLOOR_GRIP.lerp(CLEAVE_HIGH_GRIP, lift)
-			pose.blade_angle = lerpf(CLEAVE_FLOOR_ANGLE, CLEAVE_HIGH_ANGLE + 360.0, lift)
-			return Vector2(22.0 * (1.0 - lift), 26.0 * (1.0 - lift) - 10.0 * lift)
-		return _cleave_swing((seconds - rewind) / (repeat - rewind), pose)
-	var remaining: float = maxf(Ticks.to_seconds(power.recovery_ticks_at(repeat > 0.0)) - repeat, Ticks.DELTA)
-	var settle: float = smoothstep(CLEAVE_HOLD, 1.0, (seconds - repeat) / remaining)
+	var settle: float = 0.0
+	if fighter.move_phase == FighterState.Phase.RECOVERY:
+		settle = smoothstep(CLEAVE_HOLD, 1.0, float(fighter.phase_ticks) / maxf(move.recovery_ticks(), 1.0))
 	pose.grip = CLEAVE_FLOOR_GRIP.lerp(pose.grip, settle)
 	pose.blade_angle = rad_to_deg(lerp_angle(deg_to_rad(CLEAVE_FLOOR_ANGLE), deg_to_rad(pose.blade_angle), settle))
 	pose.front_foot.x += 14.0 * (1.0 - settle)
+	pose.trail = fighter.move_phase == FighterState.Phase.ACTIVE
 	return Vector2(22.0 * (1.0 - settle), 26.0 * (1.0 - settle))
 
 

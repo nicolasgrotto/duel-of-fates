@@ -36,3 +36,14 @@ func test_cycling_onto_an_equipped_power_swaps_slots() -> void:
 	CATALOG.cycle(chosen, 0, step, GUARDIAN)
 	assert_eq(chosen[0], second)
 	assert_eq(chosen[1], first)
+
+
+func test_technique_cycle_offers_wave_in_every_slot_and_keeps_air_moves_in_air() -> void:
+	var chosen: Array[MoveData] = [GUARDIAN.technique_forward, GUARDIAN.technique_back, GUARDIAN.technique_air]
+	for slot in 3:
+		var found: bool = false
+		for step in CATALOG.techniques.size() + 1:
+			CATALOG.cycle_technique(chosen, slot, 1)
+			found = found or chosen[slot].id == &"projected_cut"
+			assert_true(slot == 2 or not chosen[slot].is_aerial())
+		assert_true(found)

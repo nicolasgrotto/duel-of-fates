@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="MoveData" format=3]
+
+[ext_resource type="Script" path="res://data/move_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"projected_cut"
+kind = 10
+startup = 0.25
+active = 0.1
+recovery = 0.45
+damage = 12.0
+vigor_cost = 24.0
+block_vigor_cost = 14.0
+knockback = 70.0
+block_push = 40.0
+hitstun = 0.4
+blockstun = 0.25
+lunge = 0.0
+reach = 0.0
+projectile_speed = 700.0
+projectile_range = 520.0
+projectile_size = 28.0
+cinematic_finisher = 2
+technique_style = 8

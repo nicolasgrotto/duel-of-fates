@@ -268,7 +268,7 @@ func difficulty_id(offset: int) -> StringName:
 
 
 static func load_power(id: StringName) -> PowerData:
-	return load(POWER_PATH % id) as PowerData
+	return load(POWER_PATH % id) as PowerData if ResourceLoader.exists(POWER_PATH % id) else null
 
 
 func to_dict() -> Dictionary:
@@ -300,7 +300,14 @@ static func from_dict(data: Dictionary) -> StoryCampaign:
 	campaign.cleared.assign(data.get("cleared", []))
 	campaign.learned.assign(data.get("learned", []))
 	campaign.equipped.assign(data.get("equipped", [&"", &"", &""]))
+	campaign.learned = campaign.learned.filter(func(id: StringName) -> bool: return load_power(id) != null)
+	for slot in campaign.equipped.size():
+		if load_power(campaign.equipped[slot]) == null:
+			campaign.equipped[slot] = &""
 	campaign.slots_open = data.get("slots_open", 1)
+	for slot in range(campaign.slots_open, campaign.equipped.size()):
+		campaign.equipped[slot] = &""
 	campaign.secret_pending = data.get("secret_pending", false)
 	campaign.ending = data.get("ending", &"")
+	campaign._fill_slots()
 	return campaign

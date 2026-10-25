@@ -4,7 +4,7 @@ extends Resource
 enum Kind { LIGHT, HEAVY, FORWARD_HEAVY, COUNTER, SHOVE, AERIAL_LIGHT, AERIAL_HEAVY, LOCK_FINISH, ABILITY, STANCE, TECHNIQUE, DISENGAGE }
 enum Limb { NONE, ARM, LEG, HEAD }
 enum Cut { ARC, DESCENDING, RISING, HORIZONTAL, THRUST, SPIN }
-enum TechniqueStyle { ARC, DASH, THROW, THRUST, RISING, FLURRY, LUNGE, PLUNGE }
+enum TechniqueStyle { ARC, DASH, THROW, THRUST, RISING, FLURRY, LUNGE, PLUNGE, WAVE }
 
 @export var id: StringName
 @export var kind: Kind = Kind.LIGHT
@@ -45,6 +45,9 @@ enum TechniqueStyle { ARC, DASH, THROW, THRUST, RISING, FLURRY, LUNGE, PLUNGE }
 @export var airborne_bonus: float = 0.0
 @export var launch_speed: float = 0.0
 @export var throws_blade: bool = false
+@export var projectile_speed: float = 0.0
+@export var projectile_range: float = 0.0
+@export var projectile_size: float = 0.0
 @export var recovery_on_hit: float = -1.0
 @export var dash_in_startup: bool = false
 
@@ -94,4 +97,4 @@ func is_blade() -> bool:
 
 
 func can_clash() -> bool:
-	return is_blade() and not throws_blade
+	return is_blade() and not throws_blade and technique_style != TechniqueStyle.WAVE

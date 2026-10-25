@@ -62,8 +62,10 @@ static func _collide(sim: MatchSimulation, projectile: Projectile, owner: Fighte
 	if projectile.kind == Projectile.Kind.CLEAVE and _perfect_parry(target, projectile):
 		_reflect(sim, projectile, target)
 		return
-	if projectile.kind == Projectile.Kind.BLADE:
+	if projectile.move != null:
 		_blade_hit(sim, projectile, owner, target)
+		if projectile.kind == Projectile.Kind.CLEAVE and projectile.hit_done:
+			_end(sim, projectile)
 		return
 	var impact: PowerImpact = sim.impact
 	impact.reset(projectile.power, owner)

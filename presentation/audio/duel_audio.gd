@@ -50,7 +50,6 @@ const POWER_ACTIVES: Dictionary = {
 	PowerData.Kind.CHOKE: &"power_choke",
 	PowerData.Kind.FREEZE: &"power_freeze",
 	PowerData.Kind.STORM: &"power_thunder",
-	PowerData.Kind.FLOW_CLEAVE: &"power_cleave",
 }
 const CHANNEL_LOOPS: Dictionary = {
 	PowerData.Kind.BARRIER: &"power_barrier_loop",
@@ -227,6 +226,8 @@ func _on_flow_event(event: CombatEvent, at: Vector2) -> void:
 			match int(event.amount):
 				Projectile.Kind.ARSENAL:
 					AudioDirector.play(&"power_arsenal_launch", views[event.source].global_position, POWER_DB, randf_range(0.9, 1.1))
+				Projectile.Kind.CLEAVE:
+					AudioDirector.play(&"power_cleave", views[event.source].global_position, POWER_DB)
 				Projectile.Kind.BLADE:
 					AudioDirector.play(&"swing_heavy", views[event.source].global_position, 0.0, 1.2, &"Blades")
 		CombatEvent.Type.PROJECTILE_REFLECTED:

@@ -48,9 +48,6 @@ static func activate(sim: MatchSimulation, caster: FighterState) -> void:
 			caster.sanctuary_hp = power.strength * caster.flow_potency
 		PowerData.Kind.MASS_TELEKINESIS:
 			_mass_telekinesis(sim, caster, target, power)
-		PowerData.Kind.FLOW_CLEAVE:
-			_spawn_cleave(sim, caster, power)
-			caster.spawned = 1
 		PowerData.Kind.FREEZE:
 			_freeze(sim, caster, target, power)
 		PowerData.Kind.CHOKE:
@@ -100,14 +97,6 @@ static func sustain(sim: MatchSimulation, caster: FighterState, intent: Intent) 
 			_choke_step(sim, caster, target, power)
 		PowerData.Kind.DRAIN:
 			_drain_step(sim, caster, target, power)
-
-
-static func recovering(sim: MatchSimulation, caster: FighterState) -> void:
-	var power: PowerData = caster.power
-	if power.kind == PowerData.Kind.FLOW_CLEAVE and caster.flow_tier >= APEX_TIER and caster.spawned == 1:
-		if caster.power_ticks >= Ticks.from_seconds(power.apex_repeat_delay):
-			_spawn_cleave(sim, caster, power)
-			caster.spawned = 2
 
 
 static func end_channel(sim: MatchSimulation, caster: FighterState) -> void:
@@ -218,16 +207,6 @@ static func _mass_telekinesis(sim: MatchSimulation, caster: FighterState, target
 	sim.skip_hazard_groups(impacts)
 	caster.rain_ticks = Ticks.from_seconds(RAIN_MARK + impacts * RAIN_SPACING)
 	sim.cinematic_ticks = Ticks.from_seconds(power.cinematic_freeze)
-
-
-static func _spawn_cleave(sim: MatchSimulation, caster: FighterState, power: PowerData) -> void:
-	var projectile: Projectile = sim.spawn_projectile(Projectile.Kind.CLEAVE, caster, power)
-	if projectile == null:
-		return
-	projectile.damage = power.damage
-	projectile.vx = caster.facing * power.speed
-	projectile.max_distance = power.reach
-	projectile.size = 28.0
 
 
 static func _throw_step(sim: MatchSimulation, caster: FighterState, power: PowerData) -> void:
