@@ -71,6 +71,11 @@ func _report(options: Dictionary, duels: int, wins: Array[int], unfinished: int,
 		per_round.append("%s %.1f" % [CombatEvent.Type.keys()[type].to_lower(), float(totals[type]) / rounds])
 	per_round.sort()
 	print("Events per round: ", ", ".join(per_round))
+	_report_contacts(totals)
+
+
+func _report_contacts(totals: Dictionary) -> void:
+	print("Contacts total: hit %d, clash %d, lock %d, press %d" % [totals.get(CombatEvent.Type.HIT, 0), totals.get(CombatEvent.Type.CLASH, 0), totals.get(CombatEvent.Type.BLADE_LOCK_STARTED, 0), totals.get(CombatEvent.Type.BLADE_PRESS_STARTED, 0)])
 
 
 func _matrix(config: CombatConfig, options: Dictionary) -> void:
@@ -83,6 +88,7 @@ func _matrix(config: CombatConfig, options: Dictionary) -> void:
 		for id in String(options["matrix"]).split(","):
 			cast.append(id)
 	var totals: Dictionary = {}
+	var contacts: Dictionary = {}
 	var header: String = "%-10s" % ""
 	for id in cast:
 		header += " %6s" % id.substr(0, 6)
@@ -103,6 +109,8 @@ func _matrix(config: CombatConfig, options: Dictionary) -> void:
 					pair.reverse()
 				var duel: HeadlessDuel = HeadlessDuel.new(config, pair, difficulties, int(options["seed"]) + i * 7919 + a.hash() % 997)
 				var winner: int = duel.run()
+				for type in duel.event_counts:
+					contacts[type] = contacts.get(type, 0) + duel.event_counts[type]
 				if winner == (1 if swap else 0):
 					wins += 1
 			totals[a][0] += wins
@@ -110,3 +118,4 @@ func _matrix(config: CombatConfig, options: Dictionary) -> void:
 			line += " %5.0f%%" % (100.0 * wins / duels)
 		line += "  %5.1f%%" % (100.0 * totals[a][0] / maxi(totals[a][1], 1))
 		print(line)
+	_report_contacts(contacts)

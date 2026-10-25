@@ -18,6 +18,11 @@ Legenda: ✅ ficou bom · ⚠️ funciona mas a sensação ou o número precisa 
 
 ## 1. Correções
 
+| # | Como testar | Esperado | Onde ajustar |
+| --- | --- | --- | --- |
+| 1.0a | Tutorial, passo da disputa: fique perto e aperte forte; depois pressione rápido. Repita o Treino guiado da disputa até o fim | o boneco espelha um tick depois; os fortes comprometidos iniciam disputa sem dano; Tutorial avança para Habilidade; treino completa três disputas, uma pressão e um desengajamento | `CombatConfig.clash_window`, `BladeLockConfig` |
+| 1.0b | Em 2 Jogadores, fortes próximos separados por 1–4 quadros; depois separados por mais de 4; teste rápidos e técnicas | dentro da janela há choque/disputa; fora dela o mais rápido ainda acerta; duas preparações sem ativo não chocam; nenhum ativo atrasado acerta após o choque | `ClashResolver`, 0,067 s arredondados a quatro ticks |
+
 ### 1a. Introdução dos lutadores
 
 Em Opções, deixe **Introdução dos lutadores · Ligada**. No Duelar, veja cada entrada como jogador e como adversário, sem apertar ataques. Os dois devem caber no enquadramento; o título só aparece depois do assentamento na guarda. Use Revanche para repetir. Ajustes de poses e tempos ficam em `data/intros/<id>.tres`; duração total e título em `CombatConfig`, acessórios e ignição em `EffectsConfig`.

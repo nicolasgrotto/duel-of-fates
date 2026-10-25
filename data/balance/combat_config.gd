@@ -77,6 +77,7 @@ extends Resource
 @export var wall_contact: float = 6.0
 
 @export_group("Clash")
+@export var clash_window: float = 0.067
 @export var clash_light_separation: float = 120.0
 @export var clash_heavy_separation: float = 280.0
 @export var clash_heavy_recoil: float = 0.25

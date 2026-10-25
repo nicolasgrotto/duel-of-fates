@@ -99,3 +99,88 @@ func test_blade_lock_has_cooldown() -> void:
 	_start_blade_lock()
 	duel.step_until(func() -> bool: return not BladeLockResolver.is_active(duel.sim), 300)
 	assert_gt(duel.sim.lock_cooldown_ticks, 0)
+
+
+func test_staggered_heavies_lock_within_the_clash_window() -> void:
+	var window: int = Ticks.from_seconds(DuelFixture.CONFIG.clash_window)
+	for delay in range(1, window + 1):
+		for side in 2:
+			var fixture: DuelFixture = DuelFixture.create()
+			fixture.skip_intro()
+			fixture.place(40.0)
+			fixture.press(side, Intent.Command.HEAVY)
+			fixture.step(delay)
+			fixture.press(1 - side, Intent.Command.HEAVY)
+			assert_true(fixture.step_until(func() -> bool: return BladeLockResolver.is_active(fixture.sim), 35), "delay %d side %d" % [delay, side])
+			assert_eq(fixture.count_events(CombatEvent.Type.BLADE_LOCK_STARTED), 1)
+			assert_eq(fixture.count_events(CombatEvent.Type.HIT), 0)
+			for fighter in fixture.sim.fighters:
+				assert_almost(fighter.health, fighter.max_health)
+			fixture.step(20)
+			assert_eq(fixture.count_events(CombatEvent.Type.BLADE_LOCK_STARTED), 1)
+
+
+func test_faster_heavy_hits_just_outside_the_clash_window() -> void:
+	duel.place(20.0)
+	duel.press(0, Intent.Command.HEAVY)
+	duel.step(Ticks.from_seconds(duel.sim.config.clash_window) + 1)
+	duel.press(1, Intent.Command.HEAVY)
+	duel.step(50)
+	assert_eq(duel.count_events(CombatEvent.Type.BLADE_LOCK_STARTED), 0)
+	assert_eq(duel.count_events(CombatEvent.Type.CLASH), 0)
+	assert_eq(duel.count_events(CombatEvent.Type.HIT), 1)
+	assert_eq(duel.last_event(CombatEvent.Type.HIT)["source"], 0)
+
+
+func test_staggered_lights_cancel_without_delayed_active_hits() -> void:
+	for delay in range(1, Ticks.from_seconds(DuelFixture.CONFIG.clash_window) + 1):
+		var fixture: DuelFixture = DuelFixture.create()
+		fixture.skip_intro()
+		fixture.place(40.0)
+		fixture.press(0, Intent.Command.LIGHT)
+		fixture.step(delay)
+		fixture.press(1, Intent.Command.LIGHT)
+		assert_true(fixture.step_until(func() -> bool: return fixture.count_events(CombatEvent.Type.CLASH) > 0, 20))
+		for fighter in fixture.sim.fighters:
+			assert_true(fighter.move_hit_done and fighter.move_connected)
+			assert_eq(fighter.move_phase, FighterState.Phase.RECOVERY)
+		fixture.step(40)
+		assert_eq(fixture.count_events(CombatEvent.Type.CLASH), 1)
+		assert_eq(fixture.count_events(CombatEvent.Type.HIT), 0)
+
+
+func test_active_heavy_catches_a_light_in_late_startup() -> void:
+	duel.place(40.0)
+	duel.press(0, Intent.Command.HEAVY)
+	duel.step(DuelFixture.GUARDIAN.heavy.startup_ticks() - DuelFixture.SHADOW.light_chain[0].startup_ticks() + 2)
+	duel.press(1, Intent.Command.LIGHT)
+	duel.step(30)
+	assert_eq(duel.count_events(CombatEvent.Type.CLASH), 1)
+	assert_true(duel.last_event(CombatEvent.Type.CLASH)["heavy"])
+	assert_eq(duel.count_events(CombatEvent.Type.HIT), 0)
+
+
+func test_two_late_startups_do_not_clash() -> void:
+	duel.place(20.0)
+	duel.press(0, Intent.Command.HEAVY)
+	duel.press(1, Intent.Command.HEAVY)
+	duel.step(DuelFixture.GUARDIAN.heavy.startup_ticks() - 1)
+	assert_eq(duel.fighter(0).move_phase, FighterState.Phase.STARTUP)
+	assert_eq(duel.fighter(1).move_phase, FighterState.Phase.STARTUP)
+	assert_eq(duel.count_events(CombatEvent.Type.CLASH), 0)
+	assert_eq(duel.count_events(CombatEvent.Type.BLADE_LOCK_STARTED), 0)
+
+
+func test_late_startup_technique_clash_cancels_both_moves() -> void:
+	duel.place(40.0)
+	var move: MoveData = load("res://data/techniques/rising_cut.tres")
+	ActionStarter.start_attack(duel.sim, duel.fighter(0), move)
+	duel.step(2)
+	ActionStarter.start_attack(duel.sim, duel.fighter(1), move)
+	assert_true(duel.step_until(func() -> bool: return duel.count_events(CombatEvent.Type.TECHNIQUE_CLASH) > 0, 35))
+	for fighter in duel.sim.fighters:
+		assert_eq(fighter.state, FighterState.State.STAGGERED)
+		assert_true(fighter.move == null)
+	duel.step(60)
+	assert_eq(duel.count_events(CombatEvent.Type.HIT), 0)
+	assert_eq(duel.count_events(CombatEvent.Type.TECHNIQUE_CLASH), 1)

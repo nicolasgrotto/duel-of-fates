@@ -19,7 +19,9 @@ static func resolve(sim: MatchSimulation) -> void:
 
 
 static func _blades_meet(sim: MatchSimulation, a: FighterState, b: FighterState) -> bool:
-	if not (a.is_active() and b.is_active()):
+	if not (a.is_active() or b.is_active()):
+		return false
+	if not (_in_clash_window(sim.config, a) and _in_clash_window(sim.config, b)):
 		return false
 	if a.move_hit_done or b.move_hit_done:
 		return false
@@ -33,6 +35,12 @@ static func _blades_meet(sim: MatchSimulation, a: FighterState, b: FighterState)
 	var a_box: Rect2 = CombatGeometry.blade_box(config, a, a.move)
 	var b_box: Rect2 = CombatGeometry.blade_box(config, b, b.move)
 	return a_box.position.y <= b_box.end.y and b_box.position.y <= a_box.end.y
+
+
+static func _in_clash_window(config: CombatConfig, fighter: FighterState) -> bool:
+	if not fighter.is_attacking() or fighter.move == null:
+		return false
+	return fighter.is_active() or (fighter.move_phase == FighterState.Phase.STARTUP and fighter.move.startup_ticks() - fighter.phase_ticks <= Ticks.from_seconds(config.clash_window))
 
 
 static func _can_lock(sim: MatchSimulation, a: FighterState, b: FighterState, gap: float) -> bool:
@@ -52,6 +60,8 @@ static func _light_clash(sim: MatchSimulation, a: FighterState, b: FighterState)
 	for fighter in [a, b]:
 		fighter.move_hit_done = true
 		fighter.move_connected = true
+		fighter.move_phase = FighterState.Phase.RECOVERY
+		fighter.phase_ticks = 0
 	sim.push_apart(a, b, sim.config.clash_light_separation)
 	event.hitstop_ticks = sim.freeze_pair(a, b, sim.config.hitstop_clash)
 
