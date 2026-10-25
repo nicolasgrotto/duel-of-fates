@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="FinisherStyle" format=3]
+
+[ext_resource type="Script" path="res://data/finisher_style.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+tempo = 0.95
+lean = 4
+step_scale = 1.2
+accent_twirl = 1
+accent_turn = 1

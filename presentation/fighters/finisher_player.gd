@@ -57,7 +57,7 @@ func _init() -> void:
 	z_index = FighterRig.BODY_DEPTH + 20
 
 
-func start(owner_view: FighterView, finisher: Finisher.Kind, killer_x: float) -> void:
+func start(owner_view: FighterView, finisher: Finisher.Kind, killer_x: float, style: FinisherStyle = null) -> void:
 	view = owner_view
 	rig = view.rig
 	config = view.effects
@@ -67,7 +67,7 @@ func start(owner_view: FighterView, finisher: Finisher.Kind, killer_x: float) ->
 	slide = -away_local if kind == Finisher.Kind.DASH_THROUGH or kind == Finisher.Kind.PULL_CUT else away_local
 	_away = int(away_world)
 	_split_as = kind
-	_motion = FinisherMotion.for_kind(kind)
+	_motion = FinisherMotion.for_kind(kind, style)
 	if _motion != null:
 		_fire(-1.0, 0.0)
 	match kind:
@@ -89,7 +89,7 @@ func moves_body() -> bool:
 
 func fall_delay() -> float:
 	if _motion != null:
-		return _motion.fall_at
+		return _motion.reaction.fall_at
 	return config.xray_time if kind == Finisher.Kind.CHARRED else 0.0
 
 
@@ -136,8 +136,9 @@ func update(delta: float, pose: RigPose, facing: int) -> void:
 	age += delta
 	if _motion != null:
 		_fire(before, age)
-		if _motion.push_back != 0.0:
-			rig.position.x += slide * _motion.push_back * smoothstep(0.0, _motion.push_time, age)
+		var reaction: FinisherReaction = _motion.reaction
+		if reaction.push_back != 0.0:
+			rig.position.x += slide * reaction.push_back * smoothstep(reaction.push_at, reaction.push_at + reaction.push_time, age)
 	var base: Transform2D = rig.transform
 	if is_split():
 		half.transform = _half_motion(base) * base
@@ -160,20 +161,21 @@ func update(delta: float, pose: RigPose, facing: int) -> void:
 
 
 func _fire(before: float, now: float) -> void:
-	if FinisherMotion.fired(_motion.front_arm_at, before, now):
-		if _motion.drops_hilt:
+	var reaction: FinisherReaction = _motion.reaction
+	if FinisherMotion.fired(reaction.front_arm_at, before, now):
+		if reaction.drops_hilt:
 			view.drop_hilt()
 		view.sever_part(MoveData.Limb.ARM, true, _away)
-	if FinisherMotion.fired(_motion.back_arm_at, before, now):
+	if FinisherMotion.fired(reaction.back_arm_at, before, now):
 		view.sever_part(MoveData.Limb.ARM, false, _away)
-	if FinisherMotion.fired(_motion.kneel_at, before, now):
+	if FinisherMotion.fired(reaction.kneel_at, before, now):
 		view.kneel()
-	if FinisherMotion.fired(_motion.head_at, before, now):
+	if FinisherMotion.fired(reaction.head_at, before, now):
 		view.sever_part(MoveData.Limb.HEAD, true, _away)
 		_burst(_local_point(rig.head_base), config.neck_embers, config.ember_speed * 0.6)
-	if FinisherMotion.fired(_motion.split_at, before, now):
+	if FinisherMotion.fired(reaction.split_at, before, now):
 		_split_as = Finisher.Kind.VERTICAL
-		_split_offset = _motion.split_at
+		_split_offset = reaction.split_at
 		_prepare_split()
 
 
@@ -288,7 +290,7 @@ func _draw() -> void:
 		_draw_edge(half)
 	if kind == Finisher.Kind.CHARRED and age < config.xray_time and int(age * config.xray_flicker) % 2 == 0:
 		_draw_skeleton()
-	if _motion != null and _motion.hole:
+	if _motion != null and _motion.effects.hole:
 		_draw_hole()
 	for i in EMBER_POOL:
 		if _ember_life[i] <= 0.0:

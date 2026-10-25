@@ -81,7 +81,7 @@ func test_staged_kinds_play_their_motion_and_fall_forward() -> void:
 		player.kind = kind
 		player._motion = motion
 		assert_eq(player.fall_limb(), MoveData.Limb.HEAD, "kind %d kneels and falls forward" % kind)
-		assert_eq(player.fall_delay(), motion.fall_at)
+		assert_eq(player.fall_delay(), motion.reaction.fall_at)
 		for key_index in range(1, motion.keys.size()):
 			assert_gt(motion.keys[key_index].time, motion.keys[key_index - 1].time, "kind %d keys in order" % kind)
 	player.free()
@@ -89,14 +89,15 @@ func test_staged_kinds_play_their_motion_and_fall_forward() -> void:
 
 func test_twin_blades_keep_their_stages_apart() -> void:
 	var motion: FinisherMotion = FinisherMotion.for_kind(Finisher.Kind.TWIN_BLADES)
-	assert_true(motion.drops_hilt)
-	assert_lt(motion.front_arm_at, motion.back_arm_at, "two separate cuts")
-	assert_lt(motion.back_arm_at, motion.pull_at)
+	var reaction: FinisherReaction = motion.reaction
+	assert_true(reaction.drops_hilt)
+	assert_lt(reaction.front_arm_at, reaction.back_arm_at, "two separate cuts")
+	assert_lt(reaction.back_arm_at, motion.pull_at)
 	assert_lt(motion.pull_at, motion.catch_at, "the hilt flies before it is caught")
-	assert_lt(motion.catch_at, motion.head_at)
-	assert_lt(motion.head_at, motion.kneel_at, "the body stands a moment after the cut")
-	assert_lt(motion.head_at, motion.release_at)
-	assert_true(motion.streaks_both)
+	assert_lt(motion.catch_at, reaction.head_at)
+	assert_lt(reaction.head_at, reaction.kneel_at, "the body stands a moment after the cut")
+	assert_lt(reaction.head_at, motion.release_at)
+	assert_true(motion.effects.streaks_both)
 
 
 func _motion_pose(id: StringName, kind: Finisher.Kind, at: float) -> RigPose:
@@ -115,7 +116,7 @@ func _motion_pose(id: StringName, kind: Finisher.Kind, at: float) -> RigPose:
 
 func test_execution_swing_ends_level_at_the_neck() -> void:
 	var motion: FinisherMotion = FinisherMotion.for_kind(Finisher.Kind.EXECUTION)
-	var pose: RigPose = _motion_pose(&"guardian", Finisher.Kind.EXECUTION, motion.head_at)
+	var pose: RigPose = _motion_pose(&"guardian", Finisher.Kind.EXECUTION, motion.reaction.head_at)
 	assert_lt(absf(wrapf(pose.blade_angle, -180.0, 180.0)), 25.0, "blade level at the cut")
 	assert_gt(ArmGeometry.to_body(pose.grip, pose).x, 20.0, "hand forward at the cut")
 
@@ -123,7 +124,7 @@ func test_execution_swing_ends_level_at_the_neck() -> void:
 func test_scissors_and_twin_blades_close_in_an_x() -> void:
 	for case in [[&"wasp", Finisher.Kind.SCISSORS], [&"guardian", Finisher.Kind.TWIN_BLADES]]:
 		var motion: FinisherMotion = FinisherMotion.for_kind(case[1])
-		var pose: RigPose = _motion_pose(case[0], case[1], motion.head_at)
+		var pose: RigPose = _motion_pose(case[0], case[1], motion.reaction.head_at)
 		assert_gt(wrapf(pose.blade_angle, -180.0, 180.0), 5.0, "%s high blade comes down to the neck" % case[0])
 		assert_lt(wrapf(pose.off_blade_angle, -180.0, 180.0), -5.0, "%s low blade comes up to the neck" % case[0])
 		assert_eq(pose.hand_spacing, 0.0, "%s hands apart" % case[0])
@@ -152,3 +153,59 @@ func test_motion_ends_and_hands_back_the_guard() -> void:
 		solver.advance(Ticks.DELTA)
 	assert_eq(solver.motion_time, -1.0)
 	assert_true(solver.motion == null)
+
+
+func test_every_finisher_keeps_its_layers_and_known_sounds() -> void:
+	var bank: Resource = load("res://data/audio/sound_bank.tres")
+	for kind in Finisher.STAGED:
+		var motion: FinisherMotion = FinisherMotion.for_kind(kind)
+		assert_true(motion.reaction != null and motion.effects != null, "kind %d has reaction and effects" % kind)
+		assert_false(motion.cues.is_empty(), "kind %d has sound cues" % kind)
+		for cue in motion.cues:
+			assert_true(bank.sounds.has(cue.sound), "kind %d cue %s exists" % [kind, cue.sound])
+
+
+func test_styles_change_tempo_and_pose_without_touching_the_base() -> void:
+	var base: FinisherMotion = FinisherMotion.for_kind(Finisher.Kind.TWIN_BLADES)
+	var head_at: float = base.reaction.head_at
+	var elder: FinisherStyle = DuelFixture.character(&"elder").finisher_style
+	var shadow: FinisherStyle = DuelFixture.character(&"awakened_shadow").finisher_style
+	var slow: FinisherMotion = FinisherMotion.for_kind(Finisher.Kind.TWIN_BLADES, elder)
+	var fast: FinisherMotion = FinisherMotion.for_kind(Finisher.Kind.TWIN_BLADES, shadow)
+	assert_gt(slow.reaction.head_at, head_at, "the elder is slower")
+	assert_lt(fast.reaction.head_at, head_at, "the awakened shadow is faster")
+	assert_eq(base.reaction.head_at, head_at, "the shared motion is untouched")
+	assert_almost(slow.catch_at / base.catch_at, elder.tempo, 0.001, "attacker and victim stay in step")
+	assert_almost(slow.effects.streaks[0], slow.reaction.head_at, 0.001)
+	var heron: FinisherMotion = FinisherMotion.for_kind(Finisher.Kind.TWIN_BLADES, DuelFixture.character(&"heron").finisher_style)
+	var accented: int = 0
+	for key in heron.keys:
+		if key.accent:
+			accented += 1
+			assert_ne(key.turn, 0.0, "the heron turns into the accent pose")
+	assert_gt(accented, 0)
+
+
+func test_styled_finishers_fit_inside_the_knockout() -> void:
+	var config: CombatConfig = DuelFixture.CONFIG
+	for id in DuelMode.CAST + [&"awakened_shadow", &"sovereign", &"elder", &"foretold", &"foretold_eclipse"]:
+		var data: CharacterData = DuelFixture.character(id)
+		for move in [data.heavy, data.forward_heavy]:
+			if not Finisher.is_staged(move.cinematic_finisher):
+				continue
+			var motion: FinisherMotion = FinisherMotion.for_kind(move.cinematic_finisher, data.finisher_style)
+			var extra: float = config.consequences.long_cinematic_ko_time if Finisher.is_long(move.cinematic_finisher) else config.consequences.cinematic_ko_time
+			var done: float = maxf(motion.end_time(), motion.reaction.fall_at + FighterView.KNEEL_TIME + FighterView.FALL_DURATION)
+			assert_lt(done, config.ko_duration + extra, "%s %s fits the knockout" % [id, move.id])
+
+
+func test_whirl_travels_behind_with_a_spin() -> void:
+	var motion: FinisherMotion = FinisherMotion.for_kind(Finisher.Kind.WHIRL)
+	assert_true(motion.travels())
+	assert_eq(motion.effects.streaks.size(), 3, "low slash, horizontal strike and upward finish")
+	assert_lt(motion.travel_to, motion.reaction.head_at, "the strike comes from behind")
+	var turning: int = 0
+	for key in motion.keys:
+		if key.turn != 0.0:
+			turning += 1
+	assert_gt(turning, 0)

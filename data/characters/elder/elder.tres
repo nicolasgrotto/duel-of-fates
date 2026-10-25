@@ -21,6 +21,7 @@
 
 [ext_resource type="Resource" path="res://data/audio/boss_music.tres" id="theme_music"]
 [ext_resource type="Resource" path="res://data/intros/elder.tres" id="intro_res"]
+[ext_resource type="Resource" path="res://data/finisher_styles/elder.tres" id="finisher_style_res"]
 [sub_resource type="Resource" id="elder_light_1"]
 script = ExtResource("2_move")
 id = &"elder_light_1"
@@ -281,4 +282,5 @@ blade_color_keys = PackedStringArray("BLADE_ELDER_0")
 guard_angle = -66.0
 guard_grip = Vector2(18, -32)
 intro = ExtResource("intro_res")
+finisher_style = ExtResource("finisher_style_res")
 eclipse_eyes = false

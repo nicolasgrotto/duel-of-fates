@@ -22,6 +22,7 @@
 
 [ext_resource type="Resource" path="res://data/audio/boss_music.tres" id="theme_music"]
 [ext_resource type="Resource" path="res://data/intros/awakened_shadow.tres" id="intro_res"]
+[ext_resource type="Resource" path="res://data/finisher_styles/awakened_shadow.tres" id="finisher_style_res"]
 [sub_resource type="Resource" id="awakened_shadow_light_1"]
 script = ExtResource("2_move")
 id = &"awakened_shadow_light_1"
@@ -249,4 +250,5 @@ blade_color_keys = PackedStringArray("BLADE_AWAKENED_SHADOW_0")
 guard_angle = -150.0
 guard_grip = Vector2(-16, -58)
 intro = ExtResource("intro_res")
+finisher_style = ExtResource("finisher_style_res")
 eclipse_eyes = true

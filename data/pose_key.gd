@@ -17,3 +17,4 @@ extends Resource
 @export var open_hand: bool = false
 @export var trail: bool = false
 @export var off_trail: bool = false
+@export var accent: bool = false

@@ -2,6 +2,9 @@
 
 [ext_resource type="Script" path="res://data/finisher_motion.gd" id="1_script"]
 [ext_resource type="Script" path="res://data/pose_key.gd" id="2_key"]
+[ext_resource type="Script" path="res://data/finisher_reaction.gd" id="3_reaction"]
+[ext_resource type="Script" path="res://data/finisher_effects.gd" id="4_effects"]
+[ext_resource type="Script" path="res://data/finisher_cue.gd" id="5_cue"]
 
 [sub_resource type="Resource" id="key_0"]
 script = ExtResource("2_key")
@@ -30,10 +33,26 @@ crouch = 4
 lean = 2
 step = 4
 
+[sub_resource type="Resource" id="reaction"]
+script = ExtResource("3_reaction")
+kneel_at = 1
+fall_at = 1
+
+[sub_resource type="Resource" id="effects"]
+script = ExtResource("4_effects")
+hole = true
+
+[sub_resource type="Resource" id="cue_0"]
+script = ExtResource("5_cue")
+time = 0.78
+sound = &"swing_light"
+volume_db = -4
+pitch = 0.8
+
 [resource]
 script = ExtResource("1_script")
 keys = Array[ExtResource("2_key")]([SubResource("key_0"), SubResource("key_1"), SubResource("key_2")])
 lead_in = true
-kneel_at = 1
-fall_at = 1
-hole = true
+reaction = SubResource("reaction")
+effects = SubResource("effects")
+cues = Array[ExtResource("5_cue")]([SubResource("cue_0")])

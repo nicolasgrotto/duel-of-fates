@@ -1,6 +1,8 @@
 class_name FighterView
 extends Node2D
 
+signal finisher_cue(cue: FinisherCue, at: Vector2)
+
 const FALL_DURATION: float = 0.6
 const FALL_ANGLE: float = 1.45
 const KNEEL_TIME: float = 0.45
@@ -18,6 +20,7 @@ const CHARGE_FLARE: float = 0.08
 const TELEPORT_DISTANCE: float = 150.0
 const MIN_TURN_WIDTH: float = 0.2
 const HILT_DROP_TOSS: Vector2 = Vector2(70.0, -260.0)
+const TRAVEL_DEPTH: int = -1
 
 var fighter: FighterState
 var opponent: FighterState
@@ -56,6 +59,9 @@ var _borrow_weapon: WeaponData
 var _borrow_colors: PackedColorArray = PackedColorArray()
 var _geometry_hilt_from: Vector2 = Vector2.ZERO
 var _geometry_hilt_to: Vector2 = Vector2.ZERO
+
+var _travel_offset: float = 0.0
+var _snap_travel: bool = false
 
 var rival: FighterView
 var loose_hilt: LooseHilt
@@ -132,6 +138,9 @@ func reset_round(ignite: bool) -> void:
 	_solver.stop_motion()
 	_cutter = null
 	_cutter_time = -1.0
+	_travel_offset = 0.0
+	_snap_travel = false
+	z_index = 0
 	_release_borrowed(false)
 	if loose_hilt != null:
 		loose_hilt.queue_free()
@@ -156,6 +165,9 @@ func reset_round(ignite: bool) -> void:
 func on_ticked() -> void:
 	_previous = _current
 	_current = Vector2(fighter.x, -fighter.y)
+	if _snap_travel:
+		_previous = _current
+		_snap_travel = false
 	if _previous.distance_to(_current) > TELEPORT_DISTANCE:
 		snap()
 		rig.reset_cloths()
@@ -207,7 +219,7 @@ func _start_death(event: CombatEvent) -> void:
 	if show_finishers and event.finisher != Finisher.Kind.NONE:
 		_finisher = FinisherPlayer.new()
 		add_child(_finisher)
-		_finisher.start(self, event.finisher, opponent.x)
+		_finisher.start(self, event.finisher, opponent.x, rival.fighter.character.finisher_style if rival != null else null)
 		_fall_limb = _finisher.fall_limb()
 		return
 	if show_finishers and event.limb != MoveData.Limb.NONE and (event.limb == MoveData.Limb.ARM or event.limb == MoveData.Limb.LEG):
@@ -221,9 +233,12 @@ func _start_death(event: CombatEvent) -> void:
 
 func _start_cutter_pose(event: CombatEvent) -> void:
 	if Finisher.is_staged(event.finisher):
-		_cutter = FinisherMotion.for_kind(event.finisher)
+		_cutter = FinisherMotion.for_kind(event.finisher, fighter.character.finisher_style)
 		_solver.start_motion(_cutter)
 		_cutter_time = 0.0 if _cutter != null else -1.0
+		if _cutter != null and _cutter.travels():
+			_travel_offset = _current.x - fighter.x
+			_snap_travel = true
 		return
 	if event.finisher != Finisher.Kind.DASH_THROUGH and event.finisher != Finisher.Kind.PULL_CUT:
 		return
@@ -266,10 +281,15 @@ func _update_cutter(delta: float) -> void:
 		return
 	var before: float = _cutter_time
 	_cutter_time += delta
-	if FinisherMotion.fired(_cutter.streak_at, before, _cutter_time) and not reduced_effects:
-		_add_streak(_geometry.blade_base, _geometry.tip(), blade.color)
-		if _cutter.streaks_both and _geometry.has_second:
-			_add_streak(_geometry.second_base, _geometry.second_base + _geometry.second_direction * _geometry.second_length, blade.second_color if blade.own_second_color else blade.color)
+	var effects_layer: FinisherEffects = _cutter.effects
+	for streak_at in effects_layer.streaks:
+		if FinisherMotion.fired(streak_at, before, _cutter_time) and not reduced_effects:
+			_add_streak(_geometry.blade_base, _geometry.tip(), blade.color)
+			if effects_layer.streaks_both and _geometry.has_second:
+				_add_streak(_geometry.second_base, _geometry.second_base + _geometry.second_direction * _geometry.second_length, blade.second_color if blade.own_second_color else blade.color)
+	for cue in _cutter.cues:
+		if FinisherMotion.fired(cue.time, before, _cutter_time):
+			finisher_cue.emit(cue, blade.center())
 	if FinisherMotion.fired(_cutter.pull_at, before, _cutter_time) and rival != null and rival.loose_hilt != null:
 		rival.loose_hilt.pull(_off_hand_position, _cutter.catch_at - _cutter.pull_at)
 	if FinisherMotion.fired(_cutter.catch_at, before, _cutter_time) and rival != null and rival.loose_hilt != null:
@@ -278,6 +298,20 @@ func _update_cutter(delta: float) -> void:
 		_release_borrowed(true)
 	if _cutter_time > _cutter.end_time() and not _borrowing:
 		_cutter = null
+		_travel_offset = 0.0
+		z_index = 0
+
+
+func _travel_shift() -> float:
+	if _travel_offset == 0.0 or _cutter == null:
+		return 0.0
+	var progress: float = smoothstep(_cutter.travel_from, _cutter.travel_to, _cutter_time)
+	z_index = TRAVEL_DEPTH if progress < 1.0 else 0
+	return _travel_offset * (1.0 - progress)
+
+
+func _faces_back() -> bool:
+	return _travel_offset != 0.0 and _cutter != null and _cutter_time < (_cutter.travel_from + _cutter.travel_to) * 0.5
 
 
 func _off_hand_position() -> Vector2:
@@ -345,10 +379,10 @@ func _process(delta: float) -> void:
 	var shake: float = 0.0
 	if fighter.freeze_ticks > 0 and fighter.state == FighterState.State.HIT:
 		shake = randf_range(-HIT_SHAKE, HIT_SHAKE)
-	position = _previous.lerp(_current, alpha) + Vector2(shake, 0.0)
+	position = _previous.lerp(_current, alpha) + Vector2(shake + _travel_shift(), 0.0)
 	_advance_solver(delta)
 	_check_vault()
-	scale.x = -fighter.facing if _solver.vault_turned() and _solver.vault_progress < 1.0 and not fighter.on_ground else fighter.facing
+	scale.x = -fighter.facing if (_solver.vault_turned() and _solver.vault_progress < 1.0 and not fighter.on_ground) or _faces_back() else fighter.facing
 	_update_intro()
 	var frozen: bool = fighter.state == FighterState.State.HELD and not fighter.held_by_choke
 	if not frozen:

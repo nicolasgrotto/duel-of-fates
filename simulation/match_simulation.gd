@@ -330,6 +330,10 @@ func kill(victim: FighterState, killer: FighterState, move: MoveData, power: Pow
 	long_cinematic = Finisher.is_long(victim.finisher_kind)
 	if victim.finisher_kind == Finisher.Kind.DASH_THROUGH:
 		_pass_behind(killer, victim)
+	elif victim.finisher_kind == Finisher.Kind.WHIRL:
+		_pass_behind(killer, victim)
+		victim.vx = 0.0
+		killer.facing = int(signf(victim.x - killer.x)) if victim.x != killer.x else killer.facing
 	elif Finisher.is_staged(victim.finisher_kind):
 		_hold_in_front(killer, victim)
 	change_state(victim, FighterState.State.DEAD)

@@ -22,6 +22,7 @@
 
 [ext_resource type="Resource" path="res://data/audio/boss_music.tres" id="theme_music"]
 [ext_resource type="Resource" path="res://data/intros/foretold.tres" id="intro_res"]
+[ext_resource type="Resource" path="res://data/finisher_styles/foretold.tres" id="finisher_style_res"]
 [sub_resource type="Resource" id="foretold_light_1"]
 script = ExtResource("2_move")
 id = &"foretold_light_1"
@@ -235,6 +236,7 @@ blade_color_keys = PackedStringArray("BLADE_FORETOLD_0")
 guard_angle = -60.0
 guard_grip = Vector2(22, -30)
 intro = ExtResource("intro_res")
+finisher_style = ExtResource("finisher_style_res")
 eclipse_eyes = false
 variant = ExtResource("13_variant")
 variant_key = "VARIANT_ECLIPSE"

@@ -2,6 +2,9 @@
 
 [ext_resource type="Script" path="res://data/finisher_motion.gd" id="1_script"]
 [ext_resource type="Script" path="res://data/pose_key.gd" id="2_key"]
+[ext_resource type="Script" path="res://data/finisher_reaction.gd" id="3_reaction"]
+[ext_resource type="Script" path="res://data/finisher_effects.gd" id="4_effects"]
+[ext_resource type="Script" path="res://data/finisher_cue.gd" id="5_cue"]
 
 [sub_resource type="Resource" id="key_0"]
 script = ExtResource("2_key")
@@ -73,6 +76,7 @@ crouch = 4
 places_off_hand = true
 off_hand = Vector2(6, 0)
 off_blade_angle = 150
+accent = true
 
 [sub_resource type="Resource" id="key_7"]
 script = ExtResource("2_key")
@@ -119,19 +123,75 @@ places_off_hand = true
 off_hand = Vector2(-10, -12)
 off_blade_angle = 90
 
-[resource]
-script = ExtResource("1_script")
-keys = Array[ExtResource("2_key")]([SubResource("key_0"), SubResource("key_1"), SubResource("key_2"), SubResource("key_3"), SubResource("key_4"), SubResource("key_5"), SubResource("key_6"), SubResource("key_7"), SubResource("key_8"), SubResource("key_9"), SubResource("key_10")])
-blend_time = 0.5
-lead_in = true
+[sub_resource type="Resource" id="reaction"]
+script = ExtResource("3_reaction")
 front_arm_at = 0
 back_arm_at = 0.3
 drops_hilt = true
 kneel_at = 2.85
 head_at = 2.4
 fall_at = 2.85
-streak_at = 2.4
+
+[sub_resource type="Resource" id="effects"]
+script = ExtResource("4_effects")
+streaks = PackedFloat32Array(2.4)
 streaks_both = true
+
+[sub_resource type="Resource" id="cue_0"]
+script = ExtResource("5_cue")
+time = 0.22
+sound = &"swing_light"
+pitch = 1.1
+
+[sub_resource type="Resource" id="cue_1"]
+script = ExtResource("5_cue")
+time = 0.3
+sound = &"hit_light"
+
+[sub_resource type="Resource" id="cue_2"]
+script = ExtResource("5_cue")
+time = 0.95
+sound = &"power_pull"
+volume_db = -2
+
+[sub_resource type="Resource" id="cue_3"]
+script = ExtResource("5_cue")
+time = 1.5
+sound = &"ignition"
+volume_db = -2
+
+[sub_resource type="Resource" id="cue_4"]
+script = ExtResource("5_cue")
+time = 2.28
+sound = &"swing_heavy"
+
+[sub_resource type="Resource" id="cue_5"]
+script = ExtResource("5_cue")
+time = 2.32
+sound = &"swing_light"
+volume_db = -2
+pitch = 1.1
+
+[sub_resource type="Resource" id="cue_6"]
+script = ExtResource("5_cue")
+time = 2.4
+sound = &"hit_heavy"
+pitch = 0.9
+
+[sub_resource type="Resource" id="cue_7"]
+script = ExtResource("5_cue")
+time = 3.3
+sound = &"extinguish"
+volume_db = -4
+
+[resource]
+script = ExtResource("1_script")
+keys = Array[ExtResource("2_key")]([SubResource("key_0"), SubResource("key_1"), SubResource("key_2"), SubResource("key_3"), SubResource("key_4"), SubResource("key_5"), SubResource("key_6"), SubResource("key_7"), SubResource("key_8"), SubResource("key_9"), SubResource("key_10")])
+blend_time = 0.5
+lead_in = true
 pull_at = 0.95
 catch_at = 1.5
 release_at = 3.3
+reaction = SubResource("reaction")
+effects = SubResource("effects")
+cues = Array[ExtResource("5_cue")]([SubResource("cue_0"), SubResource("cue_1"), SubResource("cue_2"), SubResource("cue_3"), SubResource("cue_4"), SubResource("cue_5"), SubResource("cue_6"), SubResource("cue_7")])

@@ -94,6 +94,9 @@ var _lit: PackedFloat32Array = [0.0, 0.0, 0.0, 0.0]
 func setup(simulation: MatchSimulation, fighter_views: Array[FighterView], local_player: int) -> void:
 	sim = simulation
 	views = fighter_views
+	for view in views:
+		if not view.finisher_cue.is_connected(_on_finisher_cue):
+			view.finisher_cue.connect(_on_finisher_cue)
 	player_index = local_player
 	if _hums.is_empty():
 		for i in 2:
@@ -129,6 +132,9 @@ func _exit_tree() -> void:
 
 
 func stop() -> void:
+	for view in views:
+		if is_instance_valid(view) and view.finisher_cue.is_connected(_on_finisher_cue):
+			view.finisher_cue.disconnect(_on_finisher_cue)
 	for hum in _hums:
 		hum.stop()
 		hum.stream = null
@@ -138,6 +144,10 @@ func stop() -> void:
 	for channel in _channels:
 		channel.stop()
 		channel.stream = null
+
+
+func _on_finisher_cue(cue: FinisherCue, at: Vector2) -> void:
+	AudioDirector.play(cue.sound, at, cue.volume_db, cue.pitch, &"Blades")
 
 
 func on_ticked() -> void:

@@ -18,6 +18,6 @@ extends Resource
 @export var head_on_deciding_heavy: bool = true
 @export var cinematic_ko_time: float = 1.6
 @export var long_cinematic_ko_time: float = 3.4
-@export var long_replay_tail: float = 2.0
+@export var long_replay_tail: float = 2.4
 @export var dash_through_clearance: float = 24.0
 @export var execution_clearance: float = 16.0

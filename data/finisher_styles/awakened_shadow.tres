@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="FinisherStyle" format=3]
+
+[ext_resource type="Script" path="res://data/finisher_style.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+tempo = 0.8
+lean = 8
+crouch = 6
+step_scale = 1.4
+reach = 1.05

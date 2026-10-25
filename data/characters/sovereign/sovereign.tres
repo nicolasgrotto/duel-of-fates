@@ -21,6 +21,7 @@
 
 [ext_resource type="Resource" path="res://data/audio/boss_music.tres" id="theme_music"]
 [ext_resource type="Resource" path="res://data/intros/sovereign.tres" id="intro_res"]
+[ext_resource type="Resource" path="res://data/finisher_styles/sovereign.tres" id="finisher_style_res"]
 [sub_resource type="Resource" id="sovereign_light_1"]
 script = ExtResource("2_move")
 id = &"sovereign_light_1"
@@ -228,4 +229,5 @@ blade_color_keys = PackedStringArray("BLADE_SOVEREIGN_0", "BLADE_SOVEREIGN_1")
 guard_angle = -8.0
 guard_grip = Vector2(30, -32)
 intro = ExtResource("intro_res")
+finisher_style = ExtResource("finisher_style_res")
 eclipse_eyes = true

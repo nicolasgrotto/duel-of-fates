@@ -193,3 +193,16 @@ func test_stab_stops_the_lunge_in_front_of_the_victim() -> void:
 	duel.step(60)
 	assert_almost(absf(duel.fighter(0).x - duel.fighter(1).x), gap, 0.5, "the cutter does not slide through the body")
 	assert_true(gap >= duel.sim.config.body_width + duel.sim.config.consequences.execution_clearance - 0.01)
+
+
+func test_heron_whirls_behind_the_opponent() -> void:
+	var duel: DuelFixture = _duel(&"heron", &"shadow")
+	var result: Dictionary = _heavy(duel, true)
+	assert_eq(result["finisher"], Finisher.Kind.WHIRL)
+	var killer: FighterState = duel.fighter(0)
+	var victim: FighterState = duel.fighter(1)
+	assert_gt(killer.x, victim.x, "the heron ends behind the opponent")
+	assert_eq(killer.facing, -1, "facing back toward the falling body")
+	var gap: float = killer.x - victim.x
+	duel.step(60)
+	assert_almost(duel.fighter(0).x - duel.fighter(1).x, gap, 0.5)
