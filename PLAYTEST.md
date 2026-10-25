@@ -11,12 +11,43 @@ Legenda: ✅ ficou bom · ⚠️ funciona mas a sensação ou o número precisa 
    godot --headless --path . --import
    godot --headless --path . --script res://tools/run_tests.gd
    ```
-   **Esperado**: `Tests: 225 passed, 0 failed`.
+   **Esperado**: suíte sem falhas (262 testes após as introduções).
 2. Abra o jogo pelo editor (F5). Na tela de abertura, digite o segredo **O Equilíbrio** (← ← → → ↑ ↓ ↑ ↓) para liberar os secretos e a variante Eclipse do Predestinado. Isso grava o save real; se não quiser, use um perfil de usuário de teste ou faça backup de `user://progress.cfg`.
 3. Teclas padrão do J1: `A`/`D` andar, `W`/`Espaço` pular, `J` rápido, `K` forte, `L` guarda (tocar apara), `Shift` esquiva, `S` esquiva de precisão, `I` habilidade (frente ou trás + `I` = técnicas), `U` poder, `U`+`I` quarto poder, `F3` debug. No Treino: `F5` comportamento do boneco, `F6` gravar, `F7` reproduzir.
 4. Deixe o **F3** ligado nos testes de regra: ele mostra estado, fase do golpe, `contacts` (contador da Pressão), `cinematic`, `reserve` (reserva de Defesa) e `disengage ready`.
 
 ## 1. Correções
+
+### 1a. Introdução dos lutadores
+
+Em Opções, deixe **Introdução dos lutadores · Ligada**. No Duelar, veja cada entrada como jogador e como adversário, sem apertar ataques. Os dois devem caber no enquadramento; o título só aparece depois do assentamento na guarda. Use Revanche para repetir. Ajustes de poses e tempos ficam em `data/intros/<id>.tres`; duração total e título em `CombatConfig`, acessórios e ignição em `EffectsConfig`.
+
+| Personagem | O que conferir na entrada |
+| --- | --- |
+| Guardião | ignição vertical diante do rosto, descida econômica até a guarda de duas mãos |
+| Sombra | espera inclinada, ignição baixa tardia, abertura predatória |
+| Bastião | levantamento pesado, teste descendente, recolhimento sobre o ombro |
+| Vespa | duas ignições, mãos separadas e giros opostos, guardas distintas |
+| Espelho | vertical diante da máscara, parada curta e retorno à vertical |
+| Haste | duas mãos sobre a haste durante o levantamento, giro e descida até apontar ao rival |
+| Brasa | lâmina invertida junto ao quadril e base baixa, sem giro amplo |
+| Forja | peso sustentado com duas mãos e guarda alta sobre o ombro |
+| Garça | arco ascendente, volta leve do corpo e lâmina alta atrás do ombro |
+| Ceifador | início parado com capa/capuz; mão alcança e baixa o capuz devagar; olhar para o rival; capa temporária se solta e some em degraus; giro começa antes da ignição; primeira ponta acende antes da segunda; final em guarda baixa e larga |
+| Eco | falsa guarda alta e giro do punho para a guarda baixa |
+| Sombra Desperta | levantamento lento e pesado até a guarda alta atrás da cabeça (primeira luta de chefe no Arcade/Sobrevivência) |
+| Soberano | braço avança devagar, ignição tardia com a ponta já no rival |
+| Ancião | mãos reunidas junto ao peito, vertical calma e guarda alta |
+| Predestinado | giro curto e guarda firme; repetir nas variantes Aurora e Eclipse, com cor e guarda próprias |
+
+1. Observe a passagem do título ao combate em cada personagem: nenhum salto de mãos, arma ou tronco. No Ceifador, repita em Original, Viajante e Sentinela: só as peças temporárias saem; capa/capuz que pertencem ao traje permanecem. Repita espelhado no lado direito e com **Efeitos reduzidos**.
+2. Em Revanche, pule uma vez com Confirmar e outra com cada ataque: rápido, forte, habilidade e poder. Teste também os comandos do J2 em 2 Jogadores. Os dois vão juntos à guarda e ao título, sem gastar Vigor, lançar ataque ou começar a luta antes do título. Repetir toques durante o título não deve eliminá-lo.
+3. Termine um duelo de dois ou três rounds: só o primeiro mostra as entradas individuais; os demais têm a ignição e o título normais. Veja o replay final inteiro, inclusive depois de ter pulado a entrada.
+4. Desligue **Introdução dos lutadores**, saia e abra o jogo novamente. A opção permanece desligada e o primeiro round usa a intro curta. Religue e repita. Confira o texto em português e inglês e navegue até Voltar: a lista rola mantendo seleção e rodapé visíveis.
+5. Confira a regra nos inícios de Arcade, História e Sobrevivência. Depois abra Treino, Galeria, Tutorial, todos os Treinos guiados, Desafios e Desafio de parry: não há entrada individual mesmo com a opção ligada.
+6. Ligue F3 durante a entrada: `intro`, tempo, duas ignições, `hood` e `cloak` acompanham o que se vê. Ao chegar à luta, acessórios temporários ausentes. O teste automatizado percorre cada tick das mãos e compara a pose assentada com a guarda da própria família.
+
+Validação técnica desta entrega: capturas em GPU a 60 ticks/s, folhas de contato de todos os ticks dos 16 recursos de personagem, trajes do Ceifador, lado direito, pulo e efeitos reduzidos; duelo pelo editor até vitória, replay e resultado. Evidências locais em `build/intro_review/` (fora do git). Os harnesses próprios de `.preview/` são temporários e removidos ao concluir; os arquivos preexistentes dessa pasta são preservados. O playtest usou outro arquivo de progresso, e os testes automatizados usaram uma pasta APPDATA isolada.
 
 | # | Como testar | Esperado | Onde ajustar |
 | --- | --- | --- | --- |
