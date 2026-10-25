@@ -21,6 +21,7 @@ const FOOTER_MARGIN: float = 24.0
 
 var sim: MatchSimulation
 var show_rounds: bool = true
+var marks_every_power: bool = false
 
 var _root: Control
 var _names: Array[Label] = []
@@ -72,13 +73,18 @@ func _setup_flow(i: int) -> void:
 	var ratios: PackedFloat32Array = []
 	var colors: PackedColorArray = []
 	for power in fighter.powers:
-		if power != null and power.high_cost:
+		if power != null and (power.high_cost or marks_every_power):
 			ratios.append(power.cost_for(fighter.flow_level) / sim.config.flow.maximum)
-			colors.append(power.mark_color)
+			colors.append(power.mark_color if power.high_cost else PALETTE.text)
 	bar.set_marks(ratios, colors)
 
 
+func refresh_flow_marks(index: int) -> void:
+	_setup_flow(index)
+
+
 func show_flow_only(index: int) -> void:
+	marks_every_power = true
 	for i in 2:
 		for control in [_names[i], _wounds[i], _health[i], _vigor[i], _marks[i]]:
 			control.visible = false

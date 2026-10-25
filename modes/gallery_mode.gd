@@ -13,6 +13,7 @@ func build_setup() -> DuelSetup:
 	setup.rules = MatchRules.new()
 	setup.rules.endless = true
 	setup.rules.free_powers = true
+	setup.rules.round_intro = false
 	setup.arena = TRAINING_ARENA
 	setup.match_seed = _new_seed()
 	setup.training = true

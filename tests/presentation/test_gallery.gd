@@ -139,3 +139,18 @@ func test_gallery_finisher_restarts_the_round_without_ending_the_match() -> void
 	assert_eq(fixture.count_events(CombatEvent.Type.MATCH_ENDED), 0)
 	assert_eq(fixture.fighter(0).round_wins, 0)
 	panel.free()
+
+
+func test_gallery_starts_fighting_without_the_round_intro() -> void:
+	var setup: DuelSetup = GalleryMode.new().build_setup()
+	var gallery: DuelFixture = DuelFixture.create(setup.rules, null, 7, setup.characters)
+	gallery.step(2)
+	assert_eq(gallery.sim.phase, MatchSimulation.Phase.FIGHT)
+
+
+func test_entry_names_take_their_category_color() -> void:
+	var palette: UiPalette = GalleryPanel.PALETTE
+	assert_eq(GalleryPanel.category_color(CATALOG.find(&"barrier")), palette.aurora)
+	assert_eq(GalleryPanel.category_color(CATALOG.find(&"lightning")), palette.eclipse)
+	assert_eq(GalleryPanel.category_color(CATALOG.find(&"pull")), palette.text)
+	assert_eq(GalleryPanel.category_color(CATALOG.techniques[0]), palette.secondary)

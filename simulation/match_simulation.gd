@@ -361,6 +361,8 @@ func cinematic_seconds() -> float:
 
 
 func intro_seconds() -> float:
+	if not rules.round_intro:
+		return 0.0
 	return config.match_intro if plays_fighter_intros() else config.round_intro
 
 

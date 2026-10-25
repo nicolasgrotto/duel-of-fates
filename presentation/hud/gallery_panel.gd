@@ -2,6 +2,7 @@ class_name GalleryPanel
 extends CanvasLayer
 
 signal caster_changed(index: int)
+signal entry_staged(index: int)
 
 const PALETTE: UiPalette = preload("res://ui/palette.tres")
 const CATALOG: PowerCatalog = preload("res://data/powers/catalog.tres")
@@ -168,6 +169,7 @@ func _restart() -> void:
 func on_ticked() -> void:
 	var sim: MatchSimulation = runner.sim
 	if sim.phase != MatchSimulation.Phase.FIGHT:
+		_refresh(sim)
 		return
 	if sim.round_number != _round:
 		_round = sim.round_number
@@ -230,11 +232,24 @@ func _stage(sim: MatchSimulation) -> void:
 		other.health = minf(health, other.max_health)
 	var target_powers: Array[PowerData] = [null if finishing else CATALOG.find(TARGET_POWERS.get(target.behavior, &"")), null, null]
 	other.equip_powers(target_powers)
+	entry_staged.emit(caster_index)
 	if power != null and _tier < power.min_tier(sim.config.flow):
 		return
 	caster.perform(power, technique)
 	_wait = Ticks.from_seconds(config.gallery_max_time)
 	_pause = Ticks.from_seconds(config.gallery_pause)
+
+
+static func category_color(entry: Resource) -> Color:
+	var power: PowerData = entry as PowerData
+	if power == null:
+		return PALETTE.secondary
+	match power.path:
+		PowerData.Path.AURORA:
+			return PALETTE.aurora
+		PowerData.Path.ECLIPSE:
+			return PALETTE.eclipse
+	return PALETTE.text
 
 
 static func has_finisher(entry: Resource) -> bool:
@@ -258,9 +273,8 @@ func _close_in(sim: MatchSimulation, reach: float) -> void:
 func _refresh(sim: MatchSimulation) -> void:
 	var entry: Resource = _entries[_entry_index]
 	var power: PowerData = entry as PowerData
-	var path: CharacterData.Path = sim.fighters[caster_index].character.path
 	_name.text = "‹ %s ›" % tr(power.name_key if power != null else PowerCatalog.technique_key(entry as MoveData))
-	_name.add_theme_color_override(&"font_color", PALETTE.eclipse if path == CharacterData.Path.ECLIPSE else PALETTE.aurora)
+	_name.add_theme_color_override(&"font_color", category_color(entry))
 	_description.text = tr(power.description_key) if power != null else ""
 	_side.text = tr(SIDE_KEYS[power.path] if power != null else "GALLERY_SIDE_TECHNIQUE")
 	var lowest: int = power.min_tier(sim.config.flow) if power != null else 0

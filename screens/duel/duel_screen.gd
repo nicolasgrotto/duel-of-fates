@@ -237,6 +237,7 @@ func _bind_presentation(simulation: MatchSimulation) -> void:
 	if setup.gallery:
 		_hud.show_flow_only(_gallery.caster_index)
 		_gallery.caster_changed.connect(_hud.show_flow_only)
+		_gallery.entry_staged.connect(_hud.refresh_flow_marks)
 	_debug.attach(_world, simulation, _runner)
 	_debug.views = _views
 

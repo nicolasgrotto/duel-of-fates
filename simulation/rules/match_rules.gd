@@ -7,6 +7,7 @@ extends Resource
 @export var blade_lock: bool = true
 @export var finishers: bool = true
 @export var fighter_intros: bool = false
+@export var round_intro: bool = true
 @export var endless: bool = false
 @export var endless_finishers: bool = false
 @export var powers: bool = true
