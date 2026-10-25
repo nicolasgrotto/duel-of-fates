@@ -19,7 +19,7 @@ grip = Vector2(26, -36)
 blade_angle = -20
 lean = 6
 places_off_hand = true
-off_hand = Vector2(-18, -28)
+off_hand = Vector2(-20, -12)
 off_blade_angle = 160
 
 [sub_resource type="Resource" id="key_2"]
@@ -30,7 +30,7 @@ blade_angle = -62
 twirl = 1
 lean = 4
 places_off_hand = true
-off_hand = Vector2(-12, -30)
+off_hand = Vector2(-16, -8)
 off_blade_angle = 120
 off_twirl = -1
 

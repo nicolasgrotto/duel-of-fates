@@ -9,7 +9,7 @@ time = 0
 grip = Vector2(6, 2)
 blade_angle = 90
 places_off_hand = true
-off_hand = Vector2(-14, -30)
+off_hand = Vector2(-16, -8)
 
 [sub_resource type="Resource" id="key_1"]
 script = ExtResource("2_key")
@@ -17,7 +17,7 @@ time = 0.5
 grip = Vector2(12, -50)
 blade_angle = -90
 places_off_hand = true
-off_hand = Vector2(-14, -30)
+off_hand = Vector2(-16, -8)
 
 [sub_resource type="Resource" id="key_2"]
 script = ExtResource("2_key")
@@ -26,7 +26,7 @@ grip = Vector2(12, -50)
 blade_angle = -90
 head = 4
 places_off_hand = true
-off_hand = Vector2(-14, -30)
+off_hand = Vector2(-16, -8)
 
 [sub_resource type="Resource" id="key_3"]
 script = ExtResource("2_key")
@@ -34,7 +34,7 @@ time = 1.5
 grip = Vector2(38, -22)
 blade_angle = 20
 places_off_hand = true
-off_hand = Vector2(-14, -30)
+off_hand = Vector2(-16, -8)
 
 [sub_resource type="Resource" id="key_4"]
 script = ExtResource("2_key")

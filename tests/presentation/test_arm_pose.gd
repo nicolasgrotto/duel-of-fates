@@ -187,3 +187,31 @@ func test_dodges_acrobatics_and_lock_pressure_keep_both_arms_reachable() -> void
 				fighter.lock_presses = presses
 				solver.solve(fighter, other, pose)
 				_check_reach(data, pose, "lock pressure")
+
+
+func test_free_back_arm_hangs_below_the_shoulder_without_folding() -> void:
+	for data in _characters():
+		var fighter: FighterState = FighterState.new()
+		fighter.setup(0, data, DuelFixture.CONFIG)
+		var solver: PoseSolver = PoseSolver.new()
+		solver.setup(data, data.art)
+		var pose: RigPose = RigPose.new()
+		var rig: FighterRig = FighterRig.new()
+		rig.build(data, data.costumes[0])
+		var length: float = data.art.dim("upper_arm") + data.art.dim("forearm")
+		for state in [FighterState.State.IDLE, FighterState.State.WALKING]:
+			fighter.state = state
+			for tick in 30:
+				solver.advance(Ticks.DELTA)
+				solver.solve(fighter, fighter, pose)
+				if pose.hand_spacing > 0.0:
+					continue
+				rig.apply(pose, 1, 0.0)
+				var shoulder: Vector2 = ArmGeometry.to_body(ArmGeometry.shoulder(pose, data.art, false), pose)
+				var hand: Vector2 = ArmGeometry.to_body(pose.off_hand, pose)
+				var elbow: Vector2 = ArmGeometry.to_body(rig.back_elbow, pose)
+				var context: String = "%s state %d" % [data.id, state]
+				assert_true(hand.y > shoulder.y + length * 0.35, "%s free hand below shoulder" % context)
+				assert_true(hand.distance_to(shoulder) > length * 0.65, "%s free arm not folded" % context)
+				assert_true(elbow.y > shoulder.y, "%s free elbow below shoulder" % context)
+		rig.free()
