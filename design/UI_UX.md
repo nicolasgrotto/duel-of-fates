@@ -166,3 +166,8 @@ Se houver versão para celular: joystick flutuante à esquerda, seis botões cir
 - Texto escrito no código.
 
 O editor de conjunto da seleção inclui Frente, Trás e Ar para técnicas, com o mesmo ciclo por setas dos poderes e restauração do conjunto base. Corte Projetado pode ocupar qualquer um desses espaços; técnicas exclusivamente aéreas só entram em Ar.
+
+
+### História — compra de habilidades
+
+O hub mostra o saldo de pontos de habilidade separado dos atributos. Todo resultado, inclusive derrota, informa o ganho em texto localizado. A tela de árvores usa abas, inicialmente Poderes, e reserva Lâmina para o kit do estilo. O ramo básico tem oito nós em duas linhas; o ramo das supremas deriva do sexto nó e fica na terceira linha, com conectores definidos pelos pais dos dados. A compra exige saldo e pré-requisito, mas o tier só impede equipar: um nó comprado mostra “Comprado, exige Fluxo N”. O detalhe mostra custo em pontos, pai, Fluxo/tier e saldo. Confirmar compra um nó disponível e, quando já comprado, abre os espaços; há um botão Comprar visível para mouse. Estados têm legenda e moldura próprias (bloqueado apagado, disponível sublinhado, sem pontos apagado com custo, comprado contornado, equipado com moldura dupla, seleção externa), legíveis sem cor. Navegação pelas ações de menu; as dicas vêm dos bindings.

@@ -5,6 +5,7 @@ var campaign: StoryCampaign
 var encounter: EncounterData
 var won: bool = false
 var notes: PackedStringArray = []
+var _rewarded: bool = false
 
 
 func _init(story: StoryCampaign, story_encounter: EncounterData) -> void:
@@ -17,6 +18,8 @@ func steps() -> Array[StringName]:
 
 
 func build_setup() -> DuelSetup:
+	_rewarded = false
+	notes.clear()
 	var setup: DuelSetup = DuelSetup.new()
 	var protagonist: CharacterData = campaign.protagonist()
 	setup.characters = [protagonist, character(encounter.opponent)]
@@ -41,11 +44,16 @@ func build_setup() -> DuelSetup:
 
 
 func finish(winner: int, sim: MatchSimulation, _seconds: float) -> void:
+	if _rewarded:
+		return
+	_rewarded = true
 	won = winner == 0
+	var points: int = campaign.award_points(encounter, won)
+	notes = PackedStringArray([TranslationServer.translate("STORY_NOTE_SKILL_POINT" if points == 1 else "STORY_NOTE_SKILL_POINTS").format({"points": points})])
 	if won:
-		notes = campaign.complete(encounter, sim.fighters[0].health_ratio())
+		notes.append_array(campaign.complete(encounter, sim.fighters[0].health_ratio()))
 		SaveService.unlock("seen:encounter:%s" % encounter.id)
-		campaign.save()
+	campaign.save()
 
 
 func result_options() -> Array[StringName]:

@@ -7,7 +7,7 @@ TREE_SLOT_FORWARD,Frente + Poder,Forward + Power
 TREE_SLOT_BACK,Trás + Poder,Back + Power
 TREE_LOCKED,Bloqueado,Locked
 TREE_NEXT,› Próximo desbloqueio,› Next to unlock
-TREE_LEARNED,Aprendido,Learned
+TREE_LEARNED,Comprado,Purchased
 TREE_EQUIPPED,Equipado,Equipped
 TREE_OPEN,Aberto,Open
 TREE_PICK_SLOT,Escolha o espaço,Choose a slot
@@ -694,3 +694,16 @@ EXHIBITION_FLOW,FLUXO,FLOW
 EXHIBITION_DANCE,DANÇA,DANCE
 POWER_TIER_REQUIRED,Só a partir do Tier {tier} (Fluxo {level}),Tier {tier} and up only (Flow {level})
 TECHNIQUE_PROJECTED_CUT,Corte Projetado,Projected Cut
+STORY_SKILLS,Habilidades · {points} pontos,Skills · {points} points
+STORY_NOTE_SKILL_POINTS,+{points} pontos de habilidade,+{points} skill points
+TREE_TAB_POWERS,Poderes,Powers
+TREE_BUY,Comprar,Buy
+TREE_AFFORDABLE,Disponível,Available
+TREE_EXPENSIVE,Sem pontos,Not enough points
+TREE_TIER_BLOCKED,"Comprado, exige Fluxo {level}","Purchased, requires Flow {level}"
+TREE_SKILL_COST,Custo: {cost} pontos · Saldo: {points},Cost: {cost} points · Balance: {points}
+TREE_PARENT,Requer: {name},Requires: {name}
+TREE_EMPTY,Disponível para equipar,Available to equip
+TREE_ACTION,Comprar / Equipar,Buy / Equip
+TREE_TIER_BADGE,Exige Fluxo {level},Requires Flow {level}
+STORY_NOTE_SKILL_POINT,+{points} ponto de habilidade,+{points} skill point

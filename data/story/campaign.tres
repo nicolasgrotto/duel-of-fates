@@ -20,6 +20,184 @@
 [ext_resource type="Resource" path="res://data/story/endings/heir_returns.tres" id="n_heir_returns"]
 [ext_resource type="Resource" path="res://data/story/endings/forest_yields.tres" id="n_forest_yields"]
 [ext_resource type="Resource" path="res://data/story/endings/balance.tres" id="n_balance"]
+[ext_resource type="Script" path="res://data/story/story_tree_node.gd" id="tree_node"]
+[ext_resource type="Resource" path="res://data/powers/repulse.tres" id="p_aurora_0"]
+[ext_resource type="Resource" path="res://data/powers/pull.tres" id="p_aurora_1"]
+[ext_resource type="Resource" path="res://data/powers/barrier.tres" id="p_aurora_2"]
+[ext_resource type="Resource" path="res://data/powers/throw.tres" id="p_aurora_3"]
+[ext_resource type="Resource" path="res://data/powers/focus.tres" id="p_aurora_4"]
+[ext_resource type="Resource" path="res://data/powers/heal.tres" id="p_aurora_5"]
+[ext_resource type="Resource" path="res://data/powers/absorption.tres" id="p_aurora_6"]
+[ext_resource type="Resource" path="res://data/powers/mind_twist.tres" id="p_aurora_7"]
+[ext_resource type="Resource" path="res://data/powers/supreme_push.tres" id="p_aurora_8"]
+[ext_resource type="Resource" path="res://data/powers/sanctuary.tres" id="p_aurora_9"]
+[ext_resource type="Resource" path="res://data/powers/mass_telekinesis.tres" id="p_aurora_10"]
+[ext_resource type="Resource" path="res://data/powers/pull.tres" id="p_eclipse_0"]
+[ext_resource type="Resource" path="res://data/powers/repulse.tres" id="p_eclipse_1"]
+[ext_resource type="Resource" path="res://data/powers/drain.tres" id="p_eclipse_2"]
+[ext_resource type="Resource" path="res://data/powers/choke.tres" id="p_eclipse_3"]
+[ext_resource type="Resource" path="res://data/powers/freeze.tres" id="p_eclipse_4"]
+[ext_resource type="Resource" path="res://data/powers/lightning.tres" id="p_eclipse_5"]
+[ext_resource type="Resource" path="res://data/powers/mind_twist.tres" id="p_eclipse_6"]
+[ext_resource type="Resource" path="res://data/powers/wrath.tres" id="p_eclipse_7"]
+[ext_resource type="Resource" path="res://data/powers/fracture.tres" id="p_eclipse_8"]
+[ext_resource type="Resource" path="res://data/powers/arsenal.tres" id="p_eclipse_9"]
+[ext_resource type="Resource" path="res://data/powers/storm.tres" id="p_eclipse_10"]
+
+[sub_resource type="Resource" id="aurora_0"]
+script = ExtResource("tree_node")
+power = ExtResource("p_aurora_0")
+cost = 0
+parent = -1
+branch = 0
+
+[sub_resource type="Resource" id="aurora_1"]
+script = ExtResource("tree_node")
+power = ExtResource("p_aurora_1")
+cost = 1
+parent = 0
+branch = 0
+
+[sub_resource type="Resource" id="aurora_2"]
+script = ExtResource("tree_node")
+power = ExtResource("p_aurora_2")
+cost = 1
+parent = 1
+branch = 0
+
+[sub_resource type="Resource" id="aurora_3"]
+script = ExtResource("tree_node")
+power = ExtResource("p_aurora_3")
+cost = 2
+parent = 2
+branch = 0
+
+[sub_resource type="Resource" id="aurora_4"]
+script = ExtResource("tree_node")
+power = ExtResource("p_aurora_4")
+cost = 2
+parent = 3
+branch = 0
+
+[sub_resource type="Resource" id="aurora_5"]
+script = ExtResource("tree_node")
+power = ExtResource("p_aurora_5")
+cost = 2
+parent = 4
+branch = 0
+
+[sub_resource type="Resource" id="aurora_6"]
+script = ExtResource("tree_node")
+power = ExtResource("p_aurora_6")
+cost = 2
+parent = 5
+branch = 0
+
+[sub_resource type="Resource" id="aurora_7"]
+script = ExtResource("tree_node")
+power = ExtResource("p_aurora_7")
+cost = 2
+parent = 6
+branch = 0
+
+[sub_resource type="Resource" id="aurora_8"]
+script = ExtResource("tree_node")
+power = ExtResource("p_aurora_8")
+cost = 3
+parent = 5
+branch = 1
+
+[sub_resource type="Resource" id="aurora_9"]
+script = ExtResource("tree_node")
+power = ExtResource("p_aurora_9")
+cost = 3
+parent = 8
+branch = 1
+
+[sub_resource type="Resource" id="aurora_10"]
+script = ExtResource("tree_node")
+power = ExtResource("p_aurora_10")
+cost = 4
+parent = 9
+branch = 1
+
+[sub_resource type="Resource" id="eclipse_0"]
+script = ExtResource("tree_node")
+power = ExtResource("p_eclipse_0")
+cost = 0
+parent = -1
+branch = 0
+
+[sub_resource type="Resource" id="eclipse_1"]
+script = ExtResource("tree_node")
+power = ExtResource("p_eclipse_1")
+cost = 1
+parent = 0
+branch = 0
+
+[sub_resource type="Resource" id="eclipse_2"]
+script = ExtResource("tree_node")
+power = ExtResource("p_eclipse_2")
+cost = 1
+parent = 1
+branch = 0
+
+[sub_resource type="Resource" id="eclipse_3"]
+script = ExtResource("tree_node")
+power = ExtResource("p_eclipse_3")
+cost = 2
+parent = 2
+branch = 0
+
+[sub_resource type="Resource" id="eclipse_4"]
+script = ExtResource("tree_node")
+power = ExtResource("p_eclipse_4")
+cost = 2
+parent = 3
+branch = 0
+
+[sub_resource type="Resource" id="eclipse_5"]
+script = ExtResource("tree_node")
+power = ExtResource("p_eclipse_5")
+cost = 2
+parent = 4
+branch = 0
+
+[sub_resource type="Resource" id="eclipse_6"]
+script = ExtResource("tree_node")
+power = ExtResource("p_eclipse_6")
+cost = 2
+parent = 5
+branch = 0
+
+[sub_resource type="Resource" id="eclipse_7"]
+script = ExtResource("tree_node")
+power = ExtResource("p_eclipse_7")
+cost = 3
+parent = 6
+branch = 0
+
+[sub_resource type="Resource" id="eclipse_8"]
+script = ExtResource("tree_node")
+power = ExtResource("p_eclipse_8")
+cost = 3
+parent = 5
+branch = 1
+
+[sub_resource type="Resource" id="eclipse_9"]
+script = ExtResource("tree_node")
+power = ExtResource("p_eclipse_9")
+cost = 3
+parent = 8
+branch = 1
+
+[sub_resource type="Resource" id="eclipse_10"]
+script = ExtResource("tree_node")
+power = ExtResource("p_eclipse_10")
+cost = 4
+parent = 9
+branch = 1
+
 
 [resource]
 script = ExtResource("1_campaign")
@@ -32,3 +210,9 @@ aurora_normal_ending = ExtResource("n_ring_silent")
 aurora_secret_ending = ExtResource("n_heir_returns")
 eclipse_normal_ending = ExtResource("n_forest_yields")
 eclipse_secret_ending = ExtResource("n_balance")
+aurora_tree = Array[ExtResource("tree_node")]([SubResource("aurora_0"), SubResource("aurora_1"), SubResource("aurora_2"), SubResource("aurora_3"), SubResource("aurora_4"), SubResource("aurora_5"), SubResource("aurora_6"), SubResource("aurora_7"), SubResource("aurora_8"), SubResource("aurora_9"), SubResource("aurora_10")])
+eclipse_tree = Array[ExtResource("tree_node")]([SubResource("eclipse_0"), SubResource("eclipse_1"), SubResource("eclipse_2"), SubResource("eclipse_3"), SubResource("eclipse_4"), SubResource("eclipse_5"), SubResource("eclipse_6"), SubResource("eclipse_7"), SubResource("eclipse_8"), SubResource("eclipse_9"), SubResource("eclipse_10")])
+skill_points_win = 3
+skill_points_loss = 1
+skill_points_milestone = 1
+skill_points_secret = 3

@@ -36,7 +36,7 @@ func _ready() -> void:
 	elif campaign.is_finished():
 		_list.add_item(&"ending", tr("STORY_SEE_ENDING"))
 	_list.add_item(&"attributes", tr("STORY_RAISE").format({"points": campaign.free_points}) if campaign.free_points > 0 else tr("STORY_VIEW_ATTRIBUTES"))
-	_list.add_item(&"powers", tr("STORY_POWERS"))
+	_list.add_item(&"powers", tr("STORY_SKILLS").format({"points": campaign.skill_points}))
 	_list.add_item(&"appearance", tr("STORY_APPEARANCE"))
 	_list.add_item(&"new", tr("STORY_RESTART"))
 	_list.add_item(&"back", tr("MENU_BACK"))

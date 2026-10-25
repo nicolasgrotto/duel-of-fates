@@ -41,17 +41,17 @@ Tom: poucas palavras, frases curtas, nenhuma explicação a mais. O mundo se rev
 | # | Encontro | Adversário | Arena | IA | Recompensa (Aurora / Eclipse) |
 | --- | --- | --- | --- | --- | --- |
 | 1 | O Teste | Guardião | Plataforma de Refino | −1 | pontos |
-| 2 | Ecos na Floresta | Eco | Floresta Lumínica | −1 | pontos · Barreira / Puxão |
-| 3 | A Vespa do Telhado | Vespa | Telhado Neon | 0 | marco · espaço Frente + Poder · Arremesso / Estrangular |
-| 4 | Brasa na Mina | Brasa | Mina de Cristal | 0 | pontos · Cura / Congelar |
-| 5A | O Muro do Santuário | Bastião | Santuário Alagado | 0 | pontos · Absorção |
-| 6A | Sombra | Sombra | Plataforma de Refino | 0 | marco · espaço Trás + Poder · Foco |
-| 7A | A Sombra Desperta | Sombra Desperta | Mina de Cristal | 0 | pontos · Puxão |
+| 2 | Ecos na Floresta | Eco | Floresta Lumínica | −1 | pontos de atributo e habilidade |
+| 3 | A Vespa do Telhado | Vespa | Telhado Neon | 0 | marco · espaço de poder · pontos de habilidade |
+| 4 | Brasa na Mina | Brasa | Mina de Cristal | 0 | pontos de atributo e habilidade |
+| 5A | O Muro do Santuário | Bastião | Santuário Alagado | 0 | pontos de atributo e habilidade |
+| 6A | Sombra | Sombra | Plataforma de Refino | 0 | marco · espaço de poder · pontos de habilidade |
+| 7A | A Sombra Desperta | Sombra Desperta | Mina de Cristal | 0 | pontos de atributo e habilidade |
 | 8A | O Soberano | Soberano | Anel Orbital | 0 | libera o Soberano |
 | ★A | O Predestinado do Eclipse | Predestinado (Eclipse) | Santuário Alagado | chefe | libera a variante |
-| 5E | A Prova do Ceifador | Ceifador | Anel Orbital | 0 | pontos · Ira |
-| 6E | O Templo do Espelho | Espelho | Santuário Alagado | 0 | marco · espaço Trás + Poder · Dreno |
-| 7E | A Garça do Telhado | Garça | Telhado Neon | 0 | pontos · Repulsão |
+| 5E | A Prova do Ceifador | Ceifador | Anel Orbital | 0 | pontos de atributo e habilidade |
+| 6E | O Templo do Espelho | Espelho | Santuário Alagado | 0 | marco · espaço de poder · pontos de habilidade |
+| 7E | A Garça do Telhado | Garça | Telhado Neon | 0 | pontos de atributo e habilidade |
 | 8E | O Ancião | Ancião | Floresta Lumínica | 0 | libera o Ancião |
 | ★E | O Predestinado da Aurora | Predestinado (Aurora) | Santuário Alagado | chefe | libera a variante |
 
@@ -62,7 +62,7 @@ O "IA" é um ajuste sobre a dificuldade escolhida (−1 = um nível abaixo).
 Seis passos, com a prévia do personagem mudando junto com a opção destacada:
 
 1. **Nome**: lista pronta (Kael, Iria, Tarin, Vessa, Oren, Lyse) ou digitado, até 16 caracteres.
-2. **Caminho do Fluxo**: Caminho da Aurora ou Caminho do Eclipse. Define o poder inicial (Repulsão / Raio), os poderes aprendidos, a rota e as falas.
+2. **Caminho do Fluxo**: Caminho da Aurora ou Caminho do Eclipse. Define o poder inicial (Repulsão / Puxão), os poderes aprendidos, a rota e as falas.
 3. **Estilo de luta**: Técnica (base do Guardião), Fúria (base da Sombra), Voo (base da Garça).
 4. **Visual**: Errante, Vigia ou Peregrino.
 5. **Cor da lâmina**: dez cores do elenco.
@@ -400,3 +400,5 @@ Os finais normais deixam a pista para o final secreto ("um duelo mais limpo") se
 - **Hub**: Continuar, Evoluir atributos, Poderes, Nova/Recomeçar campanha; à direita, nome, caminho, estilo, poderes, atributos e o protagonista em guarda.
 - **Galeria da História** (Extras): rever encontros e finais já vistos.
 - Com a técnica visual nova, as cenas de diálogo podem ganhar retratos ou planos de câmera próprios, desde que mantenham o tom seco e cinematográfico. Voz gravada é uma possibilidade futura (ver [design/AUDIO.md](../design/AUDIO.md)).
+
+O bônus de marco dos pontos de habilidade é concedido na vitória; derrotas em marcos continuam valendo 1. O secreto concede 3 ao vencer ou 1 ao perder. Repetições concedem os mesmos pontos por resultado; atributos e abertura de espaços continuam sendo recompensas únicas. A compra não exige tier; o equipamento exige. Sem poderes suficientes para todos os espaços recém-abertos, os restantes usam o comando neutro até haver opções permitidas, sem repetir poderes.

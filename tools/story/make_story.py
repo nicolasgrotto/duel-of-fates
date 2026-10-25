@@ -22,20 +22,20 @@ SPEAKERS = {
 PATHS = {"": 0, "Aurora": 1, "Eclipse": 2}
 
 ENCOUNTERS = [
-    ("1", "trial", 1, 0, "guardian", "refinery_platform", -1, False, False, True, "", "", []),
-    ("2", "echoes", 2, 0, "echo", "luminous_forest", -1, False, False, True, "barrier", "pull", []),
-    ("3", "rooftop_wasp", 3, 0, "wasp", "neon_rooftop", 0, False, True, True, "throw", "choke", []),
-    ("4", "ember_mine", 4, 0, "ember", "crystal_mine", 0, False, False, True, "heal", "freeze", []),
-    ("5A", "sanctuary_wall", 5, 1, "bastion", "flooded_sanctuary", 0, False, False, True, "absorption", "", []),
-    ("6A", "shadow", 6, 1, "shadow", "refinery_platform", 0, False, True, True, "focus", "", []),
-    ("7A", "shadow_awakens", 7, 1, "awakened_shadow", "crystal_mine", 0, False, False, True, "pull", "", []),
-    ("8A", "sovereign", 8, 1, "sovereign", "orbital_ring", 0, False, False, False, "", "", ["character:sovereign"]),
-    ("★A", "eclipse_foretold", 9, 1, "foretold_eclipse", "flooded_sanctuary", 0, True, False, False, "", "", ["character:foretold_eclipse"]),
-    ("5E", "reaper_test", 5, 2, "reaper", "orbital_ring", 0, False, False, True, "", "wrath", []),
-    ("6E", "mirror_temple", 6, 2, "mirror", "flooded_sanctuary", 0, False, True, True, "", "drain", []),
-    ("7E", "rooftop_heron", 7, 2, "heron", "neon_rooftop", 0, False, False, True, "", "repulse", []),
-    ("8E", "elder", 8, 2, "elder", "luminous_forest", 0, False, False, False, "", "", ["character:elder"]),
-    ("★E", "aurora_foretold", 9, 2, "foretold", "flooded_sanctuary", 0, True, False, False, "", "", ["character:foretold"]),
+    ("1", "trial", 1, 0, "guardian", "refinery_platform", -1, False, False, True, []),
+    ("2", "echoes", 2, 0, "echo", "luminous_forest", -1, False, False, True, []),
+    ("3", "rooftop_wasp", 3, 0, "wasp", "neon_rooftop", 0, False, True, True, []),
+    ("4", "ember_mine", 4, 0, "ember", "crystal_mine", 0, False, False, True, []),
+    ("5A", "sanctuary_wall", 5, 1, "bastion", "flooded_sanctuary", 0, False, False, True, []),
+    ("6A", "shadow", 6, 1, "shadow", "refinery_platform", 0, False, True, True, []),
+    ("7A", "shadow_awakens", 7, 1, "awakened_shadow", "crystal_mine", 0, False, False, True, []),
+    ("8A", "sovereign", 8, 1, "sovereign", "orbital_ring", 0, False, False, False, ["character:sovereign"]),
+    ("★A", "eclipse_foretold", 9, 1, "foretold_eclipse", "flooded_sanctuary", 0, True, False, False, ["character:foretold_eclipse"]),
+    ("5E", "reaper_test", 5, 2, "reaper", "orbital_ring", 0, False, False, True, []),
+    ("6E", "mirror_temple", 6, 2, "mirror", "flooded_sanctuary", 0, False, True, True, []),
+    ("7E", "rooftop_heron", 7, 2, "heron", "neon_rooftop", 0, False, False, True, []),
+    ("8E", "elder", 8, 2, "elder", "luminous_forest", 0, False, False, False, ["character:elder"]),
+    ("★E", "aurora_foretold", 9, 2, "foretold", "flooded_sanctuary", 0, True, False, False, ["character:foretold"]),
 ]
 ENDINGS = [
     ("O Anel Silencia", "ring_silent", False, ["character:elder", "ending:any"]),
@@ -87,7 +87,7 @@ def speaker_of(cell):
 
 
 def write_encounter(spec, parsed, strings):
-    label, eid, chapter, route, opponent, arena, ai, boss, milestone, points, power_a, power_e, unlocks = spec
+    label, eid, chapter, route, opponent, arena, ai, boss, milestone, points, unlocks = spec
     key = f"STORY_{eid.upper()}"
     strings.append((f"{key}_TITLE", parsed["pt"], parsed["en"]))
     out = ['[gd_resource type="Resource" script_class="EncounterData" format=3]', '',
@@ -108,7 +108,7 @@ def write_encounter(spec, parsed, strings):
     out += ['[resource]', 'script = ExtResource("1_encounter")', f'id = &"{eid}"', f'chapter = {chapter}', f'title_key = "{key}_TITLE"',
             f'route = {route}', f'opponent = &"{opponent}"', 'arena = ExtResource("3_arena")', f'ai_offset = {ai}',
             f'boss_ai = {"true" if boss else "false"}', f'milestone = {"true" if milestone else "false"}',
-            f'awards_points = {"true" if points else "false"}', f'power_aurora = &"{power_a}"', f'power_eclipse = &"{power_e}"',
+            f'awards_points = {"true" if points else "false"}',
             f'unlocks = PackedStringArray({unlock_list})',
             f'before = Array[ExtResource("2_line")]([{", ".join(refs["before"])}])',
             f'after = Array[ExtResource("2_line")]([{", ".join(refs["after"])}])']
@@ -133,6 +133,33 @@ def write_ending(spec, parsed, strings):
         handle.write("\n".join(out) + "\n")
 
 
+def power_tree_sections():
+    with open("content/STORY.md", encoding="utf-8") as handle:
+        text = handle.read().split("- **Árvore de Poderes**", 1)[1]
+    rows = table_rows(text.splitlines(), 0)
+    with open("localization/strings.csv", encoding="utf-8", newline="") as handle:
+        names = {row[1]: row[0][6:].lower() for row in csv.reader(handle) if row and row[0].startswith("POWER_") and not row[0].endswith("_TEXT")}
+    ext = ['[ext_resource type="Script" path="res://data/story/story_tree_node.gd" id="tree_node"]']
+    sub = []
+    fields = []
+    for path, column in [("aurora", 1), ("eclipse", 3)]:
+        refs = []
+        for row in rows:
+            index = int(row[0]) - 1
+            name = row[column].split(" · ")[0].replace(" (inicial)", "")
+            power_id = names.get(name)
+            if power_id is None or not os.path.exists(f"data/powers/{power_id}.tres"):
+                continue
+            key = f"{path}_{index}"
+            ext.append(f'[ext_resource type="Resource" path="res://data/powers/{power_id}.tres" id="p_{key}"]')
+            parent = -1 if index == 0 else (5 if index == 8 else index - 1)
+            sub += [f'[sub_resource type="Resource" id="{key}"]', 'script = ExtResource("tree_node")', f'power = ExtResource("p_{key}")', f'cost = {int(row[column + 1])}', f'parent = {parent}', f'branch = {1 if index >= 8 else 0}', '']
+            refs.append(f'SubResource("{key}")')
+        fields.append(f'{path}_tree = Array[ExtResource("tree_node")]([{", ".join(refs)}])')
+    fields += ['skill_points_win = 3', 'skill_points_loss = 1', 'skill_points_milestone = 1', 'skill_points_secret = 3']
+    return ext, [''] + sub, fields
+
+
 def write_campaign():
     by_route = {0: [], 1: [], 2: []}
     for spec in ENCOUNTERS:
@@ -150,10 +177,14 @@ def write_campaign():
     def group(route):
         return "Array[ExtResource(\"2_encounter\")]([" + ", ".join(f'ExtResource("e_{e}")' for e in by_route[route]) + "])"
 
+    tree_ext, tree_sub, tree_fields = power_tree_sections()
+    lines += tree_ext + tree_sub
+
     lines += ['', '[resource]', 'script = ExtResource("1_campaign")', f'common = {group(0)}', f'aurora = {group(1)}', f'eclipse = {group(2)}',
               'aurora_secret = ExtResource("e_eclipse_foretold")', 'eclipse_secret = ExtResource("e_aurora_foretold")',
               'aurora_normal_ending = ExtResource("n_ring_silent")', 'aurora_secret_ending = ExtResource("n_heir_returns")',
               'eclipse_normal_ending = ExtResource("n_forest_yields")', 'eclipse_secret_ending = ExtResource("n_balance")']
+    lines += tree_fields
     with open("data/story/campaign.tres", "w", encoding="utf-8", newline="\n") as handle:
         handle.write("\n".join(lines) + "\n")
 
@@ -166,13 +197,26 @@ def generated(key):
 def write_strings(strings):
     path = "localization/strings.csv"
     with open(path, encoding="utf-8", newline="") as handle:
-        rows = list(csv.reader(handle))
-    kept = [row for row in rows if not (row and generated(row[0]))]
-    buffer = io.StringIO()
-    writer = csv.writer(buffer, lineterminator="\n")
-    writer.writerows(kept + [list(s) for s in strings])
+        lines = handle.read().splitlines()
+    replacements = {row[0]: row for row in strings}
+    output = []
+    for line in lines:
+        row = next(csv.reader([line]))
+        if row and generated(row[0]):
+            replacement = replacements.pop(row[0], None)
+            if replacement is not None:
+                buffer = io.StringIO()
+                csv.writer(buffer, lineterminator="").writerow(replacement)
+                output.append(buffer.getvalue())
+        else:
+            output.append(line)
+    for row in replacements.values():
+        buffer = io.StringIO()
+        csv.writer(buffer, lineterminator="").writerow(row)
+        output.append(buffer.getvalue())
     with open(path, "w", encoding="utf-8", newline="") as handle:
-        handle.write(buffer.getvalue())
+        handle.write("\n".join(output) + "\n")
+
 
 
 def main():

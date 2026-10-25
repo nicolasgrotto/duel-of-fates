@@ -23,7 +23,7 @@ func test_routes_follow_the_flow_path() -> void:
 	assert_eq(aurora.route()[7].opponent, &"sovereign")
 	assert_eq(eclipse.route()[7].opponent, &"elder")
 	assert_eq(aurora.learned, [&"repulse"] as Array[StringName])
-	assert_eq(eclipse.learned, [&"lightning"] as Array[StringName])
+	assert_eq(eclipse.learned, [&"pull"] as Array[StringName])
 
 
 func test_route_order_text_and_dialogue_exist() -> void:
@@ -51,7 +51,7 @@ func test_round_trip_and_protagonist() -> void:
 	var data: CharacterData = copy.protagonist()
 	assert_eq(data.flow, 6)
 	assert_eq(data.name_key, "Kael")
-	assert_eq(data.powers[0].id, &"lightning")
+	assert_eq(data.powers[0].id, &"pull")
 	assert_true(data.powers[1] == null)
 
 
@@ -84,6 +84,11 @@ func test_tree_equipping_preserves_full_unique_slots_and_save_format() -> void:
 		var campaign: StoryCampaign = _campaign(path, 1)
 		for encounter in campaign.route():
 			campaign.complete(encounter, 0.5)
+		campaign.skill_points = 100
+		campaign.attributes[&"flow"] = 7
+		for definition in campaign.power_tree():
+			if not campaign.learned.has(definition.power.id):
+				assert_true(campaign.buy(definition))
 		var original_keys: Array = campaign.to_dict().keys()
 		var tree: StoryPowerTree = StoryPowerTree.new(campaign)
 		assert_false(tree.equip(0, campaign.slots_open))
@@ -102,3 +107,67 @@ func test_tree_equipping_preserves_full_unique_slots_and_save_format() -> void:
 					seen[id] = true
 		assert_eq(campaign.to_dict().keys(), original_keys)
 		assert_eq(StoryCampaign.from_dict(campaign.to_dict()).equipped, campaign.equipped)
+
+
+func test_skill_rewards_cover_win_loss_retry_milestones_and_secret() -> void:
+	var campaign: StoryCampaign = _campaign(0, 1)
+	var first: EncounterData = campaign.route()[0]
+	assert_eq(campaign.award_points(first, true), 3)
+	assert_eq(campaign.award_points(first, false), 1)
+	assert_eq(campaign.award_points(first, true), 3)
+	var milestone: EncounterData = campaign.route()[2]
+	assert_eq(campaign.award_points(milestone, true), 4)
+	assert_eq(campaign.award_points(milestone, false), 1)
+	assert_eq(campaign.award_points(campaign.secret_encounter(), true), 3)
+	assert_eq(campaign.award_points(campaign.secret_encounter(), false), 1)
+	assert_eq(campaign.skill_points, 16)
+	assert_eq(campaign.free_points, StoryCampaign.CAMPAIGN.start_points)
+
+
+func test_unbeaten_campaign_awards_documented_skill_totals() -> void:
+	for path in 2:
+		var campaign: StoryCampaign = _campaign(path, 1)
+		for encounter in campaign.route():
+			campaign.award_points(encounter, true)
+		assert_eq(campaign.skill_points, 26)
+		campaign.award_points(campaign.secret_encounter(), true)
+		assert_eq(campaign.skill_points, 29)
+
+
+func test_legacy_learned_powers_are_bought_without_refund() -> void:
+	var old: Dictionary = _campaign(1, 1).to_dict()
+	old.erase("skill_points")
+	old["learned"] = [&"lightning", &"wrath", &"flow_cleave"]
+	old["equipped"] = [&"lightning", &"wrath", &""]
+	old["slots_open"] = 2
+	var campaign: StoryCampaign = StoryCampaign.from_dict(old)
+	assert_eq(campaign.skill_points, 0)
+	assert_true(campaign.learned.has(&"lightning"))
+	assert_true(campaign.learned.has(&"wrath"))
+	assert_false(campaign.learned.has(&"flow_cleave"))
+	assert_eq(campaign.equipped[0], &"lightning")
+	assert_false(campaign.equipped.has(&"wrath"), "a bought power still needs its tier")
+	campaign.skill_points = 5
+	var restored: StoryCampaign = StoryCampaign.from_dict(campaign.to_dict())
+	assert_eq(restored.skill_points, 5)
+	assert_eq(restored.learned, campaign.learned)
+
+
+func test_story_mode_awards_and_saves_once_per_finished_duel_including_loss() -> void:
+	var campaign: StoryCampaign = _campaign(0, 1)
+	var encounter: EncounterData = campaign.next_encounter()
+	var mode: StoryMode = StoryMode.new(campaign, encounter)
+	var duel: DuelFixture = DuelFixture.create()
+	mode.build_setup()
+	mode.finish(1, duel.sim, 10.0)
+	assert_eq(campaign.skill_points, 1)
+	assert_eq(SaveService.campaign["skill_points"], 1)
+	assert_false(mode.result_note().is_empty())
+	assert_true(campaign.cleared.is_empty())
+	mode.finish(1, duel.sim, 10.0)
+	assert_eq(campaign.skill_points, 1)
+	mode.build_setup()
+	mode.finish(0, duel.sim, 10.0)
+	assert_eq(campaign.skill_points, 4)
+	assert_true(campaign.cleared.has(encounter.id))
+	assert_eq(SaveService.campaign["skill_points"], 4)

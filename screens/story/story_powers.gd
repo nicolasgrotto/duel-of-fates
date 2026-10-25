@@ -3,9 +3,9 @@ extends Control
 const PALETTE: UiPalette = preload("res://ui/palette.tres")
 const COMBAT: CombatConfig = preload("res://data/balance/combat_config.tres")
 const SLOT_KEYS: Array[String] = ["TREE_SLOT_NEUTRAL", "TREE_SLOT_FORWARD", "TREE_SLOT_BACK"]
-const STATE_KEYS: Array[String] = ["TREE_LOCKED", "TREE_NEXT", "TREE_LEARNED", "TREE_EQUIPPED"]
+const STATE_KEYS: Array[String] = ["TREE_LOCKED", "TREE_AFFORDABLE", "TREE_EXPENSIVE", "TREE_TIER_BLOCKED", "TREE_LEARNED", "TREE_EQUIPPED"]
 const PATH_KEYS: Array[String] = ["PATH_COMMON", "PATH_AURORA", "PATH_ECLIPSE"]
-const STATE_STYLES: Array[StringName] = [&"locked", &"next", &"learned", &"equipped"]
+const STATE_STYLES: Array[StringName] = [&"locked", &"next", &"locked", &"learned", &"learned", &"equipped"]
 
 class NodeButton extends Button:
 	var frame: StringName = &"locked"
@@ -28,22 +28,35 @@ class TreeGraph extends Control:
 
 	func arrange() -> void:
 		for index in buttons.size():
-			var column: int = index if index < 4 else 7 - index
-			var center: Vector2 = Vector2((column + 0.5) / 4.0, 0.25 if index < 4 else 0.75) * size
-			buttons[index].size = Vector2(minf(172.0, size.x / 4.0 - 24.0), 184.0)
+			var column: int = index if index < 4 else (7 - index if index < 8 else index - 8)
+			var row: int = 0 if index < 4 else (1 if index < 8 else 2)
+			var center: Vector2 = Vector2((column + 0.5) / 4.0, (row + 0.5) / 3.0) * size
+			buttons[index].size = Vector2(minf(190.0, size.x / 4.0 - 24.0), minf(178.0, size.y / 3.0 - 20.0))
 			buttons[index].position = center - buttons[index].size * 0.5
 		queue_redraw()
 
 	func _draw() -> void:
-		for index in range(1, buttons.size()):
-			var previous: NodeButton = buttons[index - 1]
+		for index in buttons.size():
+			var parent: int = tree.nodes[index].definition.parent
+			if parent < 0:
+				continue
+			var previous: NodeButton = buttons[parent]
 			var current: NodeButton = buttons[index]
 			var start: Vector2 = previous.position + previous.size * 0.5
 			var end: Vector2 = current.position + current.size * 0.5
 			var direction: Vector2 = (end - start).normalized()
-			var margin: float = previous.size.y * 0.5 + 9.0 if index == 4 else previous.size.x * 0.5 + 9.0
-			var color_key: StringName = &"connector" if tree.nodes[index].state >= StoryPowerTree.State.LEARNED else &"locked_connector"
-			draw_line(start + direction * margin, end - direction * margin, get_theme_color(color_key, &"PowerNode"), 1.0)
+			var margin: float = minf(previous.size.x * 0.5 / maxf(absf(direction.x), 0.001), previous.size.y * 0.5 / maxf(absf(direction.y), 0.001)) + 9.0
+			var color_key: StringName = &"connector" if tree.nodes[index].owned else &"locked_connector"
+			var tint: Color = get_theme_color(color_key, &"PowerNode")
+			if tree.nodes[index].definition.branch != tree.nodes[parent].definition.branch:
+				var from: Vector2 = Vector2(start.x, previous.position.y + previous.size.y + 6.0)
+				var to: Vector2 = Vector2(end.x, current.position.y - 6.0)
+				var middle: float = (from.y + to.y) * 0.5
+				draw_line(from, Vector2(from.x, middle), tint, 1.0)
+				draw_line(Vector2(from.x, middle), Vector2(to.x, middle), tint, 1.0)
+				draw_line(Vector2(to.x, middle), to, tint, 1.0)
+			else:
+				draw_line(start + direction * margin, end - direction * margin, tint, 1.0)
 
 var campaign: StoryCampaign
 var tree: StoryPowerTree
@@ -61,6 +74,9 @@ var _picker: VBoxContainer
 var _slots: Array[Button] = []
 var _picking: bool = false
 var _slot: int = 0
+var _tabs: TabContainer
+var _buy_button: Button
+var _points: Label
 var _footer: Label
 
 
@@ -91,6 +107,8 @@ func _build() -> void:
 	var subtitle: Label = _label(tr("TREE_SUBTITLE").format({"path": tr("PATH_AURORA" if campaign.path == 0 else "PATH_ECLIPSE")}), &"InfoLabel")
 	subtitle.modulate = PALETTE.aurora if campaign.path == 0 else PALETTE.eclipse
 	column.add_child(subtitle)
+	_points = _label("", &"InfoLabel")
+	column.add_child(_points)
 	var body: HBoxContainer = HBoxContainer.new()
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	body.add_theme_constant_override(&"separation", 72)
@@ -99,10 +117,17 @@ func _build() -> void:
 	graph_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	graph_column.size_flags_stretch_ratio = 2.0
 	body.add_child(graph_column)
+	_tabs = TabContainer.new()
+	_tabs.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	graph_column.add_child(_tabs)
+	var power_tab: Control = Control.new()
+	power_tab.name = tr("TREE_TAB_POWERS")
+	_tabs.add_child(power_tab)
 	_graph = TreeGraph.new()
 	_graph.tree = tree
 	_graph.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	graph_column.add_child(_graph)
+	power_tab.add_child(_graph)
+	_graph.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	for index in tree.nodes.size():
 		_build_node(index)
 	for index in tree.milestones.size():
@@ -124,6 +149,12 @@ func _build() -> void:
 	detail.add_child(_requirement)
 	_status = _label("", &"HintLabel")
 	detail.add_child(_status)
+	_buy_button = Button.new()
+	_buy_button.theme_type_variation = &"PowerSlotButton"
+	_buy_button.text = tr("TREE_BUY")
+	_buy_button.focus_mode = Control.FOCUS_NONE
+	_buy_button.pressed.connect(_buy_selected)
+	detail.add_child(_buy_button)
 	_picker = VBoxContainer.new()
 	_picker.add_theme_constant_override(&"separation", 12)
 	detail.add_child(_picker)
@@ -195,17 +226,18 @@ func _texture(side: float) -> TextureRect:
 
 
 func _refresh() -> void:
+	_points.text = tr("TREE_SKILL_COST").format({"cost": tree.nodes[selected].definition.cost, "points": campaign.skill_points})
 	for index in tree.nodes.size():
 		var node: StoryPowerTree.PowerNode = tree.nodes[index]
-		_badges[index].text = tr(SLOT_KEYS[node.slot]) if node.state == StoryPowerTree.State.EQUIPPED else tr(STATE_KEYS[node.state])
+		_badges[index].text = tr(SLOT_KEYS[node.slot]) if node.state == StoryPowerTree.State.EQUIPPED else (tr("TREE_TIER_BADGE").format({"level": node.power.min_level}) if node.state == StoryPowerTree.State.TIER_BLOCKED else _state_text(node))
 		_graph.buttons[index].frame = STATE_STYLES[node.state]
 		_graph.buttons[index].cursor = index == selected
-		_icons[index].modulate = PALETTE.secondary if node.state <= StoryPowerTree.State.NEXT else PALETTE.text
+		_icons[index].modulate = PALETTE.secondary if not node.owned else PALETTE.text
 		_icons[index].modulate.a = 0.45 if node.state == StoryPowerTree.State.LOCKED else 1.0
 		_graph.buttons[index].queue_redraw()
 	_graph.queue_redraw()
 	_show_detail()
-	_footer.text = ControlHints.line(PackedStringArray([ControlHints.hint(&"ui_left", "TREE_PREVIOUS"), ControlHints.hint(&"ui_right", "TREE_NEXT_NODE"), ControlHints.hint(&"ui_accept", "TREE_EQUIP"), ControlHints.hint(&"ui_cancel", "HINT_BACK")]))
+	_footer.text = ControlHints.line(PackedStringArray([ControlHints.hint(&"ui_left", "TREE_PREVIOUS"), ControlHints.hint(&"ui_right", "TREE_NEXT_NODE"), ControlHints.hint(&"ui_accept", "TREE_ACTION"), ControlHints.hint(&"ui_cancel", "HINT_BACK")]))
 
 
 func _show_detail() -> void:
@@ -216,13 +248,28 @@ func _show_detail() -> void:
 	_name.text = tr(power.name_key)
 	_description.text = tr(power.description_key)
 	_facts.text = tr("TREE_FACTS").format({"path": tr(PATH_KEYS[power.path]), "cost": String.num(power.cost_for(level), 1), "cooldown": String.num(power.cooldown_for(level), 1), "flow": level})
-	_requirement.text = tr("TREE_CREATION") if node.initial else tr("TREE_REQUIREMENT").format({"chapter": node.encounter.chapter, "title": tr(node.encounter.title_key)})
+	_requirement.text = tr("TREE_CREATION") if node.initial else tr("TREE_PARENT").format({"name": tr(tree.nodes[node.definition.parent].power.name_key)})
 	if not node.allowed:
 		_requirement.text += "\n" + tr("TREE_FLOW_REQUIRED").format({"level": power.min_level, "tier": power.min_tier(COMBAT.flow) + 1})
-	_status.text = tr("TREE_IN_SLOT").format({"slot": tr(SLOT_KEYS[node.slot])}) if node.slot >= 0 else tr(STATE_KEYS[node.state])
+	_status.text = tr("TREE_IN_SLOT").format({"slot": tr(SLOT_KEYS[node.slot])}) if node.slot >= 0 else _state_text(node)
+	_buy_button.visible = not node.owned
+	_buy_button.disabled = node.state != StoryPowerTree.State.AFFORDABLE
 	for slot in _slots.size():
 		var equipped: PowerData = StoryCampaign.load_power(campaign.equipped[slot])
-		_slots[slot].text = tr("TREE_SLOT_CONTENT").format({"slot": tr(SLOT_KEYS[slot]), "power": tr(equipped.name_key)})
+		_slots[slot].text = tr("TREE_SLOT_CONTENT").format({"slot": tr(SLOT_KEYS[slot]), "power": tr(equipped.name_key) if equipped != null else tr("TREE_EMPTY")})
+
+
+func _state_text(node: StoryPowerTree.PowerNode) -> String:
+	return tr(STATE_KEYS[node.state]).format({"level": node.power.min_level})
+
+
+func _buy_selected() -> void:
+	if not tree.buy(selected):
+		AudioDirector.play_ui(&"rejected")
+		return
+	campaign.save()
+	AudioDirector.play_ui(&"ui_confirm")
+	_refresh()
 
 
 func _focus_node(index: int) -> void:
@@ -248,7 +295,10 @@ func _confirm(index: int) -> void:
 		return
 	_focus_node(index)
 	var node: StoryPowerTree.PowerNode = tree.nodes[selected]
-	if not node.allowed or node.state < StoryPowerTree.State.LEARNED:
+	if not node.owned:
+		_buy_selected()
+		return
+	if not node.allowed:
 		AudioDirector.play_ui(&"rejected")
 		return
 	AudioDirector.play_ui(&"ui_confirm")

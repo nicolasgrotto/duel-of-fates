@@ -60,6 +60,13 @@ border_color = Color(0.909804, 0.92549, 0.960784, 1)
 [resource]
 default_font = SubResource("regular_font")
 default_font_size = 26
+TabContainer/styles/panel = SubResource("power_empty")
+TabBar/styles/tab_selected = SubResource("power_equipped")
+TabBar/styles/tab_unselected = SubResource("power_empty")
+TabBar/styles/tab_hovered = SubResource("power_learned")
+TabBar/font_sizes/font_size = 24
+TabBar/colors/font_selected_color = Color(0.909804, 0.92549, 0.960784, 1)
+TabBar/colors/font_unselected_color = Color(0.541176, 0.580392, 0.670588, 1)
 PowerNode/base_type = &"Button"
 PowerNode/styles/normal = SubResource("power_empty")
 PowerNode/styles/hover = SubResource("power_empty")

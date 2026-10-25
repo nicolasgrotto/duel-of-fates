@@ -1,6 +1,8 @@
 class_name CampaignData
 extends Resource
 
+const TreeNodeData = preload("res://data/story/story_tree_node.gd")
+
 @export var common: Array[EncounterData] = []
 @export var aurora: Array[EncounterData] = []
 @export var eclipse: Array[EncounterData] = []
@@ -29,8 +31,12 @@ extends Resource
 @export var default_hair: int = 1
 @export var default_skin: int = 1
 @export var blade_sources: Array[StringName] = [&"guardian", &"shadow", &"bastion", &"wasp", &"mirror", &"lance", &"ember", &"forge", &"heron", &"reaper"]
-@export var aurora_powers: Array[StringName] = [&"repulse", &"barrier", &"throw", &"heal", &"absorption", &"focus", &"pull"]
-@export var eclipse_powers: Array[StringName] = [&"lightning", &"pull", &"choke", &"freeze", &"wrath", &"drain", &"repulse"]
+@export var aurora_tree: Array[TreeNodeData] = []
+@export var eclipse_tree: Array[TreeNodeData] = []
+@export var skill_points_win: int = 3
+@export var skill_points_loss: int = 1
+@export var skill_points_milestone: int = 1
+@export var skill_points_secret: int = 3
 @export var start_attribute: int = 3
 @export var start_points: int = 3
 @export var max_attribute: int = 7

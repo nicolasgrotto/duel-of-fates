@@ -7,6 +7,8 @@ const CHARACTER_PATH: String = "res://data/characters/%s/%s.tres"
 const ATTRIBUTES: Array[StringName] = [&"health", &"vigor", &"blade", &"defense", &"agility", &"flow"]
 const DIFFICULTIES: Array[StringName] = [&"easy", &"normal", &"hard"]
 const SLOTS: int = 3
+const TreeNodeData = preload("res://data/story/story_tree_node.gd")
+const CATALOG: PowerCatalog = preload("res://data/powers/catalog.tres")
 
 var name: String = ""
 var path: int = 0
@@ -20,6 +22,7 @@ var color: int = 0
 var difficulty: int = 1
 var attributes: Dictionary = {}
 var free_points: int = 0
+var skill_points: int = 0
 var cleared: Array[StringName] = []
 var learned: Array[StringName] = []
 var equipped: Array[StringName] = [&"", &"", &""]
@@ -57,7 +60,52 @@ static func create(player_name: String, flow_path: int, style_index: int, look_i
 
 
 func power_list() -> Array[StringName]:
-	return CAMPAIGN.aurora_powers if path == 0 else CAMPAIGN.eclipse_powers
+	var ids: Array[StringName] = []
+	for node in power_tree():
+		ids.append(node.power.id)
+	return ids
+
+
+func power_tree() -> Array[TreeNodeData]:
+	return CAMPAIGN.aurora_tree if path == 0 else CAMPAIGN.eclipse_tree
+
+
+func can_buy(node: TreeNodeData) -> bool:
+	var nodes: Array[TreeNodeData] = power_tree()
+	if not nodes.has(node) or learned.has(node.power.id) or skill_points < node.cost:
+		return false
+	return node.parent < 0 or learned.has(nodes[node.parent].power.id)
+
+
+func buy(node: TreeNodeData) -> bool:
+	if not can_buy(node):
+		return false
+	skill_points -= node.cost
+	learned.append(node.power.id)
+	_fill_slots()
+	return true
+
+
+func award_points(encounter: EncounterData, won: bool) -> int:
+	if not route().has(encounter) and encounter != secret_encounter():
+		return 0
+	var points: int = CAMPAIGN.skill_points_loss
+	if won:
+		points = CAMPAIGN.skill_points_secret if encounter == secret_encounter() else CAMPAIGN.skill_points_win
+		if encounter.milestone:
+			points += CAMPAIGN.skill_points_milestone
+	skill_points += points
+	return points
+
+
+func power_allowed(id: StringName) -> bool:
+	var power: PowerData = CATALOG.find(id)
+	if power == null:
+		return false
+	var hero: CharacterData = CharacterData.new()
+	hero.flow = attributes.get(&"flow", CAMPAIGN.start_attribute)
+	hero.path = CharacterData.Path.AURORA if path == 0 else CharacterData.Path.ECLIPSE
+	return PowerCatalog.is_allowed(power, hero)
 
 
 func route() -> Array[EncounterData]:
@@ -123,10 +171,6 @@ func complete(encounter: EncounterData, health_ratio: float) -> PackedStringArra
 	if points > 0:
 		free_points += points
 		notes.append(TranslationServer.translate("STORY_NOTE_POINTS").format({"points": points}))
-	var power: StringName = encounter.power_aurora if path == 0 else encounter.power_eclipse
-	if power != &"" and not learned.has(power):
-		learned.append(power)
-		notes.append(TranslationServer.translate("STORY_NOTE_POWER").format({"power": TranslationServer.translate(load_power(power).name_key)}))
 	if encounter.milestone:
 		slots_open = mini(slots_open + 1, SLOTS)
 		notes.append(TranslationServer.translate("STORY_NOTE_SLOT"))
@@ -155,7 +199,7 @@ func _fill_slots() -> void:
 		if equipped[slot] != &"":
 			continue
 		for power in learned:
-			if not equipped.has(power):
+			if not equipped.has(power) and power_allowed(power):
 				equipped[slot] = power
 				break
 
@@ -167,7 +211,7 @@ func cycle_power(slot: int, step: int) -> void:
 	for attempt in learned.size():
 		index = posmod(index + step, learned.size())
 		var candidate: StringName = learned[index]
-		if not equipped.has(candidate):
+		if not equipped.has(candidate) and power_allowed(candidate):
 			equipped[slot] = candidate
 			return
 
@@ -178,10 +222,7 @@ func equip_power(id: StringName, slot: int) -> bool:
 	var other: int = equipped.find(id)
 	if other >= 0 and other != slot:
 		return false
-	var hero: CharacterData = CharacterData.new()
-	hero.flow = attributes.get(&"flow", CAMPAIGN.start_attribute)
-	hero.path = CharacterData.Path.AURORA if path == 0 else CharacterData.Path.ECLIPSE
-	if not PowerCatalog.is_allowed(load_power(id), hero):
+	if not power_allowed(id):
 		return false
 	equipped[slot] = id
 	return true
@@ -275,7 +316,7 @@ func to_dict() -> Dictionary:
 	return {
 		"name": name, "path": path, "style": style, "look": look, "color": color, "difficulty": difficulty,
 		"hair": hair, "beard": beard, "hair_color": hair_color, "skin": skin,
-		"attributes": attributes.duplicate(), "free_points": free_points, "cleared": cleared.duplicate(), "learned": learned.duplicate(),
+		"attributes": attributes.duplicate(), "free_points": free_points, "skill_points": skill_points, "cleared": cleared.duplicate(), "learned": learned.duplicate(),
 		"equipped": equipped.duplicate(), "slots_open": slots_open, "secret_pending": secret_pending, "ending": ending,
 	}
 
@@ -297,16 +338,21 @@ static func from_dict(data: Dictionary) -> StoryCampaign:
 		if not campaign.attributes.has(attribute):
 			campaign.attributes[attribute] = CAMPAIGN.start_attribute
 	campaign.free_points = data.get("free_points", 0)
+	campaign.skill_points = maxi(data.get("skill_points", 0), 0)
 	campaign.cleared.assign(data.get("cleared", []))
-	campaign.learned.assign(data.get("learned", []))
-	campaign.equipped.assign(data.get("equipped", [&"", &"", &""]))
-	campaign.learned = campaign.learned.filter(func(id: StringName) -> bool: return load_power(id) != null)
-	for slot in campaign.equipped.size():
-		if load_power(campaign.equipped[slot]) == null:
-			campaign.equipped[slot] = &""
-	campaign.slots_open = data.get("slots_open", 1)
-	for slot in range(campaign.slots_open, campaign.equipped.size()):
-		campaign.equipped[slot] = &""
+	for value in data.get("learned", []):
+		var id: StringName = StringName(value)
+		if CATALOG.find(id) != null and not campaign.learned.has(id):
+			campaign.learned.append(id)
+	var first: StringName = campaign.power_list()[0]
+	if not campaign.learned.has(first):
+		campaign.learned.append(first)
+	campaign.slots_open = clampi(data.get("slots_open", 1), 1, SLOTS)
+	var saved_slots: Array = data.get("equipped", [])
+	for slot in mini(saved_slots.size(), campaign.slots_open):
+		var id: StringName = StringName(saved_slots[slot])
+		if campaign.learned.has(id) and campaign.power_allowed(id) and not campaign.equipped.has(id):
+			campaign.equipped[slot] = id
 	campaign.secret_pending = data.get("secret_pending", false)
 	campaign.ending = data.get("ending", &"")
 	campaign._fill_slots()

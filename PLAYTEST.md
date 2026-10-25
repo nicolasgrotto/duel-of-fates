@@ -233,3 +233,7 @@ Para cada item ⚠️ ou ❌, escreva: número, personagem, arena, o que fez, o 
 | 01.1 | Seleção: editar Frente, Trás ou Ar até Corte Projetado, nos dois caminhos | Uma onda, 24 de Vigor, sem custo de Fluxo; lâmina permanece na mão | Testes de simulação e catálogo; 32 capturas em `build/task01_renders/` |
 | 01.2 | Bloquear, devolver com parry perfeito e matar no K.O. decisivo | Guarda gasta Vigor; onda troca dono/cor; corte na cintura; Arsenal intercepta | Testes e contact sheet inspecionada |
 | 01.3 | Carregar campanha antiga com `flow_cleave` | Id removido é descartado sem erro; espaço preenchido com poder conhecido | Teste de migração |
+| 02.1 | Vencer, perder e repetir um duelo da História | +3 na vitória, +1 na derrota, +1 adicional no marco vencido; atributos separados | Testes de campanha e de StoryMode; captura `loss_1280.png` |
+| 02.2 | Comprar nós dos dois ramos e tentar equipar suprema abaixo do tier | Compra cobra o saldo e exige o pai; equipamento exige Fluxo 4/7, conforme o recurso | Testes do modelo; três campanhas renderizadas em 720p e 1080p |
+| 02.3 | Carregar save com poderes antigos | Poderes conhecidos permanecem comprados, saldo inicial zero, sem reembolso | Teste de migração |
+| 02.4 | Jogar encontros 6–8 nos dois caminhos com supremas | Poderes equipados obedecem ao tier; conferir desafio do 7E | Sonda IA × IA, 36 duelos; campanha humana ainda pendente |
