@@ -90,6 +90,10 @@ Decisões do autor para a revisão de combate e animação (ver ROADMAP, fase 7.
 
 Fundo `#05070d`, texto `#e8ecf5`, texto secundário `#8a94ab`, destaque `#9fb4d9`, perigo `#e5484d`. Cor saturada só para informação crítica.
 
+### Ícones de poder
+
+Os vinte poderes recebem glifos originais de 24×24 pixels, em `assets/ui/powers/<id>.png`, gerados deterministicamente por `tools/art/make_power_icons.py`. Silhuetas distintas representam a função: onda de empurrão, garra que puxa, arco de escudo, raio, cristal de gelo, aperto no pescoço e assim por diante. Tons planos e borda escura de um pixel, reutilizando o cálculo de borda do pintor; sem gradiente ou desenho cartunesco. A fonte de cores é `UiPalette`: Aurora `#5aa2ff`, Eclipse `#ff4458`, comuns no destaque `#9fb4d9`, borda no fundo e luz no texto. A tela mostra ×3 em 1080p (×2 em 720p), com filtro nearest; o detalhe pode ampliar para ×6. Estado bloqueado usa modulação secundária e moldura/legenda, sem cor nova. O ícone pertence ao próprio `PowerData`, para futura reutilização na Galeria e no HUD, sem catálogo paralelo.
+
 ## A lâmina
 
 A lâmina é a protagonista visual e a principal fonte de luz.
