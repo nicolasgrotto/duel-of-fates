@@ -157,6 +157,20 @@ def power_tree_sections():
             refs.append(f'SubResource("{key}")')
         fields.append(f'{path}_tree = Array[ExtResource("tree_node")]([{", ".join(refs)}])')
     fields += ['skill_points_win = 3', 'skill_points_loss = 1', 'skill_points_milestone = 1', 'skill_points_secret = 3']
+    ext.append('[ext_resource type="Resource" path="res://data/techniques/projected_cut.tres" id="projected_cut"]')
+    refs = []
+    with open("content/STORY.md", encoding="utf-8") as handle:
+        blade_line = next(line for line in handle if line.startswith("- **Árvore de Lâmina**"))
+    blade_costs = [int(cost) for cost in re.findall(r"\((?:inicial, )?(\d+)", blade_line)]
+    blade_nodes = [("style_forward", 1), ("style_back", 2), ("style_air", 3), ("style_ability", 4), ("projected_cut", 5)]
+    for index, ((node_id, kind), cost) in enumerate(zip(blade_nodes, blade_costs, strict=True)):
+        key = f"blade_{index}"
+        sub += [f'[sub_resource type="Resource" id="{key}"]', 'script = ExtResource("tree_node")', f'id = &"{node_id}"', f'kind = {kind}', f'cost = {cost}', f'parent = {index - 1}']
+        if node_id == "projected_cut":
+            sub.append('technique = ExtResource("projected_cut")')
+        sub.append('')
+        refs.append(f'SubResource("{key}")')
+    fields.append(f'blade_tree = Array[ExtResource("tree_node")]([{", ".join(refs)}])')
     return ext, [''] + sub, fields
 
 

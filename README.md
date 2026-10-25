@@ -16,7 +16,7 @@ Fases 0 a 7.5 concluídas, na branch `pixel-art`: duelo completo com o elenco in
 - **O Fluxo**: 19 poderes em três categorias (Fluxo comum, Aurora e Eclipse) e 7 técnicas de lâmina, com potência definida pelo nível de Fluxo de cada lutador.
 - **11 personagens**, um chefe e três secretos, cada um com estilo, habilidade, traço e IA próprios.
 - **10 arenas** com identidade visual forte, em que as lâminas são a principal fonte de luz.
-- **Modos**: História (protagonista criado pelo jogador, duas rotas e quatro finais), Duelar, Arcade, Sobrevivência, 2 Jogadores local, Tutorial, Treinos guiados, Desafio de parry, Treino, Desafios e Galerias.
+- **Modos**: História (protagonista criado pelo jogador, pontos de habilidade, árvores de Poderes e Lâmina, duas rotas e quatro finais), Duelar, Arcade, Sobrevivência, 2 Jogadores local, Tutorial, Treinos guiados, Desafio de parry, Treino, Desafios e Galerias.
 - Português e inglês, teclado e gamepad.
 
 ## Abrir o projeto

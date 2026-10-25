@@ -181,7 +181,7 @@ static func start_attack(sim: MatchSimulation, fighter: FighterState, move: Move
 	fighter.move_phase = FighterState.Phase.STARTUP
 	if move.startup_ticks() == 0:
 		fighter.move_phase = FighterState.Phase.ACTIVE if move.active_ticks() > 0 else FighterState.Phase.RECOVERY
-	if move.is_aerial():
+	if move.is_aerial() or fighter.is_airborne():
 		fighter.air_attacks += 1
 	var event: CombatEvent = sim.emit(CombatEvent.Type.ATTACK_STARTED, fighter.index, sim.opponent_of(fighter).index)
 	event.move = move
@@ -318,9 +318,11 @@ static func _start_evade(sim: MatchSimulation, fighter: FighterState) -> Result:
 static func _start_special(sim: MatchSimulation, fighter: FighterState, intent: Intent) -> Result:
 	var technique: MoveData = technique_for(sim, fighter, fighter.buffered_direction)
 	if technique != null:
-		if technique.is_aerial() and not can_attack_in_air(fighter):
+		if fighter.is_airborne() and not can_attack_in_air(fighter):
 			return Result.NOT_POSSIBLE
 		return start_attack(sim, fighter, technique)
+	if fighter.buffered_direction != 0 and not fighter.character.directional_ability_fallback:
+		return Result.NOT_POSSIBLE
 	return _start_ability(sim, fighter, intent)
 
 

@@ -90,6 +90,15 @@ const MENU_BUTTONS: Dictionary = {
 	"gallery_finisher": [JOY_BUTTON_LEFT_SHOULDER],
 }
 
+const MENU_NAVIGATION_BUTTONS: Dictionary = {
+	"ui_accept": JOY_BUTTON_A,
+	"ui_cancel": JOY_BUTTON_B,
+	"ui_up": JOY_BUTTON_DPAD_UP,
+	"ui_down": JOY_BUTTON_DPAD_DOWN,
+	"ui_left": JOY_BUTTON_DPAD_LEFT,
+	"ui_right": JOY_BUTTON_DPAD_RIGHT,
+}
+
 const ALL_DEVICES: int = -1
 
 const TOOL_KEYS: Dictionary = {
@@ -122,6 +131,12 @@ static func apply_defaults() -> void:
 			_add_key(action, keycode)
 		for button in MENU_BUTTONS.get(action, []):
 			_add_button(action, button, ALL_DEVICES)
+	for action in MENU_NAVIGATION_BUTTONS:
+		var event: InputEventJoypadButton = InputEventJoypadButton.new()
+		event.button_index = MENU_NAVIGATION_BUTTONS[action]
+		event.device = ALL_DEVICES
+		if not InputMap.action_has_event(action, event):
+			InputMap.action_add_event(action, event)
 	for action in TOOL_KEYS:
 		_reset_action(action)
 		for keycode in TOOL_KEYS[action]:

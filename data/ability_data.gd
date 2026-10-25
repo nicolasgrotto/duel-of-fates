@@ -4,6 +4,7 @@ extends Resource
 enum Kind { STRIKE, STANCE, DASH, CHARGE, LEAP }
 
 @export var id: StringName
+@export var icon: Texture2D
 @export var kind: Kind = Kind.STRIKE
 @export var move: MoveData
 @export var vigor_cost: float = 0.0

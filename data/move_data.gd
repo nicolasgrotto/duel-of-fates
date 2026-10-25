@@ -7,6 +7,7 @@ enum Cut { ARC, DESCENDING, RISING, HORIZONTAL, THRUST, SPIN }
 enum TechniqueStyle { ARC, DASH, THROW, THRUST, RISING, FLURRY, LUNGE, PLUNGE, WAVE }
 
 @export var id: StringName
+@export var icon: Texture2D
 @export var kind: Kind = Kind.LIGHT
 
 @export_group("Timing")

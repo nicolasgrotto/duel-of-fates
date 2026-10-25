@@ -2,8 +2,11 @@
 
 [ext_resource type="Script" path="res://data/move_data.gd" id="1_script"]
 
+[ext_resource type="Texture2D" path="res://assets/ui/blade/blade_flurry.png" id="blade_icon"]
+
 [resource]
 script = ExtResource("1_script")
+icon = ExtResource("blade_icon")
 id = &"flurry"
 kind = 10
 startup = 0.18

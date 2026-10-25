@@ -2,6 +2,7 @@ extends Control
 
 const PALETTE: UiPalette = preload("res://ui/palette.tres")
 const COMBAT: CombatConfig = preload("res://data/balance/combat_config.tres")
+const BLADE_SLOT_KEYS: Array[String] = ["TREE_BLADE_FORWARD", "TREE_BLADE_BACK", "TREE_BLADE_AIR"]
 const SLOT_KEYS: Array[String] = ["TREE_SLOT_NEUTRAL", "TREE_SLOT_FORWARD", "TREE_SLOT_BACK"]
 const STATE_KEYS: Array[String] = ["TREE_LOCKED", "TREE_AFFORDABLE", "TREE_EXPENSIVE", "TREE_TIER_BLOCKED", "TREE_LEARNED", "TREE_EQUIPPED"]
 const PATH_KEYS: Array[String] = ["PATH_COMMON", "PATH_AURORA", "PATH_ECLIPSE"]
@@ -70,10 +71,15 @@ var _status: Label
 var _icon: TextureRect
 var _badges: Array[Label] = []
 var _icons: Array[TextureRect] = []
+var _detail_scroll: ScrollContainer
 var _picker: VBoxContainer
 var _slots: Array[Button] = []
 var _picking: bool = false
 var _slot: int = 0
+var _trees: Array[StoryPowerTree] = []
+var _graphs: Array[TreeGraph] = []
+var _tab_badges: Array[Array] = []
+var _tab_icons: Array[Array] = []
 var _tabs: TabContainer
 var _buy_button: Button
 var _points: Label
@@ -86,7 +92,8 @@ func _ready() -> void:
 	if campaign == null:
 		SceneRouter.change.call_deferred(&"story_new")
 		return
-	tree = StoryPowerTree.new(campaign)
+	_trees = [StoryPowerTree.new(campaign), StoryPowerTree.new(campaign, true)]
+	tree = _trees[0]
 	_build()
 	_refresh()
 	_focus_node.call_deferred(0)
@@ -120,23 +127,42 @@ func _build() -> void:
 	_tabs = TabContainer.new()
 	_tabs.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	graph_column.add_child(_tabs)
-	var power_tab: Control = Control.new()
-	power_tab.name = tr("TREE_TAB_POWERS")
-	_tabs.add_child(power_tab)
-	_graph = TreeGraph.new()
-	_graph.tree = tree
-	_graph.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	power_tab.add_child(_graph)
-	_graph.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	for index in tree.nodes.size():
-		_build_node(index)
+	for tab in _trees.size():
+		tree = _trees[tab]
+		var panel: Control = Control.new()
+		panel.name = tr("TREE_TAB_BLADE" if tab == 1 else "TREE_TAB_POWERS")
+		_tabs.add_child(panel)
+		_graph = TreeGraph.new()
+		_graph.tree = tree
+		_graph.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		panel.add_child(_graph)
+		_graph.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		_badges = []
+		_icons = []
+		for index in tree.nodes.size():
+			_build_node(index)
+		_graphs.append(_graph)
+		_tab_badges.append(_badges)
+		_tab_icons.append(_icons)
+		_graph.arrange.call_deferred()
+	tree = _trees[0]
+	_graph = _graphs[0]
+	_badges = []
+	_badges.assign(_tab_badges[0])
+	_icons = []
+	_icons.assign(_tab_icons[0])
 	for index in tree.milestones.size():
 		var milestone: EncounterData = tree.milestones[index]
 		graph_column.add_child(_label(tr("TREE_MILESTONE").format({"slot": tr(SLOT_KEYS[index + 1]), "chapter": milestone.chapter, "state": tr("TREE_OPEN" if index + 1 < campaign.slots_open else "TREE_LOCKED")}), &"HintLabel"))
+	_detail_scroll = ScrollContainer.new()
+	_detail_scroll.follow_focus = true
+	_detail_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_detail_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	body.add_child(_detail_scroll)
 	var detail: VBoxContainer = VBoxContainer.new()
 	detail.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	detail.add_theme_constant_override(&"separation", 16)
-	body.add_child(detail)
+	_detail_scroll.add_child(detail)
 	_icon = _texture(144.0)
 	detail.add_child(_icon)
 	_name = _label("", &"InfoLabel")
@@ -159,7 +185,7 @@ func _build() -> void:
 	_picker.add_theme_constant_override(&"separation", 12)
 	detail.add_child(_picker)
 	_picker.add_child(_label(tr("TREE_PICK_SLOT"), &"HintLabel"))
-	for slot in campaign.slots_open:
+	for slot in StoryCampaign.SLOTS:
 		var button: Button = Button.new()
 		button.theme_type_variation = &"PowerSlotButton"
 		button.custom_minimum_size.y = 44.0
@@ -173,7 +199,7 @@ func _build() -> void:
 	_footer.offset_top = -65.0
 	_footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(_footer)
-	_graph.arrange.call_deferred()
+	_tabs.tab_changed.connect(_tab_changed)
 
 
 func _build_node(index: int) -> void:
@@ -193,10 +219,10 @@ func _build_node(index: int) -> void:
 	content.add_theme_constant_override(&"separation", 8)
 	button.add_child(content)
 	var icon: TextureRect = _texture(72.0)
-	icon.texture = tree.nodes[index].power.icon
+	icon.texture = tree.nodes[index].icon
 	content.add_child(icon)
 	_icons.append(icon)
-	var name_label: Label = _label(tr(tree.nodes[index].power.name_key), &"PowerNodeNameLabel")
+	var name_label: Label = _label(tr(tree.nodes[index].name_key), &"PowerNodeNameLabel")
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	content.add_child(name_label)
 	var badge: Label = _label("", &"PowerNodeStateLabel")
@@ -229,7 +255,7 @@ func _refresh() -> void:
 	_points.text = tr("TREE_SKILL_COST").format({"cost": tree.nodes[selected].definition.cost, "points": campaign.skill_points})
 	for index in tree.nodes.size():
 		var node: StoryPowerTree.PowerNode = tree.nodes[index]
-		_badges[index].text = tr(SLOT_KEYS[node.slot]) if node.state == StoryPowerTree.State.EQUIPPED else (tr("TREE_TIER_BADGE").format({"level": node.power.min_level}) if node.state == StoryPowerTree.State.TIER_BLOCKED else _state_text(node))
+		_badges[index].text = tr(_slot_keys()[node.slot]) if node.slot >= 0 and node.state == StoryPowerTree.State.EQUIPPED else (tr("TREE_TIER_BADGE").format({"level": node.power.min_level if node.power != null else 0}) if node.state == StoryPowerTree.State.TIER_BLOCKED else _state_text(node))
 		_graph.buttons[index].frame = STATE_STYLES[node.state]
 		_graph.buttons[index].cursor = index == selected
 		_icons[index].modulate = PALETTE.secondary if not node.owned else PALETTE.text
@@ -237,30 +263,73 @@ func _refresh() -> void:
 		_graph.buttons[index].queue_redraw()
 	_graph.queue_redraw()
 	_show_detail()
-	_footer.text = ControlHints.line(PackedStringArray([ControlHints.hint(&"ui_left", "TREE_PREVIOUS"), ControlHints.hint(&"ui_right", "TREE_NEXT_NODE"), ControlHints.hint(&"ui_accept", "TREE_ACTION"), ControlHints.hint(&"ui_cancel", "HINT_BACK")]))
+	_footer.text = ControlHints.line(PackedStringArray([ControlHints.hint(&"ui_left", "TREE_PREVIOUS"), ControlHints.hint(&"ui_right", "TREE_NEXT_NODE"), ControlHints.hint(&"ui_accept", "TREE_ACTION"), ControlHints.hint(&"menu_variant", "TREE_SWITCH_TAB"), ControlHints.hint(&"ui_cancel", "HINT_BACK")]))
 
 
 func _show_detail() -> void:
 	var node: StoryPowerTree.PowerNode = tree.nodes[selected]
-	var power: PowerData = node.power
-	var level: int = campaign.attributes.get(&"flow", StoryCampaign.CAMPAIGN.start_attribute)
-	_icon.texture = power.icon
-	_name.text = tr(power.name_key)
-	_description.text = tr(power.description_key)
-	_facts.text = tr("TREE_FACTS").format({"path": tr(PATH_KEYS[power.path]), "cost": String.num(power.cost_for(level), 1), "cooldown": String.num(power.cooldown_for(level), 1), "flow": level})
-	_requirement.text = tr("TREE_CREATION") if node.initial else tr("TREE_PARENT").format({"name": tr(tree.nodes[node.definition.parent].power.name_key)})
-	if not node.allowed:
-		_requirement.text += "\n" + tr("TREE_FLOW_REQUIRED").format({"level": power.min_level, "tier": power.min_tier(COMBAT.flow) + 1})
-	_status.text = tr("TREE_IN_SLOT").format({"slot": tr(SLOT_KEYS[node.slot])}) if node.slot >= 0 else _state_text(node)
+	_icon.texture = node.icon
+	_name.text = tr(node.name_key)
+	_description.text = tr(node.description_key)
+	if node.power != null:
+		var power: PowerData = node.power
+		var level: int = campaign.attributes.get(&"flow", StoryCampaign.CAMPAIGN.start_attribute)
+		_facts.text = tr("TREE_FACTS").format({"path": tr(PATH_KEYS[power.path]), "cost": String.num(power.cost_for(level), 1), "cooldown": String.num(power.cooldown_for(level), 1), "flow": level})
+	elif node.technique != null:
+		var move: MoveData = node.technique
+		_facts.text = tr("TREE_BLADE_FACTS").format({"cost": String.num(move.vigor_cost, 0), "damage": String.num(move.damage, 0), "startup": String.num(move.startup, 2), "recovery": String.num(move.recovery, 2)})
+		if node.definition.kind == StoryCampaign.TreeNodeData.Kind.TECHNIQUE:
+			_description.text = tr("TREE_PROJECTED_TEXT")
+	else:
+		_facts.text = tr("TREE_ABILITY_FACTS").format({"cost": String.num(node.ability.move.vigor_cost if node.ability.kind in [AbilityData.Kind.STRIKE, AbilityData.Kind.CHARGE] and node.ability.move != null else node.ability.vigor_cost, 0)})
+	_requirement.text = tr("TREE_CREATION") if node.initial else tr("TREE_PARENT").format({"name": tr(tree.nodes[node.definition.parent].name_key)})
+	if not node.allowed and node.power != null:
+		_requirement.text += "\n" + tr("TREE_FLOW_REQUIRED").format({"level": node.power.min_level, "tier": node.power.min_tier(COMBAT.flow) + 1})
+	_status.text = tr("TREE_IN_SLOT").format({"slot": tr(_slot_keys()[node.slot])}) if node.slot >= 0 else _state_text(node)
 	_buy_button.visible = not node.owned
 	_buy_button.disabled = node.state != StoryPowerTree.State.AFFORDABLE
+	var hero: CharacterData = campaign.protagonist()
 	for slot in _slots.size():
-		var equipped: PowerData = StoryCampaign.load_power(campaign.equipped[slot])
-		_slots[slot].text = tr("TREE_SLOT_CONTENT").format({"slot": tr(SLOT_KEYS[slot]), "power": tr(equipped.name_key) if equipped != null else tr("TREE_EMPTY")})
+		_slots[slot].visible = slot < _slot_count()
+		var name: String = tr("TREE_EMPTY")
+		if tree.blade:
+			var move: MoveData = hero.get([&"technique_forward", &"technique_back", &"technique_air"][slot]) as MoveData
+			if move != null:
+				name = tr(PowerCatalog.technique_key(move))
+		else:
+			var power: PowerData = StoryCampaign.load_power(campaign.equipped[slot])
+			if power != null:
+				name = tr(power.name_key)
+		_slots[slot].text = tr("TREE_SLOT_CONTENT").format({"slot": tr(_slot_keys()[slot]), "power": name})
+
+
+func _slot_keys() -> Array[String]:
+	return BLADE_SLOT_KEYS if tree.blade else SLOT_KEYS
+
+
+func _slot_count() -> int:
+	return StoryCampaign.SLOTS if tree.blade else campaign.slots_open
+
+
+func _tab_changed(index: int) -> void:
+	_picking = false
+	_picker.hide()
+	tree = _trees[index]
+	tree.rebuild()
+	_graph = _graphs[index]
+	_badges = []
+	_badges.assign(_tab_badges[index])
+	_icons = []
+	_icons.assign(_tab_icons[index])
+	selected = 0
+	for button in _graph.buttons:
+		button.focus_mode = Control.FOCUS_ALL
+	_refresh()
+	_focus_node.call_deferred(0)
 
 
 func _state_text(node: StoryPowerTree.PowerNode) -> String:
-	return tr(STATE_KEYS[node.state]).format({"level": node.power.min_level})
+	return tr(STATE_KEYS[node.state]).format({"level": node.power.min_level if node.power != null else 0})
 
 
 func _buy_selected() -> void:
@@ -301,13 +370,27 @@ func _confirm(index: int) -> void:
 	if not node.allowed:
 		AudioDirector.play_ui(&"rejected")
 		return
+	if tree.blade and node.definition.kind != StoryCampaign.TreeNodeData.Kind.TECHNIQUE:
+		if node.definition.style_slot() >= 0 and tree.equip(selected, node.definition.style_slot()):
+			campaign.save()
+			AudioDirector.play_ui(&"ui_confirm")
+			_refresh()
+		return
 	AudioDirector.play_ui(&"ui_confirm")
 	_picking = true
 	for button in _graph.buttons:
 		button.focus_mode = Control.FOCUS_NONE
 	_picker.show()
 	_slot = maxi(node.slot, 0)
-	_slots[_slot].grab_focus()
+	_focus_slot(_slot)
+
+
+func _focus_slot(slot: int) -> void:
+	await get_tree().process_frame
+	if not _picking:
+		return
+	_slots[slot].grab_focus()
+	_detail_scroll.ensure_control_visible(_slots[slot])
 
 
 func _slot_focused(slot: int) -> void:
@@ -337,6 +420,10 @@ func _close_picker() -> void:
 func _input(event: InputEvent) -> void:
 	if tree == null or not is_visible_in_tree():
 		return
+	if event.is_action_pressed(&"menu_variant") or event.is_action_pressed(&"ui_focus_next"):
+		_tabs.current_tab = 1 - _tabs.current_tab
+		get_viewport().set_input_as_handled()
+		return
 	var step: int = 0
 	if event.is_action_pressed(&"ui_right") or event.is_action_pressed(&"ui_down"):
 		step = 1
@@ -344,7 +431,7 @@ func _input(event: InputEvent) -> void:
 		step = -1
 	if step != 0:
 		if _picking:
-			_slots[posmod(_slot + step, _slots.size())].grab_focus()
+			_slots[posmod(_slot + step, _slot_count())].grab_focus()
 		else:
 			_focus_node(selected + step)
 	elif event.is_action_pressed(&"ui_accept"):

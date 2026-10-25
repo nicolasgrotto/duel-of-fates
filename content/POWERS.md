@@ -146,7 +146,7 @@ Usam Habilidade com direção ou no ar, gastam **Vigor** (não Fluxo), escalam c
 
 ## 6. Conjuntos
 
-O conjunto base de cada personagem está em [CHARACTERS.md](CHARACTERS.md). Personagens da Aurora escolhem do Fluxo comum e da Aurora; do Eclipse, do Fluxo comum e do Eclipse. Arcade, Sobrevivência, História e a IA usam o conjunto base. O protagonista da História equipa poderes aprendidos na campanha (ver [STORY.md](STORY.md)).
+O conjunto base de cada personagem está em [CHARACTERS.md](CHARACTERS.md). Personagens da Aurora escolhem do Fluxo comum e da Aurora; do Eclipse, do Fluxo comum e do Eclipse. Arcade, Sobrevivência e a IA usam o conjunto base. O protagonista da História compra e equipa poderes e o kit de lâmina nas duas árvores com pontos de habilidade (ver [STORY.md](STORY.md)).
 
 ## 7. Ideias guardadas
 

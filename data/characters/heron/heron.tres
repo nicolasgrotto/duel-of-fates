@@ -21,6 +21,8 @@
 [ext_resource type="Resource" path="res://data/intros/heron.tres" id="intro_res"]
 [ext_resource type="Resource" path="res://data/finisher_styles/heron.tres" id="finisher_style_res"]
 
+[ext_resource type="Texture2D" path="res://assets/ui/blade/ability_leap.png" id="blade_icon"]
+
 [sub_resource type="Resource" id="heron_light_1"]
 script = ExtResource("2_move")
 id = &"heron_light_1"
@@ -181,6 +183,7 @@ dive_speed = 900.0
 
 [sub_resource type="Resource" id="heron_ability"]
 script = ExtResource("12_ability")
+icon = ExtResource("blade_icon")
 id = &"heron_ability"
 kind = 4
 vigor_cost = 14.0

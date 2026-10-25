@@ -236,3 +236,8 @@ Minimalista, cinematográfica, legível e pouco intrusiva. Uma única fonte: **O
 - Animações robóticas, sem easing ou sem antecipação; velocidade ilegível.
 - Gore, sangue, órgãos.
 - Qualquer traje, rosto, capacete, marca ou símbolo reconhecível da franquia.
+
+
+### Ícones de lâmina
+
+Os nós de Lâmina usam a mesma grade de 24×24, contorno de um pixel, tons planos e filtro nearest dos ícones de poder. Glifos originais por estilo de técnica (arco, avanço, arremesso, estocada, ascendente, rajada, investida, mergulho e onda) mostram uma lâmina no destaque neutro do UiPalette. Habilidades usam um glifo por tipo (golpe, postura, avanço, carga, salto). Gerados por `tools/art/make_power_icons.py`, em `assets/ui/blade/<id>.png`; sem cor de caminho ou tier.

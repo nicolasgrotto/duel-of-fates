@@ -20,6 +20,8 @@
 [ext_resource type="Resource" path="res://data/techniques/rising_cut.tres" id="t_rising_cut"]
 [ext_resource type="Resource" path="res://data/intros/ember.tres" id="intro_res"]
 
+[ext_resource type="Texture2D" path="res://assets/ui/blade/ability_stance.png" id="blade_icon"]
+
 [sub_resource type="Resource" id="ember_light_1"]
 script = ExtResource("2_move")
 id = &"ember_light_1"
@@ -179,6 +181,7 @@ blade_angle_strike = -60.0
 
 [sub_resource type="Resource" id="ember_ability"]
 script = ExtResource("12_ability")
+icon = ExtResource("blade_icon")
 id = &"ember_ability"
 kind = 1
 move = SubResource("ember_ability_move")

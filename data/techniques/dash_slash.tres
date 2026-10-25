@@ -2,8 +2,11 @@
 
 [ext_resource type="Script" path="res://data/move_data.gd" id="1_script"]
 
+[ext_resource type="Texture2D" path="res://assets/ui/blade/blade_dash.png" id="blade_icon"]
+
 [resource]
 script = ExtResource("1_script")
+icon = ExtResource("blade_icon")
 id = &"dash_slash"
 cinematic_finisher = 1
 kind = 10

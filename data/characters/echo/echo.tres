@@ -20,6 +20,8 @@
 [ext_resource type="Resource" path="res://data/techniques/dash_slash.tres" id="t_dash_slash"]
 [ext_resource type="Resource" path="res://data/intros/echo.tres" id="intro_res"]
 
+[ext_resource type="Texture2D" path="res://assets/ui/blade/ability_dash.png" id="blade_icon"]
+
 [sub_resource type="Resource" id="echo_light_1"]
 script = ExtResource("2_move")
 id = &"echo_light_1"
@@ -128,6 +130,7 @@ cinematic_finisher = 9
 
 [sub_resource type="Resource" id="echo_ability"]
 script = ExtResource("12_ability")
+icon = ExtResource("blade_icon")
 id = &"echo_ability"
 kind = 2
 vigor_cost = 8.0

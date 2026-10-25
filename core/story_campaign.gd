@@ -23,6 +23,8 @@ var difficulty: int = 1
 var attributes: Dictionary = {}
 var free_points: int = 0
 var skill_points: int = 0
+var blade_bought: Array[StringName] = []
+var projected_cut_slot: int = -1
 var cleared: Array[StringName] = []
 var learned: Array[StringName] = []
 var equipped: Array[StringName] = [&"", &"", &""]
@@ -55,6 +57,7 @@ static func create(player_name: String, flow_path: int, style_index: int, look_i
 	campaign.free_points = CAMPAIGN.start_points
 	var first: StringName = campaign.power_list()[0]
 	campaign.learned = [first]
+	campaign.blade_bought = [CAMPAIGN.blade_tree[0].node_id()]
 	campaign.equipped = [first, &"", &""]
 	return campaign
 
@@ -71,18 +74,48 @@ func power_tree() -> Array[TreeNodeData]:
 
 
 func can_buy(node: TreeNodeData) -> bool:
-	var nodes: Array[TreeNodeData] = power_tree()
-	if not nodes.has(node) or learned.has(node.power.id) or skill_points < node.cost:
+	var is_blade: bool = CAMPAIGN.blade_tree.has(node)
+	var nodes: Array[TreeNodeData] = CAMPAIGN.blade_tree if is_blade else power_tree()
+	var owned: Array[StringName] = blade_bought if is_blade else learned
+	if not nodes.has(node) or owned.has(node.node_id()) or skill_points < node.cost:
 		return false
-	return node.parent < 0 or learned.has(nodes[node.parent].power.id)
+	return node.parent < 0 or owned.has(nodes[node.parent].node_id())
 
 
 func buy(node: TreeNodeData) -> bool:
 	if not can_buy(node):
 		return false
 	skill_points -= node.cost
-	learned.append(node.power.id)
+	if CAMPAIGN.blade_tree.has(node):
+		blade_bought.append(node.node_id())
+	else:
+		learned.append(node.node_id())
 	_fill_slots()
+	return true
+
+
+func blade_kind_owned(kind: TreeNodeData.Kind) -> bool:
+	for node in CAMPAIGN.blade_tree:
+		if node.kind == kind:
+			return blade_bought.has(node.node_id())
+	return false
+
+
+func equip_blade(node: TreeNodeData, slot: int) -> bool:
+	if not CAMPAIGN.blade_tree.has(node) or not blade_bought.has(node.node_id()):
+		return false
+	if node.kind == TreeNodeData.Kind.TECHNIQUE:
+		if slot < 0 or slot >= 3:
+			return false
+		var style_node: TreeNodeData = CAMPAIGN.blade_tree[slot]
+		if not blade_bought.has(style_node.node_id()):
+			return false
+		projected_cut_slot = slot
+		return true
+	if slot != node.style_slot() or slot < 0:
+		return false
+	if projected_cut_slot == slot:
+		projected_cut_slot = -1
 	return true
 
 
@@ -245,7 +278,15 @@ func attribute_total() -> int:
 
 func style_character() -> CharacterData:
 	var id: StringName = CAMPAIGN.styles[style]
-	return load(CHARACTER_PATH % [id, id]) as CharacterData
+	var base: CharacterData = load(CHARACTER_PATH % [id, id]) as CharacterData
+	if base.technique_forward != null and base.technique_air != null:
+		return base
+	var resolved: CharacterData = base.duplicate() as CharacterData
+	if resolved.technique_forward == null:
+		resolved.technique_forward = CAMPAIGN.style_forward_fallback
+	if resolved.technique_air == null:
+		resolved.technique_air = CAMPAIGN.style_air_fallback
+	return resolved
 
 
 func blade_color() -> Color:
@@ -256,6 +297,19 @@ func blade_color() -> Color:
 func protagonist() -> CharacterData:
 	var base: CharacterData = style_character()
 	var data: CharacterData = base.duplicate()
+	data.directional_ability_fallback = false
+	if not blade_kind_owned(TreeNodeData.Kind.STYLE_FORWARD):
+		data.technique_forward = null
+	if not blade_kind_owned(TreeNodeData.Kind.STYLE_BACK):
+		data.technique_back = null
+	if not blade_kind_owned(TreeNodeData.Kind.STYLE_AIR):
+		data.technique_air = null
+	if not blade_kind_owned(TreeNodeData.Kind.STYLE_ABILITY):
+		data.ability = null
+	if projected_cut_slot >= 0:
+		for node in CAMPAIGN.blade_tree:
+			if node.kind == TreeNodeData.Kind.TECHNIQUE and blade_bought.has(node.node_id()):
+				data.set([&"technique_forward", &"technique_back", &"technique_air"][projected_cut_slot], node.technique)
 	data.id = &"protagonist"
 	data.name_key = name
 	data.path = CharacterData.Path.AURORA if path == 0 else CharacterData.Path.ECLIPSE
@@ -316,6 +370,7 @@ func to_dict() -> Dictionary:
 	return {
 		"name": name, "path": path, "style": style, "look": look, "color": color, "difficulty": difficulty,
 		"hair": hair, "beard": beard, "hair_color": hair_color, "skin": skin,
+		"blade_bought": blade_bought.duplicate(), "projected_cut_slot": projected_cut_slot,
 		"attributes": attributes.duplicate(), "free_points": free_points, "skill_points": skill_points, "cleared": cleared.duplicate(), "learned": learned.duplicate(),
 		"equipped": equipped.duplicate(), "slots_open": slots_open, "secret_pending": secret_pending, "ending": ending,
 	}
@@ -355,5 +410,14 @@ static func from_dict(data: Dictionary) -> StoryCampaign:
 			campaign.equipped[slot] = id
 	campaign.secret_pending = data.get("secret_pending", false)
 	campaign.ending = data.get("ending", &"")
+	var legacy: bool = not data.has("blade_bought")
+	for node in CAMPAIGN.blade_tree:
+		if (legacy and node.kind != TreeNodeData.Kind.TECHNIQUE) or data.get("blade_bought", []).has(String(node.node_id())) or data.get("blade_bought", []).has(node.node_id()):
+			campaign.blade_bought.append(node.node_id())
+	if not campaign.blade_bought.has(CAMPAIGN.blade_tree[0].node_id()):
+		campaign.blade_bought.append(CAMPAIGN.blade_tree[0].node_id())
+	var chosen: int = data.get("projected_cut_slot", -1)
+	if chosen >= 0 and chosen < 3:
+		campaign.equip_blade(CAMPAIGN.blade_tree.back(), chosen)
 	campaign._fill_slots()
 	return campaign

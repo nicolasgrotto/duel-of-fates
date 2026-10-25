@@ -1,5 +1,5 @@
 keys,pt_BR,en
-TREE_TITLE,ÁRVORE DE PODERES,POWER TREE
+TREE_TITLE,ÁRVORES DE HABILIDADES,SKILL TREES
 PATH_COMMON,Comum,Common
 TREE_SUBTITLE,{path} · A jornada do Fluxo,{path} · The Flow journey
 TREE_SLOT_NEUTRAL,Poder,Power
@@ -268,8 +268,6 @@ POWER_SANCTUARY,Santuário,Sanctuary
 POWER_SANCTUARY_TEXT,Escudo colado ao corpo que absorve dano até se quebrar.,A shell around the body that absorbs damage until it breaks.
 POWER_MASS_TELEKINESIS,Telecinese em Massa,Mass Telekinesis
 POWER_MASS_TELEKINESIS_TEXT,Racha um asteroide e faz os pedaços caírem sobre marcas no chão.,Cracks an asteroid and drops its pieces onto marks on the ground.
-POWER_FLOW_CLEAVE,Corte de Fluxo,Flow Cleave
-POWER_FLOW_CLEAVE_TEXT,Corte que solta uma onda em meia-lua. Um parry perfeito a devolve.,A cut that releases a crescent wave. A perfect parry sends it back.
 POWER_LIGHTNING,Raio,Lightning
 POWER_LIGHTNING_TEXT,Segurado: raios da mão que ferem e prendem a cada pulso.,Held: bolts from the hand that hurt and hold on every pulse.
 POWER_CHOKE,Estrangular,Choke
@@ -675,7 +673,6 @@ STORY_COST,Custo,Cost
 STORY_BANNER,CAPÍTULO {chapter} · {title},CHAPTER {chapter} · {title}
 STORY_CHAPTER_WON,CAPÍTULO VENCIDO,CHAPTER WON
 STORY_NOTE_POINTS,+{points} pontos de atributo,+{points} attribute points
-STORY_NOTE_POWER,Poder aprendido: {power},Power learned: {power}
 STORY_NOTE_SLOT,Novo espaço de poder,New power slot
 STORY_GALLERY_TITLE,GALERIA DA HISTÓRIA,STORY GALLERY
 STORY_GALLERY_HINT,Vença encontros e conclua finais na História para revê-los aqui,Win encounters and reach endings in Story to see them again here
@@ -707,3 +704,13 @@ TREE_EMPTY,Disponível para equipar,Available to equip
 TREE_ACTION,Comprar / Equipar,Buy / Equip
 TREE_TIER_BADGE,Exige Fluxo {level},Requires Flow {level}
 STORY_NOTE_SKILL_POINT,+{points} ponto de habilidade,+{points} skill point
+TREE_TAB_BLADE,Lâmina,Blade
+TREE_BLADE_FORWARD,Frente,Forward
+TREE_BLADE_BACK,Trás,Back
+TREE_BLADE_AIR,Ar,Air
+TREE_SWITCH_TAB,trocar aba,switch tab
+TREE_STYLE_ABILITY,Habilidade do estilo,Style ability
+TREE_TECHNIQUE_TEXT,Técnica de lâmina do estilo. Comprar libera seu comando original.,Style blade technique. Buying unlocks its original command.
+TREE_PROJECTED_TEXT,Uma onda na cor da lâmina. Equipe em Frente / Trás / Ar. Restaurar a técnica original retira a onda desse espaço.,A wave in the blade color. Equip Forward / Back / Air. Restoring the original technique removes the wave from that slot.
+TREE_BLADE_FACTS,Vigor {cost} · Dano {damage} · Preparação {startup}s · Recuperação {recovery}s,Stamina {cost} · Damage {damage} · Startup {startup}s · Recovery {recovery}s
+TREE_ABILITY_FACTS,Vigor {cost},Stamina {cost}

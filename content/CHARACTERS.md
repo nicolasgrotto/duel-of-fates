@@ -324,6 +324,7 @@ Criado pelo jogador (ver [STORY.md](STORY.md)).
 - **Nome**: da lista (Kael, Iria, Tarin, Vessa, Oren, Lyse) ou digitado, até 16 caracteres.
 - **Caminho**: Aurora ou Eclipse (define os poderes e as falas).
 - **Estilo de luta**: **Técnica** (golpes, habilidade e técnicas do Guardião), **Fúria** (da Sombra) ou **Voo** (da Garça).
+- **Kit comprado na História**: só a técnica de frente vem na criação. Trás, Ar, habilidade do estilo e Corte Projetado são comprados na aba Lâmina, com os mesmos pontos de habilidade dos poderes. Para completar os espaços só do protagonista, Técnica usa Investida descendente no ar e Voo usa Estocada na frente; o elenco acima permanece igual. Detalhes e migração em STORY.md §4.
 - **Visual**: **Errante** (capa longa azul-ardósia `#3e4a5e`, corpo `#1d222b`, acabamento `#7f90aa`, lenço, sem capuz nem máscara), **Vigia** (capa curta `#454d58`, capuz e máscara) ou **Peregrino** (capa longa terrosa `#51483c`, ombreiras, sem capuz ou máscara).
 - **Traje** (fase 8, além dos três acima): **Armadura de placas clara** (peitoral e ombreiras de placas claras sobre a túnica, sem capa) e **Túnica escura em camadas** (gola alta e capa). Trajes em `data/story/outfits/`.
 - **Cabelo**: raspado, curto, médio ondulado, ondulado até o queixo, longo, rabo de cavalo ou coque. **Barba**: nenhuma, curta, cheia aparada, longa ou bigode. **Cor do cabelo** (6) e **tom de pele** (5). Combinam livremente com os trajes; são arquétipos, nunca a réplica de um personagem existente. Editáveis depois pelo hub (Aparência).

@@ -20,6 +20,8 @@
 [ext_resource type="Resource" path="res://data/techniques/flurry.tres" id="t_flurry"]
 [ext_resource type="Resource" path="res://data/intros/wasp.tres" id="intro_res"]
 
+[ext_resource type="Texture2D" path="res://assets/ui/blade/ability_dash.png" id="blade_icon"]
+
 [sub_resource type="Resource" id="wasp_light_1"]
 script = ExtResource("2_move")
 id = &"wasp_light_1"
@@ -206,6 +208,7 @@ cinematic_finisher = 10
 
 [sub_resource type="Resource" id="wasp_ability"]
 script = ExtResource("12_ability")
+icon = ExtResource("blade_icon")
 id = &"wasp_ability"
 kind = 2
 vigor_cost = 16.0

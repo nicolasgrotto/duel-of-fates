@@ -40,20 +40,20 @@ Tom: poucas palavras, frases curtas, nenhuma explicação a mais. O mundo se rev
 
 | # | Encontro | Adversário | Arena | IA | Recompensa (Aurora / Eclipse) |
 | --- | --- | --- | --- | --- | --- |
-| 1 | O Teste | Guardião | Plataforma de Refino | −1 | pontos |
+| 1 | O Teste | Guardião | Plataforma de Refino | −1 | pontos de atributo e habilidade |
 | 2 | Ecos na Floresta | Eco | Floresta Lumínica | −1 | pontos de atributo e habilidade |
 | 3 | A Vespa do Telhado | Vespa | Telhado Neon | 0 | marco · espaço de poder · pontos de habilidade |
 | 4 | Brasa na Mina | Brasa | Mina de Cristal | 0 | pontos de atributo e habilidade |
 | 5A | O Muro do Santuário | Bastião | Santuário Alagado | 0 | pontos de atributo e habilidade |
 | 6A | Sombra | Sombra | Plataforma de Refino | 0 | marco · espaço de poder · pontos de habilidade |
 | 7A | A Sombra Desperta | Sombra Desperta | Mina de Cristal | 0 | pontos de atributo e habilidade |
-| 8A | O Soberano | Soberano | Anel Orbital | 0 | libera o Soberano |
-| ★A | O Predestinado do Eclipse | Predestinado (Eclipse) | Santuário Alagado | chefe | libera a variante |
+| 8A | O Soberano | Soberano | Anel Orbital | 0 | libera o Soberano · pontos de habilidade |
+| ★A | O Predestinado do Eclipse | Predestinado (Eclipse) | Santuário Alagado | chefe | libera a variante · pontos de habilidade |
 | 5E | A Prova do Ceifador | Ceifador | Anel Orbital | 0 | pontos de atributo e habilidade |
 | 6E | O Templo do Espelho | Espelho | Santuário Alagado | 0 | marco · espaço de poder · pontos de habilidade |
 | 7E | A Garça do Telhado | Garça | Telhado Neon | 0 | pontos de atributo e habilidade |
-| 8E | O Ancião | Ancião | Floresta Lumínica | 0 | libera o Ancião |
-| ★E | O Predestinado da Aurora | Predestinado (Aurora) | Santuário Alagado | chefe | libera a variante |
+| 8E | O Ancião | Ancião | Floresta Lumínica | 0 | libera o Ancião · pontos de habilidade |
+| ★E | O Predestinado da Aurora | Predestinado (Aurora) | Santuário Alagado | chefe | libera a variante · pontos de habilidade |
 
 O "IA" é um ajuste sobre a dificuldade escolhida (−1 = um nível abaixo).
 
@@ -402,3 +402,8 @@ Os finais normais deixam a pista para o final secreto ("um duelo mais limpo") se
 - Com a técnica visual nova, as cenas de diálogo podem ganhar retratos ou planos de câmera próprios, desde que mantenham o tom seco e cinematográfico. Voz gravada é uma possibilidade futura (ver [design/AUDIO.md](../design/AUDIO.md)).
 
 O bônus de marco dos pontos de habilidade é concedido na vitória; derrotas em marcos continuam valendo 1. O secreto concede 3 ao vencer ou 1 ao perder. Repetições concedem os mesmos pontos por resultado; atributos e abertura de espaços continuam sendo recompensas únicas. A compra não exige tier; o equipamento exige. Sem poderes suficientes para todos os espaços recém-abertos, os restantes usam o comando neutro até haver opções permitidas, sem repetir poderes.
+
+
+### Kit de estilo na árvore de Lâmina
+
+A Garça do elenco não tem técnica de frente e o Guardião não tem técnica aérea. Para que os cinco nós sejam úteis nos três estilos, só na História os espaços ausentes recebem recursos existentes: Estocada na frente de Voo; Investida descendente no ar de Técnica. `CampaignData` guarda esses complementos; o elenco dos duelos permanece como antes. Comprar o nó disponibiliza sua técnica no espaço original; o Corte Projetado substitui um único espaço escolhido e pode ser retirado restaurando a técnica do estilo nessa posição. Espaço não comprado não aciona a habilidade por direção. Saves anteriores à árvore recebem os nós 1–4 sem custo nem reembolso; o Corte Projetado continua por comprar.

@@ -22,6 +22,8 @@
 [ext_resource type="Resource" path="res://data/audio/boss_music.tres" id="theme_music"]
 [ext_resource type="Resource" path="res://data/intros/elder.tres" id="intro_res"]
 [ext_resource type="Resource" path="res://data/finisher_styles/elder.tres" id="finisher_style_res"]
+[ext_resource type="Texture2D" path="res://assets/ui/blade/ability_leap.png" id="blade_icon"]
+
 [sub_resource type="Resource" id="elder_light_1"]
 script = ExtResource("2_move")
 id = &"elder_light_1"
@@ -208,6 +210,7 @@ dive_speed = 900.0
 
 [sub_resource type="Resource" id="elder_ability"]
 script = ExtResource("12_ability")
+icon = ExtResource("blade_icon")
 id = &"elder_ability"
 kind = 4
 move = SubResource("elder_ability_move")

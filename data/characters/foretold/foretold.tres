@@ -23,6 +23,8 @@
 [ext_resource type="Resource" path="res://data/audio/boss_music.tres" id="theme_music"]
 [ext_resource type="Resource" path="res://data/intros/foretold.tres" id="intro_res"]
 [ext_resource type="Resource" path="res://data/finisher_styles/foretold.tres" id="finisher_style_res"]
+[ext_resource type="Texture2D" path="res://assets/ui/blade/ability_dash.png" id="blade_icon"]
+
 [sub_resource type="Resource" id="foretold_light_1"]
 script = ExtResource("2_move")
 id = &"foretold_light_1"
@@ -131,6 +133,7 @@ cinematic_finisher = 9
 
 [sub_resource type="Resource" id="foretold_ability"]
 script = ExtResource("12_ability")
+icon = ExtResource("blade_icon")
 id = &"foretold_ability"
 kind = 2
 vigor_cost = 8.0

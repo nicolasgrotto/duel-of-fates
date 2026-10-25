@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dc1j3off8440b"
-path="res://.godot/imported/flow_cleave.png-b751062a2c18d953f5ef809853c3b8f0.ctex"
+uid="uid://u66kpxsdgrc4"
+path="res://.godot/imported/ability_leap.png-405edf421cf405d4cb6c87a1118edaed.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/ui/powers/flow_cleave.png"
-dest_files=["res://.godot/imported/flow_cleave.png-b751062a2c18d953f5ef809853c3b8f0.ctex"]
+source_file="res://assets/ui/blade/ability_leap.png"
+dest_files=["res://.godot/imported/ability_leap.png-405edf421cf405d4cb6c87a1118edaed.ctex"]
 
 [params]
 

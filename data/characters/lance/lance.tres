@@ -20,6 +20,8 @@
 [ext_resource type="Resource" path="res://data/techniques/thrust.tres" id="t_thrust"]
 [ext_resource type="Resource" path="res://data/intros/lance.tres" id="intro_res"]
 
+[ext_resource type="Texture2D" path="res://assets/ui/blade/ability_strike.png" id="blade_icon"]
+
 [sub_resource type="Resource" id="lance_light_1"]
 script = ExtResource("2_move")
 id = &"lance_light_1"
@@ -155,6 +157,7 @@ counts_as_heavy = true
 
 [sub_resource type="Resource" id="lance_ability"]
 script = ExtResource("12_ability")
+icon = ExtResource("blade_icon")
 id = &"lance_ability"
 kind = 0
 move = SubResource("lance_ability_move")

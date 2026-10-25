@@ -20,6 +20,8 @@
 [ext_resource type="Resource" path="res://data/techniques/thrust.tres" id="t_thrust"]
 [ext_resource type="Resource" path="res://data/intros/mirror.tres" id="intro_res"]
 
+[ext_resource type="Texture2D" path="res://assets/ui/blade/ability_stance.png" id="blade_icon"]
+
 [sub_resource type="Resource" id="mirror_light_1"]
 script = ExtResource("2_move")
 id = &"mirror_light_1"
@@ -128,6 +130,7 @@ cinematic_finisher = 11
 
 [sub_resource type="Resource" id="mirror_ability"]
 script = ExtResource("12_ability")
+icon = ExtResource("blade_icon")
 id = &"mirror_ability"
 kind = 1
 move = ExtResource("5_counter")

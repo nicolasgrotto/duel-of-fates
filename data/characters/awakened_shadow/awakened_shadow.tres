@@ -23,6 +23,8 @@
 [ext_resource type="Resource" path="res://data/audio/boss_music.tres" id="theme_music"]
 [ext_resource type="Resource" path="res://data/intros/awakened_shadow.tres" id="intro_res"]
 [ext_resource type="Resource" path="res://data/finisher_styles/awakened_shadow.tres" id="finisher_style_res"]
+[ext_resource type="Texture2D" path="res://assets/ui/blade/ability_strike.png" id="blade_icon"]
+
 [sub_resource type="Resource" id="awakened_shadow_light_1"]
 script = ExtResource("2_move")
 id = &"awakened_shadow_light_1"
@@ -185,6 +187,7 @@ armor_in_active = true
 
 [sub_resource type="Resource" id="awakened_shadow_ability"]
 script = ExtResource("12_ability")
+icon = ExtResource("blade_icon")
 id = &"awakened_shadow_ability"
 kind = 0
 move = SubResource("awakened_shadow_ability_move")

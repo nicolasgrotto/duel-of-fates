@@ -21,6 +21,8 @@
 [ext_resource type="Resource" path="res://data/techniques/plunge.tres" id="t_plunge"]
 [ext_resource type="Resource" path="res://data/intros/reaper.tres" id="intro_res"]
 
+[ext_resource type="Texture2D" path="res://assets/ui/blade/ability_strike.png" id="blade_icon"]
+
 [sub_resource type="Resource" id="reaper_light_1"]
 script = ExtResource("2_move")
 id = &"reaper_light_1"
@@ -181,6 +183,7 @@ hits_behind = true
 
 [sub_resource type="Resource" id="reaper_ability"]
 script = ExtResource("12_ability")
+icon = ExtResource("blade_icon")
 id = &"reaper_ability"
 kind = 0
 move = SubResource("reaper_ability_move")

@@ -44,6 +44,7 @@ enum Path { AURORA, ECLIPSE }
 @export var can_feint: bool = false
 
 @export_group("Ability")
+@export var directional_ability_fallback: bool = true
 @export var ability: AbilityData
 
 @export_group("Flow")

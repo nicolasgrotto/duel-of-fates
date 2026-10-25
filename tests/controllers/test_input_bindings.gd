@@ -72,3 +72,22 @@ func test_custom_buttons_reach_both_gamepads() -> void:
 func test_reserved_buttons() -> void:
 	assert_true(InputBindings.is_reserved_button(JOY_BUTTON_START))
 	assert_false(InputBindings.is_reserved_button(JOY_BUTTON_A))
+
+
+func test_menu_gamepad_buttons_preserve_keys_and_do_not_duplicate() -> void:
+	var keys: Array = _key_codes("ui_accept")
+	InputBindings.apply_defaults()
+	InputBindings.apply_defaults()
+	assert_eq(_key_codes("ui_accept"), keys)
+	for action in InputBindings.MENU_NAVIGATION_BUTTONS:
+		var count: int = 0
+		for event in InputMap.action_get_events(action):
+			var button: InputEventJoypadButton = event as InputEventJoypadButton
+			if button != null and button.button_index == InputBindings.MENU_NAVIGATION_BUTTONS[action] and button.device == InputBindings.ALL_DEVICES:
+				count += 1
+		assert_eq(count, 1, action)
+		var press: InputEventJoypadButton = InputEventJoypadButton.new()
+		press.device = 1
+		press.button_index = InputBindings.MENU_NAVIGATION_BUTTONS[action]
+		press.pressed = true
+		assert_true(press.is_action_pressed(action), action)

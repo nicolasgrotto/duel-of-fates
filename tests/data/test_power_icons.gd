@@ -20,3 +20,16 @@ func test_every_power_has_its_own_consistent_icon() -> void:
 		pixels[signature] = power.id
 		kinds[power.kind] = true
 	assert_eq(kinds.size(), PowerData.Kind.size() - 1)
+
+
+func test_blade_icons_match_resources_and_cover_every_style_and_ability_kind() -> void:
+	var catalog: PowerCatalog = load("res://data/powers/catalog.tres")
+	for technique in catalog.techniques:
+		assert_true(technique.icon != null, String(technique.id))
+		assert_eq(technique.icon.get_size(), Vector2(24.0, 24.0))
+	for style in StoryCampaign.CAMPAIGN.styles.size():
+		var story: StoryCampaign = StoryCampaign.create("Iria", 0, style, 0, 0, 1)
+		assert_true(story.style_character().ability.icon != null)
+	var kinds: Array[String] = ["strike", "stance", "dash", "charge", "leap"]
+	for kind in kinds:
+		assert_true(ResourceLoader.exists("res://assets/ui/blade/ability_%s.png" % kind))

@@ -55,7 +55,7 @@ extends Resource
 @export var lightning_fan_bow: float = 14.0
 @export var lightning_phase_step: float = 0.017
 
-@export_group("Flow cleave")
+@export_group("Projected cut")
 @export var cleave_height: float = 170.0
 @export var cleave_base_width: float = 26.0
 @export var cleave_tip_width: float = 3.0

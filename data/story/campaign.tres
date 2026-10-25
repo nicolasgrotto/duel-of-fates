@@ -43,6 +43,7 @@
 [ext_resource type="Resource" path="res://data/powers/fracture.tres" id="p_eclipse_8"]
 [ext_resource type="Resource" path="res://data/powers/arsenal.tres" id="p_eclipse_9"]
 [ext_resource type="Resource" path="res://data/powers/storm.tres" id="p_eclipse_10"]
+[ext_resource type="Resource" path="res://data/techniques/projected_cut.tres" id="projected_cut"]
 
 [sub_resource type="Resource" id="aurora_0"]
 script = ExtResource("tree_node")
@@ -198,6 +199,42 @@ cost = 4
 parent = 9
 branch = 1
 
+[sub_resource type="Resource" id="blade_0"]
+script = ExtResource("tree_node")
+id = &"style_forward"
+kind = 1
+cost = 0
+parent = -1
+
+[sub_resource type="Resource" id="blade_1"]
+script = ExtResource("tree_node")
+id = &"style_back"
+kind = 2
+cost = 2
+parent = 0
+
+[sub_resource type="Resource" id="blade_2"]
+script = ExtResource("tree_node")
+id = &"style_air"
+kind = 3
+cost = 2
+parent = 1
+
+[sub_resource type="Resource" id="blade_3"]
+script = ExtResource("tree_node")
+id = &"style_ability"
+kind = 4
+cost = 3
+parent = 2
+
+[sub_resource type="Resource" id="blade_4"]
+script = ExtResource("tree_node")
+id = &"projected_cut"
+kind = 5
+cost = 3
+parent = 3
+technique = ExtResource("projected_cut")
+
 
 [resource]
 script = ExtResource("1_campaign")
@@ -216,3 +253,4 @@ skill_points_win = 3
 skill_points_loss = 1
 skill_points_milestone = 1
 skill_points_secret = 3
+blade_tree = Array[ExtResource("tree_node")]([SubResource("blade_0"), SubResource("blade_1"), SubResource("blade_2"), SubResource("blade_3"), SubResource("blade_4")])
