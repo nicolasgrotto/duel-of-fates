@@ -70,6 +70,7 @@ extends Resource
 @export var finisher_fling_speed: Vector2 = Vector2(380.0, -260.0)
 @export var finisher_fling_gravity: float = 1400.0
 @export var finisher_fling_spin: float = 7.0
+@export var finisher_fling_skid: float = 0.18
 @export var finisher_edge_cooling: float = 1.6
 @export var finisher_edge_width: float = 3.0
 @export var finisher_smoke_interval: float = 0.18

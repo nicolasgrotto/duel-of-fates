@@ -209,3 +209,15 @@ func test_whirl_travels_behind_with_a_spin() -> void:
 		if key.turn != 0.0:
 			turning += 1
 	assert_gt(turning, 0)
+
+
+func test_pulled_half_comes_to_rest_after_landing() -> void:
+	var player: FinisherPlayer = FinisherPlayer.new()
+	player.config = load("res://data/balance/effects_config.tres")
+	player.slide = 1.0
+	var pivot: Vector2 = Vector2(0.0, -60.0)
+	var early: Vector2 = player._fling(pivot, 1.0).origin
+	var late: Vector2 = player._fling(pivot, 30.0).origin
+	assert_almost(late.x, early.x, 0.01, "the half stops sliding once it lands")
+	assert_lt(absf(late.x), player.config.finisher_fling_speed.x, "it lands close to the cut")
+	player.free()

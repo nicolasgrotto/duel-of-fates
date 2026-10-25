@@ -30,7 +30,6 @@ var slide: float = 1.0
 var _cut_point: Vector2 = Vector2.ZERO
 var _cut_normal: Vector2 = Vector2.UP
 var _edge_half: float = EDGE_HALF
-var _landed: bool = false
 var _ember_at: PackedVector2Array = []
 var _ember_velocity: PackedVector2Array = []
 var _ember_life: PackedFloat32Array = []
@@ -221,9 +220,12 @@ func _fling(pivot: Vector2, time: float) -> Transform2D:
 	var offset: Vector2 = speed * time + Vector2(0.0, 0.5 * config.finisher_fling_gravity * time * time)
 	var floor_offset: float = -pivot.y * 0.85
 	var angle: float = slide * config.finisher_fling_spin * time
-	if offset.y >= floor_offset or _landed:
-		_landed = true
-		offset.y = floor_offset
+	var gravity: float = config.finisher_fling_gravity
+	var landing: float = (-speed.y + sqrt(speed.y * speed.y + 2.0 * gravity * maxf(floor_offset, 0.0))) / gravity
+	if time >= landing:
+		var skid: float = minf(time - landing, config.finisher_fling_skid)
+		var skid_distance: float = skid - skid * skid / (2.0 * maxf(config.finisher_fling_skid, Ticks.DELTA))
+		offset = Vector2(speed.x * (landing + skid_distance), floor_offset)
 		angle = slide * FALL_ANGLE
 	return _rotation_about(pivot, angle, offset)
 
