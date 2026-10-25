@@ -486,7 +486,7 @@ func _block(fighter: FighterState, opponent: FighterState, pose: RigPose, crouch
 	_guard_prediction.off_hand = RELAXED_HAND
 	_place_off_hand(fighter, _guard_prediction)
 	ArmGeometry.constrain(_guard_prediction, character)
-	var haft: bool = character.weapon.kind in [WeaponData.Kind.STAFF, WeaponData.Kind.LANCE]
+	var haft: bool = character.weapon.kind == WeaponData.Kind.STAFF or character.weapon.kind == WeaponData.Kind.LANCE
 	guard.fit_grip(ArmGeometry.to_body(_guard_prediction.grip, _guard_prediction), _guard_prediction.torso_angle, threatened and guard.has_live and not haft)
 	guard.integrate()
 	if not guard.has_live and opponent.is_attacking() and opponent.move != null:

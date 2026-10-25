@@ -423,7 +423,7 @@ func _process(delta: float) -> void:
 func blade_segment() -> PackedVector2Array:
 	if _geometry.blade_length <= 0.0 or blade.length_ratio <= 0.0:
 		return PackedVector2Array()
-	if fighter.state == FighterState.State.BLOCKING and fighter.character.weapon.kind in [WeaponData.Kind.STAFF, WeaponData.Kind.LANCE]:
+	if fighter.state == FighterState.State.BLOCKING and (fighter.character.weapon.kind == WeaponData.Kind.STAFF or fighter.character.weapon.kind == WeaponData.Kind.LANCE):
 		return PackedVector2Array([rig.to_global(_geometry.hilt_from), rig.to_global(_geometry.hilt_to)])
 	return PackedVector2Array([active_blade_base(), active_blade_tip()])
 

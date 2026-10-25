@@ -24,8 +24,8 @@ func _distance(a: Vector2, b: Vector2, c: Vector2, d: Vector2) -> float:
 	return minf(minf(a.distance_to(Geometry2D.get_closest_point_to_segment(a, c, d)), b.distance_to(Geometry2D.get_closest_point_to_segment(b, c, d))), minf(c.distance_to(Geometry2D.get_closest_point_to_segment(c, a, b)), d.distance_to(Geometry2D.get_closest_point_to_segment(d, a, b))))
 
 
-func _exchange(data: CharacterData, move: MoveData, facing: int = 1) -> void:
-	var fixture: DuelFixture = DuelFixture.create(null, null, 7, [data, DuelFixture.GUARDIAN])
+func _exchange(data: CharacterData, move: MoveData, facing: int = 1, blocking: CharacterData = null) -> void:
+	var fixture: DuelFixture = DuelFixture.create(null, null, 7, [data, blocking if blocking != null else DuelFixture.GUARDIAN])
 	fixture.skip_intro()
 	fixture.place(60.0)
 	for fighter in fixture.sim.fighters:
@@ -70,8 +70,9 @@ func _exchange(data: CharacterData, move: MoveData, facing: int = 1) -> void:
 		for index in fixture.sim.event_count:
 			if fixture.sim.events[index].type == CombatEvent.Type.BLOCK:
 				contacts += 1
-				var distance: float = _distance(a, b, _world(defense_weapon.blade_base, defender), _world(defense_weapon.tip(), defender))
-				assert_true(distance <= CONTACT_TOLERANCE, "%s %s facing %d distance %.1f" % [data.id, move.id, facing, distance])
+				var haft: bool = defender.character.weapon.kind == WeaponData.Kind.STAFF or defender.character.weapon.kind == WeaponData.Kind.LANCE
+				var distance: float = _distance(a, b, _world(defense_weapon.hilt_from if haft else defense_weapon.blade_base, defender), _world(defense_weapon.hilt_to if haft else defense_weapon.tip(), defender))
+				assert_true(distance <= CONTACT_TOLERANCE, "%s %s against %s facing %d distance %.1f" % [data.id, move.id, defender.character.id, facing, distance])
 	assert_gt(contacts, 0.0, "%s %s actually blocks" % [data.id, move.id])
 
 
@@ -79,10 +80,14 @@ func test_rendered_guard_meets_real_block_events_for_the_cast() -> void:
 	for data in _characters():
 		var moves: Array[MoveData] = data.light_chain.duplicate()
 		moves.append_array([data.heavy, data.forward_heavy, data.aerial_light, data.aerial_heavy, data.technique_forward])
+		if data.ability != null and data.ability.move != null and data.ability.move.technique_style == MoveData.TechniqueStyle.LUNGE:
+			moves.append(data.ability.move)
 		for move in moves:
 			if move != null and move.can_clash() and move.technique_style != MoveData.TechniqueStyle.THROW:
 				_exchange(data, move)
 		_exchange(data, data.heavy, -1)
+		_exchange(DuelFixture.GUARDIAN, DuelFixture.GUARDIAN.light_chain[0], 1, data)
+		_exchange(DuelFixture.GUARDIAN, DuelFixture.GUARDIAN.heavy, -1, data)
 
 
 func test_guard_defaults_breathe_and_preserve_family_identity() -> void:
