@@ -306,13 +306,18 @@ Com o poder Foco ativo, um lutador **parado em guarda, sem nenhum comando**, esq
 
 - Um K.O. por **golpe de lâmina corpo a corpo** separa um membro do derrotado.
 - O golpe decide o membro: **perna** no 3º rápido, forte de avanço, Avanço com corte e Investida da Haste; **braço** nos demais (inclusive na disputa). A orientação decide o lado (pela frente, o membro da frente; pelas costas, o de trás).
-- No K.O. que decide a partida (último round; em modos de um round, qualquer K.O.): **forte, forte de avanço e Corte ascendente sempre levam a cabeça** (golpe final legível, `ConsequenceConfig.head_on_deciding_heavy`); os demais golpes de lâmina têm **30%** de chance de a cabeça sair no lugar do membro.
+- **Rápidos: onde a lâmina passou** (decisão do autor). Cada tipo de corte tem uma altura de passagem, medida dos pés de quem ataca (`ConsequenceConfig.cut_heights`: descendente alto, ascendente baixo, horizontal, estocada e giro no meio). A altura em relação aos pés da vítima decide a faixa: acima de `head_line` é a **cabeça**, abaixo de `leg_line` é a **perna**, entre as duas é o **braço** do lado atingido. No chão, o rápido descendente passa pela cabeça; contra uma vítima no ar, o mesmo corte pega mais baixo. Rápidos marcados com perna nos dados continuam levando a perna.
+- **A cabeça só sai no K.O. que decide a partida** (último round; em modos de um round, qualquer K.O.), porque o derrotado não volta. Nos rounds anteriores, um corte na faixa da cabeça leva o braço. Não há mais sorteio de cabeça.
+- No K.O. decisivo, **Corte ascendente leva a cabeça**; forte e forte de avanço têm finalização cinematográfica própria (tabela abaixo); golpes fortes sem cinemática própria, como as habilidades, levam a cabeça (`ConsequenceConfig.head_on_deciding_heavy`).
 - Apresentação (não muda o resultado): pelas costas sai o membro de trás.
 - Golpe aéreo, lâmina arremessada, empurrão, poderes e dano periódico terminam num K.O. normal.
 - **Finalizações cinematográficas** (fase 8, decisão do autor): só no K.O. que decide a partida e com a opção Finalizações ligada, quando o golpe ou o poder que mata tem uma cinemática própria. Ela substitui o corte de membro. Nos rounds anteriores, o K.O. corta o membro como antes, e o lutador volta no round seguinte com a parte robótica (apresentação).
 
 | Fonte | Finalização | Quando |
 | --- | --- | --- |
+| Forte e forte de avanço (todos, salvo abaixo) | **desarme e execução**: o forte leva os dois antebraços, a lâmina da vítima cai e apaga, ela cai de joelhos e um corte horizontal leva a cabeça | o golpe mata |
+| Forte e forte de avanço da Vespa | **tesoura**: o mesmo desarme; as duas lâminas se fecham em X no pescoço | o golpe mata |
+| Forte de avanço de Espelho, Haste e Soberano | **estocada**: a lâmina atravessa o peito e fica um instante, sai e a vítima cai de joelhos e tomba para a frente | o golpe mata |
 | Avanço com corte | corte na cintura passando: quem corta para atrás da vítima | o acerto do corte mata |
 | Corte de Fluxo | corte na cintura | a onda mata |
 | Investida descendente, Corte ascendente | corte vertical, as metades caem para os lados | o golpe mata |

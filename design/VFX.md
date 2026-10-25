@@ -129,7 +129,7 @@ As contagens de faíscas, tremor, flash e punch-in deste catálogo estão em `da
 
 ## Finalizações cinematográficas
 
-Descrição em ART_DIRECTION ("Finalizações"). Números no grupo Finishers do `EffectsConfig` (pausa antes de as metades se moverem, deslize, queda, arremesso, rastro do Avanço, pose de quem corta, raio-X, carbonização, explosão de brasa). O rastro do Avanço com corte é aditivo, na cor da lâmina, e não aparece com efeitos reduzidos; as brasas e a fumaça caem em degraus de opacidade.
+Descrição em ART_DIRECTION ("Finalizações"). Números no grupo Finishers do `EffectsConfig` (pausa antes de as metades se moverem, deslize, queda, arremesso, rastro do Avanço, pose de quem corta, raio-X, carbonização, explosão de brasa). O rastro do Avanço com corte é aditivo, na cor da lâmina, e não aparece com efeitos reduzidos; as brasas e a fumaça caem em degraus de opacidade. Execução e tesoura usam o mesmo rastro (curto, na altura do pescoço; dois cruzados na tesoura) e a mesma explosão de brasa do corte, menor, no pescoço; a estocada desenha um anel em brasa no peito com o mesmo esfriamento da borda do corte. Tempos (preparação, corte, segurar e recolher) no grupo Finishers do `EffectsConfig`.
 
 ## Efeitos reduzidos
 

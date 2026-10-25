@@ -206,6 +206,9 @@ Personagens com o mesmo jeito de lutar compartilham a base de animação.
   - **Raio**: ~0,6 s de raio-X (corpo escuro piscando e um esqueleto estilizado de traços claros, crânio em círculo), depois o corpo escurece até carbonizado, solta fumaça e cai.
   - **Repulsão e Repulsão Suprema**: estouro de brasa e faíscas; o corpo inteiro é arremessado longe num arco e cai deitado.
   - **Estrangular**: estalo de brasa no pescoço e a queda.
+  - **Desarme e execução** (forte): no impacto, os dois antebraços saem girando e a lâmina da vítima apaga; ela cai de joelhos com os cotos em brasa. Quem corta recolhe a lâmina atrás do ombro e passa um corte horizontal na altura do pescoço, marcado por um rastro reto e claro na cor da lâmina; a cabeça sai rolando e o corpo tomba para a frente.
+  - **Tesoura** (forte da Vespa): o mesmo desarme; as duas lâminas abrem para trás e se fecham em X na altura do pescoço, com dois rastros cruzados.
+  - **Estocada** (forte de avanço do Esgrimista): o braço estende e a lâmina atravessa o peito, com a ponta saindo pelas costas; no ponto de entrada abre um anel em brasa que esfria até cicatriz. Quem estoca segura um instante e recolhe; a vítima cai de joelhos e tomba para a frente.
 - **Ferimento** (braço/perna) durante o round: talho cauterizado diagonal sobre o membro (borda vermelho-escura `#5a1410`, núcleo em brasa pulsando devagar), brasas subindo de vez em quando e sombra leve no membro, até a Cura terminar ou o round acabar. Braço ferido: guarda mais baixa. Perna ferida: manca (passada curta e o corpo afunda quando o peso cai nela).
 
 ## Interface
