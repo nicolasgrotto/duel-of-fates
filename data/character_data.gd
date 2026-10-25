@@ -80,5 +80,6 @@ enum Path { AURORA, ECLIPSE }
 @export var guard_angle: float = -55.0
 @export var guard_grip: Vector2 = Vector2(14.0, -24.0)
 @export var eclipse_eyes: bool = false
+@export var intro: IntroData
 @export var variant: CharacterData
 @export var variant_key: String

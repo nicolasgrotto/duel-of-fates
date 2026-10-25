@@ -104,6 +104,8 @@ extends Resource
 
 @export_group("Match")
 @export var round_intro: float = 1.6
+@export var match_intro: float = 3.6
+@export var match_intro_title: float = 1.0
 @export var ko_duration: float = 2.6
 @export var endless_refill_delay: float = 1.5
 

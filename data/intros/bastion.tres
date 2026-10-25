@@ -1,0 +1,45 @@
+[gd_resource type="Resource" script_class="IntroData" format=3]
+
+[ext_resource type="Script" path="res://data/intro_data.gd" id="1_script"]
+[ext_resource type="Script" path="res://data/intro_key.gd" id="2_key"]
+
+[sub_resource type="Resource" id="key_0"]
+script = ExtResource("2_key")
+time = 0
+grip = Vector2(10, 0)
+blade_angle = 90
+
+[sub_resource type="Resource" id="key_1"]
+script = ExtResource("2_key")
+time = 0.5
+grip = Vector2(10, -62)
+blade_angle = -90
+
+[sub_resource type="Resource" id="key_2"]
+script = ExtResource("2_key")
+time = 1
+grip = Vector2(26, -16)
+blade_angle = 40
+crouch = 18
+lean = 12
+
+[sub_resource type="Resource" id="key_3"]
+script = ExtResource("2_key")
+time = 1.3
+grip = Vector2(26, -16)
+blade_angle = 40
+crouch = 18
+lean = 12
+
+[sub_resource type="Resource" id="key_4"]
+script = ExtResource("2_key")
+time = 1.9
+grip = Vector2(18, -50)
+blade_angle = -126
+crouch = 8
+
+[resource]
+script = ExtResource("1_script")
+id = &"bastion"
+keys = Array[ExtResource("2_key")]([SubResource("key_0"), SubResource("key_1"), SubResource("key_2"), SubResource("key_3"), SubResource("key_4")])
+ignite_at = 0.6

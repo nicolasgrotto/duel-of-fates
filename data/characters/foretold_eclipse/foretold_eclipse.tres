@@ -20,6 +20,7 @@
 [ext_resource type="Resource" path="res://data/techniques/dash_slash.tres" id="t_dash_slash"]
 
 [ext_resource type="Resource" path="res://data/audio/boss_music.tres" id="theme_music"]
+[ext_resource type="Resource" path="res://data/intros/foretold.tres" id="intro_res"]
 [sub_resource type="Resource" id="foretold_eclipse_light_1"]
 script = ExtResource("2_move")
 id = &"foretold_eclipse_light_1"
@@ -192,5 +193,6 @@ blade_colors = PackedColorArray(1.0000, 0.1686, 0.2706, 1)
 blade_color_keys = PackedStringArray("BLADE_FORETOLD_ECLIPSE_0")
 guard_angle = -56.0
 guard_grip = Vector2(20, -28)
+intro = ExtResource("intro_res")
 eclipse_eyes = true
 variant_key = "VARIANT_ECLIPSE"

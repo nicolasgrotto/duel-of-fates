@@ -61,3 +61,25 @@ func test_vigor_regenerates_after_delay() -> void:
 	assert_almost(duel.fighter(0).vigor, 50.0, 0.001, "no regen during the delay")
 	duel.step(60)
 	assert_gt(duel.fighter(0).vigor, 70.0)
+
+
+func _intro_ticks(rules: MatchRules) -> int:
+	var fixture: DuelFixture = DuelFixture.create(rules)
+	var ticks: int = 0
+	while fixture.sim.phase == MatchSimulation.Phase.INTRO:
+		fixture.step()
+		ticks += 1
+	return ticks
+
+
+func test_fighter_intros_lengthen_only_the_first_round_intro() -> void:
+	var config: CombatConfig = duel.sim.config
+	var plain: MatchRules = MatchRules.new()
+	var with_intros: MatchRules = MatchRules.new()
+	with_intros.fighter_intros = true
+	assert_eq(_intro_ticks(plain), Ticks.from_seconds(config.round_intro))
+	assert_eq(_intro_ticks(with_intros), Ticks.from_seconds(config.match_intro))
+	var fixture: DuelFixture = DuelFixture.create(with_intros)
+	fixture.skip_intro()
+	fixture.sim.round_number = 2
+	assert_almost(fixture.sim.intro_seconds(), config.round_intro, 0.001, "later rounds keep the short intro")

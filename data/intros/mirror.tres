@@ -1,0 +1,49 @@
+[gd_resource type="Resource" script_class="IntroData" format=3]
+
+[ext_resource type="Script" path="res://data/intro_data.gd" id="1_script"]
+[ext_resource type="Script" path="res://data/intro_key.gd" id="2_key"]
+
+[sub_resource type="Resource" id="key_0"]
+script = ExtResource("2_key")
+time = 0
+grip = Vector2(6, 2)
+blade_angle = 90
+places_off_hand = true
+off_hand = Vector2(-14, -30)
+
+[sub_resource type="Resource" id="key_1"]
+script = ExtResource("2_key")
+time = 0.5
+grip = Vector2(12, -50)
+blade_angle = -90
+places_off_hand = true
+off_hand = Vector2(-14, -30)
+
+[sub_resource type="Resource" id="key_2"]
+script = ExtResource("2_key")
+time = 1.1
+grip = Vector2(12, -50)
+blade_angle = -90
+head = 4
+places_off_hand = true
+off_hand = Vector2(-14, -30)
+
+[sub_resource type="Resource" id="key_3"]
+script = ExtResource("2_key")
+time = 1.5
+grip = Vector2(38, -22)
+blade_angle = 20
+places_off_hand = true
+off_hand = Vector2(-14, -30)
+
+[sub_resource type="Resource" id="key_4"]
+script = ExtResource("2_key")
+time = 2
+grip = Vector2(30, -38)
+blade_angle = -90
+
+[resource]
+script = ExtResource("1_script")
+id = &"mirror"
+keys = Array[ExtResource("2_key")]([SubResource("key_0"), SubResource("key_1"), SubResource("key_2"), SubResource("key_3"), SubResource("key_4")])
+ignite_at = 0.55

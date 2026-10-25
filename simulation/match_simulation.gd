@@ -8,6 +8,7 @@ const PROJECTILE_POOL_SIZE: int = 16
 const HAZARD_POOL_SIZE: int = 48
 const GROUP_MEMORY: int = 16
 const NO_WINNER: int = -1
+const INTRO_ATTACKS: int = Intent.Command.LIGHT | Intent.Command.HEAVY | Intent.Command.SPECIAL | Intent.Command.POWER
 
 var config: CombatConfig
 var rules: MatchRules
@@ -107,11 +108,14 @@ func step(first_intent: Intent, second_intent: Intent) -> void:
 		cinematic_ticks -= 1
 		return
 	round_tick += 1
+	var was_intro: bool = phase == Phase.INTRO
 	phase_ticks += 1
+	if was_intro and plays_fighter_intros() and (first_intent.skip_intro or second_intent.skip_intro or ((first_intent.pressed | second_intent.pressed) & INTRO_ATTACKS) != 0):
+		phase_ticks = maxi(phase_ticks, intro_title_tick())
 	_advance_phase()
 	var fighting: bool = phase == Phase.FIGHT
-	_intents[0] = first_intent if fighting else _neutral_intent
-	_intents[1] = second_intent if fighting else _neutral_intent
+	_intents[0] = first_intent if fighting and not was_intro else _neutral_intent
+	_intents[1] = second_intent if fighting and not was_intro else _neutral_intent
 	for i in fighters.size():
 		fighters[i].input_idle = _intents[i].held == 0 and _intents[i].move_x == 0
 		if fighters[i].twisted_ticks > 0:
@@ -332,6 +336,18 @@ func kill(victim: FighterState, killer: FighterState, move: MoveData, power: Pow
 	event.position = Vector2(victim.x, victim.y + config.body_height * 0.5)
 
 
+func intro_seconds() -> float:
+	return config.match_intro if plays_fighter_intros() else config.round_intro
+
+
+func plays_fighter_intros() -> bool:
+	return rules.fighter_intros and round_number == 1
+
+
+func intro_title_tick() -> int:
+	return maxi(Ticks.from_seconds(config.match_intro - config.match_intro_title), 0) if plays_fighter_intros() else 0
+
+
 func is_deciding(killer: FighterState) -> bool:
 	return rules.endless_finishers or killer.round_wins + 1 >= rules.rounds_to_win
 
@@ -440,7 +456,7 @@ func _set_phase(new_phase: Phase) -> void:
 func _advance_phase() -> void:
 	match phase:
 		Phase.INTRO:
-			if phase_ticks >= Ticks.from_seconds(config.round_intro):
+			if phase_ticks >= Ticks.from_seconds(intro_seconds()):
 				_set_phase(Phase.FIGHT)
 				emit(CombatEvent.Type.FIGHT_STARTED, CombatEvent.NO_FIGHTER, CombatEvent.NO_FIGHTER).amount = round_number
 		Phase.KO:

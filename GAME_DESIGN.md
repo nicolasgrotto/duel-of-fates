@@ -18,6 +18,7 @@ Duelo 1 contra 1 em visão lateral. O jogador controla um lutador numa arena e e
 
 - **Melhor de 3 rounds** nos duelos comuns; modos podem usar 1 round (História, Sobrevivência, Desafios).
 - **Intro do round**: letterbox entra, as lâminas acendem (ignição), aparece "ROUND 1", "ROUND 2" ou "ROUND FINAL", controles travados. Vida, Vigor, Fluxo e posições voltam ao início (distância inicial de 440 u entre os lutadores).
+- **Introdução dos lutadores**: ligada por padrão nas Opções. No primeiro round de Duelar, Arcade, História, Sobrevivência e 2 Jogadores, cada um prepara sua arma e assenta na guarda; só depois aparece o título. INTRO total de 3,6 s, com o último segundo reservado ao título. Confirmar ou tocar um ataque de qualquer jogador adianta os dois ao título, sem atacar nem pular o título. Demais rounds e opção desligada usam a intro normal de 1,6 s. Treino, Galeria, Tutorial, Treinos guiados, Desafios e Desafio de parry não exibem as entradas individuais.
 - **K.O.**: vida zero. Controles param, câmera lenta, "K.O.", queda. Depois, o próximo round ou o resultado.
 - **Replay do golpe final**: depois do K.O. que decide a partida, os últimos ~3,5 s são reexibidos em câmera lenta (45%), com letterbox e o rótulo REPLAY. Confirmar pula. Pode ser desligado nas Opções.
 - **Resultado**: VITÓRIA ou DERROTA, vencedor, duração, estatísticas (golpes acertados, dano causado, defesas, parries, parries perfeitos, quebras de guarda, empurrões, maior sequência). Opções: Revanche ou Menu principal.

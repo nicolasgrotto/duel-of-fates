@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="IntroData" format=3]
+
+[ext_resource type="Script" path="res://data/intro_data.gd" id="1_script"]
+[ext_resource type="Script" path="res://data/intro_key.gd" id="2_key"]
+
+[sub_resource type="Resource" id="key_0"]
+script = ExtResource("2_key")
+time = 0
+grip = Vector2(6, -2)
+blade_angle = 90
+
+[sub_resource type="Resource" id="key_1"]
+script = ExtResource("2_key")
+time = 1
+grip = Vector2(30, -50)
+blade_angle = -40
+lean = -6
+turn = 1
+
+[sub_resource type="Resource" id="key_2"]
+script = ExtResource("2_key")
+time = 1.6
+grip = Vector2(12, -66)
+blade_angle = -150
+
+[resource]
+script = ExtResource("1_script")
+id = &"heron"
+keys = Array[ExtResource("2_key")]([SubResource("key_0"), SubResource("key_1"), SubResource("key_2")])
+ignite_at = 0.4

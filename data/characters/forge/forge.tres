@@ -18,6 +18,7 @@
 [ext_resource type="Resource" path="res://data/powers/throw.tres" id="p_throw"]
 [ext_resource type="Resource" path="res://data/techniques/blade_throw.tres" id="t_blade_throw"]
 [ext_resource type="Resource" path="res://data/techniques/rising_cut.tres" id="t_rising_cut"]
+[ext_resource type="Resource" path="res://data/intros/forge.tres" id="intro_res"]
 
 [sub_resource type="Resource" id="forge_light_1"]
 script = ExtResource("2_move")
@@ -234,6 +235,7 @@ blade_colors = PackedColorArray(1.0000, 0.2510, 0.2196, 1, 1.0000, 0.6039, 0.247
 blade_color_keys = PackedStringArray("BLADE_FORGE_0", "BLADE_FORGE_1", "BLADE_FORGE_2")
 guard_angle = -130.0
 guard_grip = Vector2(20, -52)
+intro = ExtResource("intro_res")
 eclipse_eyes = false
 challenge_stat = &"guard_breaks"
 challenge_target = 2

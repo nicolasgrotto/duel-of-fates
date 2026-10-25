@@ -18,6 +18,7 @@
 [ext_resource type="Resource" path="res://data/powers/throw.tres" id="p_throw"]
 [ext_resource type="Resource" path="res://data/techniques/plunge.tres" id="t_plunge"]
 [ext_resource type="Resource" path="res://data/techniques/dash_slash.tres" id="t_dash_slash"]
+[ext_resource type="Resource" path="res://data/intros/heron.tres" id="intro_res"]
 
 [sub_resource type="Resource" id="heron_light_1"]
 script = ExtResource("2_move")
@@ -259,6 +260,7 @@ blade_colors = PackedColorArray(0.3725, 1.0000, 0.7529, 1, 0.6510, 0.9098, 1.000
 blade_color_keys = PackedStringArray("BLADE_HERON_0", "BLADE_HERON_1", "BLADE_HERON_2")
 guard_angle = -150.0
 guard_grip = Vector2(12, -66)
+intro = ExtResource("intro_res")
 eclipse_eyes = false
 challenge_stat = &"aerial_hits"
 challenge_target = 4

@@ -17,6 +17,7 @@ var _move_left: StringName
 var _move_right: StringName
 var _pending_pressed: int = 0
 var _last_held: int = 0
+var _pending_intro_skip: bool = false
 
 
 func _init(player_slot: int) -> void:
@@ -30,12 +31,14 @@ func _init(player_slot: int) -> void:
 func handle_input(event: InputEvent) -> void:
 	if event.is_echo():
 		return
+	if event.is_action_pressed(&"ui_accept"):
+		_pending_intro_skip = true
 	for command in _actions:
 		if event.is_action_pressed(_actions[command]):
 			_pending_pressed |= command
 
 
-func produce(_sim: MatchSimulation, _fighter_index: int, intent: Intent) -> void:
+func produce(sim: MatchSimulation, _fighter_index: int, intent: Intent) -> void:
 	var held: int = 0
 	for command in _actions:
 		if Input.is_action_pressed(_actions[command]):
@@ -43,5 +46,7 @@ func produce(_sim: MatchSimulation, _fighter_index: int, intent: Intent) -> void
 	intent.move_x = int(Input.is_action_pressed(_move_right)) - int(Input.is_action_pressed(_move_left))
 	intent.pressed = _pending_pressed | (held & ~_last_held)
 	intent.held = held | _pending_pressed
+	intent.skip_intro = _pending_intro_skip and sim.phase == MatchSimulation.Phase.INTRO
 	_last_held = held
 	_pending_pressed = 0
+	_pending_intro_skip = false

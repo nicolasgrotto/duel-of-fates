@@ -1,0 +1,68 @@
+[gd_resource type="Resource" script_class="IntroData" format=3]
+
+[ext_resource type="Script" path="res://data/intro_data.gd" id="1_script"]
+[ext_resource type="Script" path="res://data/intro_key.gd" id="2_key"]
+
+[sub_resource type="Resource" id="key_0"]
+script = ExtResource("2_key")
+time = 0
+grip = Vector2(6, -2)
+blade_angle = 90
+lean = 8
+head = 18
+
+[sub_resource type="Resource" id="key_1"]
+script = ExtResource("2_key")
+time = 0.4
+grip = Vector2(6, -2)
+blade_angle = 90
+lean = 8
+head = 18
+places_off_hand = true
+off_hand = Vector2(8, -62)
+open_hand = true
+
+[sub_resource type="Resource" id="key_2"]
+script = ExtResource("2_key")
+time = 0.7
+grip = Vector2(6, -2)
+blade_angle = 90
+lean = 4
+head = 8
+places_off_hand = true
+off_hand = Vector2(2, -58)
+open_hand = true
+
+[sub_resource type="Resource" id="key_3"]
+script = ExtResource("2_key")
+time = 1
+grip = Vector2(10, -20)
+blade_angle = -80
+lean = -4
+head = 2
+
+[sub_resource type="Resource" id="key_4"]
+script = ExtResource("2_key")
+time = 1.5
+grip = Vector2(14, -28)
+blade_angle = -80
+twirl = 1
+head = -2
+
+[sub_resource type="Resource" id="key_5"]
+script = ExtResource("2_key")
+time = 2.2
+grip = Vector2(24, -26)
+blade_angle = -22
+crouch = 9
+lean = 10
+
+[resource]
+script = ExtResource("1_script")
+id = &"reaper"
+keys = Array[ExtResource("2_key")]([SubResource("key_0"), SubResource("key_1"), SubResource("key_2"), SubResource("key_3"), SubResource("key_4"), SubResource("key_5")])
+ignite_at = 1.35
+second_ignite_at = 1.65
+wears_cloak = true
+hood_down_at = 0.35
+cloak_drop_at = 0.95

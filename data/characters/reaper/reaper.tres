@@ -19,6 +19,7 @@
 [ext_resource type="Resource" path="res://data/techniques/blade_throw.tres" id="t_blade_throw"]
 [ext_resource type="Resource" path="res://data/techniques/dash_slash.tres" id="t_dash_slash"]
 [ext_resource type="Resource" path="res://data/techniques/plunge.tres" id="t_plunge"]
+[ext_resource type="Resource" path="res://data/intros/reaper.tres" id="intro_res"]
 
 [sub_resource type="Resource" id="reaper_light_1"]
 script = ExtResource("2_move")
@@ -259,6 +260,7 @@ blade_colors = PackedColorArray(1.0000, 0.1647, 0.1647, 1, 1.0000, 0.4784, 0.180
 blade_color_keys = PackedStringArray("BLADE_REAPER_0", "BLADE_REAPER_1", "BLADE_REAPER_2")
 guard_angle = -22.0
 guard_grip = Vector2(24, -26)
+intro = ExtResource("intro_res")
 eclipse_eyes = true
 challenge_stat = &"best_combo"
 challenge_target = 5

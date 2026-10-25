@@ -18,6 +18,7 @@
 [ext_resource type="Resource" path="res://data/powers/throw.tres" id="p_throw"]
 [ext_resource type="Resource" path="res://data/techniques/rising_cut.tres" id="t_rising_cut"]
 [ext_resource type="Resource" path="res://data/techniques/thrust.tres" id="t_thrust"]
+[ext_resource type="Resource" path="res://data/intros/mirror.tres" id="intro_res"]
 
 [sub_resource type="Resource" id="mirror_light_1"]
 script = ExtResource("2_move")
@@ -209,6 +210,7 @@ blade_colors = PackedColorArray(0.9098, 0.9333, 1.0000, 1, 0.6235, 0.8471, 1.000
 blade_color_keys = PackedStringArray("BLADE_MIRROR_0", "BLADE_MIRROR_1", "BLADE_MIRROR_2")
 guard_angle = -90.0
 guard_grip = Vector2(30, -38)
+intro = ExtResource("intro_res")
 eclipse_eyes = false
 challenge_stat = &"perfect_parries"
 challenge_target = 4

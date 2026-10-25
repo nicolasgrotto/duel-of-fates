@@ -1,0 +1,45 @@
+[gd_resource type="Resource" script_class="IntroData" format=3]
+
+[ext_resource type="Script" path="res://data/intro_data.gd" id="1_script"]
+[ext_resource type="Script" path="res://data/intro_key.gd" id="2_key"]
+
+[sub_resource type="Resource" id="key_0"]
+script = ExtResource("2_key")
+time = 0
+grip = Vector2(6, 4)
+blade_angle = 95
+crouch = 30
+lean = 30
+head = 26
+
+[sub_resource type="Resource" id="key_1"]
+script = ExtResource("2_key")
+time = 0.8
+grip = Vector2(4, -10)
+blade_angle = 120
+crouch = 26
+lean = 26
+head = 22
+
+[sub_resource type="Resource" id="key_2"]
+script = ExtResource("2_key")
+time = 1.6
+grip = Vector2(-10, -48)
+blade_angle = -130
+crouch = 8
+lean = 6
+head = -6
+
+[sub_resource type="Resource" id="key_3"]
+script = ExtResource("2_key")
+time = 2
+grip = Vector2(-16, -58)
+blade_angle = -150
+crouch = 8
+lean = 8
+
+[resource]
+script = ExtResource("1_script")
+id = &"awakened_shadow"
+keys = Array[ExtResource("2_key")]([SubResource("key_0"), SubResource("key_1"), SubResource("key_2"), SubResource("key_3")])
+ignite_at = 0.9

@@ -18,6 +18,7 @@
 [ext_resource type="Resource" path="res://data/powers/repulse.tres" id="p_repulse"]
 [ext_resource type="Resource" path="res://data/techniques/blade_throw.tres" id="t_blade_throw"]
 [ext_resource type="Resource" path="res://data/techniques/dash_slash.tres" id="t_dash_slash"]
+[ext_resource type="Resource" path="res://data/intros/guardian.tres" id="intro_res"]
 
 [sub_resource type="Resource" id="guardian_light_1"]
 script = ExtResource("2_move")
@@ -207,6 +208,7 @@ blade_colors = PackedColorArray(0.4980, 0.8941, 1.0000, 1, 0.3725, 0.5451, 1.000
 blade_color_keys = PackedStringArray("BLADE_GUARDIAN_0", "BLADE_GUARDIAN_1", "BLADE_GUARDIAN_2")
 guard_angle = -58.0
 guard_grip = Vector2(20, -30)
+intro = ExtResource("intro_res")
 eclipse_eyes = false
 challenge_stat = &"perfect_parries"
 challenge_target = 3

@@ -191,6 +191,16 @@ Implementação:
 
 ## Apresentação
 
+### Introdução dos lutadores
+
+`CharacterData.intro` aponta para `IntroData` (`data/intros/`); `IntroKey` descreve empunhadura, ângulo, giro, tronco, cabeça e mão livre. São dados de apresentação, sem colisão ou efeitos na simulação. O protagonista herda a entrada do estilo escolhido; as variantes do Predestinado compartilham a entrada e assentam na própria guarda.
+
+`MatchRules.fighter_intros` fica desligada por padrão. Duelar, Arcade, História, Sobrevivência e 2 Jogadores copiam `Settings.fighter_intros` ao montar a partida; os modos de aprendizado e demonstração não a habilitam. Só o primeiro round usa `CombatConfig.match_intro` (3,6 s); o título ocupa `match_intro_title` (1 s) ao final. Os demais usam `round_intro` (1,6 s). O solver mistura a última chave com a guarda da família durante `blend_time`, antes do título. A câmera mantém os dois lutadores enquadrados.
+
+Pular é entrada determinística: `Intent.skip_intro` ocupa o bit 18 no empacotamento, preservando os oito bits dos comandos existentes. `PlayerController` converte `ui_accept` nesse pedido apenas durante INTRO. A simulação também aceita toques de rápido, forte, habilidade e poder de qualquer lado; avança o mesmo relógio compartilhado até o título e ignora comandos de combate durante todo tick iniciado em INTRO, inclusive o tick de FIGHT_STARTED. Não pula o título, não guarda ataque no buffer e não altera o relógio novamente se já chegou ao título. Snapshot guarda esse relógio; gravação e replay carregam o pedido empacotado, sem atalho externo à simulação.
+
+`FighterView` lê o relógio de INTRO para pose, duas ignições e acessórios; `DuelAudio` acompanha cada início de ignição usando o som existente. O capuz temporário desce em etapas; a capa temporária se solta e desaparece em degraus antes do título. Trajes que já têm essas peças as preservam. Ao pular ou sair de INTRO, os acessórios temporários são removidos e a guarda é aplicada imediatamente. F3 informa tempo da introdução, ignições e acessórios. A opção usa `game/fighter_intros` em `settings.cfg`, ligada por padrão inclusive em saves antigos.
+
 - **`DuelScreen`**: monta arena, `FighterView` ×2, `CameraRig`, `Hud`, `EffectsDirector`; um executor de tick chama a simulação e despacha os eventos do tick para quem escuta (sinais).
 - **`FighterView`**: lê o `FighterState` e escolhe a animação e o ponto dela pela **fase e progresso do golpe** (a animação segue a simulação, nunca o contrário). Trajes trocam materiais e peças, não a lógica.
 - **`BladeView`**: camadas da lâmina, luz, rastro, ignição, apagar, tremulação.

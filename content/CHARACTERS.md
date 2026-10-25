@@ -99,6 +99,8 @@ O desafio vale em qualquer duelo vencido contra a IA (Duelar ou Arcade, qualquer
 
 ## Guardião / Guardian
 
+- **Introdução**: Ergue o cabo vertical diante do rosto, acende com calma e desce para a guarda compacta de duas mãos.
+
 **O mestre dos fundamentos.** O personagem de entrada: tudo funciona como manda o livro, e é exatamente por isso que ele é perigoso nas mãos de quem domina o básico.
 
 - **Traço**: bloquear custa 20% menos Vigor.
@@ -109,6 +111,8 @@ O desafio vale em qualquer duelo vencido contra a IA (Duelar ou Arcade, qualquer
 - **Família de movimento — Guardião**: econômico, preciso, guarda firme. Base baixa, guarda quase parada, preparação curta e corte direto, quase sem follow-through. Passos curtos, quadril firme, sem giro de lâmina. O empurrão solta a mão livre para a frente. O Avanço com corte desce de cima para baixo.
 
 ## Sombra / Shadow
+
+- **Introdução**: Estuda o rival inclinada e de cabeça baixa, acende tarde junto ao quadril e abre a guarda baixa num arco curto.
 
 **A predadora.** Pressão constante: cada acerto a alimenta, e o golpe com armadura atravessa quem tenta interromper.
 
@@ -121,6 +125,8 @@ O desafio vale em qualquer duelo vencido contra a IA (Duelar ou Arcade, qualquer
 
 ## Bastião / Bastion
 
+- **Introdução**: Ergue a arma com as duas mãos, acende num corte de teste pesado e a recolhe sobre o ombro, enraizando a base.
+
 **A muralha.** Lento, enorme, inevitável. Anda em guarda e não recua.
 
 - **Traço**: anda devagar enquanto bloqueia e não é empurrado no bloqueio.
@@ -131,6 +137,8 @@ O desafio vale em qualquer duelo vencido contra a IA (Duelar ou Arcade, qualquer
 - **Família — Colosso**: base larga e baixa, quase sem balanço, golpes curtos e secos no rápido, martelada sobre a cabeça no forte e na Marreta, agachando no impacto. Empurrão de ombro. Disputa enraizada, vitória curta.
 
 ## Vespa / Wasp
+
+- **Introdução**: Abre as mãos, acende as lâminas em sequência e gira as duas em sentidos opostos antes de separar as guardas.
 
 **O enxame.** Duas lâminas curtas, a sequência mais longa do jogo e um avanço que troca de lado.
 
@@ -143,6 +151,8 @@ O desafio vale em qualquer duelo vencido contra a IA (Duelar ou Arcade, qualquer
 
 ## Espelho / Mirror
 
+- **Introdução**: Ergue a lâmina vertical diante da máscara, acende, testa uma parada curta e retorna imóvel à vertical.
+
 **O especialista em parry.** Imóvel, mascarado, devolve tudo o que recebe.
 
 - **Traço**: janelas de parry maiores (perfeito 0,12 s, total 0,26 s).
@@ -153,6 +163,8 @@ O desafio vale em qualquer duelo vencido contra a IA (Duelar ou Arcade, qualquer
 - **Família — Esgrimista**: tronco reto, preparação contida, estocadas com o braço estendido, forte num corte diagonal limpo. Disputa firme, vitória curta e precisa.
 
 ## Haste / Lance
+
+- **Introdução**: Ergue a haste com as duas mãos, acende a ponta, gira o eixo comprido e o baixa para a linha do rival.
 
 **A distância.** Uma lâmina presa a uma haste longa como uma lança: perigosa na ponta, fraca colada.
 
@@ -165,6 +177,8 @@ O desafio vale em qualquer duelo vencido contra a IA (Duelar ou Arcade, qualquer
 
 ## Brasa / Ember
 
+- **Introdução**: Já baixa e à espreita, acende a lâmina invertida junto ao quadril e a recolhe sem revelar intenção.
+
 **A resposta.** Espera, lê e pune tudo com força.
 
 - **Traço**: +20% de dano contra oponente em recovery, desequilibrado ou atordoado.
@@ -175,6 +189,8 @@ O desafio vale em qualquer duelo vencido contra a IA (Duelar ou Arcade, qualquer
 - **Família — Golpeador**: base baixa e contida a partir da guarda baixa; o rápido sobe de baixo até a linha do peito, o forte é um corte ascendente com o corpo subindo junto. Disputa baixa, vitória curta.
 
 ## Forja / Forge
+
+- **Introdução**: Puxa a arma pesada para trás com as duas mãos, acende e sustenta o peso antes de apoiá-la na guarda alta.
 
 **A carga.** Segura o golpe, a lâmina brilha cada vez mais, e o terceiro nível quebra qualquer guarda.
 
@@ -187,6 +203,8 @@ O desafio vale em qualquer duelo vencido contra a IA (Duelar ou Arcade, qualquer
 
 ## Garça / Heron
 
+- **Introdução**: Acende num arco ascendente, faz uma volta leve do corpo e ergue a lâmina atrás do ombro.
+
 **O voo.** Acrobacia como arma: parede, ar e passagem por cima do oponente.
 
 - **Traço**: pulo na parede; esquiva que atravessa o oponente; **dois aéreos** (rápido no ar é um corte, forte no ar é um mergulho).
@@ -197,6 +215,8 @@ O desafio vale em qualquer duelo vencido contra a IA (Duelar ou Arcade, qualquer
 - **Família — Dançarina**: base alta e solta, arcos largos com o corpo acompanhando, pirueta do corpo na recuperação do forte. Disputa leve, vitória com giro da lâmina.
 
 ## Ceifador / Reaper
+
+- **Introdução**: Surge imóvel de capa e capuz, baixa o capuz devagar e encara o rival, solta a capa temporária, gira o cabo, acende as duas pontas em sequência e assenta numa guarda baixa e larga; peças do traje escolhido permanecem.
 
 **A roda.** Lâmina dupla de cabo único, acrobata do Eclipse.
 
@@ -209,6 +229,8 @@ O desafio vale em qualquer duelo vencido contra a IA (Duelar ou Arcade, qualquer
 - **Trajes**: Viajante (capa `#3a3f47`, capuz); Sentinela (capa `#2e2422`, acabamento `#9a6b4a`, ombreiras).
 
 ## Eco / Echo
+
+- **Introdução**: Insinua uma guarda alta apagada, acende durante um giro curto do punho e desvia para a guarda baixa.
 
 **A trapaceira.** Nada do que ela começa é garantido.
 
@@ -223,6 +245,8 @@ O desafio vale em qualquer duelo vencido contra a IA (Duelar ou Arcade, qualquer
 
 ## Chefe: Sombra Desperta / Awakened Shadow
 
+- **Introdução**: Começa curvada e pesada, ergue lentamente a arma ao acender e a recolhe alta atrás da cabeça.
+
 A Sombra depois de aceitar o Fluxo do Soberano. Mesma pessoa, mais perigosa.
 
 - Mais vida (150), forte mais pesado, mesmos traço e habilidade da Sombra.
@@ -236,6 +260,8 @@ Os três têm **potencial**: o teto de todos os atributos sobe (+1, +2, +3), e a
 
 ### Soberano / Sovereign
 
+- **Introdução**: Quase imóvel, adianta lentamente o punho e acende tarde com a ponta já dirigida ao adversário.
+
 **O imperador sombrio.** Pressiona com Raio e Estrangular, cobre a aproximação com a Tempestade, mas o corpo é lento.
 
 - Base de jogo da Haste: ponto doce e Investida da Haste; 2 rápidos.
@@ -246,6 +272,8 @@ Os três têm **potencial**: o teto de todos os atributos sobe (+1, +2, +3), e a
 
 ### Ancião / Elder
 
+- **Introdução**: Reúne as mãos junto ao peito, acende a lâmina vertical com paciência e abre a guarda alta econômica.
+
 **O mestre da Aurora.** Defesa e técnica acima de todos.
 
 - Base de jogo da Garça: pulo na parede e mergulho aéreo. **Habilidade — Salto**: avança pelo ar e cai golpeando. 3 rápidos.
@@ -255,6 +283,8 @@ Os três têm **potencial**: o teto de todos os atributos sobe (+1, +2, +3), e a
 - Liberado ao vencê-lo na História ou ao concluir a campanha da Aurora.
 
 ### Predestinado / Foretold
+
+- **Introdução**: Ergue o cabo num giro contido, acende e firma a guarda compacta; Aurora e Eclipse assentam em suas próprias guardas.
 
 **O ápice.** Nascido para equilibrar o Fluxo; o único com quatro poderes.
 
@@ -271,6 +301,8 @@ Os três têm **potencial**: o teto de todos os atributos sobe (+1, +2, +3), e a
 - **Lâmina por variante**: a Aurora usa o azul-aurora (`#6fb2ff`); a Eclipse usa o **vermelho do Ápice** (`#ff2b45`), como cita a fala final da rota Aurora. A regra "lâminas sem moral" continua valendo: a cor marca a variante, não o caráter.
 
 ## Protagonista da História
+
+- **Introdução**: Herda a entrada de Técnica (Guardião), Fúria (Sombra) ou Voo (Garça), preservando a aparência e a cor escolhidas.
 
 Criado pelo jogador (ver [STORY.md](STORY.md)).
 

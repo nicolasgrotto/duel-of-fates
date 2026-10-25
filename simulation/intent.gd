@@ -5,16 +5,19 @@ enum Command { JUMP = 1, LIGHT = 2, HEAVY = 4, BLOCK = 8, DODGE = 16, EVADE = 32
 
 const COMMAND_BITS: int = 8
 const COMMAND_MASK: int = 0xFF
+const SKIP_INTRO_BIT: int = 1 << 18
 
 var move_x: int = 0
 var held: int = 0
 var pressed: int = 0
+var skip_intro: bool = false
 
 
 func clear() -> void:
 	move_x = 0
 	held = 0
 	pressed = 0
+	skip_intro = false
 
 
 func is_held(command: Command) -> bool:
@@ -38,16 +41,18 @@ func copy_from(other: Intent) -> void:
 	move_x = other.move_x
 	held = other.held
 	pressed = other.pressed
+	skip_intro = other.skip_intro
 
 
 func pack() -> int:
-	return (move_x + 1) | (held << 2) | (pressed << (2 + COMMAND_BITS))
+	return (move_x + 1) | (held << 2) | (pressed << (2 + COMMAND_BITS)) | (SKIP_INTRO_BIT if skip_intro else 0)
 
 
 func unpack(value: int) -> void:
 	move_x = (value & 3) - 1
 	held = (value >> 2) & COMMAND_MASK
 	pressed = (value >> (2 + COMMAND_BITS)) & COMMAND_MASK
+	skip_intro = (value & SKIP_INTRO_BIT) != 0
 
 
 func pack_relative(facing: int) -> int:

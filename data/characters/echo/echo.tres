@@ -18,6 +18,7 @@
 [ext_resource type="Resource" path="res://data/powers/throw.tres" id="p_throw"]
 [ext_resource type="Resource" path="res://data/techniques/flurry.tres" id="t_flurry"]
 [ext_resource type="Resource" path="res://data/techniques/dash_slash.tres" id="t_dash_slash"]
+[ext_resource type="Resource" path="res://data/intros/echo.tres" id="intro_res"]
 
 [sub_resource type="Resource" id="echo_light_1"]
 script = ExtResource("2_move")
@@ -208,6 +209,7 @@ blade_colors = PackedColorArray(1.0000, 0.6510, 0.8784, 1, 0.7882, 0.6510, 1.000
 blade_color_keys = PackedStringArray("BLADE_ECHO_0", "BLADE_ECHO_1", "BLADE_ECHO_2")
 guard_angle = 18.0
 guard_grip = Vector2(20, -16)
+intro = ExtResource("intro_res")
 eclipse_eyes = false
 challenge_stat = &"feints"
 challenge_target = 5
