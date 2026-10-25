@@ -83,8 +83,28 @@ Depois, o jogador distribui os pontos iniciais.
 
 - Pontos investidos são definitivos. Normal e Difícil obrigam a escolher onde chegar a 7. Mesmo com Fluxo 7, o protagonista fica a −2 dos chefes de Fluxo 9: poderes pela metade contra eles. A lâmina tem de decidir.
 - **Espaços de poder**: começa com um (Poder); abre Frente + Poder no 3º encontro e Trás + Poder no 6º.
-- **Poderes aprendidos** (um por encontro, na ordem): Aurora — Repulsão, Barreira, Arremesso, Cura, Absorção, Foco, Puxão. Eclipse — Raio, Puxão, Estrangular, Congelar, Ira, Dreno, Repulsão.
-- O conjunto é trocado na tela **Poderes** do hub, entre encontros. Nenhum espaço fica vazio nem repete. Técnicas são as do personagem-base do estilo.
+- **Pontos de habilidade** (decisão do autor; substitui "um poder por encontro"): moeda própria, separada dos pontos de atributo. Cada duelo da História dá pontos, **vencido ou perdido**: vitória 3, derrota 1; os marcos (encontros 3 e 6) dão +1 e o secreto dá 3. Uma campanha sem derrotas soma 26 (29 com o secreto); as duas árvores juntas custam 36 na Aurora e 37 no Eclipse, então o jogador escolhe uma build. Números em `CampaignData` (`skill_points_win`, `skill_points_loss`, `skill_points_milestone`, `skill_points_secret`), nunca no código. Pontos gastos são definitivos.
+- **Duas árvores** na mesma tela, com abas: **Poderes** e **Lâmina**. Cada nó custa pontos, exige o nó anterior do mesmo ramo e, nas supremas, o tier de Fluxo (POWERS.md: Tier II a partir do Fluxo 4, Tier III a partir do 7). Um nó desbloqueado e ainda sem requisito de tier aparece como "comprado, exige Fluxo N" e não pode ser equipado.
+- **Árvore de Poderes**, do mais simples às supremas (o primeiro nó vem de graça na criação):
+
+| # | Aurora | Custo | Eclipse | Custo |
+| --- | --- | --- | --- | --- |
+| 1 | Repulsão (inicial) | 0 | Puxão (inicial) | 0 |
+| 2 | Puxão | 1 | Repulsão | 1 |
+| 3 | Barreira | 1 | Dreno | 1 |
+| 4 | Arremesso | 2 | Estrangular | 2 |
+| 5 | Foco | 2 | Congelar | 2 |
+| 6 | Cura | 2 | Raio | 2 |
+| 7 | Absorção | 2 | Truque Mental | 2 |
+| 8 | Truque Mental | 2 | Ira · Tier II | 3 |
+| 9 | Repulsão Suprema · Tier II | 3 | Fratura · Tier II | 3 |
+| 10 | Santuário · Tier II | 3 | Arsenal Telecinético · Tier II | 3 |
+| 11 | Telecinese em Massa · Tier III | 4 | Tempestade · Tier III | 4 |
+| 12 | Instinto Superior · Tier III | 4 | Singularidade Devastadora · Tier III | 4 |
+
+  Os nós 1–8 formam um ramo em linha; as supremas formam um segundo ramo que abre depois do nó 6 (cada suprema exige a anterior do ramo e o tier). Total: Aurora 26, Eclipse 27.
+- **Árvore de Lâmina** (igual nos dois caminhos; as técnicas novas entram no espaço escolhido em Frente, Trás ou Ar): Técnica de frente do estilo (inicial, 0) → Técnica de trás do estilo (2) → Técnica aérea do estilo (2) → Habilidade do estilo (3; antes vinha de graça) → **Corte Projetado** (3). Total 10.
+- O conjunto é trocado na mesma tela, entre encontros. Nenhum espaço fica vazio nem repete. Saves antigos: os poderes já aprendidos contam como comprados, sem devolver pontos.
 - Na História valem sempre Poderes, exaustão, ferimentos, Foco automático, disputa e finalizações.
 
 ## 5. Desbloqueios

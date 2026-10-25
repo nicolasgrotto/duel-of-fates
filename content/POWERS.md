@@ -108,7 +108,7 @@ Valem a tabela de interação, a guarda de frente (um quarto do dano passa), a B
 | **Absorção** / Absorption | 10 + 20/s | Segurada até 1,5 s: absorve **qualquer poder** que chega, pulso a pulso no caso do Raio (como a troca de raios entre dois mestres), reduzindo ou anulando pela diferença de Fluxo e convertendo parte da energia em medidor. Não segura lâmina e não absorve a Tempestade. |
 | **Santuário** / Sanctuary | 65 | Escudo colado ao corpo que absorve 20 × potência de dano enquanto o lutador age normalmente, por até 6 s. Racha conforme absorve e se quebra no limite. Custo alto. Tier II. |
 | **Telecinese em Massa** / Mass Telekinesis | 80 (Tier III, Fluxo 7+) | Invocação de ~0,8 s, interrompível, só com a mão erguida. Quando o poder sai, o duelo congela por 1,05 s (determinístico, em dado) para a mini-cinemática de ~1,5 s: a câmera sobe ao céu, um meteoro é puxado e racha, e a câmera desce com os pedaços. Os pedaços caem sobre marcas no chão (5, 6 ou 7 impactos pelo tier, 7 de dano cada, com empurrão). Quem lança pode se mover, mas não atacar, durante a chuva. Sem céu à vista, fragmentos conjurados. Custo alto. |
-| **Corte de Fluxo** / Flow Cleave | 20 | Um corte de cima para baixo solta uma onda em meia-lua que viaja em linha reta (520 u). Pode ser esquivada, bloqueada e **devolvida por um parry perfeito** (o projétil volta contra quem lançou). No Ápice, dois cortes descendentes em sequência, espaçados por 0,35 s e cada um com o arco completo, com uma onda em cada (a recovery cresce os mesmos 0,35 s). |
+| **Corte de Fluxo** / Flow Cleave | 20 | **Vai sair deste catálogo** (decisão do autor): vira a técnica de lâmina neutra **Corte Projetado** / Projected Cut, nos dois caminhos, com Vigor em vez de Fluxo (ver Técnicas de lâmina). Até a migração vale a regra abaixo. Um corte de cima para baixo solta uma onda em meia-lua que viaja em linha reta (520 u). Pode ser esquivada, bloqueada e **devolvida por um parry perfeito** (o projétil volta contra quem lançou). No Ápice, dois cortes descendentes em sequência, espaçados por 0,35 s e cada um com o arco completo, com uma onda em cada (a recovery cresce os mesmos 0,35 s). |
 
 ### Eclipse
 
@@ -133,9 +133,17 @@ Usam Habilidade com direção ou no ar, gastam **Vigor** (não Fluxo), escalam c
 | **Estocada** / Thrust | Golpe reto e estreito no peito, o maior alcance de lâmina (55 u além do forte). Prep. 0,24 · ativo 0,1 · rec. 0,5 · dano 14 · Vigor 26. | pular por cima, esquivar |
 | **Corte ascendente** / Rising cut | De baixo para cima até acima da cabeça. Contra alguém no ar, +30% de dano e lança para cima. Prep. 0,3 · ativo 0,14 · rec. 0,55 · dano 15 · Vigor 26. | ficar no chão e punir |
 | **Rajada** / Flurry | Quatro estocadas curtas a cada 0,07 s, 4 de dano cada; cada uma na guarda gasta Vigor. Prep. 0,18 · rec. 0,42 · Vigor 30. | aparar qualquer estocada encerra a sequência |
+| **Corte Projetado** / Projected Cut (planejada) | O antigo Corte de Fluxo como técnica: corte de cima para baixo que solta a onda em meia-lua (520 u). Bloqueável, esquivável e devolvida pelo parry perfeito. Gasta Vigor, escala com a Lâmina, sem tier e sem Ápice. Neutra. | guarda, parry perfeito para devolver |
 | **Investida descendente** / Plunging strike | No ar: mergulho com a lâmina para baixo e para a frente, uma vez por pulo (conta como o golpe aéreo). Prep. 0,12 · ativo 0,36 · rec. 0,6 · dano 16 · Vigor 28. **No acerto, recuperação 0,27 s** (`recovery_on_hit`): quem acerta fica cerca de +4 quadros (antes ficava −15 e era punido mesmo acertando); na guarda continua −24. | sair do ponto de queda, punir a recovery |
 
 **Choque entre técnicas**: quando as lâminas de duas técnicas corpo a corpo ativas se cruzam, as duas são interrompidas num choque grande (GAME_DESIGN, seção 7).
+
+### Supremas planejadas (decisão do autor)
+
+| Suprema | Caminho | Tier | Resumo | Resposta |
+| --- | --- | --- | --- | --- |
+| **Instinto Superior** / Higher Instinct | Aurora | III | Por alguns segundos, quem lança se esquiva sozinho de golpes corpo a corpo dirigidos a ele (inclina, recua, gira ou desliza, sem teleporte); depois de uma esquiva perfeita abre uma janela curta de contra-ataque. Não evita área, agarrões, golpes em volta do corpo nem poderes; dano de poder encerra antes. Aura clara e prateada, original. | poderes, ataques de área, esperar acabar |
+| **Singularidade Devastadora** / Devastating Singularity | Eclipse | III | ~4–5 s: esfera escura suspensa sobre a arena arranca placas do chão em zonas marcadas antes; quem fica numa zona é puxado para cima, e no ar a atração é mais forte. A massa de destroços é lançada contra o oponente no fim: não pode ser bloqueada, só evitada em movimento. | correr e esquivar para fora das zonas, não pular |
 
 ## 6. Conjuntos
 

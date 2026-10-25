@@ -243,6 +243,21 @@ O desafio vale em qualquer duelo vencido contra a IA (Duelar ou Arcade, qualquer
 
 ---
 
+## Família Versáteis (planejada)
+
+Decisão do autor: lâmina numa mão e disparos de blaster. Mecânica da família: **Disparo Tático**, um disparo encaixado em certos recuos, reposicionamentos e passos da sequência. Os disparos são projéteis que a guarda bloqueia e o parry devolve; **nunca interrompem um ataque sozinhos** (no máximo um quadro de tranco em quem prepara), para a família não ficar forte demais.
+
+| | Duelista Armado | Atirador de Lâmina |
+| --- | --- | --- |
+| Arma | lâmina numa mão, blaster separado na outra | uma lâmina com emissor de disparo no cabo |
+| Disparos | frequentes, inclusive recuando | pontuais, para cortar aproximações |
+| Corpo a corpo | equilibrado | principal |
+| Distância | forte | moderada |
+| Identidade | alternância de armas, pressão | surpresa, interrupção, controle de distância |
+| Suprema | rajada de disparos que desequilibra, seguida de um avanço com corte | sequência de cortes alternada com disparos à queima-roupa |
+
+Nomes, aparência, cores e falas são originais; nenhuma referência a personagens da franquia.
+
 ## Chefe: Sombra Desperta / Awakened Shadow
 
 - **Introdução**: Começa curvada e pesada, ergue lentamente a arma ao acender e a recolhe alta atrás da cabeça.

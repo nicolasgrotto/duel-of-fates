@@ -129,6 +129,18 @@ Mecânicas descartadas de propósito (complexidade sem ganho):
 
 Fora do escopo inicial, possíveis no futuro: modo online, torneio, editor de personagens.
 
+## Além do duelo (decisão do autor, fase 9)
+
+O duelo continua sendo o coração do jogo. O autor aprovou modos que saem do formato "dois combatentes, vista lateral", desde que cada um mantenha a mesma identidade (pixel art na grade do mundo, paleta e UI do tema, lâminas com peso, leitura antes de velocidade, sem gore, sem nada da franquia):
+
+- **Infiltração**: missões em mapas **top-down 2D** dentro de bases, com patrulhas armadas de blasters, furtividade, alarmes e combate limitado. A lâmina **desvia e devolve disparos** (guarda e parry). Uma tela própria, não o duelo.
+- **Combate de naves**: missões **top-down 2D** de pilotagem (esquadrões, mísseis, naves capitais, chefe), com melhorias de arma, escudo e velocidade entre missões. Essas melhorias valem só dentro desse modo; fora dele continua valendo a regra de não ter progressão fora do protagonista da História.
+- **Caçada a chefes**: duelos contra chefes únicos com fases, padrões próprios e condições especiais de vitória, no motor do duelo.
+- **Família Versáteis**: lâmina numa mão e blaster na outra ou integrado ao cabo. Disparos existem também no duelo, como projéteis que a guarda e o parry desviam.
+
+Descartados por enquanto: Exploração e Relíquias (plataforma e puzzles) e Defesa de Objetivo. A Sobrevivência já existe no menu Jogar.
+Cada modo novo documenta suas regras em GAME_DESIGN e sua tela em design/UI_UX **antes** de ser implementado.
+
 ## Propriedade intelectual
 
 - O jogo é inspirado em Star Wars e declara isso no README, sem se apresentar como produto oficial.
