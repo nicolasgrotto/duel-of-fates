@@ -660,24 +660,43 @@ func _draw_ellipse(center: Vector2, radii: Vector2, color: Color, width: float) 
 func _draw_instinct(fighter: FighterState, view: FighterView, center: Vector2) -> void:
 	var silver: Color = PALETTE.text.lerp(tier_color(fighter.flow_tier), vfx.instinct_tier_tint)
 	var step: float = 1.0 if reduced else (floorf(fmod(_time * vfx.instinct_flicker_rate, 1.0) * FADE_STEPS) + 1.0) / FADE_STEPS
-	var alpha: float = vfx.instinct_aura_alpha * (0.6 + 0.4 * step)
 	var radii: Vector2 = vfx.instinct_aura
-	for side_index in 2:
-		var side: float = -1.0 if side_index == 0 else 1.0
-		var previous: Vector2 = center + Vector2(side * radii.x * 0.5, -radii.y * 0.8)
-		for point in 7:
-			var ratio: float = float(point + 1) / 8.0
-			var at: Vector2 = center + Vector2(side * radii.x * sin(ratio * PI), lerpf(-radii.y * 0.8, radii.y * 0.8, ratio))
-			if point != 3:
-				draw_line(previous.snapped(Vector2.ONE * GRID), at.snapped(Vector2.ONE * GRID), Color(silver, alpha), vfx.instinct_aura_width)
-			previous = at
+	_draw_instinct_glow(center, radii, silver)
+	var alpha: float = lerpf(vfx.instinct_outline_alpha.x, vfx.instinct_outline_alpha.y, step)
+	var samples: int = vfx.instinct_outline_samples
+	for sample in samples:
+		var angle: float = TAU * float(sample) / samples
+		var at: Vector2 = Vector2(sin(angle) * radii.x, -cos(angle) * radii.y)
+		if at.y > vfx.instinct_open_bottom * radii.y:
+			continue
+		if not reduced and at.y < 0.0:
+			var flicker: float = absf(sin(angle * vfx.instinct_tongues + _time * vfx.instinct_tongue_rate))
+			at.y -= floorf(flicker * vfx.instinct_tongue_height / GRID) * GRID * (-at.y / radii.y)
+		draw_rect(Rect2((center + at).snapped(Vector2.ONE * GRID), Vector2.ONE * GRID), Color(silver, alpha))
 	if not reduced:
-		for point in vfx.instinct_points:
-			var phase: float = fposmod(_time * 0.7 + float(point) / vfx.instinct_points, 1.0)
-			var at: Vector2 = center + Vector2(cos(phase * TAU) * radii.x, sin(phase * TAU) * radii.y)
-			draw_rect(Rect2(at.snapped(Vector2.ONE * GRID), Vector2.ONE * GRID), Color(silver, alpha))
+		_draw_instinct_sparks(center, radii, silver)
 	var eye: Vector2 = (view.head_position() + Vector2(fighter.facing * 4.0, -2.0)).snapped(Vector2.ONE * GRID)
-	draw_rect(Rect2(eye, vfx.instinct_eye_size), Color(silver, 0.6))
+	draw_rect(Rect2(eye, vfx.instinct_eye_size), Color(silver, 0.8))
+
+
+func _draw_instinct_glow(center: Vector2, radii: Vector2, silver: Color) -> void:
+	draw_set_transform(center, 0.0, Vector2(radii.x / radii.y, 1.0))
+	draw_circle(Vector2.ZERO, radii.y, Color(silver, vfx.instinct_glow_alpha.x))
+	draw_circle(Vector2.ZERO, radii.y * 0.8, Color(silver, vfx.instinct_glow_alpha.y))
+	draw_set_transform(Vector2.ZERO)
+
+
+func _draw_instinct_sparks(center: Vector2, radii: Vector2, silver: Color) -> void:
+	var size: Vector2 = vfx.instinct_spark_size
+	for spark in vfx.instinct_sparks:
+		var phase: float = fposmod(_time * vfx.instinct_spark_rate + float(spark) * 0.618, 1.0)
+		var side: float = -1.0 if spark % 2 == 0 else 1.0
+		var lane: float = 0.55 + 0.4 * fposmod(float(spark) * 0.37, 1.0)
+		var height: float = lerpf(radii.y * 0.8, -radii.y * 1.05, phase)
+		var width: float = radii.x * lane * sqrt(maxf(1.0 - pow(height / (radii.y * 1.1), 2.0), 0.0))
+		var fade: float = ceilf((1.0 - phase) * FADE_STEPS) / FADE_STEPS
+		var at: Vector2 = (center + Vector2(side * width, height)).snapped(Vector2.ONE * GRID)
+		draw_rect(Rect2(at, size), Color(silver, vfx.instinct_outline_alpha.y * fade))
 
 
 func _draw_singularity(fighter: FighterState) -> void:

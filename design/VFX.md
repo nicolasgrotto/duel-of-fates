@@ -149,7 +149,7 @@ Partículas e luzes usam pools e reaproveitamento; o orçamento é medido no pro
 
 ### Instinto Superior
 
-Ativação com pulso de letterbox de 0,3 s, sem câmera lenta, dessaturação ou flash de tela. Aura prateada original: dois contornos curtos e partidos junto ao corpo, pontos de luz que percorrem o contorno e olhos claros discretos, misturando o texto claro do UiPalette com pouco da cor do tier. A aura permanece fina; os sucessos usam os movimentos do rig e um rastro curto, sem anel de parry. Tudo preso à grade e com opacidade em degraus. Efeitos reduzidos mantêm um único contorno estático e os movimentos legíveis, sem rastros ou cintilação. Parâmetros em PowerVfxConfig; nenhum efeito após a morte.
+Ativação com pulso de letterbox de 0,3 s, sem câmera lenta, dessaturação ou flash de tela. Aura prateada original, que precisa ler de longe sem esconder o rig: (1) brilho interno suave, uma elipse em volta do corpo com dois degraus de opacidade baixa (0,08 a 0,14); (2) contorno contínuo de pixels presos à grade ao redor da silhueta, opacidade 0,6 a 0,8 em degraus, com pequenas pontas que tremulam só na metade de cima; (3) faíscas de 2 × 4 px que sobem pelas laterais do corpo e se apagam em degraus; (4) olhos claros discretos. Cor: texto claro do UiPalette misturado com pouco da cor do tier. Os sucessos usam os movimentos do rig e um rastro curto, sem anel de parry. Efeitos reduzidos mantêm o contorno estático e o brilho interno, sem pontas, faíscas ou cintilação. Parâmetros em PowerVfxConfig; nenhum efeito após a morte.
 
 ### Singularidade Devastadora (task 05)
 

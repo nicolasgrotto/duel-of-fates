@@ -101,11 +101,18 @@ extends Resource
 @export_group("Higher instinct")
 @export var instinct_letterbox: float = 0.3
 @export var instinct_tier_tint: float = 0.18
-@export var instinct_aura: Vector2 = Vector2(34.0, 84.0)
-@export var instinct_aura_width: float = 2.0
-@export var instinct_aura_alpha: float = 0.36
+@export var instinct_aura: Vector2 = Vector2(32.0, 80.0)
+@export var instinct_glow_alpha: Vector2 = Vector2(0.08, 0.06)
+@export var instinct_outline_alpha: Vector2 = Vector2(0.6, 0.8)
+@export var instinct_outline_samples: int = 180
+@export var instinct_open_bottom: float = 0.82
+@export var instinct_tongues: float = 5.0
+@export var instinct_tongue_rate: float = 9.0
+@export var instinct_tongue_height: float = 14.0
 @export var instinct_flicker_rate: float = 8.0
-@export var instinct_points: int = 4
+@export var instinct_sparks: int = 10
+@export var instinct_spark_rate: float = 0.9
+@export var instinct_spark_size: Vector2 = Vector2(2.0, 4.0)
 @export var instinct_eye_size: Vector2 = Vector2(4.0, 2.0)
 @export var instinct_lean: float = 24.0
 @export var instinct_shift: float = 12.0
