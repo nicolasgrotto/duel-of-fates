@@ -90,11 +90,9 @@ func test_lethal_blade_hit_severs_limb() -> void:
 
 
 func test_deciding_knockout_can_take_the_head() -> void:
-	var config: CombatConfig = DuelFixture.config_copy()
-	config.consequences.head_finisher_chance = 1.0
 	var rules: MatchRules = MatchRules.new()
 	rules.rounds_to_win = 1
-	duel = DuelFixture.create(rules, config)
+	duel = DuelFixture.create(rules)
 	duel.skip_intro()
 	duel.place(60.0)
 	duel.fighter(1).health = 5.0
@@ -105,18 +103,43 @@ func test_deciding_knockout_can_take_the_head() -> void:
 
 func test_shove_knockout_has_no_finisher() -> void:
 	var move: MoveData = DuelFixture.GUARDIAN.shove
-	assert_eq(Consequences.finisher_limb(duel.sim, move, true), MoveData.Limb.NONE)
-	assert_eq(Consequences.finisher_limb(duel.sim, DuelFixture.GUARDIAN.aerial_light, true), MoveData.Limb.NONE)
+	assert_eq(Consequences.finisher_limb(duel.sim, duel.fighter(0), duel.fighter(1), move, true), MoveData.Limb.NONE)
+	assert_eq(Consequences.finisher_limb(duel.sim, duel.fighter(0), duel.fighter(1), DuelFixture.GUARDIAN.aerial_light, true), MoveData.Limb.NONE)
 
 
 func test_deciding_heavy_always_takes_the_head() -> void:
-	var config: CombatConfig = DuelFixture.config_copy()
-	config.consequences.head_finisher_chance = 0.0
-	duel = DuelFixture.create(null, config)
+	var attacker: FighterState = duel.fighter(0)
+	var victim: FighterState = duel.fighter(1)
 	var heavy: MoveData = DuelFixture.GUARDIAN.heavy
-	assert_eq(Consequences.finisher_limb(duel.sim, heavy, true), MoveData.Limb.HEAD)
-	assert_eq(Consequences.finisher_limb(duel.sim, heavy, false), heavy.finisher_limb)
+	assert_eq(Consequences.finisher_limb(duel.sim, attacker, victim, heavy, true), MoveData.Limb.HEAD)
+	assert_eq(Consequences.finisher_limb(duel.sim, attacker, victim, heavy, false), heavy.finisher_limb)
 	var rising: MoveData = load("res://data/techniques/rising_cut.tres")
-	assert_eq(Consequences.finisher_limb(duel.sim, rising, true), MoveData.Limb.HEAD)
-	var light: MoveData = DuelFixture.GUARDIAN.light_chain[0]
-	assert_eq(Consequences.finisher_limb(duel.sim, light, true), light.finisher_limb)
+	assert_eq(Consequences.finisher_limb(duel.sim, attacker, victim, rising, true), MoveData.Limb.HEAD)
+
+
+func test_light_cuts_take_the_limb_where_the_blade_passes() -> void:
+	var attacker: FighterState = duel.fighter(0)
+	var victim: FighterState = duel.fighter(1)
+	var descending: MoveData = DuelFixture.GUARDIAN.light_chain[0]
+	var rising: MoveData = DuelFixture.GUARDIAN.light_chain[1]
+	assert_eq(descending.cut, MoveData.Cut.DESCENDING)
+	assert_eq(rising.cut, MoveData.Cut.RISING)
+	assert_eq(Consequences.finisher_limb(duel.sim, attacker, victim, descending, true), MoveData.Limb.HEAD)
+	assert_eq(Consequences.finisher_limb(duel.sim, attacker, victim, rising, true), MoveData.Limb.ARM)
+	victim.y = 40.0
+	assert_eq(Consequences.finisher_limb(duel.sim, attacker, victim, descending, true), MoveData.Limb.ARM)
+	assert_eq(Consequences.finisher_limb(duel.sim, attacker, victim, rising, true), MoveData.Limb.LEG)
+
+
+func test_head_never_comes_off_before_the_deciding_knockout() -> void:
+	var attacker: FighterState = duel.fighter(0)
+	var victim: FighterState = duel.fighter(1)
+	var descending: MoveData = DuelFixture.GUARDIAN.light_chain[0]
+	assert_eq(Consequences.finisher_limb(duel.sim, attacker, victim, descending, false), MoveData.Limb.ARM)
+	assert_eq(Consequences.finisher_limb(duel.sim, attacker, victim, DuelFixture.GUARDIAN.heavy, false), DuelFixture.GUARDIAN.heavy.finisher_limb)
+	duel.place(60.0)
+	duel.fighter(1).health = 5.0
+	duel.press(0, Intent.Command.LIGHT)
+	duel.step(8)
+	assert_eq(duel.fighter(1).state, FighterState.State.DEAD)
+	assert_eq(duel.last_event(CombatEvent.Type.DEATH).get("limb"), MoveData.Limb.ARM)

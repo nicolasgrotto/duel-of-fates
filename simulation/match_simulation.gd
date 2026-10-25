@@ -321,7 +321,7 @@ func apply_damage(fighter: FighterState, amount: float) -> bool:
 func kill(victim: FighterState, killer: FighterState, move: MoveData, power: PowerData = null, thrown: MoveData = null) -> void:
 	var deciding: bool = is_deciding(killer)
 	victim.finisher_kind = Consequences.finisher_for(self, move if thrown == null else thrown, power, deciding)
-	victim.finisher_limb = Consequences.finisher_limb(self, move, deciding) if victim.finisher_kind == Finisher.Kind.NONE else MoveData.Limb.NONE
+	victim.finisher_limb = Consequences.finisher_limb(self, killer, victim, move, deciding) if victim.finisher_kind == Finisher.Kind.NONE else MoveData.Limb.NONE
 	victim.finisher_from_front = CombatGeometry.faces(victim, killer)
 	cinematic_ko = victim.finisher_kind != Finisher.Kind.NONE
 	if victim.finisher_kind == Finisher.Kind.DASH_THROUGH:

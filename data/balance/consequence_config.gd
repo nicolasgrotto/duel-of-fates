@@ -12,7 +12,9 @@ extends Resource
 @export var wounded_leg_dodge_multiplier: float = 1.2
 
 @export_group("Finishers")
-@export var head_finisher_chance: float = 0.3
+@export var cut_heights: PackedFloat32Array = PackedFloat32Array([100.0, 132.0, 66.0, 104.0, 96.0, 100.0])
+@export var head_line: float = 118.0
+@export var leg_line: float = 50.0
 @export var head_on_deciding_heavy: bool = true
 @export var cinematic_ko_time: float = 1.6
 @export var dash_through_clearance: float = 24.0

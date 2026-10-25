@@ -43,7 +43,7 @@ static func finisher_for(sim: MatchSimulation, move: MoveData, power: PowerData,
 	return Finisher.Kind.NONE
 
 
-static func finisher_limb(sim: MatchSimulation, move: MoveData, deciding: bool) -> MoveData.Limb:
+static func finisher_limb(sim: MatchSimulation, attacker: FighterState, defender: FighterState, move: MoveData, deciding: bool) -> MoveData.Limb:
 	if not sim.rules.finishers or move == null or move.is_aerial():
 		return MoveData.Limb.NONE
 	if not move.is_blade() and move.kind != MoveData.Kind.LOCK_FINISH:
@@ -52,9 +52,21 @@ static func finisher_limb(sim: MatchSimulation, move: MoveData, deciding: bool) 
 		return MoveData.Limb.NONE
 	if deciding and sim.config.consequences.head_on_deciding_heavy and _takes_head(move):
 		return MoveData.Limb.HEAD
-	if deciding and sim.rng.randf() < sim.config.consequences.head_finisher_chance:
+	if move.kind != MoveData.Kind.LIGHT or move.finisher_limb == MoveData.Limb.LEG:
+		return move.finisher_limb
+	var struck: MoveData.Limb = struck_zone(sim.config.consequences, attacker, defender, move)
+	if struck == MoveData.Limb.HEAD and not deciding:
+		return MoveData.Limb.ARM
+	return struck
+
+
+static func struck_zone(config: ConsequenceConfig, attacker: FighterState, defender: FighterState, move: MoveData) -> MoveData.Limb:
+	var height: float = attacker.y + config.cut_heights[move.cut] - defender.y
+	if height >= config.head_line:
 		return MoveData.Limb.HEAD
-	return move.finisher_limb
+	if height < config.leg_line:
+		return MoveData.Limb.LEG
+	return MoveData.Limb.ARM
 
 
 static func _takes_head(move: MoveData) -> bool:
