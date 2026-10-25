@@ -2,9 +2,12 @@
 
 [ext_resource type="Script" path="res://data/powers/power_data.gd" id="1_script"]
 
+[ext_resource type="Texture2D" path="res://assets/ui/powers/wrath.png" id="power_icon"]
+
 [resource]
 script = ExtResource("1_script")
 id = &"wrath"
+icon = ExtResource("power_icon")
 name_key = "POWER_WRATH"
 description_key = "POWER_WRATH_TEXT"
 path = 2

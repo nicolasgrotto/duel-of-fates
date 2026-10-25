@@ -11,6 +11,7 @@ enum Kind {
 @export var id: StringName
 @export var name_key: String
 @export var description_key: String
+@export var icon: Texture2D
 @export var path: Path = Path.COMMON
 @export var kind: Kind = Kind.REPULSE
 

@@ -3,9 +3,12 @@
 [ext_resource type="Script" path="res://data/powers/power_data.gd" id="1_script"]
 [ext_resource type="Resource" path="res://data/powers/tables/basic.tres" id="2_table"]
 
+[ext_resource type="Texture2D" path="res://assets/ui/powers/mind_twist.png" id="power_icon"]
+
 [resource]
 script = ExtResource("1_script")
 id = &"mind_twist"
+icon = ExtResource("power_icon")
 name_key = "POWER_MIND_TWIST"
 description_key = "POWER_MIND_TWIST_TEXT"
 path = 0

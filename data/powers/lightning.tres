@@ -3,9 +3,12 @@
 [ext_resource type="Script" path="res://data/powers/power_data.gd" id="1_script"]
 [ext_resource type="Resource" path="res://data/powers/tables/basic.tres" id="2_table"]
 
+[ext_resource type="Texture2D" path="res://assets/ui/powers/lightning.png" id="power_icon"]
+
 [resource]
 script = ExtResource("1_script")
 id = &"lightning"
+icon = ExtResource("power_icon")
 finisher = 6
 name_key = "POWER_LIGHTNING"
 description_key = "POWER_LIGHTNING_TEXT"

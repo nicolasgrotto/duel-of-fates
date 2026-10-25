@@ -3,9 +3,12 @@
 [ext_resource type="Script" path="res://data/powers/power_data.gd" id="1_script"]
 [ext_resource type="Resource" path="res://data/powers/tables/repulse.tres" id="2_table"]
 
+[ext_resource type="Texture2D" path="res://assets/ui/powers/supreme_push.png" id="power_icon"]
+
 [resource]
 script = ExtResource("1_script")
 id = &"supreme_push"
+icon = ExtResource("power_icon")
 finisher = 7
 name_key = "POWER_SUPREME_PUSH"
 description_key = "POWER_SUPREME_PUSH_TEXT"
