@@ -224,6 +224,7 @@ func _bind_presentation(simulation: MatchSimulation) -> void:
 		_hud.show_flow_only(_gallery.caster_index)
 		_gallery.caster_changed.connect(_hud.show_flow_only)
 	_debug.attach(_world, simulation, _runner)
+	_debug.views = _views
 
 
 func _unhandled_input(event: InputEvent) -> void:

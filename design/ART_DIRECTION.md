@@ -110,6 +110,14 @@ A lâmina é a protagonista visual e a principal fonte de luz.
 
 ## Animação
 
+### Introduções dos lutadores
+
+Entradas originais descritas em CHARACTERS.md, sem reproduzir enquadramentos, gestos ou silhuetas reconhecíveis de filmes. O corpo e a arma usam o mesmo rig, IK e grade de 2 u do combate. Preparação curta, gesto legível, ignição e assentamento na guarda da família antes do título; `blend_time` elimina o salto na liberação do combate. As duas armas da Vespa têm poses próprias durante o giro; o bastão do Ceifador acende as pontas em sequência. A câmera mantém ambos inteiros, sem aproximações adicionais, inclusive com efeitos reduzidos.
+
+O Ceifador inicia imóvel, com capa e capuz temporários nas cores do traje. Leva a mão ao capuz e o baixa devagar em etapas na grade, encara o adversário, solta a capa, gira o cabo e acende uma ponta após a outra; termina na base baixa e larga da família. A capa solta usa o tecido existente e some em degraus antes do título; peças que pertencem ao traje escolhido permanecem. Pular remove somente os acessórios temporários. Sem novas texturas ou cores.
+
+As Opções mantêm a lista centralizada dentro de uma área rolável entre título e rodapé; a linha destacada permanece visível ao navegar por teclado ou gamepad. A paleta grava explicitamente as quatro cores de tier no recurso para evitar que a carga antecipada do editor encontre um array nulo; são as mesmas cores aprovadas acima.
+
 ### Princípios
 
 - Toda ação tem 4 fases: **preparação** (o corpo e a lâmina anunciam o golpe) → **movimento** (arco rápido com rastro) → **impacto** (hit stop, efeitos) → **recuperação** (volta à guarda, momento vulnerável).

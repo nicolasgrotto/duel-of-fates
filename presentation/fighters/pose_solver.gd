@@ -157,6 +157,12 @@ var flip_progress: float = -1.0
 var vault_progress: float = -1.0
 var tumble_left: float = 0.0
 var finish_hold_left: float = 0.0
+var intro: IntroData
+var intro_time: float = -1.0
+var _intro_from: IntroKey
+var _intro_to: IntroKey
+var _intro_weight: float = 0.0
+var _intro_settle: float = 1.0
 var landing_left: float = 0.0
 
 var _attack_key: int = -1
@@ -312,6 +318,10 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 				pose.front_foot = Vector2(6.0, 8.0)
 				pose.back_foot = Vector2(-4.0, 12.0)
 				lean = -10.0
+	if intro != null and intro_time >= 0.0 and not intro.keys.is_empty():
+		var staged: Vector2 = _intro(pose, crouch, lean)
+		crouch = staged.x
+		lean = staged.y
 	if finish_hold_left > 0.0 and fighter.is_alive():
 		var hold: float = minf(finish_hold_left / FINISH_HOLD_BLEND, 1.0)
 		pose.grip = pose.grip.lerp(FINISH_HOLD_GRIP, hold)
@@ -349,6 +359,8 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 		pose.off_hand += pose.pelvis
 	if family.grip == MotionFamily.Grip.DUAL:
 		_place_second_blade(fighter, pose, off_free)
+	if intro != null and intro_time >= 0.0 and _intro_settle < 1.0:
+		_intro_off_hand(pose)
 	pose.grip = pose.pelvis + (pose.grip - pose.pelvis).rotated(pose.torso_angle)
 	pose.off_hand = pose.pelvis + (pose.off_hand - pose.pelvis).rotated(pose.torso_angle)
 	if tumble_left > 0.0 and fighter.on_ground and not family.acrobatic_recovery:
@@ -370,6 +382,46 @@ func _set_arm_intent(fighter: FighterState, pose: RigPose) -> void:
 				pose.arm_extension = progress
 	if fighter.power != null and fighter.power.kind == PowerData.Kind.REPULSE and fighter.power_phase != FighterState.Phase.STARTUP:
 		pose.arm_extension = 1.0
+
+
+func _intro(pose: RigPose, crouch: float, lean: float) -> Vector2:
+	var settle: float = smoothstep(intro.last_time(), intro.last_time() + intro.blend_time, intro_time)
+	_intro_settle = settle
+	if settle >= 1.0:
+		return Vector2(crouch, lean)
+	var index: int = 0
+	while index < intro.keys.size() - 1 and intro.keys[index].time < intro_time:
+		index += 1
+	var to: IntroKey = intro.keys[index]
+	var from: IntroKey = intro.keys[maxi(index - 1, 0)]
+	var weight: float = 1.0 if to == from or intro_time >= to.time else smoothstep(from.time, to.time, intro_time)
+	_intro_from = from
+	_intro_to = to
+	_intro_weight = weight
+	var angle: float = lerpf(from.blade_angle, to.blade_angle + 360.0 * to.twirl, weight)
+	pose.grip = from.grip.lerp(to.grip, weight).lerp(pose.grip, settle)
+	pose.blade_angle = rad_to_deg(lerp_angle(deg_to_rad(angle), deg_to_rad(pose.blade_angle), settle))
+	pose.open_hand = to.open_hand and settle < 0.5
+	if to.turn != 0.0 and weight < 1.0:
+		pose.turn = TAU * to.turn * weight
+	_head_snap = deg_to_rad(lerpf(from.head, to.head, weight)) * (1.0 - settle)
+	return Vector2(lerpf(lerpf(from.crouch, to.crouch, weight), crouch, settle), lerpf(lerpf(from.lean, to.lean, weight), lean, settle))
+
+
+func _intro_off_hand(pose: RigPose) -> void:
+	var from: IntroKey = _intro_from
+	var to: IntroKey = _intro_to
+	var guard: Vector2 = pose.off_hand - pose.pelvis
+	var start: Vector2 = from.off_hand if from.places_off_hand else guard
+	var end: Vector2 = to.off_hand if to.places_off_hand else guard
+	pose.off_hand = pose.pelvis + start.lerp(end, _intro_weight).lerp(guard, _intro_settle)
+	if from.places_off_hand or to.places_off_hand:
+		var free: float = lerpf(float(from.places_off_hand), float(to.places_off_hand), _intro_weight) * (1.0 - _intro_settle)
+		if free > 0.0:
+			pose.hand_spacing = 0.0
+	if family.grip == MotionFamily.Grip.DUAL:
+		var angle: float = lerpf(from.off_blade_angle, to.off_blade_angle + 360.0 * to.off_twirl, _intro_weight)
+		pose.off_blade_angle = rad_to_deg(lerp_angle(deg_to_rad(angle), deg_to_rad(pose.off_blade_angle), _intro_settle))
 
 
 func _block(opponent: FighterState, pose: RigPose) -> void:

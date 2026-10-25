@@ -13,6 +13,8 @@ const WOUND_SHADE: Color = Color(0.78, 0.72, 0.72)
 const LEG_PREFER: Vector2 = Vector2(1.0, 0.1)
 const HEAD_PARTS: Array[String] = ["head", "hair", "beard", "hood", "mask"]
 const HAIR_PREFIX: String = "hair_"
+const INTRO_HOOD: String = "hood"
+const INTRO_CLOAK: String = "cape"
 const BEARD_PREFIX: String = "beard_"
 const HAIR_DEPTH: int = 8
 const BEARD_DEPTH: int = 9
@@ -44,6 +46,8 @@ var _missing: MoveData.Limb = MoveData.Limb.NONE
 var _wound: FighterState.Wound = FighterState.Wound.NONE
 var _open_hand: bool = false
 var _back_arm_in_front: bool = false
+var _intro_hood: Sprite2D
+var _intro_cloak: ClothStrip
 
 var chest: Vector2 = Vector2.ZERO
 var head_base: Vector2 = Vector2.ZERO
@@ -140,13 +144,67 @@ func _add_cloths(layer: String) -> void:
 	for spec in art.cloths:
 		if spec.get("layer", "front") != layer or not visible_parts.has(spec["name"]):
 			continue
-		var cloth: ClothStrip = ClothStrip.new()
-		cloth.configure(spec, art.canvas_texture(spec["name"]))
-		cloth.material = shader_material
-		cloth.z_index = -20 if layer == "back" else 4
-		add_child(cloth)
-		_cloths.append(cloth)
-		_cloth_anchors.append(spec.get("anchor", "waist"))
+		_add_cloth(spec)
+
+
+func _add_cloth(spec: Dictionary) -> ClothStrip:
+	var cloth: ClothStrip = ClothStrip.new()
+	cloth.configure(spec, art.canvas_texture(spec["name"]))
+	cloth.material = shader_material
+	cloth.z_index = -20 if spec.get("layer", "front") == "back" else 4
+	add_child(cloth)
+	_cloths.append(cloth)
+	_cloth_anchors.append(spec.get("anchor", "waist"))
+	_layers.clear()
+	return cloth
+
+
+func wear_intro_cloak() -> void:
+	if _intro_cloak != null or _intro_hood != null:
+		return
+	if not visible_parts.has(INTRO_HOOD) and art.has_part(INTRO_HOOD):
+		visible_parts.append(INTRO_HOOD)
+		_add_sprite("head", INTRO_HOOD, 7 + HEAD_PARTS.find(INTRO_HOOD), Color.WHITE)
+		_intro_hood = _sprites["head:" + INTRO_HOOD]
+	if not visible_parts.has(INTRO_CLOAK):
+		for spec in art.cloths:
+			if spec["name"] == INTRO_CLOAK:
+				_intro_cloak = _add_cloth(spec)
+	_layers.clear()
+
+
+func lower_hood(progress: float, offset: Vector2, grid: float) -> void:
+	if _intro_hood != null:
+		_intro_hood.offset = -art.pivot(INTRO_HOOD) + (offset * progress * art.pixels_per_unit).snapped(Vector2.ONE * grid * art.pixels_per_unit)
+		_intro_hood.visible = progress < 1.0
+
+
+func shed_cloak(fling: Vector2) -> void:
+	if _intro_cloak != null:
+		_intro_cloak.release(fling)
+
+
+func fade_intro_cloak(opacity: float) -> void:
+	if _intro_cloak != null:
+		_intro_cloak.modulate.a = opacity
+		_intro_cloak.visible = opacity > 0.0
+
+
+func remove_intro_cloak() -> void:
+	if _intro_hood != null:
+		_intro_hood.visible = false
+		_sprites.erase("head:" + INTRO_HOOD)
+		visible_parts.remove_at(visible_parts.find(INTRO_HOOD))
+		_intro_hood.queue_free()
+		_intro_hood = null
+	if _intro_cloak != null:
+		_intro_cloak.visible = false
+		var index: int = _cloths.find(_intro_cloak)
+		_cloths.remove_at(index)
+		_cloth_anchors.remove_at(index)
+		_intro_cloak.queue_free()
+		_intro_cloak = null
+	_layers.clear()
 
 
 func apply(pose: RigPose, facing: int, delta: float) -> void:
@@ -450,7 +508,7 @@ func draw_reflection(canvas: CanvasItem, flip: Transform2D, tint: Color) -> void
 			continue
 		if node is ClothStrip:
 			canvas.draw_set_transform_matrix(Transform2D.IDENTITY)
-			(node as ClothStrip).draw_into(canvas, flip, tint)
+			(node as ClothStrip).draw_into(canvas, flip, tint * node.modulate)
 		else:
 			var sprite: Sprite2D = node
 			canvas.draw_set_transform_matrix(flip * sprite.get_global_transform() * Transform2D(0.0, sprite.offset))

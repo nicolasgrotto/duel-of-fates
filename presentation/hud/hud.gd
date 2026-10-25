@@ -37,6 +37,7 @@ var _message: Label
 var _banner: Label
 var _progress: Label
 var _message_left: float = 0.0
+var _title_tick: int = -1
 var _footer: Label
 var _time: float = 0.0
 
@@ -58,8 +59,9 @@ func setup(simulation: MatchSimulation, rounds_visible: bool) -> void:
 		_marks[i].visible = show_rounds
 		_ghost[i] = sim.fighters[i].health_ratio()
 		_setup_flow(i)
+	_title_tick = -1
 	if show_rounds and sim.phase == MatchSimulation.Phase.INTRO:
-		_show_message(_round_title(), Ticks.to_seconds(Ticks.from_seconds(sim.config.round_intro) - sim.phase_ticks))
+		_queue_title()
 
 
 func _setup_flow(i: int) -> void:
@@ -91,7 +93,7 @@ func on_event(event: CombatEvent) -> void:
 	match event.type:
 		CombatEvent.Type.ROUND_STARTED:
 			if show_rounds:
-				_show_message(_round_title(), sim.config.round_intro)
+				_queue_title()
 		CombatEvent.Type.FIGHT_STARTED:
 			_message_left = 0.0
 		CombatEvent.Type.DEATH:
@@ -103,6 +105,18 @@ func on_event(event: CombatEvent) -> void:
 			_reject_left[event.source] = REJECT_FLASH
 		CombatEvent.Type.POWER_REJECTED:
 			_flow_reject_left[event.source] = REJECT_FLASH
+
+
+func _queue_title() -> void:
+	_title_tick = sim.intro_title_tick()
+	_show_title()
+
+
+func _show_title() -> void:
+	if _title_tick < 0 or sim.phase != MatchSimulation.Phase.INTRO or sim.phase_ticks < _title_tick:
+		return
+	_title_tick = -1
+	_show_message(_round_title(), Ticks.to_seconds(Ticks.from_seconds(sim.intro_seconds()) - sim.phase_ticks))
 
 
 func _round_title() -> String:
@@ -133,6 +147,7 @@ func _process(delta: float) -> void:
 	if sim == null:
 		return
 	_time += delta
+	_show_title()
 	_message_left = maxf(_message_left - delta, 0.0)
 	_message.visible = _message_left > 0.0
 	for i in 2:

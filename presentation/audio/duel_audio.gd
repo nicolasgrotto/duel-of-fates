@@ -88,6 +88,7 @@ var _channel_ids: Array[StringName] = [&"", &""]
 var _was_frozen: Array[bool] = [false, false]
 var _sanctuary_ticks: PackedInt32Array = [0, 0]
 var _wrath_armor: PackedInt32Array = [0, 0]
+var _lit: PackedFloat32Array = [0.0, 0.0, 0.0, 0.0]
 
 
 func setup(simulation: MatchSimulation, fighter_views: Array[FighterView], local_player: int) -> void:
@@ -172,9 +173,6 @@ func on_event(event: CombatEvent) -> void:
 			AudioDirector.play(&"extinguish", views[event.target].blade.center(), 0.0, 1.0, &"Blades")
 			AudioDirector.muffle(KNOCKOUT_MUFFLE)
 			AudioDirector.duck_music(KNOCKOUT_MUFFLE * 2.0)
-		CombatEvent.Type.ROUND_STARTED:
-			for view in views:
-				AudioDirector.play(&"ignition", view.global_position, -2.0, 1.0, &"Blades")
 		CombatEvent.Type.DODGE:
 			AudioDirector.play(&"dodge", views[event.source].global_position)
 		CombatEvent.Type.JUMP:
@@ -234,6 +232,7 @@ func _process(delta: float) -> void:
 	var lowest: float = 1.0
 	for i in 2:
 		var fighter: FighterState = sim.fighters[i]
+		_update_ignition(i)
 		_update_hum(i, fighter, delta)
 		_update_steps(i, fighter, delta)
 		_update_flow(i, fighter)
@@ -242,6 +241,19 @@ func _process(delta: float) -> void:
 		AudioDirector.duck_music(LOCK_DUCK)
 	AudioDirector.set_music_intensity(maxf(1.0 - lowest, intensity_floor))
 	_update_heartbeat(delta)
+
+
+func _update_ignition(i: int) -> void:
+	var blade: BladeView = views[i].blade
+	var main: float = blade.length_ratio
+	var second: float = main * blade.second_ratio
+	if sim.phase == MatchSimulation.Phase.INTRO:
+		if main > 0.0 and _lit[i * 2] <= 0.0:
+			AudioDirector.play(&"ignition", views[i].global_position, -2.0, 1.0, &"Blades")
+		elif second > 0.0 and _lit[i * 2 + 1] <= 0.0 and sim.fighters[i].character.weapon.kind in [WeaponData.Kind.STAFF, WeaponData.Kind.DUAL]:
+			AudioDirector.play(&"ignition", views[i].global_position, -4.0, 0.9, &"Blades")
+	_lit[i * 2] = main
+	_lit[i * 2 + 1] = second
 
 
 func _update_hum(i: int, fighter: FighterState, delta: float) -> void:

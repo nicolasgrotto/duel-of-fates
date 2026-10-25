@@ -4,3 +4,4 @@
 
 [resource]
 script = ExtResource("1_script")
+flow_tiers = PackedColorArray(0.6117647, 0.7686275, 1, 1, 0.3647059, 0.5529412, 1, 1, 0.6980392, 0.4196078, 1, 1, 1, 0.1686275, 0.2705882, 1)

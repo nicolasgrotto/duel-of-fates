@@ -54,6 +54,12 @@ extends Resource
 @export var trail_duration: float = 0.12
 @export var parry_flare: float = 0.15
 
+@export_group("Fighter intros")
+@export var hood_lower_time: float = 0.4
+@export var hood_lower_offset: Vector2 = Vector2(-6.0, 18.0)
+@export var cloak_fling: Vector2 = Vector2(100.0, -90.0)
+@export var cloak_fade_time: float = 0.8
+
 @export_group("Finishers")
 @export var finisher_hold: float = 0.35
 @export var finisher_slide_time: float = 0.45

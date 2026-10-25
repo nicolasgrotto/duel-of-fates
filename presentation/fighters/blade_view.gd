@@ -23,6 +23,7 @@ const GLINT_CORE: float = 2.0
 var color: Color = Color.WHITE
 var width_scale: float = 1.0
 var length_ratio: float = 0.0
+var second_ratio: float = 1.0
 var tremble: bool = false
 var flare: float = 0.0
 var trail_duration: float = 0.12
@@ -55,7 +56,7 @@ func set_blades(geometry: WeaponPose, main_trail: bool, second_trail: bool) -> v
 	_blades[0][1] = geometry.blade_base + geometry.blade_direction * geometry.blade_length * length_ratio
 	if _blade_count == 2:
 		_blades[1][0] = geometry.second_base
-		_blades[1][1] = geometry.second_base + geometry.second_direction * geometry.second_length * length_ratio
+		_blades[1][1] = geometry.second_base + geometry.second_direction * geometry.second_length * length_ratio * second_ratio
 	_trail_active[0] = main_trail
 	_trail_active[1] = second_trail
 

@@ -9,6 +9,7 @@ const LINE_WIDTH: float = 1.5
 
 var sim: MatchSimulation
 var runner: TickRunner
+var views: Array[FighterView] = []
 var always_show_boxes: bool = false
 
 var _world_drawer: Node2D
@@ -82,6 +83,8 @@ func _fighter_lines(i: int) -> PackedStringArray:
 		"buffer %s %d" % [FighterState.Action.keys()[fighter.buffered_action].to_lower(), fighter.buffer_ticks],
 	]
 	lines.append_array(sim.state_logic(fighter).debug_lines(sim, fighter))
+	if i < views.size():
+		lines.append_array(views[i].intro_debug_lines())
 	if runner != null and i < runner.controllers.size():
 		var intent: Intent = runner.intents[i]
 		lines.append("intent move %d  held %s  pressed %s" % [intent.move_x, _bits(intent.held), _bits(intent.pressed)])

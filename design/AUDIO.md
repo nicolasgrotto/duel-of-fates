@@ -14,6 +14,8 @@ Segue [DESIGN.md](../DESIGN.md). Som e música são parte da sensação do duelo
 
 ## Lâminas
 
+- Na introdução individual, o som de ignição existente acompanha o início visível de cada lâmina; as duas pontas do Ceifador e as duas armas da Vespa soam nos respectivos tempos. O zumbido acompanha o comprimento aceso. Nenhum novo asset sonoro.
+
 - **Zumbido** contínuo de cada lâmina: grave, levemente desafinado, com timbre próprio por personagem (a Forja mais grave, a Vespa mais aguda e dupla, o Ceifador com batimento de duas lâminas). Mais forte e mais agudo durante o golpe, com efeito de passagem (doppler) no arco.
 - **Ignição** no começo do round e **desligar** no K.O. do derrotado (tom caindo).
 - **Golpe**: "whoosh" elétrico; o forte é mais grave e longo.

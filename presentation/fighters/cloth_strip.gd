@@ -7,6 +7,7 @@ const ITERATIONS: int = 3
 const BACK_TILT: float = 0.18
 const WIND_FORCE: float = -900.0
 const WIND_FLUTTER: float = 9.0
+const FLOOR_FRICTION: float = 0.3
 
 var texture: Texture2D
 var length: float = 40.0
@@ -17,6 +18,8 @@ var segments: int = 5
 var back_layer: bool = false
 var floor_y: float = 0.0
 var wind: float = 0.0
+var released: bool = false
+var released_time: float = 0.0
 
 var _points: PackedVector2Array = []
 var _previous: PackedVector2Array = []
@@ -51,7 +54,42 @@ func reset() -> void:
 	_initialized = false
 
 
+func release(fling: Vector2) -> void:
+	if released or not _initialized:
+		return
+	released = true
+	released_time = 0.0
+	for i in segments + 1:
+		_previous[i] = _points[i] - fling * (1.0 - float(i) / segments) / 60.0
+
+
+func _fall(delta: float) -> void:
+	var step: float = minf(delta, 1.0 / 30.0)
+	released_time += delta
+	var segment: float = length / segments
+	for i in segments + 1:
+		var current: Vector2 = _points[i]
+		var velocity: Vector2 = (current - _previous[i]) * DAMPING
+		_previous[i] = current
+		_points[i] = current + velocity + Vector2(0.0, GRAVITY) * step * step
+	for iteration in ITERATIONS:
+		for i in segments:
+			var offset: Vector2 = _points[i + 1] - _points[i]
+			var distance: float = maxf(offset.length(), 0.001)
+			var correction: Vector2 = offset * ((distance - segment) / distance) * 0.5
+			_points[i] += correction
+			_points[i + 1] -= correction
+		for i in segments + 1:
+			if _points[i].y >= floor_y:
+				_points[i].y = floor_y
+				_previous[i].x = lerpf(_previous[i].x, _points[i].x, FLOOR_FRICTION)
+	queue_redraw()
+
+
 func simulate(anchor: Vector2, body_angle: float, facing: int, delta: float) -> void:
+	if released:
+		_fall(delta)
+		return
 	var segment: float = length / segments
 	var tilt: float = BACK_TILT if back_layer else 0.0
 	var down: Vector2 = Vector2(-tilt * facing, 1.0).normalized().rotated(body_angle * 0.35)

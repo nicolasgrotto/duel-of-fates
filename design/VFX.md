@@ -31,6 +31,8 @@ HUD       → barras, avisos
 
 ## Assinaturas
 
+- **Introduções**: a ignição existente segue os tempos de cada personagem e de cada ponta. A capa temporária do Ceifador cai e desaparece com `EffectsConfig.fade_steps`; o capuz desce em etapas da grade. Sem flashes, rastros extras ou movimentos de câmera adicionais.
+
 - **Dessaturação do parry perfeito**: por 0,15 s, arena e corpos perdem a cor e escurecem um pouco; lâminas, rastros e efeitos continuam com cor total. No momento mais importante, só a luz das lâminas tem cor.
 - **Anel do parry**: círculo fino, aditivo, na cor da lâmina de quem aparou, crescendo e sumindo em ~0,25 s. Só existe no parry.
 - **Lâmina tremulando** no desequilíbrio.

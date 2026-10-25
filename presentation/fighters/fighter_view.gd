@@ -39,6 +39,8 @@ var _current: Vector2 = Vector2.ZERO
 var _flash_left: float = 0.0
 var _death_time: float = -1.0
 var _ignition: float = 1.0
+var _second_ignition: float = 1.0
+var _staging: bool = false
 var _extinguish: float = 0.0
 var _snap_pose: bool = true
 var _severed: Array[SeveredPiece] = []
@@ -111,6 +113,10 @@ func reset_round(ignite: bool) -> void:
 	_lost_blade = false
 	_extinguish = 0.0
 	_ignition = 0.0 if ignite else 1.0
+	_second_ignition = 1.0
+	_staging = false
+	_solver.intro_time = -1.0
+	rig.remove_intro_cloak()
 	rotation = 0.0
 	if _finisher != null:
 		_finisher.clear()
@@ -227,6 +233,7 @@ func _process(delta: float) -> void:
 	_advance_solver(delta)
 	_check_vault()
 	scale.x = -fighter.facing if _solver.vault_turned() and _solver.vault_progress < 1.0 and not fighter.on_ground else fighter.facing
+	_update_intro()
 	var frozen: bool = fighter.state == FighterState.State.HELD and not fighter.held_by_choke
 	if not frozen:
 		_solver.solve(fighter, opponent, _target)
@@ -239,7 +246,9 @@ func _process(delta: float) -> void:
 		else:
 			_pose.blend_toward(_target, 1.0 - exp(-follow * delta))
 	_update_death(delta)
-	_ignition = minf(_ignition + delta / effects.ignition, 1.0)
+	if not _staging:
+		_ignition = minf(_ignition + delta / effects.ignition, 1.0)
+		_second_ignition = 1.0
 	rig.rotation = _pose.spin
 	rig.scale.x = fighter.character.art.dim("scale") * _turn_factor(_pose.turn)
 	rig.position = _pose.pelvis - _pose.pelvis.rotated(_pose.spin) if _pose.spin != 0.0 else Vector2.ZERO
@@ -265,6 +274,44 @@ static func _turn_factor(turn: float) -> float:
 		return 1.0
 	var factor: float = cos(turn)
 	return signf(factor) * maxf(absf(factor), MIN_TURN_WIDTH) if factor != 0.0 else MIN_TURN_WIDTH
+
+
+func _update_intro() -> void:
+	var sim: MatchSimulation = runner.sim
+	var intro: IntroData = fighter.character.intro
+	var staging: bool = intro != null and sim.phase == MatchSimulation.Phase.INTRO and sim.plays_fighter_intros()
+	if not staging:
+		if _staging:
+			rig.remove_intro_cloak()
+		_staging = false
+		_solver.intro_time = -1.0
+		return
+	var time: float = Ticks.to_seconds(sim.phase_ticks)
+	var title: bool = sim.phase_ticks >= sim.intro_title_tick()
+	if title and _solver.intro_time >= 0.0 and _solver.intro_time < intro.last_time() + intro.blend_time:
+		_snap_pose = true
+	if not _staging and intro.wears_cloak and not title:
+		rig.wear_intro_cloak()
+	_staging = true
+	_solver.intro = intro
+	_solver.intro_time = time
+	_ignition = clampf((time - intro.ignite_at) / effects.ignition, 0.0, 1.0)
+	_second_ignition = clampf((time - intro.second_ignition()) / effects.ignition, 0.0, 1.0)
+	if intro.hood_down_at >= 0.0:
+		rig.lower_hood(clampf((time - intro.hood_down_at) / effects.hood_lower_time, 0.0, 1.0), effects.hood_lower_offset, effects.units_per_pixel)
+	if intro.cloak_drop_at >= 0.0 and time >= intro.cloak_drop_at:
+		rig.shed_cloak(Vector2(-fighter.facing * effects.cloak_fling.x, effects.cloak_fling.y))
+		var opacity: float = 1.0 - clampf((time - intro.cloak_drop_at) / effects.cloak_fade_time, 0.0, 1.0)
+		rig.fade_intro_cloak(ceilf(opacity * effects.fade_steps) / effects.fade_steps)
+	if title:
+		rig.remove_intro_cloak()
+
+
+func intro_debug_lines() -> PackedStringArray:
+	return PackedStringArray([
+		"intro %s  time %.2f / %.2f" % [_staging, _solver.intro_time, runner.sim.intro_seconds()],
+		"ignition %.2f / %.2f  hood %s  cloak %s" % [_ignition, _second_ignition, rig._intro_hood != null and rig._intro_hood.visible, rig._intro_cloak != null and rig._intro_cloak.visible],
+	])
 
 
 func _check_vault() -> void:
@@ -320,6 +367,7 @@ func _update_blade() -> void:
 	_geometry.blade_length *= main_span.length()
 	_geometry.second_length *= second_span.length()
 	blade.length_ratio = 0.0 if _lost_blade or fighter.blade_out else _ignition * (1.0 - _extinguish)
+	blade.second_ratio = _second_ignition
 	blade.tremble = _pose.tremble
 	if fighter.charge_level > 1:
 		blade.flare = maxf(blade.flare, CHARGE_FLARE * (fighter.charge_level - 1))
