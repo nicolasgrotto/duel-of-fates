@@ -95,6 +95,34 @@ func test_states_and_powers_keep_hands_reachable() -> void:
 					_check_reach(data, pose, "power %s phase %d tick %d" % [power.id, phase, tick])
 
 
+func test_guard_retargets_keep_every_family_reachable() -> void:
+	for data in _characters():
+		var fighter: FighterState = FighterState.new()
+		fighter.setup(0, data, DuelFixture.CONFIG)
+		fighter.state = FighterState.State.BLOCKING
+		var solver: PoseSolver = PoseSolver.new()
+		solver.setup(data, data.art)
+		var pose: RigPose = RigPose.new()
+		for attacker_data in _characters():
+			var attacker: FighterState = FighterState.new()
+			attacker.setup(1, attacker_data, DuelFixture.CONFIG)
+			attacker.x = 80.0
+			attacker.facing = -1
+			attacker.state = FighterState.State.ATTACKING
+			var moves: Array[MoveData] = attacker_data.light_chain.duplicate()
+			moves.append_array([attacker_data.heavy, attacker_data.forward_heavy, attacker_data.counter, attacker_data.aerial_light, attacker_data.aerial_heavy, attacker_data.technique_forward, attacker_data.technique_back, attacker_data.technique_air])
+			for move in moves:
+				if move == null:
+					continue
+				attacker.move = move
+				for tick in 12:
+					attacker.phase_ticks = tick
+					solver.guard.observe_segment(Vector2(80.0, -100.0), Vector2(-20.0, -30.0 - tick * 10.0))
+					solver.advance(Ticks.DELTA)
+					solver.solve(fighter, attacker, pose)
+					_check_reach(data, pose, "guard %s %s" % [attacker_data.id, move.id])
+
+
 func test_compact_guard_elbows_stay_low_and_hands_touch_rendered_hilts() -> void:
 	for data in _characters():
 		var fighter: FighterState = FighterState.new()

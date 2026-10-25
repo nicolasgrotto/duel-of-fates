@@ -180,6 +180,11 @@ func on_event(event: CombatEvent) -> void:
 		CombatEvent.Type.PARRY, CombatEvent.Type.PERFECT_PARRY, CombatEvent.Type.RESPONSE:
 			if event.target == fighter.index:
 				blade.flare = effects.parry_flare
+				_solver.guard_recoiled(event.heavy, true)
+		CombatEvent.Type.BLOCK:
+			if event.target == fighter.index:
+				blade.flare = effects.parry_flare * fighter.character.family.block_parry_recoil
+				_solver.guard_recoiled(event.heavy, false)
 		CombatEvent.Type.CLASH, CombatEvent.Type.TECHNIQUE_CLASH:
 			if event.source == fighter.index or event.target == fighter.index:
 				_solver.clash_left = PoseSolver.CLASH_RECOIL_TIME
@@ -386,11 +391,12 @@ func _process(delta: float) -> void:
 	_update_intro()
 	var frozen: bool = fighter.state == FighterState.State.HELD and not fighter.held_by_choke
 	if not frozen:
+		_observe_guard()
 		_solver.solve(fighter, opponent, _target)
 		var follow: float = ATTACK_FOLLOW if fighter.is_attacking() else POSE_FOLLOW
 		if fighter.state == FighterState.State.CASTING and fighter.power != null and fighter.power.kind == PowerData.Kind.REPULSE and fighter.power_phase != FighterState.Phase.STARTUP:
 			follow = ATTACK_FOLLOW
-		if _snap_pose:
+		if _snap_pose or fighter.state == FighterState.State.BLOCKING:
 			_pose.copy_from(_target)
 			_snap_pose = false
 		else:
@@ -417,7 +423,32 @@ func _process(delta: float) -> void:
 func blade_segment() -> PackedVector2Array:
 	if _geometry.blade_length <= 0.0 or blade.length_ratio <= 0.0:
 		return PackedVector2Array()
-	return PackedVector2Array([_geometry.blade_base, _geometry.tip()])
+	if fighter.state == FighterState.State.BLOCKING and fighter.character.weapon.kind in [WeaponData.Kind.STAFF, WeaponData.Kind.LANCE]:
+		return PackedVector2Array([rig.to_global(_geometry.hilt_from), rig.to_global(_geometry.hilt_to)])
+	return PackedVector2Array([active_blade_base(), active_blade_tip()])
+
+
+func active_blade_base() -> Vector2:
+	return _geometry.second_base if _uses_off_blade() else _geometry.blade_base
+
+
+func active_blade_tip() -> Vector2:
+	return _geometry.second_base + _geometry.second_direction * _geometry.second_length if _uses_off_blade() else _geometry.tip()
+
+
+func _uses_off_blade() -> bool:
+	return _geometry.has_second and fighter.character.weapon.kind == WeaponData.Kind.DUAL and fighter.is_attacking() and fighter.move != null and fighter.move.kind == MoveData.Kind.LIGHT and fighter.chain_index % 2 == 1
+
+
+func _observe_guard() -> void:
+	_solver.guard.has_live = false
+	if rival == null or not is_instance_valid(rival) or rival.blade == null or rival.blade.length_ratio <= 0.0 or opponent.blade_out:
+		return
+	_solver.guard.observe_segment(to_local(rival.active_blade_base()), to_local(rival.active_blade_tip()))
+
+
+func guard_debug_lines() -> PackedStringArray:
+	return _solver.guard_debug_lines()
 
 
 static func _turn_factor(turn: float) -> float:
@@ -485,7 +516,7 @@ func _advance_solver(delta: float) -> void:
 	_solver.advance(delta)
 	if _solver.flip_progress >= 0.0:
 		_solver.flip_progress = minf(_solver.flip_progress + delta / fighter.character.family.double_jump_time, 1.0)
-	if fighter.state == FighterState.State.WALKING:
+	if fighter.state == FighterState.State.WALKING or (fighter.state == FighterState.State.BLOCKING and fighter.vx != 0.0):
 		_solver.walk_phase += absf(fighter.vx) * delta * WALK_PHASE_PER_UNIT
 
 

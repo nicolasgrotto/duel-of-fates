@@ -25,3 +25,12 @@ recover_share = 0.2
 dash_cut = 1
 front_elbow = Vector2(-0.3, 1)
 back_elbow = Vector2(-0.8, 1)
+
+block_frequency = 90.0
+block_crouch = 4.0
+block_lean = -2.0
+block_grip_offset = Vector2(-2, -6)
+block_angle_offset = -20.0
+block_anticipation = 4.0
+block_recoil = 5.0
+block_stance = 1.15

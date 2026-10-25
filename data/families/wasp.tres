@@ -29,3 +29,12 @@ wrist_lag = 1.3
 recover_share = 0.4
 acrobatic_recovery = true
 back_elbow = Vector2(-0.8, 1)
+
+block_frequency = 68.0
+block_crouch = 4.0
+block_lean = -2.0
+block_grip_offset = Vector2(0, 2)
+block_angle_offset = -22.0
+block_anticipation = 6.0
+block_recoil = 4.0
+block_stance = 1.15

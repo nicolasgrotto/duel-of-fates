@@ -30,3 +30,13 @@ acrobatic_recovery = true
 staff_hand_spacing = 14.0
 front_elbow = Vector2(-0.25, 1)
 back_elbow = Vector2(-0.8, 1)
+
+block_frequency = 52.0
+block_crouch = 6.0
+block_lean = 0.0
+block_grip_offset = Vector2(4, -4)
+block_angle_offset = -58.0
+block_anticipation = 5.0
+block_recoil = 6.0
+block_stance = 1.25
+block_plane = 22.0

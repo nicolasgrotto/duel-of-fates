@@ -25,3 +25,12 @@ wrist_lag = 0.7
 recover_share = 0.25
 walk_free_hand = Vector2(-16, -12)
 front_elbow = Vector2(-0.2, 1)
+
+block_frequency = 64.0
+block_crouch = 2.0
+block_lean = -1.0
+block_grip_offset = Vector2(0, 4)
+block_angle_offset = -8.0
+block_anticipation = 2.0
+block_recoil = 3.0
+block_stance = 1.1

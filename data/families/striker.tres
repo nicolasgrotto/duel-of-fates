@@ -25,3 +25,13 @@ free_hand = Vector2(-14, 0)
 wrist_lag = 1.2
 walk_free_hand = Vector2(-12, -10)
 back_elbow = Vector2(-0.8, 1)
+
+block_frequency = 54.0
+block_crouch = 6.0
+block_lean = 0.0
+block_grip_offset = Vector2(6, -16)
+block_angle_offset = 0.0
+block_anticipation = 5.0
+block_recoil = 5.0
+block_stance = 1.2
+block_reverse = true

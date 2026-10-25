@@ -85,6 +85,8 @@ func _fighter_lines(i: int) -> PackedStringArray:
 	lines.append_array(sim.state_logic(fighter).debug_lines(sim, fighter))
 	if i < views.size():
 		lines.append_array(views[i].intro_debug_lines())
+		if fighter.state == FighterState.State.BLOCKING:
+			lines.append_array(views[i].guard_debug_lines())
 		lines.append(views[i].finisher_debug_line())
 	if runner != null and i < runner.controllers.size():
 		var intent: Intent = runner.intents[i]

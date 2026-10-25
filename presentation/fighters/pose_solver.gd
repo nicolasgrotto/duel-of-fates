@@ -3,14 +3,6 @@ extends RefCounted
 
 const COMBAT: CombatConfig = preload("res://data/balance/combat_config.tres")
 const HIP_HEIGHT_FALLBACK: float = 72.0
-const BLOCK_GRIP: Vector2 = Vector2(18.0, -36.0)
-const BLOCK_ANGLE: float = -84.0
-const BLOCK_HIGH_GRIP: Vector2 = Vector2(14.0, -54.0)
-const BLOCK_HIGH_ANGLE: float = -14.0
-const BLOCK_LOW_GRIP: Vector2 = Vector2(18.0, -16.0)
-const BLOCK_LOW_ANGLE: float = 74.0
-const BLOCK_THRUST_GRIP: Vector2 = Vector2(22.0, -32.0)
-const BLOCK_THRUST_ANGLE: float = -46.0
 const HIGH_WINDUP_LIMIT: float = -100.0
 const LOW_WINDUP_LIMIT: float = 45.0
 const LOCK_GRIP: Vector2 = Vector2(22.0, -44.0)
@@ -181,17 +173,24 @@ var clash_left: float = 0.0
 var rebounding: bool = false
 var block_line: MoveData.Cut = MoveData.Cut.HORIZONTAL
 var afterimage: bool = false
+var guard: GuardTracker = GuardTracker.new()
+var _guard_prediction: RigPose = RigPose.new()
+var _guard_weapon: WeaponPose = WeaponPose.new()
+var _guard_heavy: bool = false
 
 
 func setup(data: CharacterData, art: FighterArt) -> void:
 	character = data
 	family = data.family
+	guard.configure(family)
+	guard.reverse = family.block_reverse and cos(deg_to_rad(data.guard_angle)) < 0.0
 	if art != null:
 		hip_height = art.dim("thigh") + art.dim("shin") + art.dim("ankle")
 
 
 func advance(delta: float) -> void:
 	time += delta
+	guard.advance(delta)
 	landing_left = maxf(landing_left - delta, 0.0)
 	clash_left = maxf(clash_left - delta, 0.0)
 	tumble_left = maxf(tumble_left - delta, 0.0)
@@ -206,6 +205,10 @@ func advance(delta: float) -> void:
 
 
 func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void:
+	if fighter.state == FighterState.State.BLOCKING:
+		guard.begin(ArmGeometry.to_body(pose.grip, pose), pose.blade_angle)
+	else:
+		guard.active = false
 	var guard_angle: float = character.guard_angle
 	var guard_grip: Vector2 = character.guard_grip
 	if fighter.exhausted:
@@ -255,8 +258,13 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 			lean += extra.y
 			off_free = fighter.move != null and fighter.move.kind == MoveData.Kind.SHOVE
 		FighterState.State.BLOCKING:
-			_block(opponent, pose)
-			crouch += 4.0 if block_line != MoveData.Cut.RISING else 8.0
+			crouch += family.block_crouch * guard.engagement
+			lean += (family.block_lean + guard.lean) * guard.engagement
+			pose.front_foot.x *= lerpf(1.0, family.block_stance, guard.engagement)
+			pose.back_foot.x *= lerpf(1.0, family.block_stance, guard.engagement)
+			if fighter.vx != 0.0:
+				_walk(fighter, pose)
+			_block(fighter, opponent, pose, crouch, lean)
 		FighterState.State.DODGING:
 			var dodge: Vector2 = _dodge(fighter, pose)
 			crouch += dodge.x
@@ -455,22 +463,93 @@ func _stage_off_hand(pose: RigPose) -> void:
 		pose.off_blade_angle = rad_to_deg(lerp_angle(deg_to_rad(angle), deg_to_rad(pose.off_blade_angle), _stage_keep))
 
 
-func _block(opponent: FighterState, pose: RigPose) -> void:
+func _block(fighter: FighterState, opponent: FighterState, pose: RigPose, crouch: float, lean: float) -> void:
 	if opponent.is_attacking() and opponent.move != null and opponent.move.is_blade():
 		block_line = threat_line(opponent.move)
-	match block_line:
-		MoveData.Cut.DESCENDING:
-			pose.grip = BLOCK_HIGH_GRIP
-			pose.blade_angle = BLOCK_HIGH_ANGLE
-		MoveData.Cut.RISING:
-			pose.grip = BLOCK_LOW_GRIP
-			pose.blade_angle = BLOCK_LOW_ANGLE
-		MoveData.Cut.THRUST:
-			pose.grip = BLOCK_THRUST_GRIP
-			pose.blade_angle = BLOCK_THRUST_ANGLE
-		_:
-			pose.grip = BLOCK_GRIP
-			pose.blade_angle = BLOCK_ANGLE
+	var rest: Vector2 = _guard_grip + family.block_grip_offset
+	var rest_angle: float = _guard_angle + family.block_angle_offset + sin(time * 1.3) * family.sway
+	var threatened: bool = opponent.is_attacking() and opponent.move != null and opponent.move.can_clash() and opponent.move_phase != FighterState.Phase.RECOVERY
+	var contact: float = 0.0
+	if threatened:
+		_guard_heavy = opponent.move.is_heavy()
+		contact = Ticks.to_seconds(maxi(opponent.move.startup_ticks() - opponent.phase_ticks, 0)) if opponent.move_phase == FighterState.Phase.STARTUP else 0.0
+		_forecast_guard(fighter, opponent)
+	elif fighter.stun_ticks <= 0:
+		_guard_heavy = false
+	var pelvis: Vector2 = Vector2(0.0, -hip_height + crouch)
+	guard.follow(rest, rest_angle, pelvis, deg_to_rad(lean), character.art.dim("scale"), character.weapon, threatened, fighter.stun_ticks > 0, contact)
+	_guard_prediction.pelvis = pelvis
+	_guard_prediction.torso_angle = deg_to_rad(lean)
+	_guard_prediction.grip = pelvis + guard.target_position.rotated(_guard_prediction.torso_angle)
+	_guard_prediction.blade_angle = rad_to_deg(guard.target_angle)
+	_guard_prediction.hand_spacing = 0.0
+	_guard_prediction.off_hand = RELAXED_HAND
+	_place_off_hand(fighter, _guard_prediction)
+	ArmGeometry.constrain(_guard_prediction, character)
+	var haft: bool = character.weapon.kind in [WeaponData.Kind.STAFF, WeaponData.Kind.LANCE]
+	guard.fit_grip(ArmGeometry.to_body(_guard_prediction.grip, _guard_prediction), _guard_prediction.torso_angle, threatened and guard.has_live and not haft)
+	guard.integrate()
+	if not guard.has_live and opponent.is_attacking() and opponent.move != null:
+		var fallback: Vector2 = rest
+		var fallback_angle: float = family.block_line_angles.w
+		match block_line:
+			MoveData.Cut.DESCENDING:
+				fallback = family.block_high_grip
+				fallback_angle = family.block_line_angles.x
+			MoveData.Cut.RISING:
+				fallback = family.block_low_grip
+				fallback_angle = family.block_line_angles.y
+			MoveData.Cut.THRUST:
+				fallback = family.block_thrust_grip
+				fallback_angle = family.block_line_angles.z
+		guard.fallback(fallback, fallback_angle)
+	pose.grip = guard.position
+	pose.blade_angle = rad_to_deg(guard.angle)
+
+
+func _forecast_guard(fighter: FighterState, opponent: FighterState) -> void:
+	var data: CharacterData = opponent.character
+	var other_family: MotionFamily = data.family
+	var move: MoveData = opponent.move
+	var power: float = HEAVY_SCALE if move.is_heavy() else 1.0
+	var grip: Vector2 = CUT_STRIKE.get(move.cut, STRIKE_GRIP) * Vector2(other_family.strike_reach, 1.0)
+	var angle: float = move.blade_angle_strike
+	match move.technique_style:
+		MoveData.TechniqueStyle.THRUST, MoveData.TechniqueStyle.FLURRY:
+			grip = THRUST_EXTEND_GRIP
+		MoveData.TechniqueStyle.LUNGE:
+			grip = LUNGE_EXTEND_GRIP
+		MoveData.TechniqueStyle.RISING:
+			grip = RISING_HIGH_GRIP
+		MoveData.TechniqueStyle.PLUNGE:
+			grip = PLUNGE_CUT_GRIP if other_family.plunge_cut == MoveData.Cut.DESCENDING else PLUNGE_THRUST_GRIP
+			angle = PLUNGE_CUT_ANGLE if other_family.plunge_cut == MoveData.Cut.DESCENDING else PLUNGE_THRUST_ANGLE
+		MoveData.TechniqueStyle.DASH:
+			grip = DASH_FALLING_GRIP if other_family.dash_cut == MoveData.Cut.DESCENDING else DASH_RISING_GRIP
+	var hip: float = data.art.dim("thigh") + data.art.dim("shin") + data.art.dim("ankle")
+	_guard_prediction.pelvis = Vector2(other_family.lunge * power, -hip + other_family.crouch + other_family.heavy_crouch * power)
+	_guard_prediction.torso_angle = deg_to_rad(other_family.lean + other_family.strike_lean * power)
+	_guard_prediction.grip = _guard_prediction.pelvis + grip.rotated(_guard_prediction.torso_angle)
+	_guard_prediction.blade_angle = angle
+	_guard_prediction.hand_spacing = 0.0
+	_guard_prediction.off_hand = _guard_prediction.pelvis + other_family.free_hand.rotated(_guard_prediction.torso_angle)
+	ArmGeometry.constrain(_guard_prediction, data)
+	_guard_weapon.compute(data.weapon, _guard_prediction)
+	var mirror: Vector2 = Vector2(opponent.facing * fighter.facing, 1.0) * data.art.dim("scale")
+	var origin: Vector2 = Vector2((opponent.x - fighter.x) * fighter.facing, fighter.y - opponent.y)
+	guard.predicted_base = origin + _guard_weapon.blade_base * mirror
+	guard.predicted_tip = origin + _guard_weapon.tip() * mirror
+
+
+func guard_recoiled(heavy: bool, parry: bool) -> void:
+	guard.recoil(heavy, parry)
+
+
+func guard_debug_lines() -> PackedStringArray:
+	return PackedStringArray([
+		"guard intercept %.1f, %.1f  contact %.3f s" % [guard.intercept.x, guard.intercept.y, guard.contact_time],
+		"guard velocity %.1f, %.1f  angle velocity %.1f" % [guard.velocity.x, guard.velocity.y, rad_to_deg(guard.angular_velocity)],
+	])
 
 
 static func threat_line(move: MoveData) -> MoveData.Cut:
@@ -615,11 +694,11 @@ func _attack(fighter: FighterState, pose: RigPose, guard_angle: float, guard_gri
 		strike_grip = CUT_STRIKE[move.cut] * Vector2(family.strike_reach, 1.0)
 		if heavy and move.cut == MoveData.Cut.DESCENDING:
 			windup_grip.y -= HEAVY_CUT_LIFT
-	var progress: float = _progress(fighter, move)
+	var progress: float = _visual_progress(fighter, move)
 	var crouch: float = 0.0
 	var lean: float = 0.0
 	var step: float = family.heavy_step if heavy else family.heavy_step * 0.5
-	match fighter.move_phase:
+	match _visual_phase(fighter, move):
 		FighterState.Phase.STARTUP:
 			var eased: float = 1.0 - pow(1.0 - progress, ANTICIPATION_EASE)
 			pose.blade_angle = rad_to_deg(lerp_angle(deg_to_rad(_from_angle), deg_to_rad(move.blade_angle_windup), eased))
@@ -640,7 +719,7 @@ func _attack(fighter: FighterState, pose: RigPose, guard_angle: float, guard_gri
 			_body_shift = lerpf(-family.windup_shift, family.lunge, body) * power
 			pose.front_foot.x += step * body
 			pose.back_foot.x -= 2.0 * power * (1.0 - body)
-			pose.trail = true
+			pose.trail = fighter.move_phase == FighterState.Phase.ACTIVE
 			pose.turn = _cut_turn(move.cut, swing, true)
 			if move.cut == MoveData.Cut.THRUST:
 				_body_shift += THRUST_SHIFT * body
@@ -669,13 +748,13 @@ func _attack(fighter: FighterState, pose: RigPose, guard_angle: float, guard_gri
 
 
 func _dash_slash(fighter: FighterState, pose: RigPose, move: MoveData, guard_angle: float, guard_grip: Vector2) -> Vector2:
-	var progress: float = _progress(fighter, move)
+	var progress: float = _visual_progress(fighter, move)
 	var descending: bool = family.dash_cut == MoveData.Cut.DESCENDING
 	var tuck_grip: Vector2 = DASH_HIGH_TUCK_GRIP if descending else DASH_LOW_TUCK_GRIP
 	var tuck_angle: float = DASH_HIGH_TUCK_ANGLE if descending else DASH_LOW_TUCK_ANGLE
 	var strike_grip: Vector2 = DASH_FALLING_GRIP if descending else DASH_RISING_GRIP
 	var strike_angle: float = DASH_FALLING_ANGLE if descending else DASH_RISING_ANGLE
-	match fighter.move_phase:
+	match _visual_phase(fighter, move):
 		FighterState.Phase.STARTUP:
 			var ramp: float = 1.0 - pow(1.0 - minf(progress * 2.0, 1.0), 2.0)
 			pose.grip = _from_grip.lerp(tuck_grip, ramp)
@@ -692,7 +771,7 @@ func _dash_slash(fighter: FighterState, pose: RigPose, move: MoveData, guard_ang
 			var swing: float = 1.0 - pow(1.0 - progress, 2.0)
 			pose.grip = _arc(tuck_grip, strike_grip, swing)
 			pose.blade_angle = lerpf(tuck_angle, strike_angle, swing)
-			pose.trail = true
+			pose.trail = fighter.move_phase == FighterState.Phase.ACTIVE
 			pose.front_foot.x += 18.0
 			pose.back_foot.x -= 14.0
 			_body_shift = lerpf(12.0, 8.0, swing)
@@ -707,11 +786,11 @@ func _dash_slash(fighter: FighterState, pose: RigPose, move: MoveData, guard_ang
 
 
 func _plunge(fighter: FighterState, pose: RigPose, move: MoveData, guard_angle: float, guard_grip: Vector2) -> Vector2:
-	var progress: float = _progress(fighter, move)
+	var progress: float = _visual_progress(fighter, move)
 	var cutting: bool = family.plunge_cut == MoveData.Cut.DESCENDING
 	var strike_grip: Vector2 = PLUNGE_CUT_GRIP if cutting else PLUNGE_THRUST_GRIP
 	var strike_angle: float = PLUNGE_CUT_ANGLE if cutting else PLUNGE_THRUST_ANGLE
-	match fighter.move_phase:
+	match _visual_phase(fighter, move):
 		FighterState.Phase.STARTUP:
 			var ramp: float = 1.0 - pow(1.0 - progress, ANTICIPATION_EASE)
 			_tuck(pose, 1.0)
@@ -727,7 +806,7 @@ func _plunge(fighter: FighterState, pose: RigPose, move: MoveData, guard_angle: 
 			pose.grip = _arc(PLUNGE_RAISED_GRIP, strike_grip, swing)
 			pose.blade_angle = lerpf(PLUNGE_RAISED_ANGLE, strike_angle, swing)
 			pose.spin = PLUNGE_TILT * swing
-			pose.trail = true
+			pose.trail = fighter.move_phase == FighterState.Phase.ACTIVE
 			return Vector2(0.0, 18.0 * swing)
 	var settle: float = smoothstep(PLUNGE_HOLD, 1.0, progress)
 	pose.grip = strike_grip.lerp(guard_grip, settle)
@@ -747,10 +826,10 @@ static func _cut_turn(cut: MoveData.Cut, amount: float, active: bool) -> float:
 
 
 func _technique(fighter: FighterState, pose: RigPose, move: MoveData, guard_angle: float, guard_grip: Vector2) -> Vector2:
-	var progress: float = _progress(fighter, move)
+	var progress: float = _visual_progress(fighter, move)
 	var ramp: float = 1.0
 	var swing: float = 1.0
-	match fighter.move_phase:
+	match _visual_phase(fighter, move):
 		FighterState.Phase.STARTUP:
 			ramp = 1.0 - pow(1.0 - progress, ANTICIPATION_EASE)
 			swing = 0.0
@@ -810,14 +889,14 @@ func _technique(fighter: FighterState, pose: RigPose, move: MoveData, guard_angl
 			pose.front_foot.x += 24.0 * swing * ramp
 			pose.back_foot.x -= 10.0 * ramp
 			_body_shift = lerpf(-6.0, 18.0, swing) * ramp
-	match fighter.move_phase:
+	match _visual_phase(fighter, move):
 		FighterState.Phase.STARTUP:
 			pose.grip = _arc(start_grip, windup_grip, ramp)
 			pose.blade_angle = rad_to_deg(lerp_angle(deg_to_rad(start_angle), deg_to_rad(angle), ramp))
 		FighterState.Phase.ACTIVE:
 			pose.grip = _arc(windup_grip, strike_grip, swing)
 			pose.blade_angle = angle
-			pose.trail = true
+			pose.trail = fighter.move_phase == FighterState.Phase.ACTIVE
 		FighterState.Phase.RECOVERY:
 			pose.grip = _arc(guard_grip, strike_grip, ramp)
 			pose.blade_angle = rad_to_deg(lerp_angle(deg_to_rad(guard_angle), deg_to_rad(angle), ramp))
@@ -1019,6 +1098,10 @@ func _place_off_hand(fighter: FighterState, pose: RigPose) -> void:
 func _place_second_blade(fighter: FighterState, pose: RigPose, off_free: bool) -> void:
 	var sway: float = sin(time * 1.7 + 1.3) * family.sway * 2.0
 	pose.off_blade_angle = family.off_guard_angle + sway
+	if fighter.state == FighterState.State.BLOCKING and guard.active and _guard_heavy:
+		pose.off_hand = pose.grip + family.block_off_hand
+		pose.off_blade_angle = -180.0 - pose.blade_angle
+		return
 	if not fighter.is_attacking() or fighter.move == null or off_free:
 		return
 	var move: MoveData = fighter.move
@@ -1033,6 +1116,27 @@ func _place_second_blade(fighter: FighterState, pose: RigPose, off_free: bool) -
 	var swing: float = _progress(fighter, move) if fighter.move_phase == FighterState.Phase.ACTIVE else 0.0
 	pose.off_hand += Vector2(-OFF_SWAY * swing, OFF_SWAY * 0.5 * swing)
 	pose.off_blade_angle = family.off_guard_angle + OFF_SWING * swing
+
+
+func _visual_phase(fighter: FighterState, move: MoveData) -> FighterState.Phase:
+	if move.technique_style == MoveData.TechniqueStyle.THROW:
+		return fighter.move_phase
+	if fighter.move_phase == FighterState.Phase.STARTUP and _progress(fighter, move) >= family.release_start:
+		return FighterState.Phase.ACTIVE
+	return fighter.move_phase
+
+
+func _visual_progress(fighter: FighterState, move: MoveData) -> float:
+	var progress: float = _progress(fighter, move)
+	if move.technique_style == MoveData.TechniqueStyle.THROW:
+		return progress
+	if fighter.move_phase == FighterState.Phase.STARTUP:
+		if progress < family.release_start:
+			return progress / family.release_start
+		return (progress - family.release_start) / (1.0 - family.release_start) * family.contact_swing
+	if fighter.move_phase == FighterState.Phase.ACTIVE:
+		return lerpf(family.contact_swing, 1.0, progress)
+	return progress
 
 
 static func _progress(fighter: FighterState, move: MoveData) -> float:

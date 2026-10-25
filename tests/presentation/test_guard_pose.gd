@@ -26,7 +26,7 @@ func test_guard_rises_against_cuts_from_above() -> void:
 
 func test_thrusts_are_met_with_a_slanted_blade() -> void:
 	var pose: RigPose = _blocking_pose(DuelFixture.SHADOW.light_chain[2])
-	assert_almost(pose.blade_angle, PoseSolver.BLOCK_THRUST_ANGLE, 0.01)
+	assert_almost(pose.blade_angle, DuelFixture.GUARDIAN.family.block_line_angles.z, 0.01)
 
 
 func test_threat_line_reads_untyped_moves_by_their_arc() -> void:

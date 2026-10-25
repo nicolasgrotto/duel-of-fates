@@ -27,3 +27,12 @@ one_hand_follow = true
 plunge_cut = 1
 front_elbow = Vector2(-0.4, 1)
 back_elbow = Vector2(-1, 0.7)
+
+block_frequency = 50.0
+block_crouch = 6.0
+block_lean = 2.0
+block_grip_offset = Vector2(8, -16)
+block_angle_offset = -66.0
+block_anticipation = 5.0
+block_recoil = 6.0
+block_stance = 1.2

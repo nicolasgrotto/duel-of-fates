@@ -30,11 +30,38 @@ enum Grip { TWO_HANDED, ONE_HANDED, DUAL, STAFF }
 @export var lance_hand_spacing: float = 22.0
 @export var staff_hand_spacing: float = 11.0
 
+@export_group("Responsive guard")
+@export var block_grip_offset: Vector2 = Vector2(-2.0, -6.0)
+@export var block_angle_offset: float = -26.0
+@export var block_crouch: float = 4.0
+@export var block_lean: float = -2.0
+@export var block_stance: float = 1.15
+@export var block_frequency: float = 45.0
+@export var block_damping: float = 1.0
+@export var block_anticipation: float = 4.0
+@export var block_recoil: float = 5.0
+@export var block_heavy_recoil: float = 1.6
+@export var block_parry_recoil: float = 0.65
+@export var block_recovery: float = 0.18
+@export var block_live_lead: float = 0.12
+@export var block_drift: float = 0.08
+@export var block_plane: float = 34.0
+@export var block_blade_share: float = 0.3
+@export var block_envelope: Rect2 = Rect2(0.0, -78.0, 54.0, 100.0)
+@export var block_high_grip: Vector2 = Vector2(14.0, -54.0)
+@export var block_low_grip: Vector2 = Vector2(18.0, -16.0)
+@export var block_thrust_grip: Vector2 = Vector2(22.0, -32.0)
+@export var block_line_angles: Vector4 = Vector4(-14.0, 74.0, -46.0, -84.0)
+@export var block_reverse: bool = false
+@export var block_off_hand: Vector2 = Vector2(-8.0, 10.0)
+
 @export_group("Walk")
 @export var stride: float = 10.0
 @export var bob: float = 2.0
 
 @export_group("Strikes")
+@export_range(0.2, 0.9) var release_start: float = 0.6
+@export_range(0.1, 0.95) var contact_swing: float = 0.75
 @export var windup_pull: float = 1.0
 @export var strike_reach: float = 1.0
 @export var strike_lean: float = 14.0

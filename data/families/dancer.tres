@@ -34,3 +34,12 @@ plunge_pirouette = true
 acrobatic_recovery = true
 front_elbow = Vector2(-0.3, 1)
 back_hand_spacing = 6.0
+
+block_frequency = 38.0
+block_crouch = 3.0
+block_lean = -3.0
+block_grip_offset = Vector2(10, 24)
+block_angle_offset = 82.0
+block_anticipation = 8.0
+block_recoil = 7.0
+block_stance = 1.25
