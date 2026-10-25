@@ -246,6 +246,7 @@ func _draw_fighter(fighter: FighterState) -> void:
 		draw_circle(hand, 2.0 + 3.0 * progress, Color(Color.WHITE, 0.6))
 	if fighter.state == FighterState.State.CHANNELING and fighter.power != null:
 		_draw_channel(fighter, view, color)
+	_draw_singularity(fighter)
 	if fighter.instinct_ticks > 0:
 		_draw_instinct(fighter, view, center)
 	if fighter.heal_ticks > 0:
@@ -344,6 +345,12 @@ func _draw_projectile(projectile: Projectile) -> void:
 	var at: Vector2 = Vector2(projectile.x, -projectile.y)
 	var color: Color = tier_color(projectile.tier)
 	match projectile.kind:
+		Projectile.Kind.SINGULARITY:
+			_draw_singularity_core(at, projectile.size, color.lerp(PALETTE.eclipse, vfx.singularity_tier_tint), false)
+			if not reduced:
+				var direction: Vector2 = Vector2(-projectile.vx, projectile.vy).normalized()
+				for trail in 3:
+					draw_arc(at + direction * projectile.size * (trail + 1) * 0.6, projectile.size * (1.0 - trail * 0.2), 0.0, TAU, 12, Color(color, 0.2 - trail * 0.05), GRID)
 		Projectile.Kind.ROCK:
 			var points: PackedVector2Array = []
 			for i in ROCK_POINTS:
@@ -443,6 +450,17 @@ func _draw_hazard(hazard: Hazard) -> void:
 	var color: Color = tier_color(owner.flow_tier)
 	var closing: float = 1.0 - float(hazard.delay_ticks) / maxf(hazard.total_delay, 1.0)
 	match hazard.kind:
+		Hazard.Kind.EXTRACTION:
+			var left: float = hazard.x - hazard.half_width
+			var right: float = hazard.x + hazard.half_width
+			var mark_color: Color = Color(color.lerp(PALETTE.eclipse, vfx.singularity_tier_tint), vfx.singularity_mark_alpha)
+			draw_line(Vector2(left, 0.0), Vector2(right, 0.0), mark_color, GRID * 2.0)
+			for side_index in 2:
+				var x: float = left if side_index == 0 else right
+				draw_line(Vector2(x, 0.0), Vector2(x, -vfx.singularity_mark_height), mark_color, GRID)
+			for hatch in 5:
+				var x: float = lerpf(left, right, float(hatch + 1) / 6.0)
+				draw_line(Vector2(x - GRID, -GRID * 2.0), Vector2(x + GRID, -vfx.singularity_mark_height * closing), mark_color, GRID)
 		Hazard.Kind.FRACTURE:
 			if closing > 0.55:
 				var crack: Color = Color(color, 0.4 + 0.5 * closing)
@@ -660,3 +678,38 @@ func _draw_instinct(fighter: FighterState, view: FighterView, center: Vector2) -
 			draw_rect(Rect2(at.snapped(Vector2.ONE * GRID), Vector2.ONE * GRID), Color(silver, alpha))
 	var eye: Vector2 = (view.head_position() + Vector2(fighter.facing * 4.0, -2.0)).snapped(Vector2.ONE * GRID)
 	draw_rect(Rect2(eye, vfx.instinct_eye_size), Color(silver, 0.6))
+
+
+func _draw_singularity(fighter: FighterState) -> void:
+	if debris == null:
+		return
+	var creating: bool = fighter.power != null and fighter.power.kind == PowerData.Kind.SINGULARITY and fighter.power_phase == FighterState.Phase.STARTUP
+	if fighter.singularity_ticks <= 0 and not creating:
+		return
+	var radius: float = debris.singularity_radius(fighter)
+	if creating:
+		radius *= clampf(float(fighter.power_ticks) / maxf(fighter.power.startup_ticks(), 1.0), 0.0, 1.0)
+	var color: Color = tier_color(fighter.flow_tier).lerp(PALETTE.eclipse, vfx.singularity_tier_tint)
+	var at: Vector2 = debris.singularity_position(fighter)
+	var forming: bool = fighter.singularity_phase == FighterState.SingularityPhase.FORMATION
+	_draw_singularity_core(at, radius, color, forming)
+	if forming:
+		var aim: Vector2 = Vector2(fighter.singularity_aim.x, -fighter.singularity_aim.y)
+		var direction: Vector2 = (aim - at).normalized()
+		draw_line(at + direction * radius, at + direction * radius * 2.0, Color(color, 0.7), GRID)
+
+
+func _draw_singularity_core(at: Vector2, radius: float, color: Color, forming: bool) -> void:
+	at = at.snapped(Vector2.ONE * GRID)
+	var core: float = radius * (0.22 if forming else 0.35)
+	draw_circle(at, snappedf(core, GRID), Color(color, 0.8))
+	draw_circle(at, GRID, PALETTE.text)
+	for side_index in 2:
+		var start: float = float(side_index) * PI + 0.3
+		draw_arc(at, radius * 0.85, start, start + PI * 0.6, 8, Color(color, 0.65), GRID)
+	if reduced:
+		return
+	for band in 3:
+		var phase: float = fposmod(floorf(_time * vfx.singularity_vibration_rate) / vfx.singularity_vibration_rate + float(band) / 3.0, 1.0)
+		var offset: Vector2 = Vector2((band % 2 * 2 - 1) * vfx.singularity_distortion * phase, (band - 1) * radius * 0.8)
+		draw_line((at + offset - Vector2(radius, 0.0)).snapped(Vector2.ONE * GRID), (at + offset + Vector2(radius, 0.0)).snapped(Vector2.ONE * GRID), Color(color, 0.12), GRID)

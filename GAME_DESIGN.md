@@ -327,6 +327,7 @@ Com o poder Foco ativo, um lutador **parado em guarda, sem nenhum comando**, esq
 | Investida descendente, Corte ascendente | corte vertical, as metades caem para os lados | o golpe mata |
 | Arremesso da lâmina | corte diagonal na parte de cima | a lâmina mata, na ida ou na volta |
 | Raio | eletrocutado (esqueleto aparece) e corpo carbonizado | um pulso do Raio mata; dano de outra fonte não conta |
+| Singularidade Devastadora | massa arremessa o corpo e encerra em queda cinematográfica BLAST, sem mutilação | só a massa final mata no K.O. decisivo; extrações não executam |
 | Repulsão, Repulsão Suprema | explosão de brasa, o corpo é arremessado longe | a onda mata |
 | Puxão | puxado e cortado ao meio | o Puxão acerta com a vida do alvo em até 12 (`PowerData.execute_below`): a execução é garantida |
 | Estrangular | estalo de energia no pescoço e queda | o estrangulamento mata |
@@ -478,3 +479,7 @@ Online, torneio, editor de personagens, perigos de arena que afetam o combate. A
 ### Instinto Superior
 
 Suprema da Aurora (POWERS.md), com esquiva automática de acertos de lâmina corpo a corpo, exceto golpes em volta do corpo. Empurrões, projéteis, áreas, agarrões e poderes passam pelas regras normais. Choque/disputa têm prioridade e não são evitados. Cada esquiva interrompe a ação do usuário, preserva posição/altura e abre 0,35 s para o rápido iniciar o contra-ataque existente (sem multiplicador adicional); não existe bônus de punição da esquiva de precisão para reaplicar. A janela não garante acerto nem desliga a defesa rival. Dano efetivo de poder encerra status, movimento visual e janela; absorção total não encerra. Duração e janela são dados do PowerData.
+
+### Singularidade Devastadora
+
+Suprema Eclipse de Fluxo 7, custo 85: criação interrompível → suspensão → marcas e extrações → formação com mira fixa → arremesso físico. A sequência dura cerca de 4,5 s. Corrida lateral vence a atração no chão e deixa os avisos para trás; pular expõe à atração mais forte e as extrações levantam quem fica parado. Guarda, Barreira, Absorção e Arsenal não param o arremesso; Santuário protege a vida sem anular o deslocamento. Esquiva invulnerável e sair da trajetória funcionam. O Instinto não evita extração nem massa. Números e tempos em content/POWERS.md e singularity.tres.

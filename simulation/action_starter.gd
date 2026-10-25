@@ -129,7 +129,7 @@ static func try_buffered(sim: MatchSimulation, fighter: FighterState, intent: In
 		return false
 	if fighter.blade_out and (BLADE_ACTIONS & (1 << action)) != 0:
 		return false
-	if fighter.rain_ticks > 0 and (RAIN_BLOCKED_ACTIONS & (1 << action)) != 0:
+	if (fighter.rain_ticks > 0 or fighter.singularity_ticks > 0) and (RAIN_BLOCKED_ACTIONS & (1 << action)) != 0:
 		return false
 	var result: Result = _start(sim, fighter, intent, action)
 	if result == Result.NOT_POSSIBLE:

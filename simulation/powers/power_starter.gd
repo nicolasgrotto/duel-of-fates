@@ -26,13 +26,15 @@ static func try_cast(sim: MatchSimulation, fighter: FighterState, direction: int
 	var power: PowerData = fighter.powers[slot]
 	if power == null:
 		return ActionStarter.Result.NOT_POSSIBLE
+	if fighter.singularity_ticks > 0:
+		return ActionStarter.Result.NOT_POSSIBLE
 	if power.kind == PowerData.Kind.ARSENAL and fighter.arsenal_count > 0:
 		if fighter.power_cooldowns[slot] > 0:
 			return ActionStarter.Result.NOT_POSSIBLE
 		PowerEffects.launch_arsenal(sim, fighter, power)
 		fighter.power_cooldowns[slot] = Ticks.from_seconds(ARSENAL_LAUNCH_COOLDOWN)
 		return ActionStarter.Result.STARTED
-	if fighter.rain_ticks > 0:
+	if fighter.rain_ticks > 0 or fighter.singularity_ticks > 0:
 		return ActionStarter.Result.NOT_POSSIBLE
 	var cost: float = power.cost_for(fighter.flow_level)
 	var blocked: bool = fighter.power_cooldown > 0 or fighter.power_cooldowns[slot] > 0

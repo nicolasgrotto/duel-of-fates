@@ -85,3 +85,7 @@ Cada coreografia de finalização (`FinisherMotion`) traz uma lista de deixas de
 ### Instinto Superior
 
 Ativação: acorde breve e claro em três parciais, com sopro suave; cada esquiva: sopro lateral curto com dois tons discretos, distinguível da esquiva de precisão comum. Sons originais gerados por funções próprias em tools/audio/synth_audio.py, sem amostras. Volume de poder abaixo das lâminas, sem abafar o mundo e sem loop permanente.
+
+### Singularidade Devastadora (task 05)
+
+Quatro amostras originais em synth_audio.py::singularity_sounds, com semente própria: criação grave ascendente (power_singularity), extração curta de pedra e ar (power_singularity_extract), arremesso com queda de frequência (power_singularity_throw), impacto grave seco (power_singularity_impact). A marca reaproveita power_mark_tick; cada onda aciona o aviso, cada extração seu estalo. Sem loop adicional, ruído de franquia ou dependência externa. Volume/canais do DuelAudio existentes; efeitos reduzidos não removem os avisos sonoros.

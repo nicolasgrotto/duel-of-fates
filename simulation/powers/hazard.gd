@@ -1,7 +1,7 @@
 class_name Hazard
 extends RefCounted
 
-enum Kind { ROCK_DROP, BOLT, FRACTURE }
+enum Kind { ROCK_DROP, BOLT, FRACTURE, EXTRACTION }
 
 var active: bool = false
 var kind: Kind = Kind.ROCK_DROP

@@ -108,7 +108,6 @@ Valem a tabela de interação, a guarda de frente (um quarto do dano passa), a B
 | **Absorção** / Absorption | 10 + 20/s | Segurada até 1,5 s: absorve **qualquer poder** que chega, pulso a pulso no caso do Raio (como a troca de raios entre dois mestres), reduzindo ou anulando pela diferença de Fluxo e convertendo parte da energia em medidor. Não segura lâmina e não absorve a Tempestade. |
 | **Santuário** / Sanctuary | 65 | Escudo colado ao corpo que absorve 20 × potência de dano enquanto o lutador age normalmente, por até 6 s. Racha conforme absorve e se quebra no limite. Custo alto. Tier II. |
 | **Telecinese em Massa** / Mass Telekinesis | 80 (Tier III, Fluxo 7+) | Invocação de ~0,8 s, interrompível, só com a mão erguida. Quando o poder sai, o duelo congela por 1,05 s (determinístico, em dado) para a mini-cinemática de ~1,5 s: a câmera sobe ao céu, um meteoro é puxado e racha, e a câmera desce com os pedaços. Os pedaços caem sobre marcas no chão (5, 6 ou 7 impactos pelo tier, 7 de dano cada, com empurrão). Quem lança pode se mover, mas não atacar, durante a chuva. Sem céu à vista, fragmentos conjurados. Custo alto. |
-
 | **Instinto Superior** / Higher Instinct | 75 (Tier III, Fluxo 7+) | Preparação calma de 0,2 s, recuperação de 0,2 s; dura 4 s × potência e tem recarga própria de 8 s. Esquiva automaticamente de lâminas corpo a corpo dirigidas ao corpo, sem Vigor nem custo por esquiva, consumindo o acerto e interrompendo a própria ação. Cada sucesso abre 0,35 s para usar o rápido como contra-ataque normal do personagem, sem bônus adicional de dano. Não evita empurrões, agarrões, poderes, projéteis ou golpes que atingem os dois lados. Dano efetivo de poder encerra o status e a janela; absorção total pelo Santuário não encerra. Choques e disputas continuam valendo, pois resolvem contato entre lâminas antes do acerto. Uma postura curta e pulso de letterbox anunciam a ativação; sem câmera lenta nova. |
 
 ### Eclipse
@@ -122,6 +121,8 @@ Valem a tabela de interação, a guarda de frente (um quarto do dano passa), a B
 | **Ira** / Wrath | 60 | Por 5 s × potência: dano causado × 1,2 e recebido × 0,85, em lâminas e poderes; dano periódico não muda. Cargas de armadura contra **2 golpes de lâmina** (quebra de guarda, empurrão, parry, poderes e projéteis continuam interrompendo). Reaplicar reinicia, sem empilhar. Custo alto. Tier II. |
 | **Dreno** / Drain | 15 | Segurado até 1,5 s (300 u): rouba medidor de Fluxo e um pouco de Vigor do alvo e devolve parte a quem drena. Não tira vida. O laço rompe se o alvo sair do alcance. |
 | **Arsenal Telecinético** / Telekinetic Arsenal | 55 (Tier II) | Lâminas curtas de energia (2, 2, 3 ou 4 pelo tier) orbitam o corpo por 6 s. **Repetir o comando** lança uma no oponente; cada uma em órbita **segura sozinha um projétil** que chega. Escolha entre defesa e ataque. |
+
+| **Singularidade Devastadora** / Devastating Singularity | 85 (Tier III, Fluxo 7+) | Criação interrompível de 0,6 s; campo de 3,7 s e recuperação de 0,2 s, recarga de 10 s. Esfera sobe por 0,4 s a 280 u sobre o ponto médio inicial. Ondas a cada 0,65 s: duas marcas de meia-largura 48 u, uma na posição atual do alvo e outra sorteada com faixa segura mínima de 80 u; aviso de 0,65 s antes de arrancar. Extração só no chão: 3 × potência de dano, suspensão de 0,2 s e impulso vertical 480 u/s. Campo até 600 u: no chão soma 30 u/s para o centro, permitindo correr; no ar acelera 1.600 u/s² na horizontal e 3.300 u/s² na vertical, limitada a 360 u/s. Nos últimos 0,65 s fixa a mira na posição/altura do alvo e comprime a massa; arremessa a 900 u/s, raio 54 u e alcance 1.400 u, causando 38 × potência de dano, 0,6 s de desequilíbrio e empurrão 620 u/s. Trajetória reta, sem perseguição: sair do caminho ou usar esquiva invulnerável evita. Guarda, Barreira, Absorção e Arsenal não seguram a massa física; Santuário absorve dano normalmente e Instinto não evita. Durante o campo o lançador pode mover, saltar, defender e esquivar, mas não atacar nem lançar outros poderes; continua vulnerável e a morte cancela o campo e marcas pendentes. Não muda o conjunto base de nenhum personagem. |
 
 ### Técnicas de lâmina (os dois caminhos)
 
@@ -139,12 +140,6 @@ Usam Habilidade com direção ou no ar, gastam **Vigor** (não Fluxo), escalam c
 
 **Choque entre técnicas**: quando as lâminas de duas técnicas corpo a corpo ativas se cruzam, as duas são interrompidas num choque grande (GAME_DESIGN, seção 7).
 
-### Supremas planejadas (decisão do autor)
-
-| Suprema | Caminho | Tier | Resumo | Resposta |
-| --- | --- | --- | --- | --- |
-| **Singularidade Devastadora** / Devastating Singularity | Eclipse | III | ~4–5 s: esfera escura suspensa sobre a arena arranca placas do chão em zonas marcadas antes; quem fica numa zona é puxado para cima, e no ar a atração é mais forte. A massa de destroços é lançada contra o oponente no fim: não pode ser bloqueada, só evitada em movimento. | correr e esquivar para fora das zonas, não pular |
-
 ## 6. Conjuntos
 
 O conjunto base de cada personagem está em [CHARACTERS.md](CHARACTERS.md). Personagens da Aurora escolhem do Fluxo comum e da Aurora; do Eclipse, do Fluxo comum e do Eclipse. Arcade, Sobrevivência e a IA usam o conjunto base. O protagonista da História compra e equipa poderes e o kit de lâmina nas duas árvores com pontos de habilidade (ver [STORY.md](STORY.md)).
@@ -156,3 +151,5 @@ Fora do plano atual, por repetirem outros poderes: Cataclismo e Redemoinho (repe
 O Corte Projetado tem alcance de 520 u e velocidade de 700 u/s. O custo de 24 de Vigor e a recuperação de 0,45 s compensam a segurança da distância, entre o Arremesso e a Estocada. Uma onda por uso, sem tier; a lâmina permanece na mão. A onda também é um projétil, interceptado pelo Arsenal.
 
 O Instinto Superior escolhe a esquiva pelo corte: horizontal/arco → inclinar, ascendente → passo atrás, estocada → giro, descendente → deslize baixo. A esquiva cancela a ação atual, preserva posição física e altura, e não cria invulnerabilidade a poderes. O contra-ataque só é pedido no chão, pela mesma ação de rápido; a janela se consome ao iniciar o golpe e expira normalmente. Barreira, armadura e Santuário não são gastos por um golpe esquivado.
+
+A Singularidade não prende indefinidamente: a breve suspensão da extração termina no ar, permitindo esquiva aérea. Só o oponente é afetado pelo campo. Os centros das marcas ficam imóveis depois do aviso e respeitam as bordas da arena; a segunda marca fica separada da primeira por duas meias-larguras mais 80 u de passagem. Não há atração durante invulnerabilidade, disputa ou Estrangular. Extrações não executam finalizações; só o arremesso final usa BLAST no K.O. decisivo, sem mutilação. Depois de criada, a esfera persiste mesmo se o lançador sofrer acertos, como a chuva da Telecinese; a criação é sua janela de interrupção.

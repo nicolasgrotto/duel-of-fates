@@ -41,9 +41,12 @@ static func hold_ticks(power: PowerData) -> int:
 
 static func offensive_slot(sim: MatchSimulation, me: FighterState, opponent: FighterState, gap: float, save_for_fourth: bool = false) -> int:
 	for slot in SLOT_ORDER:
+		if me.powers[slot] != null and me.powers[slot].kind == PowerData.Kind.SINGULARITY and is_ready(sim, me, slot) and _wants(me, opponent, gap, me.powers[slot]):
+			return slot
+	for slot in SLOT_ORDER:
 		if not is_ready(sim, me, slot) or not _wants(me, opponent, gap, me.powers[slot]):
 			continue
-		if save_for_fourth and spends_fourth_reserve(me, slot):
+		if save_for_fourth and (spends_fourth_reserve(me, slot) or spends_singularity_reserve(me, slot)):
 			continue
 		return slot
 	return NO_SLOT
@@ -55,6 +58,16 @@ static func spends_fourth_reserve(me: FighterState, slot: int) -> bool:
 		return false
 	var cost: float = me.powers[slot].cost_for(me.flow_level)
 	return me.flow - cost < fourth.cost_for(me.flow_level)
+
+
+static func spends_singularity_reserve(me: FighterState, spending_slot: int) -> bool:
+	for slot in FighterState.POWER_SLOTS:
+		var power: PowerData = me.powers[slot]
+		if power == null or slot == spending_slot or power.kind != PowerData.Kind.SINGULARITY:
+			continue
+		if me.flow_level >= power.min_level and me.power_cooldowns[slot] <= 0:
+			return me.flow - me.powers[spending_slot].cost_for(me.flow_level) < power.cost_for(me.flow_level)
+	return false
 
 
 static func instinct_slot(sim: MatchSimulation, me: FighterState, opponent: FighterState, gap: float) -> int:
@@ -74,11 +87,13 @@ static func escape_slot(sim: MatchSimulation, me: FighterState) -> int:
 
 
 static func guard_slot(sim: MatchSimulation, me: FighterState, incoming: PowerData) -> int:
+	if incoming.kind == PowerData.Kind.SINGULARITY:
+		return NO_SLOT
 	for slot in FighterState.POWER_SLOTS:
 		var power: PowerData = me.powers[slot]
 		if power == null or not GUARD_KINDS.has(power.kind) or not is_ready(sim, me, slot):
 			continue
-		if power.kind == PowerData.Kind.ABSORPTION and incoming.kind == PowerData.Kind.STORM:
+		if power.kind == PowerData.Kind.ABSORPTION and incoming.kind in [PowerData.Kind.STORM, PowerData.Kind.SINGULARITY]:
 			continue
 		return slot
 	return NO_SLOT
@@ -122,6 +137,8 @@ static func _wants(me: FighterState, opponent: FighterState, gap: float, power: 
 			return gap > FAR_GAP
 		return gap > FAR_GAP and not _status_active(me, power.kind)
 	match power.kind:
+		PowerData.Kind.SINGULARITY:
+			return gap > FAR_GAP and gap <= reach and opponent.on_ground and me.singularity_ticks <= 0
 		PowerData.Kind.HIGHER_INSTINCT:
 			return me.instinct_ticks <= 0 and gap <= reach and (opponent.is_attacking() or me.vigor_ratio() < 0.4)
 		PowerData.Kind.MIND_TWIST:
@@ -152,3 +169,28 @@ static func _status_active(me: FighterState, kind: PowerData.Kind) -> bool:
 		PowerData.Kind.SANCTUARY:
 			return me.sanctuary_ticks > 0
 	return false
+
+
+static func singularity_direction(sim: MatchSimulation, me: FighterState) -> int:
+	var threat: bool = false
+	for hazard in sim.hazards:
+		if hazard.active and hazard.owner != me.index and hazard.kind == Hazard.Kind.EXTRACTION and absf(hazard.x - me.x) < hazard.half_width + THREAT_MARGIN:
+			threat = true
+	if not threat:
+		return 0
+	var best: int = 0
+	var best_score: float = INF
+	for side_index in 2:
+		var side: int = -1 if side_index == 0 else 1
+		var destination: float = me.x + side * (sim.config.body_width + THREAT_MARGIN * 2.0)
+		var score: float = absf(destination) / sim.config.half_width()
+		if absf(destination) > sim.config.half_width() - sim.config.body_width:
+			score += sim.config.arena_width
+		for hazard in sim.hazards:
+			if hazard.active and hazard.owner != me.index and hazard.kind == Hazard.Kind.EXTRACTION:
+				if absf(destination - hazard.x) < hazard.half_width + THREAT_MARGIN:
+					score += sim.config.arena_width
+		if score < best_score:
+			best_score = score
+			best = side
+	return best

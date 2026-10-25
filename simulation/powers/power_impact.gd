@@ -1,6 +1,7 @@
 class_name PowerImpact
 extends RefCounted
 
+var allow_finisher: bool = true
 var damage: float = 0.0
 var push: float = 0.0
 var stagger: float = 0.0
@@ -21,6 +22,7 @@ var position: Vector2 = Vector2.ZERO
 
 
 func reset(power: PowerData, caster: FighterState) -> void:
+	allow_finisher = true
 	damage = 0.0
 	push = 0.0
 	stagger = 0.0

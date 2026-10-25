@@ -8,7 +8,7 @@ const FADE_STEPS: float = 3.0
 const CHUNK_POINTS: int = 5
 const DUST_ALPHA: float = 0.45
 
-enum Kind { DUST, CHUNK }
+enum Kind { DUST, CHUNK, PLATE }
 enum Mark { FOOTPRINT, RIPPLE }
 
 const MARK_POOL: int = 40
@@ -81,11 +81,19 @@ func on_event(event: CombatEvent) -> void:
 			var shover: FighterState = sim.fighters[event.source]
 			dust(Vector2(shover.x + shover.facing * 20.0, floor_y), config.shove_dust, 10.0, 60.0)
 		CombatEvent.Type.PROJECTILE_ENDED:
+			if event.power != null and event.power.kind == PowerData.Kind.SINGULARITY:
+				chunks(at, config.singularity_plates / (2 if reduced else 1), config.chunk_gravity * 0.3, config.singularity_plate_size)
 			if event.power != null and event.power.kind == PowerData.Kind.THROW:
 				chunks(at, config.throw_impact_chunks, 360.0, 6.0)
 				dust(Vector2(at.x, minf(at.y + 10.0, floor_y)), 2, 8.0, 40.0)
 		CombatEvent.Type.HAZARD_TRIGGERED:
 			match int(event.amount):
+				Hazard.Kind.EXTRACTION:
+					var target: Vector2 = singularity_position(sim.fighters[event.source])
+					var count: int = 1 if reduced else config.singularity_extract_plates
+					for plate in count:
+						_spawn(Kind.PLATE, at + Vector2((plate - count * 0.5) * config.singularity_plate_size, 0.0), target, config.singularity_plate_life, config.singularity_plate_size)
+
 				Hazard.Kind.FRACTURE:
 					chunks(Vector2(at.x, floor_y), config.fracture_chunks, 520.0, 5.0)
 					dust(Vector2(at.x, floor_y), config.fracture_dust, 16.0, 50.0)
@@ -265,7 +273,7 @@ func _process(delta: float) -> void:
 				_positions[i].y = floor_y
 				_velocities[i] = Vector2(_velocities[i].x * 0.6, -_velocities[i].y * config.chunk_bounce)
 				_spins[i] *= 0.5
-		else:
+		elif _kinds[i] == Kind.DUST:
 			_velocities[i] *= 1.0 - minf(delta * 3.0, 1.0)
 			_positions[i] += _velocities[i] * delta
 	queue_redraw()
@@ -286,6 +294,10 @@ func _draw() -> void:
 				var radius: float = snappedf(_sizes[i] * (0.6 + progress), GRID)
 				draw_circle(at, radius, Color(_tints[i], DUST_ALPHA * strength))
 				draw_circle(at + Vector2(-GRID, -GRID), radius * 0.5, Color(_tints[i].lightened(0.2), DUST_ALPHA * strength))
+			Kind.PLATE:
+				var rising: Vector2 = _positions[i].lerp(_velocities[i], smoothstep(0.0, 1.0, progress))
+				rising.x += sin(progress * PI) * config.singularity_distortion * sin(float(i))
+				draw_rock(self, rising.snapped(Vector2.ONE * GRID), _sizes[i], _spins[i] * progress, i)
 			Kind.CHUNK:
 				if progress > 0.8 and int(_ages[i] * 30.0) % 2 == 0:
 					continue
@@ -324,6 +336,7 @@ func _draw_marks() -> void:
 
 func _draw_powers() -> void:
 	for fighter in sim.fighters:
+		_draw_singularity(fighter)
 		_draw_hover_rocks(fighter)
 		var progress: float = meteor_progress(fighter.index)
 		if progress >= 0.0 and progress < 1.0:
@@ -334,6 +347,8 @@ func _draw_powers() -> void:
 			draw_rock(self, at, radius, _time * 0.8, 7)
 			draw_circle(at + Vector2(-radius * 0.3, -radius * 0.3), radius * 0.25, PALETTE.rock_light)
 	for projectile in sim.projectiles:
+		if projectile.active and projectile.kind == Projectile.Kind.SINGULARITY:
+			_draw_singularity_mass(Vector2(projectile.x, -projectile.y), projectile.size, sim.fighters[projectile.owner].singularity_mass, projectile.owner, false)
 		if projectile.active and projectile.kind == Projectile.Kind.ROCK:
 			draw_rock(self, Vector2(projectile.x, -projectile.y), projectile.size, _time * 6.0, projectile.owner * 3 + int(projectile.travelled) % 3)
 	for hazard in sim.hazards:
@@ -369,3 +384,47 @@ func _hover_at(fighter: FighterState, index: int, lift: float) -> Vector2:
 	var x: float = fighter.x + fighter.facing * (30.0 + index * 16.0)
 	var height: float = config.throw_rise_height * eased + index * 8.0 * eased + sin(_time * 5.0 + index) * 2.0 * eased
 	return Vector2(x, floor_y - 6.0 - height)
+
+
+func singularity_position(fighter: FighterState) -> Vector2:
+	var hand: Vector2 = Vector2(fighter.x + fighter.facing * 30.0, -fighter.y - 110.0)
+	if fighter.index < views.size():
+		hand = (views[fighter.index].hand_position(false) + views[fighter.index].hand_position(true)) * 0.5
+	if fighter.singularity_ticks <= 0:
+		return hand
+	var rise: float = clampf(Ticks.to_seconds(fighter.singularity_elapsed) / maxf(fighter.singularity_power.suspension, Ticks.DELTA), 0.0, 1.0)
+	return hand.lerp(Vector2(fighter.singularity_center.x, -fighter.singularity_center.y), smoothstep(0.0, 1.0, rise))
+
+
+func singularity_radius(fighter: FighterState) -> float:
+	var power: PowerData = fighter.singularity_power
+	if fighter.singularity_ticks <= 0 or power == null:
+		return config.singularity_radius
+	var waves: float = ceilf((power.duration - power.formation - power.suspension) / power.pulse_interval)
+	var mass: float = clampf(float(fighter.singularity_mass) / maxf(waves * 2.0, 1.0), 0.0, 1.0)
+	return lerpf(config.singularity_radius, power.projectile_size, mass)
+
+
+func _draw_singularity(fighter: FighterState) -> void:
+	if not fighter.is_alive():
+		return
+	var creating: bool = fighter.power != null and fighter.power.kind == PowerData.Kind.SINGULARITY and fighter.power_phase == FighterState.Phase.STARTUP
+	if fighter.singularity_ticks <= 0 and not creating:
+		return
+	var radius: float = singularity_radius(fighter)
+	if creating:
+		radius *= clampf(float(fighter.power_ticks) / maxf(fighter.power.startup_ticks(), 1.0), 0.0, 1.0)
+	_draw_singularity_mass(singularity_position(fighter), radius, fighter.singularity_mass, fighter.index, fighter.singularity_phase == FighterState.SingularityPhase.FORMATION)
+
+
+func _draw_singularity_mass(at: Vector2, radius: float, mass: int, variant: int, forming: bool) -> void:
+	if forming and not reduced:
+		at += Vector2(sin(floorf(_time * config.singularity_vibration_rate) * 2.3), cos(floorf(_time * config.singularity_vibration_rate) * 1.7)) * config.singularity_vibration
+	at = at.snapped(Vector2.ONE * GRID)
+	draw_rock(self, at, radius, _time * config.singularity_orbit_speed, variant + mass)
+	draw_circle(at, snappedf(radius * 0.72, GRID), PALETTE.background)
+	var count: int = mini(mass + 2, config.singularity_plates) / (2 if reduced else 1)
+	for plate in count:
+		var angle: float = _time * config.singularity_orbit_speed + float(plate) * TAU / maxf(count, 1.0)
+		var offset: Vector2 = Vector2.from_angle(angle) * radius * (0.8 + 0.2 * sin(plate * 1.7))
+		draw_rock(self, (at + offset).snapped(Vector2.ONE * GRID), config.singularity_plate_size * (0.6 + float(plate % 3) * 0.2), angle, plate)

@@ -5,7 +5,7 @@ enum Path { COMMON, AURORA, ECLIPSE }
 enum Kind {
 	REPULSE, PULL, THROW, MIND_TWIST, SUPREME_PUSH, FRACTURE,
 	BARRIER, HEAL, FOCUS, ABSORPTION, SANCTUARY, MASS_TELEKINESIS, UNUSED_FLOW_CLEAVE,
-	LIGHTNING, CHOKE, FREEZE, STORM, WRATH, DRAIN, ARSENAL, HIGHER_INSTINCT,
+	LIGHTNING, CHOKE, FREEZE, STORM, WRATH, DRAIN, ARSENAL, HIGHER_INSTINCT, SINGULARITY,
 }
 
 @export var id: StringName
@@ -46,6 +46,25 @@ enum Kind {
 @export var interaction: InteractionTable
 @export var guard_vigor: float = 10.0
 @export var barrier_drain: float = 0.0
+
+@export_group("Singularity")
+@export var suspension: float = 0.0
+@export var formation: float = 0.0
+@export var warning: float = 0.0
+@export var mark_half_width: float = 0.0
+@export var safe_width: float = 0.0
+@export var extraction_damage: float = 0.0
+@export var extraction_lift: float = 0.0
+@export var extraction_hold: float = 0.0
+@export var ground_pull: float = 0.0
+@export var air_pull: float = 0.0
+@export var vertical_pull: float = 0.0
+@export var pull_speed: float = 0.0
+@export var sphere_height: float = 0.0
+@export var target_height: float = 0.0
+@export var projectile_size: float = 0.0
+@export var throw_range: float = 0.0
+@export var throw_push: float = 0.0
 
 @export_group("By Flow level")
 @export var level_damage: PackedFloat32Array = []

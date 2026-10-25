@@ -322,6 +322,8 @@ func _on_combat_event(event: CombatEvent) -> void:
 			_screen.pulse_letterbox(EFFECTS.perfect_parry_letterbox)
 			_desaturation.pulse(EFFECTS.desaturation)
 		CombatEvent.Type.POWER_ACTIVE:
+			if event.power.kind == PowerData.Kind.SINGULARITY:
+				_camera.pull_back(POWER_VFX.singularity_pull_back, event.power.duration)
 			if event.power.kind == PowerData.Kind.HIGHER_INSTINCT:
 				_screen.pulse_letterbox(POWER_VFX.instinct_letterbox)
 			if event.power.kind == PowerData.Kind.MASS_TELEKINESIS:

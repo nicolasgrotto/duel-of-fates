@@ -1,6 +1,8 @@
 class_name MatchSimulation
 extends RefCounted
 
+const SINGULARITY = preload("res://simulation/powers/singularity_field.gd")
+
 enum Phase { INTRO, FIGHT, KO, OVER }
 
 const EVENT_POOL_SIZE: int = 32
@@ -134,6 +136,7 @@ func step(first_intent: Intent, second_intent: Intent) -> void:
 		HitResolver.resolve(self)
 		ProjectileSystem.step(self)
 		HazardSystem.step(self)
+		SINGULARITY.step(self)
 		BladeLockResolver.step(self)
 		BladePress.observe(self)
 		_check_round_end()
@@ -243,6 +246,7 @@ func spawn_projectile(kind: Projectile.Kind, owner: FighterState, power: PowerDa
 		projectile.x = owner.x + owner.facing * config.body_width
 		projectile.y = owner.y + config.flow.projectile_height
 		projectile.vx = 0.0
+		projectile.vy = 0.0
 		projectile.travelled = 0.0
 		projectile.returning = false
 		projectile.hit_done = false
@@ -551,6 +555,7 @@ func _regenerate(fighter: FighterState) -> void:
 func _integrate(fighter: FighterState) -> void:
 	if fighter.state == FighterState.State.BLADE_LOCK:
 		return
+	SINGULARITY.pull(self, fighter)
 	var suspended: bool = fighter.state == FighterState.State.HELD and fighter.held_by_choke
 	if not fighter.on_ground and not suspended:
 		fighter.vy = maxf(fighter.vy - config.gravity * Ticks.DELTA, -config.max_fall_speed)

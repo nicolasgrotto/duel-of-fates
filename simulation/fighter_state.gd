@@ -21,6 +21,7 @@ enum State {
 enum Phase { NONE, STARTUP, ACTIVE, RECOVERY }
 enum DodgeKind { NONE, GROUND, AIR, EVADE, DASH, SPIN }
 enum Action { NONE, JUMP, BLOCK, LIGHT, HEAVY, SHOVE, EVADE, DODGE, SPECIAL, POWER, FOURTH }
+enum SingularityPhase { NONE, SUSPENSION, EXTRACTION, FORMATION, THROW }
 enum InstinctMotion { LEAN, STEP_BACK, TURN, SLIDE }
 enum Wound { NONE, ARM, LEG }
 
@@ -129,6 +130,15 @@ var pulse_ticks: int = 0
 var spawned: int = 0
 var heal_ticks: int = 0
 var heal_per_tick: float = 0.0
+var singularity_ticks: int = 0
+var singularity_elapsed: int = 0
+var singularity_phase: SingularityPhase = SingularityPhase.NONE
+var singularity_wave: int = 0
+var singularity_mass: int = 0
+var singularity_throw_ticks: int = 0
+var singularity_center: Vector2 = Vector2.ZERO
+var singularity_aim: Vector2 = Vector2.ZERO
+var singularity_power: PowerData
 var instinct_ticks: int = 0
 var instinct_counter_ticks: int = 0
 var instinct_evade_ticks: int = 0
@@ -304,6 +314,15 @@ func reset_for_round(start_x: float, start_facing: int) -> void:
 	spawned = 0
 	heal_ticks = 0
 	heal_per_tick = 0.0
+	singularity_ticks = 0
+	singularity_elapsed = 0
+	singularity_phase = SingularityPhase.NONE
+	singularity_wave = 0
+	singularity_mass = 0
+	singularity_throw_ticks = 0
+	singularity_center = Vector2.ZERO
+	singularity_aim = Vector2.ZERO
+	singularity_power = null
 	instinct_ticks = 0
 	instinct_counter_ticks = 0
 	instinct_evade_ticks = 0
@@ -340,10 +359,16 @@ func capture() -> Dictionary:
 	var snapshot: Dictionary = {}
 	for property in get_property_list():
 		if property["usage"] & PROPERTY_USAGE_SCRIPT_VARIABLE:
-			snapshot[property["name"]] = get(property["name"])
+			var value: Variant = get(property["name"])
+			if value is Array or value is PackedInt32Array:
+				value = value.duplicate()
+			snapshot[property["name"]] = value
 	return snapshot
 
 
 func restore(snapshot: Dictionary) -> void:
 	for key in snapshot:
-		set(key, snapshot[key])
+		var value: Variant = snapshot[key]
+		if value is Array or value is PackedInt32Array:
+			value = value.duplicate()
+		set(key, value)

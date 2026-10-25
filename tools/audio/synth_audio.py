@@ -416,6 +416,16 @@ def instinct_sounds():
     save("powers/instinct_evade.wav", (air * 0.6 + sweep(1200, 700, 0.2) * 0.2) * envelope(0.2, 0.01, 2.5))
 
 
+def singularity_sounds():
+    rng = np.random.default_rng(505)
+    def stone(seconds):
+        return bandpass(rng.normal(0, 1, int(seconds * RATE)), 160, 2200)
+    save("powers/singularity.wav", (sweep(42, 120, 1.0) + stone(1.0) * 0.35) * envelope(1.0, 0.3, 1.2))
+    save("powers/singularity_extract.wav", (thump(100, 0.35) + stone(0.35) * 0.5) * envelope(0.35, 0.01, 1.4))
+    save("powers/singularity_throw.wav", (sweep(210, 48, 0.6) + stone(0.6) * 0.6) * envelope(0.6, 0.02, 1.6))
+    save("powers/singularity_impact.wav", thump(45, 0.8) + stone(0.8) * envelope(0.8, 0.005, 3.0))
+
+
 if __name__ == "__main__":
     blade_sounds()
     impact_sounds()
@@ -426,6 +436,7 @@ if __name__ == "__main__":
     ambience()
     power_sounds()
     instinct_sounds()
+    singularity_sounds()
     arena_ambiences()
     themes()
     print("audio written")

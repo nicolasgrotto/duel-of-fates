@@ -1,5 +1,7 @@
 class_name PowerEffects
 
+const SINGULARITY = preload("res://simulation/powers/singularity_field.gd")
+
 const ROCK_SPACING: float = 0.12
 const ROCK_LIFT: float = 18.0
 const APEX_TIER: int = 3
@@ -43,6 +45,8 @@ static func activate(sim: MatchSimulation, caster: FighterState) -> void:
 			_heal(sim, caster, power)
 		PowerData.Kind.FOCUS:
 			caster.focus_ticks = Ticks.from_seconds(power.duration * caster.flow_potency)
+		PowerData.Kind.SINGULARITY:
+			SINGULARITY.start(sim, caster, power)
 		PowerData.Kind.HIGHER_INSTINCT:
 			caster.instinct_power = power
 			caster.instinct_ticks = Ticks.from_seconds(power.duration * caster.flow_potency)

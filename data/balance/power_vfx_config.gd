@@ -111,3 +111,20 @@ extends Resource
 @export var instinct_shift: float = 12.0
 @export var instinct_step: float = 14.0
 @export var instinct_slide: float = 20.0
+
+@export_group("Singularity")
+@export var singularity_radius: float = 18.0
+@export var singularity_plates: int = 12
+@export var singularity_plate_size: float = 12.0
+@export var singularity_plate_life: float = 0.65
+@export var singularity_extract_plates: int = 3
+@export var singularity_orbit_speed: float = 0.8
+@export var singularity_vibration: float = 4.0
+@export var singularity_vibration_rate: float = 22.0
+@export var singularity_tier_tint: float = 0.35
+@export var singularity_distortion: float = 28.0
+@export var singularity_pull_back: float = 0.12
+@export var singularity_mark_height: float = 18.0
+@export var singularity_mark_alpha: float = 0.8
+@export var singularity_cup_hand: Vector2 = Vector2(28.0, -30.0)
+@export var singularity_cup_grip: Vector2 = Vector2(8.0, -24.0)

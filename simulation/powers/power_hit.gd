@@ -63,7 +63,7 @@ static func _guard(sim: MatchSimulation, caster: FighterState, target: FighterSt
 	var event: CombatEvent = _event(sim, CombatEvent.Type.POWER_BLOCKED, caster, target, power, impact)
 	event.amount = damage
 	if damage > 0.0 and sim.apply_damage(target, damage, true):
-		sim.kill(target, caster, null, power)
+		sim.kill(target, caster, null, power if impact.allow_finisher else null)
 		return
 	sim.drain_vigor(target, impact.guard_vigor * band.guard_vigor_ratio)
 	target.vx = direction * absf(impact.push) * band.guard_slide_ratio * signf(impact.push if impact.push != 0.0 else 1.0)
@@ -86,10 +86,10 @@ static func _hit(sim: MatchSimulation, caster: FighterState, target: FighterStat
 	if damage > 0.0 and not impact.periodic and impact.grants_flow:
 		sim.gain_flow(target, flow.gain_on_hurt)
 		sim.gain_flow(caster, flow.gain_on_hit)
-	if lethal or _executes(sim, caster, target, power):
+	if lethal or (impact.allow_finisher and _executes(sim, caster, target, power)):
 		if not lethal:
 			sim.apply_damage(target, target.health, true)
-		sim.kill(target, caster, null, power)
+		sim.kill(target, caster, null, power if impact.allow_finisher else null)
 		return
 	if stagger > 0.0:
 		_recoil(sim, target, FighterState.State.STAGGERED, stagger)

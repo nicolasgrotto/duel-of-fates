@@ -23,6 +23,11 @@ static func drift(sim: MatchSimulation) -> void:
 
 
 static func _move(sim: MatchSimulation, projectile: Projectile, owner: FighterState) -> void:
+	if projectile.kind == Projectile.Kind.SINGULARITY:
+		projectile.delay_ticks -= 1
+		if projectile.delay_ticks <= 0:
+			_end(sim, projectile)
+			return
 	var step: float = projectile.vx * Ticks.DELTA
 	if projectile.kind == Projectile.Kind.BLADE and projectile.returning:
 		var toward: float = signf(owner.x - projectile.x)
@@ -33,9 +38,13 @@ static func _move(sim: MatchSimulation, projectile: Projectile, owner: FighterSt
 			_end(sim, projectile)
 			return
 	projectile.x += step
-	projectile.travelled += absf(step)
+	if projectile.kind == Projectile.Kind.SINGULARITY:
+		projectile.y += projectile.vy * Ticks.DELTA
+		projectile.travelled += Vector2(step, projectile.vy * Ticks.DELTA).length()
+	else:
+		projectile.travelled += absf(step)
 	var limit: float = sim.config.half_width()
-	var reached: bool = projectile.travelled >= projectile.max_distance or absf(projectile.x) >= limit
+	var reached: bool = projectile.travelled >= projectile.max_distance or absf(projectile.x) >= limit or (projectile.kind == Projectile.Kind.SINGULARITY and projectile.y < -projectile.size)
 	if not reached:
 		return
 	if projectile.kind == Projectile.Kind.BLADE and not projectile.returning:
@@ -52,7 +61,7 @@ static func _touches(sim: MatchSimulation, projectile: Projectile, target: Fight
 
 
 static func _collide(sim: MatchSimulation, projectile: Projectile, owner: FighterState, target: FighterState) -> void:
-	if target.arsenal_count > 0 and projectile.kind != Projectile.Kind.BLADE:
+	if target.arsenal_count > 0 and projectile.kind != Projectile.Kind.BLADE and projectile.kind != Projectile.Kind.SINGULARITY:
 		target.arsenal_count -= 1
 		var caught: CombatEvent = sim.emit(CombatEvent.Type.POWER_BLOCKED, owner.index, target.index)
 		caught.power = projectile.power
@@ -73,6 +82,11 @@ static func _collide(sim: MatchSimulation, projectile: Projectile, owner: Fighte
 	impact.flow_level = projectile.flow_level
 	impact.damage = projectile.damage
 	impact.hold = 0.25
+	if projectile.kind == Projectile.Kind.SINGULARITY:
+		impact.ignore_barrier = true
+		impact.ignore_absorption = true
+		impact.stagger = projectile.power.stagger
+		impact.push = projectile.power.throw_push
 	impact.guard_vigor = projectile.power.guard_vigor if projectile.power != null else 8.0
 	var result: PowerHit.Result = PowerHit.resolve(sim, owner, target, projectile.power, impact)
 	if result == PowerHit.Result.MISSED:

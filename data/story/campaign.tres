@@ -44,6 +44,7 @@
 [ext_resource type="Resource" path="res://data/powers/fracture.tres" id="p_eclipse_8"]
 [ext_resource type="Resource" path="res://data/powers/arsenal.tres" id="p_eclipse_9"]
 [ext_resource type="Resource" path="res://data/powers/storm.tres" id="p_eclipse_10"]
+[ext_resource type="Resource" path="res://data/powers/singularity.tres" id="p_eclipse_11"]
 [ext_resource type="Resource" path="res://data/techniques/projected_cut.tres" id="projected_cut"]
 
 [sub_resource type="Resource" id="aurora_0"]
@@ -207,6 +208,13 @@ cost = 4
 parent = 9
 branch = 1
 
+[sub_resource type="Resource" id="eclipse_11"]
+script = ExtResource("tree_node")
+power = ExtResource("p_eclipse_11")
+cost = 4
+parent = 10
+branch = 1
+
 [sub_resource type="Resource" id="blade_0"]
 script = ExtResource("tree_node")
 id = &"style_forward"
@@ -256,7 +264,7 @@ aurora_secret_ending = ExtResource("n_heir_returns")
 eclipse_normal_ending = ExtResource("n_forest_yields")
 eclipse_secret_ending = ExtResource("n_balance")
 aurora_tree = Array[ExtResource("tree_node")]([SubResource("aurora_0"), SubResource("aurora_1"), SubResource("aurora_2"), SubResource("aurora_3"), SubResource("aurora_4"), SubResource("aurora_5"), SubResource("aurora_6"), SubResource("aurora_7"), SubResource("aurora_8"), SubResource("aurora_9"), SubResource("aurora_10"), SubResource("aurora_11")])
-eclipse_tree = Array[ExtResource("tree_node")]([SubResource("eclipse_0"), SubResource("eclipse_1"), SubResource("eclipse_2"), SubResource("eclipse_3"), SubResource("eclipse_4"), SubResource("eclipse_5"), SubResource("eclipse_6"), SubResource("eclipse_7"), SubResource("eclipse_8"), SubResource("eclipse_9"), SubResource("eclipse_10")])
+eclipse_tree = Array[ExtResource("tree_node")]([SubResource("eclipse_0"), SubResource("eclipse_1"), SubResource("eclipse_2"), SubResource("eclipse_3"), SubResource("eclipse_4"), SubResource("eclipse_5"), SubResource("eclipse_6"), SubResource("eclipse_7"), SubResource("eclipse_8"), SubResource("eclipse_9"), SubResource("eclipse_10"), SubResource("eclipse_11")])
 skill_points_win = 3
 skill_points_loss = 1
 skill_points_milestone = 1

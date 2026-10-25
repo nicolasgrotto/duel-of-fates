@@ -252,3 +252,18 @@ Para cada item ⚠️ ou ❌, escreva: número, personagem, arena, o que fez, o 
 | 04.3 | Atacar com as duas lâminas, salvar/restaurar e deixar expirar | Choques/disputas preservados, replay idêntico, timers zeram | Suíte completa: 339 passando, zero falhas |
 | 04.4 | Equipar na História/Galeria abaixo e acima do Fluxo 7 | Aurora nó 12 custa 4, exige o nó 11; compra possível antes do tier, equipamento só em Fluxo 7+ | Testes de catálogo e árvore; gerador atualizado |
 | 04.5 | Jogar com efeitos reduzidos e enfrentar IA | Aura discreta permanece; IA usa poderes ou espera e não insiste em lâminas | Capturas reduzidas e teste de 180 ticks; avaliação humana da sensação pendente |
+
+## Task 05 — Singularidade Devastadora
+
+| Caso | Ação | Resultado esperado | Validação local |
+| --- | --- | --- | --- |
+| 05.1 | Soberano invoca contra Guardião parado | Criação, subida, aviso de 0,65 s, placas, atração aérea, formação e arremesso; piso visível | 100 PNGs em `build/task05_renders/`, a cada 0,25 s; quatro contact sheets inspecionadas |
+| 05.2 | Correr entre avisos e esquivar cruzando a trajetória final | Marca fixa fica para trás; esquiva invulnerável e sair da trajetória evitam; não pular | Capturas 1_* e 3_*: Guardião termina com 108/108 de vida, efeitos completos/reduzidos; teste de simulação de corrida, trajetória e esquiva |
+| 05.3 | Defender com guarda, Barreira, Absorção, Arsenal, Santuário ou Instinto | Massa atravessa as primeiras quatro; Santuário absorve vida; Instinto não evita | Testes específicos das seis interações |
+| 05.4 | Acertar durante criação, matar o lançador, salvar/restaurar durante marcas | Criação interrompida; morte cancela campo/marcas; replay idêntico | Testes, incluindo cópia independente das recargas no snapshot |
+| 05.5 | Pedir ataque e outro poder durante campo; mover e defender | Ataques recusados; deslocamento/defesa/esquiva possíveis; lançador vulnerável | Teste do bloqueio de ações e interrupção |
+| 05.6 | Galeria: tier abaixo de III, status, Singularidade com Finalização ligada | Gate Fluxo 7, espera pelas fases; alvo sobrevive às extrações e morre em BLAST na massa final | Oito capturas em `build/task05_gallery/`, testes dinâmicos de todas as finalizações; nó 12 Eclipse custa 4 e depende do 11 |
+| 05.7 | IA no Difícil com as duas supremas equipadas | Reserva medidor, lança a média distância, sai das marcas, esquiva da massa sem salto/guarda | 14 testes novos; 72 duelos adicionais, 36 lançamentos, nenhum inconcluso |
+| 05.8 | Experimentar saídas perto das bordas, evitando correr junto da massa | Sempre escolher passagem antes de a placa subir; invulnerabilidade exige momento correto | Sonda de 32 sementes/distâncias: parado atingido em 32/32; controlador heurístico de corrida/esquiva sem dano em 19/32. As 13 falhas reforçam a necessidade de validar legibilidade e tolerância com jogador humano; não é garantia de fuga automática |
+
+Suíte final das tasks 04–05: **353 testes passando, zero falhas** (`build/task05_tests_final.log`). Matriz padrão de 660 duelos mantém exatamente vitórias e contatos anteriores. Renderização executada na Godot 4.7.2; continuam pendentes avaliação humana de sensação, áudio e controle físico.

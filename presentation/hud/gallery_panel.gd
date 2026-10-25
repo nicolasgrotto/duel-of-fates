@@ -186,7 +186,7 @@ func demonstrating(sim: MatchSimulation) -> bool:
 	if sim.cinematic_ticks > 0:
 		return true
 	var fighter: FighterState = sim.fighters[caster_index]
-	if fighter.is_casting() or fighter.is_attacking() or fighter.blade_out or fighter.rain_ticks > 0:
+	if fighter.is_casting() or fighter.is_attacking() or fighter.blade_out or fighter.rain_ticks > 0 or fighter.singularity_ticks > 0 or fighter.instinct_ticks > 0:
 		return true
 	if sim.fighters[1 - caster_index].state == FighterState.State.HELD:
 		return true
@@ -222,7 +222,12 @@ func _stage(sim: MatchSimulation) -> void:
 	sim.rules.endless_finishers = finishing
 	target.finishing = finishing
 	if finishing:
-		other.health = minf(config.gallery_finisher_health, other.max_health)
+		var health: float = config.gallery_finisher_health
+		if power != null and power.kind == PowerData.Kind.SINGULARITY:
+			var waves: float = ceilf((power.duration - power.formation - power.suspension) / power.pulse_interval)
+			var table: InteractionTable = power.interaction if power.interaction != null else sim.basic_table
+			health += waves * power.extraction_damage * fighter.flow_potency * table.band_for(fighter.flow_level - other.flow_level).scale
+		other.health = minf(health, other.max_health)
 	var target_powers: Array[PowerData] = [null if finishing else CATALOG.find(TARGET_POWERS.get(target.behavior, &"")), null, null]
 	other.equip_powers(target_powers)
 	if power != null and _tier < power.min_tier(sim.config.flow):

@@ -31,6 +31,7 @@ const POWER_DB: float = -3.0
 const CHANNEL_DB: float = -8.0
 const SANCTUARY_EXPIRY_TICKS: int = 4
 const POWER_STARTS: Dictionary = {
+	PowerData.Kind.SINGULARITY: &"power_singularity",
 	PowerData.Kind.STORM: &"power_storm_rise",
 	PowerData.Kind.MASS_TELEKINESIS: &"power_mass_rumble",
 	PowerData.Kind.ARSENAL: &"power_mass_rumble",
@@ -58,16 +59,19 @@ const CHANNEL_LOOPS: Dictionary = {
 	PowerData.Kind.DRAIN: &"power_drain_loop",
 }
 const POWER_HITS: Dictionary = {
+	PowerData.Kind.SINGULARITY: &"power_singularity_impact",
 	PowerData.Kind.LIGHTNING: &"power_lightning_snap",
 	PowerData.Kind.THROW: &"power_rock_impact",
 	PowerData.Kind.MASS_TELEKINESIS: &"power_rock_impact",
 	PowerData.Kind.FRACTURE: &"power_fracture_burst",
 }
 const HAZARD_STRIKES: Dictionary = {
+	Hazard.Kind.EXTRACTION: &"power_singularity_extract",
 	Hazard.Kind.BOLT: &"power_bolt_strike",
 	Hazard.Kind.ROCK_DROP: &"power_rock_impact",
 }
 const HAZARD_MARKS: Dictionary = {
+	Hazard.Kind.EXTRACTION: &"power_mark_tick",
 	Hazard.Kind.BOLT: &"power_mark_tick",
 	Hazard.Kind.ROCK_DROP: &"power_whistle",
 }
@@ -209,7 +213,8 @@ func _on_flow_event(event: CombatEvent, at: Vector2) -> void:
 				AudioDirector.play(POWER_ACTIVES[event.power.kind], views[event.source].global_position, POWER_DB)
 		CombatEvent.Type.POWER_HIT:
 			var kind: PowerData.Kind = event.power.kind if event.power != null else PowerData.Kind.REPULSE
-			AudioDirector.play(POWER_HITS.get(kind, &"hit_light"), at, POWER_DB, randf_range(0.95, 1.05))
+			if kind != PowerData.Kind.SINGULARITY or sim.fighters[event.source].singularity_ticks == 0:
+				AudioDirector.play(POWER_HITS.get(kind, &"hit_light"), at, POWER_DB, randf_range(0.95, 1.05))
 		CombatEvent.Type.POWER_BLOCKED:
 			var barrier: bool = sim.fighters[event.target].power_kind_active(PowerData.Kind.BARRIER)
 			AudioDirector.play(&"power_barrier_absorb" if barrier else &"block", at, POWER_DB)
@@ -227,6 +232,8 @@ func _on_flow_event(event: CombatEvent, at: Vector2) -> void:
 				AudioDirector.play(HAZARD_STRIKES[int(event.amount)], at, POWER_DB, randf_range(0.9, 1.1))
 		CombatEvent.Type.PROJECTILE_SPAWNED:
 			match int(event.amount):
+				Projectile.Kind.SINGULARITY:
+					AudioDirector.play(&"power_singularity_throw", views[event.source].global_position, POWER_DB)
 				Projectile.Kind.ARSENAL:
 					AudioDirector.play(&"power_arsenal_launch", views[event.source].global_position, POWER_DB, randf_range(0.9, 1.1))
 				Projectile.Kind.CLEAVE:

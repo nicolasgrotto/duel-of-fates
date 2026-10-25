@@ -1,7 +1,7 @@
 class_name AiController
 extends FighterController
 
-enum Plan { WAIT, APPROACH, RETREAT, GUARD }
+enum Plan { WAIT, APPROACH, RETREAT, GUARD, STEP_LEFT, STEP_RIGHT }
 
 const PERFECT_PARRY_TARGET: int = 2
 const PARRY_TARGET: int = 7
@@ -88,6 +88,8 @@ func _reset_plan() -> void:
 
 
 func _think(sim: MatchSimulation, me: FighterState, opponent: FighterState) -> void:
+	if _avoid_singularity(sim, me, opponent):
+		return
 	if _answer_instinct(sim, me, opponent):
 		return
 	if (_chain_left > 0 and me.is_attacking()) or _hold_command != 0 or _channel_ticks > 0:
@@ -120,6 +122,40 @@ func _think(sim: MatchSimulation, me: FighterState, opponent: FighterState) -> v
 	if _try_attack(me, gap):
 		return
 	_position(me, opponent, gap)
+
+
+func _avoid_singularity(sim: MatchSimulation, me: FighterState, opponent: FighterState) -> bool:
+	if opponent.singularity_phase == FighterState.SingularityPhase.NONE and not (opponent.power != null and opponent.power.kind == PowerData.Kind.SINGULARITY):
+		return false
+	var direction: int = AiPowers.singularity_direction(sim, me)
+	var dodge_mass: bool = false
+	var active: bool = opponent.singularity_ticks > 0 or (opponent.power != null and opponent.power.kind == PowerData.Kind.SINGULARITY and opponent.is_casting())
+	if active and direction == 0 and opponent.singularity_phase == FighterState.SingularityPhase.FORMATION and absf(me.x - opponent.singularity_aim.x) < opponent.singularity_power.projectile_size + AiPowers.THREAT_MARGIN:
+		direction = int(signf(me.x - opponent.singularity_aim.x))
+		if direction == 0:
+			direction = -1 if me.x > 0.0 else 1
+	for projectile in sim.projectiles:
+		if projectile.active and projectile.owner != me.index and projectile.kind == Projectile.Kind.SINGULARITY:
+			active = true
+			var to_mass: Vector2 = Vector2(projectile.x - me.x, projectile.y - me.y - sim.config.body_height * 0.5)
+			dodge_mass = to_mass.length() < sim.config.body_height * 0.5 + projectile.size + AiPowers.THREAT_MARGIN
+			if absf(me.x - projectile.x) < projectile.size + AiPowers.THREAT_MARGIN:
+				direction = -1 if me.x < projectile.x else 1
+				if absf(me.x + direction * AiPowers.THREAT_MARGIN) > sim.config.half_width() - sim.config.body_width:
+					direction = -direction
+	if not active and direction == 0:
+		return false
+	if dodge_mass:
+		direction = -me.facing
+	_reset_plan()
+	var plan: Plan = Plan.WAIT
+	if direction != 0:
+		plan = Plan.STEP_LEFT if direction < 0 else Plan.STEP_RIGHT
+	_set_plan(plan, _reaction_ticks(), "leave singularity" if direction != 0 else "safe ground")
+	if direction != 0 and (direction != me.facing or dodge_mass) and me.on_ground and me.is_free() and me.vigor >= sim.config.dodge_vigor:
+		_schedule(Intent.Command.DODGE, 0, 0, plan, AiPowers.THREAT_TICKS, "dodge singularity")
+		_press_direction = direction * me.facing
+	return true
 
 
 func _answer_instinct(sim: MatchSimulation, me: FighterState, opponent: FighterState) -> bool:
@@ -467,6 +503,10 @@ func _execute(me: FighterState, opponent: FighterState, sim: MatchSimulation, in
 			intent.move_x = me.facing
 		Plan.RETREAT:
 			intent.move_x = -me.facing
+		Plan.STEP_LEFT:
+			intent.move_x = -1
+		Plan.STEP_RIGHT:
+			intent.move_x = 1
 		Plan.GUARD:
 			intent.hold(Intent.Command.BLOCK)
 	if _press_command != 0:

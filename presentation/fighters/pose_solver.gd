@@ -335,6 +335,13 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 				pose.front_foot = Vector2(6.0, 8.0)
 				pose.back_foot = Vector2(-4.0, 12.0)
 				lean = -10.0
+	if fighter.singularity_throw_ticks > 0 and fighter.is_alive():
+		pose.off_hand = PULL_CLAW_HAND
+		pose.open_hand = false
+		lean -= POWER_VFX.instinct_lean * 0.5
+	if fighter.singularity_ticks > 0 and fighter.singularity_phase == FighterState.SingularityPhase.FORMATION and fighter.is_free():
+		pose.off_hand = CAST_HAND
+		pose.open_hand = true
 	if fighter.instinct_evade_ticks > 0 and fighter.is_alive() and not fighter.is_attacking():
 		var evade: Vector2 = _instinct_evade(fighter, pose)
 		crouch += evade.x
@@ -949,6 +956,11 @@ func _cast(fighter: FighterState, pose: RigPose) -> Vector2:
 	pose.open_hand = true
 	var tremor: Vector2 = Vector2(sin(time * 41.0), cos(time * 37.0)) * TREMOR if fighter.state == FighterState.State.CHANNELING else Vector2.ZERO
 	match power.kind:
+		PowerData.Kind.SINGULARITY:
+			pose.off_hand = RELAXED_HAND.lerp(POWER_VFX.singularity_cup_hand, progress)
+			pose.grip = pose.grip.lerp(POWER_VFX.singularity_cup_grip, progress)
+			pose.blade_angle = lerpf(pose.blade_angle, INVOKE_ANGLE, progress)
+			return Vector2(4.0 * progress, -6.0 * progress)
 		PowerData.Kind.HIGHER_INSTINCT:
 			pose.off_hand = RELAXED_HAND.lerp(SELF_HAND, progress)
 			pose.grip = pose.grip.lerp(INVOKE_HAND, progress * 0.3)

@@ -1,0 +1,44 @@
+[gd_resource type="Resource" script_class="PowerData" format=3]
+
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/ui/powers/singularity.png" id="power_icon"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"singularity"
+name_key = "POWER_SINGULARITY"
+description_key = "POWER_SINGULARITY_TEXT"
+icon = ExtResource("power_icon")
+path = 2
+kind = 21
+cost = 85.0
+min_level = 7
+high_cost = true
+cooldown = 10.0
+startup = 0.6
+recovery = 0.2
+duration = 3.7
+pulse_interval = 0.65
+reach = 600.0
+damage = 38.0
+stagger = 0.6
+speed = 900.0
+suspension = 0.4
+formation = 0.65
+warning = 0.65
+mark_half_width = 48.0
+safe_width = 80.0
+extraction_damage = 3.0
+extraction_lift = 480.0
+extraction_hold = 0.2
+ground_pull = 30.0
+air_pull = 1600.0
+vertical_pull = 3300.0
+pull_speed = 360.0
+sphere_height = 280.0
+target_height = 75.0
+projectile_size = 54.0
+throw_range = 1400.0
+throw_push = 620.0
+guard_blocks = false
+finisher = 7

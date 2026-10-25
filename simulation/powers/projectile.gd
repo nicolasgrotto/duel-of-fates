@@ -1,7 +1,7 @@
 class_name Projectile
 extends RefCounted
 
-enum Kind { ROCK, CLEAVE, BLADE, ARSENAL }
+enum Kind { ROCK, CLEAVE, BLADE, ARSENAL, SINGULARITY }
 
 var active: bool = false
 var kind: Kind = Kind.ROCK
@@ -9,6 +9,7 @@ var owner: int = 0
 var x: float = 0.0
 var y: float = 0.0
 var vx: float = 0.0
+var vy: float = 0.0
 var damage: float = 0.0
 var size: float = 12.0
 var travelled: float = 0.0
@@ -24,7 +25,7 @@ var move: MoveData
 
 func capture() -> Dictionary:
 	return {
-		"active": active, "kind": kind, "owner": owner, "x": x, "y": y, "vx": vx, "damage": damage, "size": size,
+		"active": active, "kind": kind, "owner": owner, "x": x, "y": y, "vx": vx, "vy": vy, "damage": damage, "size": size,
 		"travelled": travelled, "max_distance": max_distance, "returning": returning, "hit_done": hit_done,
 		"flow_level": flow_level, "tier": tier, "delay_ticks": delay_ticks, "power": power, "move": move,
 	}
