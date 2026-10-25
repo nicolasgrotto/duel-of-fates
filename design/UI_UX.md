@@ -36,7 +36,7 @@ Fundo preto; uma lâmina horizontal acende do centro para as pontas (ciano-gelo)
 
 **Visual final (decidido na segunda etapa da pixel art, explorado no Claude Design entre três direções: emblema, choque no horizonte e letterbox):** o **emblema das lâminas cruzadas**. Ao fundo, acima do título, duas lâminas em X (ciano-gelo `#7fe4ff` e âmbar `#ffb34a`, cores sem moral, do `UiPalette`) com os cabos nas pontas de baixo, desenhadas em **pixel art na mesma grade do mundo** e ampliadas sem suavização; no cruzamento, uma estrela de faíscas de 4 pontas que pulsa, e faíscas soltas que caem de vez em quando. Ao abrir o menu, as lâminas acendem do cabo à ponta (como a ignição do round) e o cruzamento dá um clarão curto. O glow tremula de leve, como o zumbido. Duas linhas finas de horizonte (a plataforma) cruzam a tela abaixo do emblema, e poeira fina sobe devagar. Título, frase e lista ficam em alta resolução (Oxanium), centralizados sob o cruzamento: título com letras bem espaçadas, frase no destaque, lista com o traço curto de destaque à esquerda da opção selecionada. Nada de painéis, molduras ou botões: o emblema é a única imagem. No menu principal cada linha da lista é centralizada (com um espaço à direita do tamanho do traço, para o traço não empurrar o texto); nas listas das outras telas o texto continua alinhado à esquerda do bloco.
 
-Título centralizado, maiúsculas espaçadas, frase de apoio em destaque. Dois níveis na mesma tela: **Jogar** (Duelar, História, Arcade, Sobrevivência, 2 Jogadores), **Aprender** (Tutorial, Treinos guiados, Treino, Desafio de parry, Controles), **Extras** (Desafios, Galeria de poderes, Galeria da História), **Opções**. O nome do grupo aparece entre a frase e a lista; Voltar ou `Esc` volta à raiz.
+Título centralizado, maiúsculas espaçadas, frase de apoio em destaque. Dois níveis na mesma tela: **Jogar** (Duelar, História, Arcade, Sobrevivência, 2 Jogadores), **Aprender** (Tutorial, Treinos guiados, Treino, Desafio de parry, Controles), **Extras** (Desafios, Galeria de poderes, Galeria da História, Exibição), **Opções**. O nome do grupo aparece entre a frase e a lista; Voltar ou `Esc` volta à raiz.
 
 ### Seleção de personagem
 
@@ -117,6 +117,10 @@ Tela cheia sem HUD, letterbox fechado, "REPLAY" à esquerda na barra de baixo e 
 ### Listas (Treinos guiados, Desafios, Galeria da História)
 
 Título no alto, lista à esquerda, detalhe à direita (nome e até seis linhas). Desafios mostram o recorde. Itens não vistos da galeria aparecem como `???` com a dica de onde se liberam, sem nomes. A Galeria da História tem duas colunas: encontros (`1 · O Teste`, `5A`, `9E` para os secretos) e finais; ← → troca de coluna e a dica fica sob os finais.
+
+### Exibição
+
+Cinematográfica e sem HUD: letterbox ligado o tempo todo, as entradas dos lutadores no começo de cada duelo e um cartão de título no centro (nome do duelo em `ScreenTitleLabel`, os dois lutadores em `InfoLabel`), que entra e sai em fade enquanto a entrada acontece. Rodapé discreto em `HintLabel` com `Confirmar  próximo · Pausa  sair`, gerado dos bindings. Entre um duelo e outro, o fade do `SceneRouter`.
 
 ### Galeria de poderes
 

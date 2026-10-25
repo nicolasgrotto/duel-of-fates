@@ -448,6 +448,11 @@ Menu em dois níveis: **Jogar**, **Aprender**, **Extras**, **Opções**.
   - *Sob o eclipse*: Ceifador contra Espelho, Cidadela do Eclipse, Difícil, com Poderes. "Duas lâminas contra o reflexo, no escuro."
 - **Galeria de poderes**: cena de duelo sem rounds para ver cada poder e técnica em cada tier, contra alvos diferentes (parado, em guarda, com Barreira, com Absorção, no ar, atacando com Raio), com repetição automática e troca de lançador. Um botão liga a demonstração da finalização cinematográfica dos poderes e técnicas que a têm (regra `MatchRules.endless_finishers`: no modo sem fim o golpe pode matar, todo K.O. conta como decisivo e o round recomeça sem placar).
 - **Galeria da História**: encontros vencidos e finais alcançados, revistos com as falas; o que não foi visto aparece como `???`.
+- **Exibição** (decisão do autor): três duelos coreografados em sequência, como uma vitrine do jogo, sem controle do jogador. Cada duelo roda na simulação de verdade, com um roteiro de comandos por tick para os dois lutadores (determinístico: sai igual toda vez), e termina numa finalização cinematográfica:
+  1. **Lâminas** · Guardião contra Sombra: trocas de rápidos, guarda, choque, disputa de lâminas, esquivas e parry perfeito; termina nas duas lâminas.
+  2. **Fluxo** · Ancião contra Sombra Desperta: poderes dos dois caminhos (Raio contra Barreira, Repulsão, Puxão, Telecinese em Massa…); termina numa finalização de poder.
+  3. **Dança** · Garça contra Vespa: acrobacias, pulo duplo, esquiva com giro, as duas lâminas da Vespa e choque de fortes; termina no giro da Garça.
+  Valem Poderes com Fluxo sempre cheio (`free_powers`), finalizações, disputa e as entradas dos lutadores; a vida inicial de cada um vem do roteiro (`start_health`). Não há replay do golpe final nem tela de resultado: o duelo seguinte entra com o fade do roteador. Confirmar pula para o próximo; pausar permite sair. No fim, volta aos Extras.
 
 ## 17. Progressão e desbloqueios
 
