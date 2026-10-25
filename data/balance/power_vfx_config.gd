@@ -98,6 +98,11 @@ extends Resource
 @export var sky_fade: float = 2.5
 
 
+@export_group("Bolts")
+@export var bolt_length: float = 18.0
+@export var bolt_width: float = 4.0
+@export var bolt_muzzle_distance: float = 40.0
+
 @export_group("Higher instinct")
 @export var instinct_letterbox: float = 0.3
 @export var instinct_tier_tint: float = 0.18

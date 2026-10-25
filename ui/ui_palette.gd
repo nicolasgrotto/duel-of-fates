@@ -39,6 +39,7 @@ extends Resource
 @export var rock: Color = Color("#3a3d44")
 @export var rock_light: Color = Color("#6b6f78")
 @export var storm_cloud: Color = Color("#1b2233")
+@export var bolt: Color = Color("#ffe2b0")
 @export var menu_blade_a: Color = Color("#7fe4ff")
 @export var menu_blade_b: Color = Color("#ffb34a")
 @export var menu_hilt: Color = Color("#6b6f78")

@@ -426,6 +426,18 @@ def singularity_sounds():
     save("powers/singularity_impact.wav", thump(45, 0.8) + stone(0.8) * envelope(0.8, 0.005, 3.0))
 
 
+def bolt_sounds():
+    rng = np.random.default_rng(606)
+    crack = highpass(rng.normal(0, 1, int(0.12 * RATE)), 2400)
+    save("bolts/bolt_shot.wav", (sweep(1500, 380, 0.12, 0.6) * 0.7 + crack * 0.25) * envelope(0.12, 0.002, 2.2))
+    hiss = bandpass(rng.normal(0, 1, int(0.16 * RATE)), 3000, 9000)
+    save("bolts/bolt_deflect.wav", (hiss * 0.6 + partials([2350.0, 3710.0], 0.16, [18.0, 26.0]) * 0.3) * envelope(0.16, 0.001, 2.0))
+    hiss = bandpass(rng.normal(0, 1, int(0.24 * RATE)), 2600, 8000)
+    save("bolts/bolt_reflect.wav", (hiss * 0.45 + sweep(620, 1640, 0.24, 0.7) * 0.4) * envelope(0.24, 0.002, 1.8))
+    thud = lowpass(rng.normal(0, 1, int(0.14 * RATE)), 1200)
+    save("bolts/bolt_hit.wav", (thump(160, 0.14) * 0.7 + thud * 0.4) * envelope(0.14, 0.002, 2.4))
+
+
 if __name__ == "__main__":
     blade_sounds()
     impact_sounds()
@@ -437,6 +449,7 @@ if __name__ == "__main__":
     power_sounds()
     instinct_sounds()
     singularity_sounds()
+    bolt_sounds()
     arena_ambiences()
     themes()
     print("audio written")

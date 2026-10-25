@@ -23,6 +23,10 @@ extends Resource
 @export var blade_press_start: EffectRecipe
 @export var blade_press_end: EffectRecipe
 @export var disengage: EffectRecipe
+@export var bolt_hit: EffectRecipe
+@export var bolt_blocked: EffectRecipe
+@export var bolt_reflected: EffectRecipe
+@export var bolt_perfect_reflected: EffectRecipe
 
 @export_group("Sparks")
 @export var spark_life: float = 0.32
@@ -115,3 +119,7 @@ extends Resource
 @export var web_glow: bool = false
 @export var web_light_scale: float = 1.6
 @export var replay_ticks_per_frame: int = 240
+
+@export_group("Bolts")
+@export var bolt_guard_lead: float = 0.35
+@export var bolt_guard_segment: float = 60.0

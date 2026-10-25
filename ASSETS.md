@@ -33,6 +33,10 @@ Todo asset do projeto (arte, fonte, som, música, shader de terceiros) tem uma l
 
 | `assets/ui/powers/higher_instinct.png` | ícone do Instinto Superior, 24×24 | original, gerado por `tools/art/make_power_icons.py` | mesma licença do projeto | olho entre arcos partidos; paleta Aurora |
 | `assets/audio/powers/instinct.wav` | ativação do Instinto Superior | original, sintetizado por `tools/audio/synth_audio.py::instinct_sounds` | mesma licença do projeto | osciladores e ruído determinístico, sem amostras |
+| `assets/audio/bolts/bolt_shot.wav` | tiro de disparo | original, sintetizado por `tools/audio/synth_audio.py::bolt_sounds` | mesma licença do projeto | osciladores e ruído determinístico, sem amostras |
+| `assets/audio/bolts/bolt_deflect.wav` | disparo desfeito na guarda | original, sintetizado por `tools/audio/synth_audio.py::bolt_sounds` | mesma licença do projeto | chiado curto e parciais, sem amostras |
+| `assets/audio/bolts/bolt_reflect.wav` | disparo devolvido pelo parry | original, sintetizado por `tools/audio/synth_audio.py::bolt_sounds` | mesma licença do projeto | chiado e tom ascendente, sem amostras |
+| `assets/audio/bolts/bolt_hit.wav` | disparo acertando o corpo | original, sintetizado por `tools/audio/synth_audio.py::bolt_sounds` | mesma licença do projeto | baque curto, sem amostras |
 | `assets/audio/powers/instinct_evade.wav` | esquiva automática do Instinto Superior | original, sintetizado por `tools/audio/synth_audio.py::instinct_sounds` | mesma licença do projeto | sopro curto, sem amostras |
 
 | `assets/ui/powers/singularity.png` | ícone da Singularidade, 24×24 | original, gerado por `tools/art/make_power_icons.py` | mesma licença do projeto | anel partido e placas convergentes na paleta Eclipse |

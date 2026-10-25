@@ -111,6 +111,12 @@ func _recipe_for(event: CombatEvent) -> EffectRecipe:
 			return config.technique_clash
 		CombatEvent.Type.PROJECTILE_REFLECTED:
 			return config.parry
+		CombatEvent.Type.BOLT_HIT:
+			return config.bolt_hit
+		CombatEvent.Type.BOLT_BLOCKED:
+			return config.bolt_blocked
+		CombatEvent.Type.BOLT_REFLECTED:
+			return config.bolt_perfect_reflected if event.amount > 0.0 else config.bolt_reflected
 		CombatEvent.Type.LAND:
 			return config.plunge_impact if is_plunging(sim, event.source) else null
 	return null
@@ -155,6 +161,8 @@ func _direction(event: CombatEvent) -> float:
 
 
 func _ring_color(event: CombatEvent) -> Color:
+	if event.type == CombatEvent.Type.BOLT_REFLECTED and event.source >= 0:
+		return blade_colors[event.source]
 	if event.target >= 0:
 		return blade_colors[event.target]
 	return PALETTE.spark_hot
@@ -181,8 +189,10 @@ func _spark_tint(event: CombatEvent) -> Color:
 	if event.source < 0 or sim == null:
 		return PALETTE.spark_warm
 	match event.type:
-		CombatEvent.Type.BLADE_LOCK_PRESSED:
+		CombatEvent.Type.BLADE_LOCK_PRESSED, CombatEvent.Type.BOLT_REFLECTED:
 			return blade_colors[event.source]
+		CombatEvent.Type.BOLT_HIT, CombatEvent.Type.BOLT_BLOCKED:
+			return PALETTE.bolt
 		CombatEvent.Type.POWER_HIT, CombatEvent.Type.POWER_BLOCKED, CombatEvent.Type.HAZARD_TRIGGERED:
 			var tiers: PackedColorArray = PALETTE.flow_tiers
 			return tiers[clampi(sim.fighters[event.source].flow_tier, 0, tiers.size() - 1)]

@@ -84,6 +84,7 @@ func _fighter_lines(i: int) -> PackedStringArray:
 	]
 	lines.append("singularity %s  ticks %d  wave %d  mass %d  aim %s" % [FighterState.SingularityPhase.keys()[fighter.singularity_phase], fighter.singularity_ticks, fighter.singularity_wave, fighter.singularity_mass, str(fighter.singularity_aim)])
 	lines.append("instinct %d  counter %d  motion %s (%d)" % [fighter.instinct_ticks, fighter.instinct_counter_ticks, FighterState.InstinctMotion.keys()[fighter.instinct_motion], fighter.instinct_evade_ticks])
+	lines.append("bolts out %d  burst left %d" % [_bolts_owned(i), fighter.bolts_left])
 	lines.append_array(sim.state_logic(fighter).debug_lines(sim, fighter))
 	if i < views.size():
 		lines.append_array(views[i].intro_debug_lines())
@@ -95,6 +96,14 @@ func _fighter_lines(i: int) -> PackedStringArray:
 		lines.append("intent move %d  held %s  pressed %s" % [intent.move_x, _bits(intent.held), _bits(intent.pressed)])
 		lines.append_array(runner.controllers[i].debug_lines())
 	return lines
+
+
+func _bolts_owned(index: int) -> int:
+	var count: int = 0
+	for projectile in sim.projectiles:
+		if projectile.active and projectile.kind == Projectile.Kind.BOLT and projectile.owner == index:
+			count += 1
+	return count
 
 
 func _bits(mask: int) -> String:
@@ -113,6 +122,9 @@ func _draw_world() -> void:
 			_box(CombatGeometry.hitbox(config, fighter, fighter.move), PALETTE.danger)
 			if fighter.move.can_clash():
 				_box(CombatGeometry.blade_box(config, fighter, fighter.move), PALETTE.accent)
+	for projectile in sim.projectiles:
+		if projectile.active and projectile.kind == Projectile.Kind.BOLT:
+			_box(Rect2(projectile.x - projectile.size, projectile.y - projectile.size, projectile.size * 2.0, projectile.size * 2.0), PALETTE.bolt)
 
 
 func _box(rect: Rect2, color: Color) -> void:

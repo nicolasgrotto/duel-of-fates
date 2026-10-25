@@ -28,6 +28,7 @@ const SOUNDS: Dictionary = {
 }
 
 const POWER_DB: float = -3.0
+const BOLT_DB: float = -6.0
 const CHANNEL_DB: float = -8.0
 const SANCTUARY_EXPIRY_TICKS: int = 4
 const POWER_STARTS: Dictionary = {
@@ -240,8 +241,16 @@ func _on_flow_event(event: CombatEvent, at: Vector2) -> void:
 					AudioDirector.play(&"power_cleave", views[event.source].global_position, POWER_DB)
 				Projectile.Kind.BLADE:
 					AudioDirector.play(&"swing_heavy", views[event.source].global_position, 0.0, 1.2, &"Blades")
+				Projectile.Kind.BOLT:
+					AudioDirector.play(&"bolt_shot", views[event.source].global_position, BOLT_DB, randf_range(0.95, 1.05))
 		CombatEvent.Type.PROJECTILE_REFLECTED:
 			AudioDirector.play(&"power_cleave_return", at)
+		CombatEvent.Type.BOLT_HIT:
+			AudioDirector.play(&"bolt_hit", at, BOLT_DB)
+		CombatEvent.Type.BOLT_BLOCKED:
+			AudioDirector.play(&"power_barrier_absorb" if event.power != null else &"bolt_deflect", at, BOLT_DB, randf_range(0.95, 1.1))
+		CombatEvent.Type.BOLT_REFLECTED:
+			AudioDirector.play(&"bolt_reflect", at, BOLT_DB, 1.15 if event.amount > 0.0 else 1.0)
 		CombatEvent.Type.TECHNIQUE_CLASH:
 			AudioDirector.play(&"clash", at, 2.0, 0.8)
 			AudioDirector.play(&"power_supreme_push", at, -4.0, 1.4)

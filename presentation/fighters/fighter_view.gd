@@ -185,16 +185,23 @@ func on_event(event: CombatEvent) -> void:
 			if event.target == fighter.index:
 				blade.flare = effects.parry_flare * fighter.character.family.block_parry_recoil
 				_solver.guard_recoiled(event.heavy, false)
+		CombatEvent.Type.BOLT_BLOCKED:
+			if event.target == fighter.index and event.power == null:
+				blade.flare = effects.parry_flare * fighter.character.family.block_parry_recoil
+		CombatEvent.Type.BOLT_REFLECTED:
+			if event.source == fighter.index:
+				blade.flare = effects.parry_flare
+				_solver.guard_recoiled(false, true)
 		CombatEvent.Type.CLASH, CombatEvent.Type.TECHNIQUE_CLASH:
 			if event.source == fighter.index or event.target == fighter.index:
 				_solver.clash_left = PoseSolver.CLASH_RECOIL_TIME
 				_solver.rebounding = true
 				if event.type == CombatEvent.Type.TECHNIQUE_CLASH:
 					_solver.start_tumble()
-		CombatEvent.Type.HIT, CombatEvent.Type.GUARD_BREAK, CombatEvent.Type.BLADE_LOCK_ENDED, CombatEvent.Type.BLADE_PRESS_ENDED:
+		CombatEvent.Type.HIT, CombatEvent.Type.GUARD_BREAK, CombatEvent.Type.BLADE_LOCK_ENDED, CombatEvent.Type.BLADE_PRESS_ENDED, CombatEvent.Type.BOLT_HIT:
 			if event.target == fighter.index and not reduced_effects:
 				_flash_left = effects.hit_flash_duration
-			if event.type != CombatEvent.Type.HIT and event.type != CombatEvent.Type.GUARD_BREAK and event.target == fighter.index:
+			if event.type != CombatEvent.Type.HIT and event.type != CombatEvent.Type.GUARD_BREAK and event.type != CombatEvent.Type.BOLT_HIT and event.target == fighter.index:
 				_solver.start_tumble()
 		CombatEvent.Type.POWER_HIT:
 			if event.target == fighter.index and event.power != null and (event.power.kind == PowerData.Kind.REPULSE or event.power.kind == PowerData.Kind.SUPREME_PUSH):
@@ -442,9 +449,35 @@ func _uses_off_blade() -> bool:
 
 func _observe_guard() -> void:
 	_solver.guard.has_live = false
+	_solver.bolt_contact = -1.0
+	if _observe_bolt():
+		return
 	if rival == null or not is_instance_valid(rival) or rival.blade == null or rival.blade.length_ratio <= 0.0 or opponent.blade_out:
 		return
 	_solver.guard.observe_segment(to_local(rival.active_blade_base()), to_local(rival.active_blade_tip()))
+
+
+func _observe_bolt() -> bool:
+	var sim: MatchSimulation = runner.sim
+	var closest: Projectile = null
+	var soonest: float = effects.bolt_guard_lead
+	for projectile in sim.projectiles:
+		if not projectile.active or projectile.kind != Projectile.Kind.BOLT or projectile.owner == fighter.index or projectile.vx == 0.0:
+			continue
+		var ahead: float = (fighter.x - projectile.x) * signf(projectile.vx)
+		if ahead <= 0.0:
+			continue
+		var seconds: float = maxf(ahead - sim.config.body_width * 0.5, 0.0) / absf(projectile.vx)
+		if seconds < soonest:
+			soonest = seconds
+			closest = projectile
+	if closest == null:
+		return false
+	var head: Vector2 = Vector2(closest.x, -closest.y)
+	var heading: Vector2 = Vector2(closest.vx, -closest.vy).normalized()
+	_solver.guard.observe_segment(to_local(head - heading * effects.bolt_guard_segment), to_local(head))
+	_solver.bolt_contact = soonest
+	return true
 
 
 func guard_debug_lines() -> PackedStringArray:

@@ -21,6 +21,8 @@ const STANCE_ANGLE: float = -35.0
 const CAST_GRIP: Vector2 = Vector2(-8.0, -28.0)
 const CAST_ANGLE: float = 150.0
 const CAST_HAND: Vector2 = Vector2(32.0, -42.0)
+const SHOT_HAND: Vector2 = Vector2(38.0, -48.0)
+const SHOT_KICK: float = 6.0
 const INVOKE_HAND: Vector2 = Vector2(10.0, -88.0)
 const INVOKE_ANGLE: float = 100.0
 const GROUND_HAND: Vector2 = Vector2(26.0, 6.0)
@@ -176,6 +178,7 @@ var rebounding: bool = false
 var block_line: MoveData.Cut = MoveData.Cut.HORIZONTAL
 var afterimage: bool = false
 var guard: GuardTracker = GuardTracker.new()
+var bolt_contact: float = -1.0
 var _guard_prediction: RigPose = RigPose.new()
 var _guard_weapon: WeaponPose = WeaponPose.new()
 var _guard_heavy: bool = false
@@ -483,7 +486,13 @@ func _block(fighter: FighterState, opponent: FighterState, pose: RigPose, crouch
 	var rest_angle: float = _guard_angle + family.block_angle_offset + sin(time * 1.3) * family.sway
 	var threatened: bool = opponent.is_attacking() and opponent.move != null and opponent.move.can_clash() and opponent.move_phase != FighterState.Phase.RECOVERY
 	var contact: float = 0.0
-	if threatened:
+	if bolt_contact >= 0.0:
+		threatened = true
+		_guard_heavy = false
+		contact = bolt_contact
+		guard.predicted_base = guard.live_base
+		guard.predicted_tip = guard.live_tip
+	elif threatened:
 		_guard_heavy = opponent.move.is_heavy()
 		contact = Ticks.to_seconds(maxi(opponent.move.startup_ticks() - opponent.phase_ticks, 0)) if opponent.move_phase == FighterState.Phase.STARTUP else 0.0
 		_forecast_guard(fighter, opponent)
@@ -694,6 +703,8 @@ func _attack(fighter: FighterState, pose: RigPose, guard_angle: float, guard_gri
 		return Vector2(4.0 * amount, 16.0 * amount)
 	if move.technique_style == MoveData.TechniqueStyle.WAVE:
 		return _projected_cut(fighter, pose)
+	if move.technique_style == MoveData.TechniqueStyle.SHOT:
+		return _shot(fighter, pose)
 	if move.technique_style == MoveData.TechniqueStyle.DASH:
 		return _dash_slash(fighter, pose, move, guard_angle, guard_grip)
 	if move.technique_style == MoveData.TechniqueStyle.PLUNGE:
@@ -1048,6 +1059,23 @@ func _projected_cut(fighter: FighterState, pose: RigPose) -> Vector2:
 	pose.front_foot.x += 14.0 * (1.0 - settle)
 	pose.trail = fighter.move_phase == FighterState.Phase.ACTIVE
 	return Vector2(22.0 * (1.0 - settle), 26.0 * (1.0 - settle))
+
+
+func _shot(fighter: FighterState, pose: RigPose) -> Vector2:
+	var move: MoveData = fighter.move
+	var aim: float = 1.0
+	var kick: float = 0.0
+	if fighter.move_phase == FighterState.Phase.STARTUP:
+		aim = ease(clampf(float(fighter.phase_ticks) / maxf(move.startup_ticks(), 1.0), 0.0, 1.0), 0.5)
+	elif fighter.move_phase == FighterState.Phase.RECOVERY:
+		var settle: float = clampf(float(fighter.phase_ticks) / maxf(move.recovery_ticks(), 1.0), 0.0, 1.0)
+		aim = 1.0 - smoothstep(0.5, 1.0, settle)
+		kick = 1.0 - smoothstep(0.0, 0.3, settle)
+	else:
+		kick = 1.0
+	pose.off_hand = RELAXED_HAND.lerp(SHOT_HAND, aim) + Vector2(-SHOT_KICK * kick, -SHOT_KICK * 0.5 * kick)
+	pose.open_hand = false
+	return Vector2(-2.0 * kick, 0.0)
 
 
 func _cleave_rewind(progress: float, pose: RigPose) -> Vector2:

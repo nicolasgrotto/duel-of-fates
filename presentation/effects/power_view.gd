@@ -365,6 +365,8 @@ func _draw_projectile(projectile: Projectile) -> void:
 				draw_line(at + offset, at + offset + Vector2(back * projectile.size * (2.2 - streak * 0.5), 0.0), Color(color, 0.5 - streak * 0.12), GRID)
 		Projectile.Kind.CLEAVE:
 			_draw_cleave(projectile, at)
+		Projectile.Kind.BOLT:
+			_draw_bolt(projectile, at)
 		Projectile.Kind.BLADE, Projectile.Kind.ARSENAL:
 			var weapon: WeaponData = sim.fighters[projectile.owner].character.weapon
 			var tint: Color = blade_colors[projectile.owner]
@@ -390,6 +392,20 @@ func _draw_dual_throw(projectile: Projectile, at: Vector2, weapon: WeaponData, t
 	var spin: float = _time * vfx.thrown_blade_spin
 	_draw_spinning_blade(at + Vector2(0.0, -lift), spin, (weapon.blade_length + weapon.hilt_length) * 0.5, tint)
 	_draw_spinning_blade(trailing + Vector2(0.0, lift), -spin, (weapon.second_blade_length + weapon.hilt_length) * 0.5, tint)
+
+
+func _draw_bolt(projectile: Projectile, at: Vector2) -> void:
+	var heading: Vector2 = Vector2(projectile.vx, -projectile.vy).normalized()
+	if heading == Vector2.ZERO:
+		heading = Vector2.RIGHT
+	var edge: Color = PALETTE.bolt if projectile.owner == projectile.shooter else blade_colors[projectile.owner]
+	var tail: Vector2 = at - heading * vfx.bolt_length
+	var snapped_at: Vector2 = at.snapped(Vector2.ONE * GRID)
+	var snapped_tail: Vector2 = tail.snapped(Vector2.ONE * GRID)
+	draw_line(snapped_tail, snapped_at, edge, vfx.bolt_width)
+	draw_line(snapped_tail.lerp(snapped_at, 0.35), snapped_at, Color.WHITE, vfx.bolt_width * 0.5)
+	if projectile.travelled < vfx.bolt_muzzle_distance and projectile.owner == projectile.shooter:
+		draw_rect(Rect2(snapped_tail - Vector2.ONE * GRID * 1.5, Vector2.ONE * GRID * 3.0), Color(edge, 0.8))
 
 
 func _draw_cleave(projectile: Projectile, at: Vector2) -> void:
