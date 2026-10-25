@@ -36,6 +36,7 @@ func build_setup() -> DuelSetup:
 	if is_boss_fight():
 		setup.awakening = [null, BOSS_DIFFICULTY]
 	setup.rules = MatchRules.new()
+	setup.rules.fighter_intros = Settings.fighter_intros
 	setup.rules.powers = Settings.powers
 	setup.arena = ARENAS[fight % ROTATION_SIZE]
 	setup.match_seed = _new_seed()

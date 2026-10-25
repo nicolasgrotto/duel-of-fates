@@ -26,6 +26,7 @@ func build_setup() -> DuelSetup:
 	if encounter.boss_ai:
 		setup.awakening = [null, BOSS_DIFFICULTY]
 	setup.rules = MatchRules.new()
+	setup.rules.fighter_intros = Settings.fighter_intros
 	setup.rules.rounds_to_win = 1
 	setup.rules.powers = true
 	setup.arena = encounter.arena

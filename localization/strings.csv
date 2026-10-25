@@ -319,6 +319,7 @@ OPTION_EFFECTS,Efeitos · {value},Effects · {value}
 EFFECTS_FULL,Completos,Full
 EFFECTS_REDUCED,Reduzidos,Reduced
 OPTION_REPLAY,Replay do golpe final · {value},Final blow replay · {value}
+OPTION_FIGHTER_INTROS,Introdução dos lutadores · {value},Fighter intros · {value}
 OPTION_FINISHERS,Finalizações · {value},Finishers · {value}
 OPTION_POWERS,Poderes · {value},Powers · {value}
 OPTION_HOLD_LOCK,Segurar para disputar · J{player} · {value},Hold to lock · P{player} · {value}

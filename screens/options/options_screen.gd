@@ -10,6 +10,7 @@ const PRESET_KEYS: Dictionary = {&"default": "PRESET_DEFAULT", &"arrows": "PRESE
 var _list: MenuList
 var _title: Label
 var _footer: Label
+var _scroll: ScrollContainer
 var _return_focus: StringName = &"options"
 
 
@@ -27,17 +28,21 @@ func _ready() -> void:
 	_title.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 	_title.offset_top = TITLE_TOP
 	add_child(_title)
-	var holder: VBoxContainer = VBoxContainer.new()
-	holder.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	holder.offset_top = LIST_TOP
-	add_child(holder)
+	_scroll = ScrollContainer.new()
+	_scroll.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_scroll.offset_top = LIST_TOP
+	_scroll.offset_bottom = -FOOTER_MARGIN * 3.0
+	_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	add_child(_scroll)
 	_list = MenuList.new()
 	_list.centered = true
-	holder.add_child(_list)
+	_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_scroll.add_child(_list)
 	for id in _ids():
 		_list.add_item(id, "")
 	_list.chosen.connect(_on_chosen)
 	_list.adjusted.connect(_on_adjusted)
+	_list.highlighted.connect(_on_highlighted)
 	_footer = Label.new()
 	_footer.theme_type_variation = &"HintLabel"
 	_footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -46,10 +51,15 @@ func _ready() -> void:
 	_footer.offset_bottom = -FOOTER_MARGIN
 	add_child(_footer)
 	_refresh()
+	_on_highlighted(_list.current_id())
+
+
+func _on_highlighted(_id: StringName) -> void:
+	_scroll.ensure_control_visible.call_deferred(_list.get_child(_list.selected))
 
 
 func _ids() -> Array[StringName]:
-	var ids: Array[StringName] = [&"language", &"difficulty", &"effects", &"replay", &"finishers", &"powers", &"hold_p1", &"hold_p2",
+	var ids: Array[StringName] = [&"language", &"difficulty", &"effects", &"intros", &"replay", &"finishers", &"powers", &"hold_p1", &"hold_p2",
 		&"key_preset", &"keys", &"vibration", &"master", &"music", &"sfx", &"fullscreen"]
 	if not OS.has_feature(WEB_FEATURE):
 		ids.append(&"vsync")
@@ -82,6 +92,8 @@ func _on_adjusted(id: StringName, step: int) -> void:
 			Settings.reduced_effects = not Settings.reduced_effects
 		&"replay":
 			Settings.final_blow_replay = not Settings.final_blow_replay
+		&"intros":
+			Settings.fighter_intros = not Settings.fighter_intros
 		&"finishers":
 			Settings.show_finishers = not Settings.show_finishers
 		&"powers":
@@ -117,6 +129,7 @@ func _refresh() -> void:
 	_list.set_item_text(&"difficulty", tr("MENU_DIFFICULTY").format({"value": tr(Settings.difficulty_data().name_key)}))
 	_list.set_item_text(&"effects", tr("OPTION_EFFECTS").format({"value": tr("EFFECTS_REDUCED") if Settings.reduced_effects else tr("EFFECTS_FULL")}))
 	_list.set_item_text(&"replay", tr("OPTION_REPLAY").format({"value": _on_off(Settings.final_blow_replay)}))
+	_list.set_item_text(&"intros", tr("OPTION_FIGHTER_INTROS").format({"value": _on_off(Settings.fighter_intros)}))
 	_list.set_item_text(&"finishers", tr("OPTION_FINISHERS").format({"value": _on_off(Settings.show_finishers)}))
 	_list.set_item_text(&"powers", tr("OPTION_POWERS").format({"value": _on_off(Settings.powers)}))
 	_list.set_item_text(&"hold_p1", tr("OPTION_HOLD_LOCK").format({"player": 1, "value": _on_off(Settings.hold_to_lock[0])}))

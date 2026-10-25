@@ -34,6 +34,7 @@ func build_setup() -> DuelSetup:
 	if is_boss_fight():
 		setup.awakening = [null, BOSS_DIFFICULTY]
 	setup.rules = MatchRules.new()
+	setup.rules.fighter_intros = Settings.fighter_intros
 	setup.rules.powers = Settings.powers
 	setup.rules.rounds_to_win = 1
 	setup.rules.start_health = PackedFloat32Array([health, 1.0])

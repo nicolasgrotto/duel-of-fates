@@ -12,6 +12,7 @@ var locale: String = "pt_BR"
 var difficulty: StringName = &"normal"
 var reduced_effects: bool = false
 var final_blow_replay: bool = true
+var fighter_intros: bool = true
 var show_finishers: bool = true
 var hold_to_lock: Array[bool] = [false, false]
 var powers: bool = true
@@ -83,15 +84,16 @@ func cycle_difficulty(step: int) -> void:
 	save_settings()
 
 
-func load_settings() -> void:
+func load_settings(path: String = SETTINGS_PATH) -> void:
 	var file: ConfigFile = ConfigFile.new()
-	if file.load(SETTINGS_PATH) != OK:
+	if file.load(path) != OK:
 		return
 	locale = file.get_value("game", "locale", locale)
 	difficulty = StringName(file.get_value("game", "difficulty", String(difficulty)))
 	if not DIFFICULTIES.has(difficulty):
 		difficulty = &"normal"
 	final_blow_replay = file.get_value("game", "final_blow_replay", final_blow_replay)
+	fighter_intros = file.get_value("game", "fighter_intros", true)
 	show_finishers = file.get_value("game", "show_finishers", show_finishers)
 	reduced_effects = file.get_value("accessibility", "reduced_effects", reduced_effects)
 	powers = file.get_value("game", "powers", powers)
@@ -112,11 +114,12 @@ func load_settings() -> void:
 		hold_to_lock[slot] = file.get_value("accessibility", "hold_to_lock_p%d" % (slot + 1), false)
 
 
-func save_settings() -> void:
+func save_settings(path: String = SETTINGS_PATH) -> void:
 	var file: ConfigFile = ConfigFile.new()
 	file.set_value("game", "locale", locale)
 	file.set_value("game", "difficulty", String(difficulty))
 	file.set_value("game", "final_blow_replay", final_blow_replay)
+	file.set_value("game", "fighter_intros", fighter_intros)
 	file.set_value("game", "show_finishers", show_finishers)
 	file.set_value("accessibility", "reduced_effects", reduced_effects)
 	file.set_value("game", "powers", powers)
@@ -131,4 +134,4 @@ func save_settings() -> void:
 	file.set_value("input", "custom_buttons", custom_buttons)
 	for slot in hold_to_lock.size():
 		file.set_value("accessibility", "hold_to_lock_p%d" % (slot + 1), hold_to_lock[slot])
-	file.save(SETTINGS_PATH)
+	file.save(path)

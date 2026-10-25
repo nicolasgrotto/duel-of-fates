@@ -120,6 +120,8 @@ Cena de duelo sem rounds nem barras de vida; só o medidor de Fluxo de quem lan�
 
 ### Opções
 
+**Introdução dos lutadores · Ligada/Desligada** (EN: **Fighter intros · On/Off**), ligada por padrão e salva. Desligar mantém o título e a ignição normal de cada round. Na entrada individual o centro fica livre até o título; Confirmar ou qualquer ataque adianta ambos os lutadores ao título. O título não pode ser pulado.
+
 Idioma, dificuldade, efeitos, som, música, volumes, teclado (preset e Configurar teclas), Poderes, replay do golpe final, finalizações, segurar para disputar (J1 e J2), vibração, vídeo. Valores salvos.
 
 > Implementada na fase 6 (`screens/options/`): título OPÇÕES, lista centralizada `Opção · valor` (← → ajustam, Confirmar avança, Voltar ou `Esc` voltam ao menu), com Idioma, Dificuldade, Efeitos, Replay do golpe final, Finalizações, Poderes, Segurar para disputar J1 e J2, Volume geral, Música, Efeitos sonoros (passos de 10%), Tela cheia e V-Sync (fora da Web). Tudo aplica na hora e é salvo. Faltam o teclado (Configurar teclas) e a vibração, que entram com o remapeamento.
