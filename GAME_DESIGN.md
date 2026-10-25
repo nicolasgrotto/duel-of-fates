@@ -315,7 +315,10 @@ Com o poder Foco ativo, um lutador **parado em guarda, sem nenhum comando**, esq
 
 | Fonte | Finalização | Quando |
 | --- | --- | --- |
-| Forte e forte de avanço (todos, salvo abaixo) | **desarme e execução**: o forte leva os dois antebraços, a lâmina da vítima cai e apaga, ela cai de joelhos e um corte horizontal leva a cabeça | o golpe mata |
+| Forte parado de quem usa lâmina simples ou haste (Guardião, Sombra, Sombra Desperta, Espelho, Soberano, Haste, Brasa, Eco, Garça, Ancião, Predestinado) | **duas lâminas**: dois cortes rápidos levam um antebraço cada; a lâmina da vítima cai no chão; quem corta estende a mão e puxa a lâmina caída pelo Fluxo até a mão livre, que acende; as duas lâminas se abrem dos dois lados do pescoço e se fecham em X; o corpo fica de pé um instante, cai de joelhos e tomba para a frente | o golpe mata e a vítima usa lâmina simples; contra lâmina dupla, bastão ou haste vira desarme e execução. K.O. mais longo (`ConsequenceConfig.long_cinematic_ko_time`) |
+| Forte de avanço (todos, salvo abaixo) | **desarme e execução**: o forte leva os dois antebraços, a lâmina da vítima cai e apaga, ela cai de joelhos e um corte horizontal leva a cabeça | o golpe mata |
+| Forte parado de Bastião e Forja | **execução por cima**: o forte empurra a vítima, que perde o equilíbrio e cai de joelhos; quem corta ergue a lâmina acima da cabeça e desce um corte vertical; as metades caem para os lados | o golpe mata |
+| Forte parado do Ceifador | **giro duplo**: o primeiro giro do bastão leva os dois antebraços, o segundo passa pelo pescoço; o corpo cai de joelhos e tomba | o golpe mata |
 | Forte e forte de avanço da Vespa | **tesoura**: o mesmo desarme; as duas lâminas se fecham em X no pescoço | o golpe mata |
 | Forte de avanço de Espelho, Haste e Soberano | **estocada**: a lâmina atravessa o peito e fica um instante, sai e a vítima cai de joelhos e tomba para a frente | o golpe mata |
 | Avanço com corte | corte na cintura passando: quem corta para atrás da vítima | o acerto do corte mata |
