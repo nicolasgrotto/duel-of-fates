@@ -4,6 +4,8 @@ Ordem de construção do jogo. Cada fase termina jogável e testada. Marque `[x]
 
 ## Ponto de continuidade
 
+- **Rodada 3 → 1 → 2 concluída** na `pixel-art`: janela de choque de quatro ticks corrige a disputa do Tutorial e do treino; guarda contínua prevê/intercepta a lâmina com postura por família; Poderes da História agora é uma árvore com equipamento, detalhes, requisitos e vinte ícones originais. Save e progressão preservados; o poder inicial aparece como aprendido na criação. **305 testes passando, zero falhas**, mais validação de foco, navegação, mouse e equipamento nas capturas de tela. Evidências em `build/guard_story_review/`: `*lock*_sheet.png`, `guard_*_sheet.png`, `tree_resolutions_sheet.png`, `tree_states_grayscale.png`, `power_icons_sheet.png` e logs. Próximo passo: autor avaliar PLAYTEST 1.0a–e e 1b.1–4, depois equilíbrio e desempenho já pendentes. A pequena separação do forte aéreo do Ancião, o F5 físico e o controle físico estão explicitados no PLAYTEST. Não mesclar na `main`.
+
 - **Guarda responsiva concluída**: `GuardTracker` prevê a geometria e acompanha a lâmina rival por mola amortecida, ajusta o alvo à IK antes de integrar e reage aos eventos de bloqueio/parry. Oito famílias têm postura defensiva, antecipação e recuo próprios; debug F3, duas mãos, bastão e alternância da Vespa preservados. A soltura visual do ataque agora antecede o primeiro contato, sem mudar a simulação. **299 testes validados** (298 da suíte e os quatro testes de acompanhamento após corrigir a tipagem da nova sequência; a suíte integral será repetida ao terminar a árvore). Contato do elenco, braços e sequência de cinco rápidos cobertos; `test_blade_sync.gd` preservado. Capturas finais em `build/guard_story_review/guard_*_sheet.png`; limitação do forte aéreo do Ancião e validação manual em PLAYTEST 1.0c–e. Próxima etapa: árvore de poderes e ícones. Não mesclar na `main`.
 
 - **Disputa do Tutorial corrigida na regra comum**: o `MIRROR` entra um tick depois e já pode chocar com o ativo dentro da janela de 0,067 s (4 ticks). Rápidos chocados passam à recuperação, sem ativo atrasado; fortes, técnicas e disputa limpam o golpe ao trocar de estado. Tutorial e Treino guiado reais testados até avançar/concluir, sem alterar o boneco ou as lições. **294 testes passando**. Capturas do Tutorial e de duelos com 1–3 ticks de diferença em `build/guard_story_review/*lock*_sheet.png`. A próxima etapa desta rodada é a guarda responsiva; depois, árvore de poderes da História e ícones. Não mesclar na `main`.
@@ -182,6 +184,9 @@ Retorno do autor (plano em sete frentes; bloco A sem tocar no trabalho do Codex,
 - [x] Personalização do protagonista da História (cabelos, barbas, cosméticos, armadura de placas clara) e trajes do Predestinado mais próximos do arquétipo
 - [x] Arremesso da lâmina: no K.O. a lâmina terminava o voo parada girando; agora os projéteis seguem voando sem colidir durante o K.O. (`ProjectileSystem.drift`) e a lâmina volta à mão
 - [x] Galeria: botão de Finalização (`F`) para ver a finalização cinematográfica dos poderes e técnicas que a têm
+- [x] Janela comum de choque de 0,067 s, disputa do Tutorial e treino guiado sem exceções
+- [x] Guarda responsiva contínua: previsão, segmento rival, IK, recuo, identidade e debug
+- [x] Árvore de poderes da História com equipamento, marcos reais e vinte ícones de recurso
 
 - [x] Localização completa PT-BR e EN (todas as chaves nos dois idiomas, garantido por `test_translations`; passada de revisão do inglês: nenhum texto em português na coluna EN, falas da História polidas em STORY.md e no CSV)
 - [x] Trilha e ambiências de todas as arenas (ambiência própria nas dez, temas duelo, sagrado e chefe com variação de tom por arena, tema de chefe nos personagens-chefe)

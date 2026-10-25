@@ -1,4 +1,26 @@
 keys,pt_BR,en
+TREE_TITLE,ÁRVORE DE PODERES,POWER TREE
+PATH_COMMON,Comum,Common
+TREE_SUBTITLE,{path} · A jornada do Fluxo,{path} · The Flow journey
+TREE_SLOT_NEUTRAL,Poder,Power
+TREE_SLOT_FORWARD,Frente + Poder,Forward + Power
+TREE_SLOT_BACK,Trás + Poder,Back + Power
+TREE_LOCKED,Bloqueado,Locked
+TREE_NEXT,› Próximo desbloqueio,› Next to unlock
+TREE_LEARNED,Aprendido,Learned
+TREE_EQUIPPED,Equipado,Equipped
+TREE_OPEN,Aberto,Open
+TREE_PICK_SLOT,Escolha o espaço,Choose a slot
+TREE_SLOT_CONTENT,{slot} · {power},{slot} · {power}
+TREE_MILESTONE,{slot} · Capítulo {chapter} · {state},{slot} · Chapter {chapter} · {state}
+TREE_FACTS,{path} · Fluxo {flow}\nCusto {cost} · Recarga {cooldown} s,{path} · Flow {flow}\nCost {cost} · Cooldown {cooldown} s
+TREE_CREATION,Origem · Criação do personagem,Origin · Character creation
+TREE_REQUIREMENT,Requisito · Capítulo {chapter} · {title},Requirement · Chapter {chapter} · {title}
+TREE_FLOW_REQUIRED,Requer Fluxo {level},Requires Flow {level}
+TREE_IN_SLOT,Equipado · {slot},Equipped · {slot}
+TREE_PREVIOUS,Anterior,Previous
+TREE_NEXT_NODE,Próximo,Next
+TREE_EQUIP,Equipar,Equip
 GAME_TITLE,DUEL OF FATES,DUEL OF FATES
 GAME_TAGLINE,UM DUELO DE LÂMINAS DE ENERGIA,A DUEL OF ENERGY BLADES
 MENU_DUEL,Duelar,Duel

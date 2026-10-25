@@ -77,3 +77,28 @@ func test_old_saves_get_a_default_appearance() -> void:
 	assert_true(campaign.protagonist().eclipse_eyes)
 	var round_trip: StoryCampaign = StoryCampaign.from_dict(campaign.to_dict())
 	assert_eq(round_trip.skin, campaign.skin)
+
+
+func test_tree_equipping_preserves_full_unique_slots_and_save_format() -> void:
+	for path in 2:
+		var campaign: StoryCampaign = _campaign(path, 1)
+		for encounter in campaign.route():
+			campaign.complete(encounter, 0.5)
+		var original_keys: Array = campaign.to_dict().keys()
+		var tree: StoryPowerTree = StoryPowerTree.new(campaign)
+		assert_false(tree.equip(0, campaign.slots_open))
+		assert_false(campaign.equip_power(&"", 0))
+		assert_false(campaign.equip_power(&"unknown", 0))
+		for index in tree.nodes.size():
+			for slot in campaign.slots_open:
+				var other: int = campaign.equipped.find(tree.nodes[index].power.id)
+				var changed: bool = tree.equip(index, slot)
+				assert_eq(changed, other < 0 or other == slot)
+				var seen: Dictionary = {}
+				for open_slot in campaign.slots_open:
+					var id: StringName = campaign.equipped[open_slot]
+					assert_ne(id, &"")
+					assert_false(seen.has(id))
+					seen[id] = true
+		assert_eq(campaign.to_dict().keys(), original_keys)
+		assert_eq(StoryCampaign.from_dict(campaign.to_dict()).equipped, campaign.equipped)

@@ -28,6 +28,17 @@ Legenda: ✅ ficou bom · ⚠️ funciona mas a sensação ou o número precisa 
 
 Validação desta rodada: duelos reais capturados a cada três ticks em `build/guard_story_review/guard_*`, com folhas `guard_*_sheet.png` e `guard_families_sheet.png`. Há antecipação e recuo e as mãos permanecem alcançáveis. O teste de contato começa em 12 px e usa limite final de 14 px da grade (28 unidades): a IK e a inclinação no forte aéreo do Ancião deixam uma pequena separação residual no tick inicial; manter esse caso na avaliação da sensação, sem deslocar eventos ou regras para maquiar o desenho. A captura automatizada do Treino seleciona o mesmo comportamento de guarda; o acionamento físico do F5 e a sensação com controle ficam para a rodada do autor.
 
+### 1b. Árvore de poderes da História
+
+| # | Como testar | Esperado | Onde ajustar |
+| --- | --- | --- | --- |
+| 1b.1 | Hub → Poderes; campanha Aurora nova, Eclipse após capítulo 4, campanha concluída | sete nós em ordem real; inicial na criação; capítulo/título do encontro nos outros; estados por texto e moldura, também em cinza | `StoryPowerTree`, `story_powers`, tema central |
+| 1b.2 | Setas/D-pad, confirmar em aprendido, escolher espaço, voltar; hover/clique nos nós e espaços | mesmo cursor; escolha só dos espaços abertos; voltar devolve o foco; repetir poder em outro espaço é recusado; nenhum espaço aberto é esvaziado | `StoryCampaign.equip_power`, navegação da tela |
+| 1b.3 | Ganhe os capítulos com marco; abra a árvore; teste uma exigência maior de Fluxo em recurso de teste | espaços vêm dos marcos; próximo nó acompanha o próximo encontro; custo/recarga usam Fluxo da campanha; exigência insuficiente impede equipar | `EncounterData.milestone`, `PowerCatalog.is_allowed` |
+| 1b.4 | Confira 720p, 1080p e ultrawide; volte ao hub e reabra a campanha | grafo/detalhes/rodapé legíveis; mesmos ícones no hub; equipamento persiste no formato anterior | âncoras/containers, `PowerData.icon`, `strings.csv` |
+
+Validação automatizada: `tree_render.gd` em `build/guard_story_review/` instancia as três etapas nas três resoluções, verifica sete nós, enquadramento, foco inicial, escolha/retorno, quatro ações de navegação, hover/clique e equipamento persistido em perfil isolado. `tree_*.png`, `hub_middle_*.png`, `tree_states_grayscale.png` e `power_icons_sheet.png` são as evidências. Regeneração dos vinte PNGs comparada por SHA-256; ícones, dados e modelo cobertos pelos testes. Conferência física do controle e preferência de legibilidade dos ícones pequenos do hub ficam para o autor.
+
 ### 1a. Introdução dos lutadores
 
 Em Opções, deixe **Introdução dos lutadores · Ligada**. No Duelar, veja cada entrada como jogador e como adversário, sem apertar ataques. Os dois devem caber no enquadramento; o título só aparece depois do assentamento na guarda. Use Revanche para repetir. Ajustes de poses e tempos ficam em `data/intros/<id>.tres`; duração total e título em `CombatConfig`, acessórios e ignição em `EffectsConfig`.

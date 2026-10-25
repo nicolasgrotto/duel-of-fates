@@ -26,9 +26,65 @@ variation_opentype = {
 2003265652: 400
 }
 
+[sub_resource type="StyleBoxEmpty" id="power_empty"]
+
+[sub_resource type="StyleBoxFlat" id="power_learned"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.541176, 0.580392, 0.670588, 1)
+
+[sub_resource type="StyleBoxFlat" id="power_equipped"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 3
+border_width_top = 2
+border_width_right = 3
+border_width_bottom = 2
+border_color = Color(0.623529, 0.705882, 0.85098, 1)
+
+[sub_resource type="StyleBoxFlat" id="power_next"]
+bg_color = Color(0, 0, 0, 0)
+border_width_bottom = 2
+border_color = Color(0.623529, 0.705882, 0.85098, 1)
+
+[sub_resource type="StyleBoxFlat" id="power_selected"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.909804, 0.92549, 0.960784, 1)
+
 [resource]
 default_font = SubResource("regular_font")
 default_font_size = 26
+PowerNode/base_type = &"Button"
+PowerNode/styles/normal = SubResource("power_empty")
+PowerNode/styles/hover = SubResource("power_empty")
+PowerNode/styles/pressed = SubResource("power_empty")
+PowerNode/styles/focus = SubResource("power_empty")
+PowerNode/styles/locked = SubResource("power_empty")
+PowerNode/styles/learned = SubResource("power_learned")
+PowerNode/styles/equipped = SubResource("power_equipped")
+PowerNode/styles/next = SubResource("power_next")
+PowerNode/styles/selected = SubResource("power_selected")
+PowerNode/colors/connector = Color(0.623529, 0.705882, 0.85098, 1)
+PowerNode/colors/locked_connector = Color(0.541176, 0.580392, 0.670588, 0.3)
+PowerSlotButton/base_type = &"Button"
+PowerSlotButton/styles/normal = SubResource("power_empty")
+PowerSlotButton/styles/hover = SubResource("power_learned")
+PowerSlotButton/styles/pressed = SubResource("power_next")
+PowerSlotButton/styles/focus = SubResource("power_selected")
+PowerSlotButton/font_sizes/font_size = 22
+PowerSlotButton/colors/font_color = Color(0.623529, 0.705882, 0.85098, 1)
+PowerNodeNameLabel/base_type = &"Label"
+PowerNodeNameLabel/font_sizes/font_size = 22
+PowerNodeNameLabel/colors/font_color = Color(0.909804, 0.92549, 0.960784, 1)
+PowerNodeStateLabel/base_type = &"Label"
+PowerNodeStateLabel/font_sizes/font_size = 18
+PowerNodeStateLabel/colors/font_color = Color(0.541176, 0.580392, 0.670588, 1)
 Label/colors/font_color = Color(0.909804, 0.92549, 0.960784, 1)
 TitleLabel/base_type = &"Label"
 TitleLabel/colors/font_color = Color(0.909804, 0.92549, 0.960784, 1)

@@ -172,6 +172,21 @@ func cycle_power(slot: int, step: int) -> void:
 			return
 
 
+func equip_power(id: StringName, slot: int) -> bool:
+	if slot < 0 or slot >= slots_open or id == &"" or not learned.has(id):
+		return false
+	var other: int = equipped.find(id)
+	if other >= 0 and other != slot:
+		return false
+	var hero: CharacterData = CharacterData.new()
+	hero.flow = attributes.get(&"flow", CAMPAIGN.start_attribute)
+	hero.path = CharacterData.Path.AURORA if path == 0 else CharacterData.Path.ECLIPSE
+	if not PowerCatalog.is_allowed(load_power(id), hero):
+		return false
+	equipped[slot] = id
+	return true
+
+
 func raise(attribute: StringName) -> bool:
 	if free_points <= 0 or attributes[attribute] >= CAMPAIGN.max_attribute:
 		return false

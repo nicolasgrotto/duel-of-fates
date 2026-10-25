@@ -64,11 +64,20 @@ func _build_info() -> void:
 	path.add_theme_color_override(&"font_color", PALETTE.aurora if campaign.path == 0 else PALETTE.eclipse)
 	column.add_child(path)
 	column.add_child(_label("%s · %s" % [tr("SELECT_STYLE"), tr(StoryCampaign.CAMPAIGN.style_keys[campaign.style])], &"InfoLabel"))
-	var names: PackedStringArray = []
+	column.add_child(_label(tr("SELECT_POWERS"), &"InfoLabel"))
 	for power in campaign.equipped_powers():
 		if power != null:
-			names.append(tr(power.name_key))
-	column.add_child(_label("%s · %s" % [tr("SELECT_POWERS"), ", ".join(names)], &"InfoLabel"))
+			var row: HBoxContainer = HBoxContainer.new()
+			row.add_theme_constant_override(&"separation", LINE_GAP)
+			var icon: TextureRect = TextureRect.new()
+			icon.texture = power.icon
+			icon.custom_minimum_size = Vector2(24.0, 24.0)
+			icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+			row.add_child(icon)
+			row.add_child(_label(tr(power.name_key), &"InfoLabel"))
+			column.add_child(row)
 	var attributes: PackedStringArray = []
 	for attribute in StoryCampaign.ATTRIBUTES:
 		attributes.append("%s %d" % [tr(ATTRIBUTE_KEYS[attribute]), campaign.attributes[attribute]])
