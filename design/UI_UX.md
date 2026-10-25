@@ -104,7 +104,7 @@ Tela cheia sem HUD, letterbox fechado, "REPLAY" à esquerda na barra de baixo e 
 
 ### Treino, Tutorial e desafios
 
-- **Treino (fases 1 e 2)**: teclas de ferramenta F5 (comportamento do boneco: parado, em guarda, atacando, reproduzindo), F6 (gravar até 10 s dos comandos do jogador), F7 (reproduzir a gravação no boneco em loop) e F3 (caixas e estado). O rodapé mostra os comandos dos dois, os dados de quadro do último golpe do jogador (`Forte · bloqueado · −0,30 s`), o comportamento do boneco e o estado da gravação.
+- **Treino (fases 1 e 2)**: teclas de ferramenta F5 (comportamento do boneco: parado, em guarda, atacando, atirando com Poderes ligados, reproduzindo), F6 (gravar até 10 s dos comandos do jogador), F7 (reproduzir a gravação no boneco em loop) e F3 (caixas e estado). O rodapé mostra os comandos dos dois, os dados de quadro do último golpe do jogador (`Forte · bloqueado · −0,30 s`), o comportamento do boneco e o estado da gravação.
 
 - **Tutorial / treinos guiados**: uma instrução no topo, abaixo das barras, com as teclas do preset ativo, e o progresso embaixo (`Passo 3 de 12 · 1 / 2`). Sem quadrados de round.
 - **Desafio de parry**: tempo restante e pontos no topo.

@@ -17,7 +17,9 @@ func build_setup() -> DuelSetup:
 	setup.arena = TRAINING_ARENA
 	setup.match_seed = _new_seed()
 	setup.training = true
-	return _finish_setup(setup)
+	_finish_setup(setup)
+	setup.characters[1] = setup.characters[1].duplicate() as CharacterData
+	return setup
 
 
 func result_options() -> Array[StringName]:

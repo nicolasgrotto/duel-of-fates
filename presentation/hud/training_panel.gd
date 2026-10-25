@@ -16,7 +16,15 @@ const BEHAVIOR_KEYS: Dictionary = {
 	DummyController.Behavior.GUARD: "DUMMY_GUARD",
 	DummyController.Behavior.ATTACK: "DUMMY_ATTACK",
 	DummyController.Behavior.PLAYBACK: "DUMMY_PLAYBACK",
+	DummyController.Behavior.SHOOT: "DUMMY_SHOOT",
 }
+const CYCLE: Array[DummyController.Behavior] = [
+	DummyController.Behavior.STAND,
+	DummyController.Behavior.GUARD,
+	DummyController.Behavior.ATTACK,
+	DummyController.Behavior.SHOOT,
+	DummyController.Behavior.PLAYBACK,
+]
 
 var runner: TickRunner
 var dummy: DummyController
@@ -26,6 +34,7 @@ var player_index: int = 0
 var _label: Label
 var _recording: bool = false
 var _frame_text: String = ""
+var _dummy_technique: MoveData
 
 
 func setup(tick_runner: TickRunner, dummy_controller: DummyController, training_config: TrainingConfig) -> void:
@@ -50,23 +59,36 @@ func _unhandled_input(event: InputEvent) -> void:
 		_toggle_recording()
 	elif event.is_action_pressed(&"training_playback"):
 		var playing: bool = dummy.behavior == DummyController.Behavior.PLAYBACK
-		dummy.set_behavior(DummyController.Behavior.STAND if playing or dummy.playback.length() == 0 else DummyController.Behavior.PLAYBACK)
+		_set_behavior(DummyController.Behavior.STAND if playing or dummy.playback.length() == 0 else DummyController.Behavior.PLAYBACK)
 	else:
 		return
 	get_viewport().set_input_as_handled()
 
 
 func _cycle_behavior() -> void:
-	var next: int = (dummy.behavior + 1) % DummyController.Behavior.size()
+	var index: int = CYCLE.find(dummy.behavior)
+	var next: DummyController.Behavior = CYCLE[(index + 1) % CYCLE.size()]
+	if next == DummyController.Behavior.SHOOT and not runner.sim.rules.powers:
+		next = CYCLE[(CYCLE.find(next) + 1) % CYCLE.size()]
 	if next == DummyController.Behavior.PLAYBACK and dummy.playback.length() == 0:
 		next = DummyController.Behavior.STAND
-	dummy.set_behavior(next as DummyController.Behavior)
+	_set_behavior(next)
+
+
+func _set_behavior(next: DummyController.Behavior) -> void:
+	var character: CharacterData = runner.sim.fighters[1 - player_index].character
+	if dummy.behavior == DummyController.Behavior.SHOOT and _dummy_technique != null:
+		character.technique_forward = _dummy_technique
+	if next == DummyController.Behavior.SHOOT:
+		_dummy_technique = character.technique_forward
+		character.technique_forward = config.dummy_shot
+	dummy.set_behavior(next)
 
 
 func _toggle_recording() -> void:
 	_recording = not _recording
 	if _recording:
-		dummy.set_behavior(DummyController.Behavior.STAND)
+		_set_behavior(DummyController.Behavior.STAND)
 		dummy.playback.clear()
 
 

@@ -68,6 +68,7 @@ DUMMY_STAND,parado,standing
 DUMMY_GUARD,em guarda,guarding
 DUMMY_ATTACK,atacando,attacking
 DUMMY_PLAYBACK,reproduzindo,playing back
+DUMMY_SHOOT,atirando,shooting
 TRAINING_RECORDING,Gravando · {seconds} s,Recording · {seconds} s
 TRAINING_RECORDED,Gravação · {seconds} s,Recording · {seconds} s
 TRAINING_NO_RECORDING,Sem gravação,No recording
