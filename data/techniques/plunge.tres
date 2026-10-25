@@ -16,6 +16,7 @@ block_vigor_cost = 16.0
 knockback = 80.0
 block_push = 40.0
 hitstun = 0.45
+recovery_on_hit = 0.27
 blockstun = 0.3
 lunge = 0.0
 reach = 70.0

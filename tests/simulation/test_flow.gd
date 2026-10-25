@@ -290,7 +290,7 @@ func test_mass_telekinesis_rains_impacts() -> void:
 	var duel: DuelFixture = _duel()
 	duel.place(200.0)
 	duel.give_power(0, &"mass_telekinesis")
-	duel.set_level(0, 6)
+	duel.set_level(0, 7)
 	duel.cast(0)
 	duel.step(200)
 	var impacts: int = 0
@@ -362,7 +362,7 @@ func test_storm_shields_the_caster_and_strikes() -> void:
 	var duel: DuelFixture = _duel(&"shadow", &"guardian")
 	duel.place(200.0)
 	duel.give_power(0, &"storm")
-	duel.set_level(0, 6)
+	duel.set_level(0, 7)
 	duel.cast(0)
 	duel.step(40)
 	assert_eq(duel.fighter(0).state, FighterState.State.CHANNELING)
@@ -522,6 +522,39 @@ func test_plunge_keeps_its_recovery_after_landing() -> void:
 	duel.step_until(func() -> bool: return duel.fighter(0).on_ground, 60)
 	duel.step(1)
 	assert_eq(duel.fighter(0).move_phase, FighterState.Phase.RECOVERY)
+
+
+func _plunge_into(guarding: bool) -> int:
+	var duel: DuelFixture = _duel(&"shadow", &"guardian")
+	duel.place(30.0)
+	if guarding:
+		duel.hold(1, Intent.Command.BLOCK)
+	duel.intents[0].move_x = 1
+	duel.press(0, Intent.Command.JUMP)
+	duel.step(1)
+	duel.intents[0].move_x = 0
+	duel.step(10)
+	duel.press(0, Intent.Command.SPECIAL)
+	var contact: CombatEvent.Type = CombatEvent.Type.BLOCK if guarding else CombatEvent.Type.HIT
+	assert_true(duel.step_until(func() -> bool: return duel.count_events(contact) > 0, 60))
+	var attacker_free: int = -1
+	var defender_free: int = -1
+	for tick in 90:
+		duel.step(1)
+		if attacker_free < 0 and duel.fighter(0).is_free():
+			attacker_free = tick
+		var guard_ready: bool = duel.fighter(1).state == FighterState.State.BLOCKING and duel.fighter(1).stun_ticks == 0
+		if defender_free < 0 and (duel.fighter(1).is_free() or guard_ready):
+			defender_free = tick
+	return defender_free - attacker_free
+
+
+func test_plunge_that_lands_leaves_the_attacker_ahead() -> void:
+	assert_gt(_plunge_into(false), 0, "a landed plunge must not be punished")
+
+
+func test_guarded_plunge_stays_punishable() -> void:
+	assert_lt(_plunge_into(true), -10)
 
 
 func test_techniques_clash_big() -> void:
