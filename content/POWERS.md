@@ -109,6 +109,8 @@ Valem a tabela de interação, a guarda de frente (um quarto do dano passa), a B
 | **Santuário** / Sanctuary | 65 | Escudo colado ao corpo que absorve 20 × potência de dano enquanto o lutador age normalmente, por até 6 s. Racha conforme absorve e se quebra no limite. Custo alto. Tier II. |
 | **Telecinese em Massa** / Mass Telekinesis | 80 (Tier III, Fluxo 7+) | Invocação de ~0,8 s, interrompível, só com a mão erguida. Quando o poder sai, o duelo congela por 1,05 s (determinístico, em dado) para a mini-cinemática de ~1,5 s: a câmera sobe ao céu, um meteoro é puxado e racha, e a câmera desce com os pedaços. Os pedaços caem sobre marcas no chão (5, 6 ou 7 impactos pelo tier, 7 de dano cada, com empurrão). Quem lança pode se mover, mas não atacar, durante a chuva. Sem céu à vista, fragmentos conjurados. Custo alto. |
 
+| **Instinto Superior** / Higher Instinct | 75 (Tier III, Fluxo 7+) | Preparação calma de 0,2 s, recuperação de 0,2 s; dura 4 s × potência e tem recarga própria de 8 s. Esquiva automaticamente de lâminas corpo a corpo dirigidas ao corpo, sem Vigor nem custo por esquiva, consumindo o acerto e interrompendo a própria ação. Cada sucesso abre 0,35 s para usar o rápido como contra-ataque normal do personagem, sem bônus adicional de dano. Não evita empurrões, agarrões, poderes, projéteis ou golpes que atingem os dois lados. Dano efetivo de poder encerra o status e a janela; absorção total pelo Santuário não encerra. Choques e disputas continuam valendo, pois resolvem contato entre lâminas antes do acerto. Uma postura curta e pulso de letterbox anunciam a ativação; sem câmera lenta nova. |
+
 ### Eclipse
 
 | Poder (PT / EN) | Custo | Resumo |
@@ -141,7 +143,6 @@ Usam Habilidade com direção ou no ar, gastam **Vigor** (não Fluxo), escalam c
 
 | Suprema | Caminho | Tier | Resumo | Resposta |
 | --- | --- | --- | --- | --- |
-| **Instinto Superior** / Higher Instinct | Aurora | III | Por alguns segundos, quem lança se esquiva sozinho de golpes corpo a corpo dirigidos a ele (inclina, recua, gira ou desliza, sem teleporte); depois de uma esquiva perfeita abre uma janela curta de contra-ataque. Não evita área, agarrões, golpes em volta do corpo nem poderes; dano de poder encerra antes. Aura clara e prateada, original. | poderes, ataques de área, esperar acabar |
 | **Singularidade Devastadora** / Devastating Singularity | Eclipse | III | ~4–5 s: esfera escura suspensa sobre a arena arranca placas do chão em zonas marcadas antes; quem fica numa zona é puxado para cima, e no ar a atração é mais forte. A massa de destroços é lançada contra o oponente no fim: não pode ser bloqueada, só evitada em movimento. | correr e esquivar para fora das zonas, não pular |
 
 ## 6. Conjuntos
@@ -153,3 +154,5 @@ O conjunto base de cada personagem está em [CHARACTERS.md](CHARACTERS.md). Pers
 Fora do plano atual, por repetirem outros poderes: Cataclismo e Redemoinho (repetem a chuva de impactos), Suspensão Suprema (repete o Congelar e levaria a combo garantido), Esmagamento (repete o Estrangular).
 
 O Corte Projetado tem alcance de 520 u e velocidade de 700 u/s. O custo de 24 de Vigor e a recuperação de 0,45 s compensam a segurança da distância, entre o Arremesso e a Estocada. Uma onda por uso, sem tier; a lâmina permanece na mão. A onda também é um projétil, interceptado pelo Arsenal.
+
+O Instinto Superior escolhe a esquiva pelo corte: horizontal/arco → inclinar, ascendente → passo atrás, estocada → giro, descendente → deslize baixo. A esquiva cancela a ação atual, preserva posição física e altura, e não cria invulnerabilidade a poderes. O contra-ataque só é pedido no chão, pela mesma ação de rápido; a janela se consome ao iniciar o golpe e expira normalmente. Barreira, armadura e Santuário não são gastos por um golpe esquivado.

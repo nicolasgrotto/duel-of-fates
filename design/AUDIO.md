@@ -81,3 +81,7 @@ Barramentos separados para música, efeitos, interface e ambiência, com volumes
 ## Finalizações em etapas
 
 Cada coreografia de finalização (`FinisherMotion`) traz uma lista de deixas de som (`FinisherCue`: instante, som do banco, volume e tom). Quem corta emite a deixa (`FighterView.finisher_cue`) e o `DuelAudio` toca o som. Só sons já existentes no banco: golpes (`swing_light`, `swing_heavy`), acertos (`hit_light`, `hit_heavy`), o puxão (`power_pull`), a ignição e o apagar da lâmina emprestada (`ignition`, `extinguish`). O estilo do personagem estica as deixas junto com a animação.
+
+### Instinto Superior
+
+Ativação: acorde breve e claro em três parciais, com sopro suave; cada esquiva: sopro lateral curto com dois tons discretos, distinguível da esquiva de precisão comum. Sons originais gerados por funções próprias em tools/audio/synth_audio.py, sem amostras. Volume de poder abaixo das lâminas, sem abafar o mundo e sem loop permanente.

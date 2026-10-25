@@ -474,3 +474,7 @@ Idioma (Português/English), dificuldade, efeitos (Completos/Reduzidos), som, m�
 ## 19. Fora do escopo inicial
 
 Online, torneio, editor de personagens, perigos de arena que afetam o combate. A arquitetura deixa espaço para eles (simulação determinística, arena que reage a eventos).
+
+### Instinto Superior
+
+Suprema da Aurora (POWERS.md), com esquiva automática de acertos de lâmina corpo a corpo, exceto golpes em volta do corpo. Empurrões, projéteis, áreas, agarrões e poderes passam pelas regras normais. Choque/disputa têm prioridade e não são evitados. Cada esquiva interrompe a ação do usuário, preserva posição/altura e abre 0,35 s para o rápido iniciar o contra-ataque existente (sem multiplicador adicional); não existe bônus de punição da esquiva de precisão para reaplicar. A janela não garante acerto nem desliga a defesa rival. Dano efetivo de poder encerra status, movimento visual e janela; absorção total não encerra. Duração e janela são dados do PowerData.

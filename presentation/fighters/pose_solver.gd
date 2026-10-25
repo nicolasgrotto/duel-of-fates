@@ -1,6 +1,8 @@
 class_name PoseSolver
 extends RefCounted
 
+const POWER_VFX: PowerVfxConfig = preload("res://data/balance/power_vfx_config.tres")
+
 const COMBAT: CombatConfig = preload("res://data/balance/combat_config.tres")
 const HIP_HEIGHT_FALLBACK: float = 72.0
 const HIGH_WINDUP_LIMIT: float = -100.0
@@ -333,6 +335,10 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 				pose.front_foot = Vector2(6.0, 8.0)
 				pose.back_foot = Vector2(-4.0, 12.0)
 				lean = -10.0
+	if fighter.instinct_evade_ticks > 0 and fighter.is_alive() and not fighter.is_attacking():
+		var evade: Vector2 = _instinct_evade(fighter, pose)
+		crouch += evade.x
+		lean += evade.y
 	var staged_track: PoseTrack = null
 	if intro != null and intro_time >= 0.0 and not intro.keys.is_empty():
 		staged_track = intro
@@ -943,6 +949,11 @@ func _cast(fighter: FighterState, pose: RigPose) -> Vector2:
 	pose.open_hand = true
 	var tremor: Vector2 = Vector2(sin(time * 41.0), cos(time * 37.0)) * TREMOR if fighter.state == FighterState.State.CHANNELING else Vector2.ZERO
 	match power.kind:
+		PowerData.Kind.HIGHER_INSTINCT:
+			pose.off_hand = RELAXED_HAND.lerp(SELF_HAND, progress)
+			pose.grip = pose.grip.lerp(INVOKE_HAND, progress * 0.3)
+			pose.blade_angle = lerpf(pose.blade_angle, INVOKE_ANGLE, progress)
+			return Vector2(4.0 * progress, -4.0 * progress)
 		PowerData.Kind.REPULSE:
 			return _repulse(fighter, pose)
 		PowerData.Kind.PULL:
@@ -1141,3 +1152,31 @@ static func _progress(fighter: FighterState, move: MoveData) -> float:
 		FighterState.Phase.RECOVERY:
 			length = move.recovery_ticks()
 	return clampf(float(fighter.phase_ticks) / maxf(length, 1.0), 0.0, 1.0)
+
+
+func _instinct_evade(fighter: FighterState, pose: RigPose) -> Vector2:
+	if fighter.instinct_power == null:
+		return Vector2.ZERO
+	var progress: float = 1.0 - float(fighter.instinct_evade_ticks) / maxf(Ticks.from_seconds(fighter.instinct_power.evade_duration), 1)
+	var pulse: float = sin(clampf(progress, 0.0, 1.0) * PI)
+	afterimage = pulse > 0.4
+	match fighter.instinct_motion:
+		FighterState.InstinctMotion.LEAN:
+			_body_shift -= POWER_VFX.instinct_shift * pulse
+			pose.grip += Vector2(-POWER_VFX.instinct_shift, 0.0) * pulse
+			return Vector2(0.0, -POWER_VFX.instinct_lean * pulse)
+		FighterState.InstinctMotion.STEP_BACK:
+			_body_shift -= POWER_VFX.instinct_step * pulse
+			pose.back_foot.x -= POWER_VFX.instinct_step * pulse
+			pose.front_foot.y -= POWER_VFX.instinct_step * pulse * 0.3
+			return Vector2(4.0 * pulse, -POWER_VFX.instinct_lean * pulse * 0.5)
+		FighterState.InstinctMotion.TURN:
+			pose.turn = pulse
+			pose.grip += Vector2(-POWER_VFX.instinct_shift, 0.0) * pulse
+			return Vector2(0.0, -POWER_VFX.instinct_lean * pulse * 0.25)
+		FighterState.InstinctMotion.SLIDE:
+			_body_shift -= POWER_VFX.instinct_shift * pulse
+			pose.front_foot.x += POWER_VFX.instinct_slide * pulse
+			pose.back_foot.x -= POWER_VFX.instinct_step * pulse
+			return Vector2(POWER_VFX.instinct_slide * pulse, -POWER_VFX.instinct_lean * pulse * 0.6)
+	return Vector2.ZERO

@@ -242,3 +242,13 @@ Para cada item ⚠️ ou ❌, escreva: número, personagem, arena, o que fez, o 
 | 03.3 | Carregar save anterior às árvores | Quatro nós do kit continuam disponíveis sem custo; Corte Projetado segue por comprar | Teste de migração nos três estilos |
 | 03.4 | Trocar abas, navegar e comprar por teclado, mouse e gamepad | Foco, legendas, saldo e kit corretos nas duas abas; botões de menu preservam teclas | Cena gráfica com eventos sintéticos; teste de bindings idempotentes; dispositivo físico ainda pendente |
 | 03.5 | Conferir ícones e estados em 720p/1080p e em cinza | Sem corte de legenda, seleção/equipamento/tier distinguíveis sem cor; onda na cor da lâmina | 22 PNGs e overview/contact sheet inspecionados; glifos em `icons.png` |
+
+## Task 04 — Instinto Superior
+
+| Caso | Ação | Resultado esperado | Validação local |
+| --- | --- | --- | --- |
+| 04.1 | Ancião ativa contra rápidos, forte, estocada e ascendente da Sombra | Quatro movimentos distintos, sem teleporte; rápido abre contra-ataque por 0,35 s | 9 testes novos; duelo real, 40 PNGs e `build/task04_renders/contact_sheet.png` inspecionados |
+| 04.2 | Usar área, empurrão, pedras, agarrão ou poder contra o status | Exceções passam; dano efetivo de poder apaga aura e janela; Santuário que absorve tudo preserva | Testes e Repulsão de Fluxo equivalente na captura |
+| 04.3 | Atacar com as duas lâminas, salvar/restaurar e deixar expirar | Choques/disputas preservados, replay idêntico, timers zeram | Suíte completa: 339 passando, zero falhas |
+| 04.4 | Equipar na História/Galeria abaixo e acima do Fluxo 7 | Aurora nó 12 custa 4, exige o nó 11; compra possível antes do tier, equipamento só em Fluxo 7+ | Testes de catálogo e árvore; gerador atualizado |
+| 04.5 | Jogar com efeitos reduzidos e enfrentar IA | Aura discreta permanece; IA usa poderes ou espera e não insiste em lâminas | Capturas reduzidas e teste de 180 ticks; avaliação humana da sensação pendente |

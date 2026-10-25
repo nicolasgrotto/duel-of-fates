@@ -192,6 +192,10 @@ static func start_attack(sim: MatchSimulation, fighter: FighterState, move: Move
 static func _start_light(sim: MatchSimulation, fighter: FighterState) -> Result:
 	if fighter.is_airborne():
 		return start_attack(sim, fighter, fighter.character.aerial_light) if can_attack_in_air(fighter) else Result.NOT_POSSIBLE
+	if fighter.instinct_counter_ticks > 0:
+		fighter.instinct_counter_ticks = 0
+		fighter.instinct_evade_ticks = 0
+		return start_attack(sim, fighter, fighter.character.counter)
 	var opponent: FighterState = sim.opponent_of(fighter)
 	if opponent.state == FighterState.State.STAGGERED and opponent.stagger_counterable:
 		return start_attack(sim, fighter, fighter.character.counter)

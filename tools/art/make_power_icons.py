@@ -107,6 +107,12 @@ def glyph(power_id):
         for points in [[(5, 17), (2, 6), (6, 8), (9, 19)], [(11, 19), (11, 1), (14, 4), (14, 19)], [(16, 19), (18, 8), (22, 6), (19, 17)]]:
             polygon(points)
         line([(4, 21), (20, 21)])
+    elif power_id == "higher_instinct":
+        arc((2, 5, 22, 19), 195, 345)
+        arc((2, 5, 22, 19), 15, 165)
+        box((10, 9, 13, 14))
+        line([(12, 1), (12, 4)], 2)
+        line([(12, 20), (12, 23)], 2)
     elif power_id.startswith("blade_"):
         style = power_id[6:]
         if style == "arc":

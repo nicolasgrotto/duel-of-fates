@@ -146,3 +146,7 @@ Opção de acessibilidade: tremor e punch-in a 25%, flash e hit flash desligados
 | Dessaturação | 0,15 s |
 
 Partículas e luzes usam pools e reaproveitamento; o orçamento é medido no profiling (ver ARCHITECTURE.md), não fixado aqui.
+
+### Instinto Superior
+
+Ativação com pulso de letterbox de 0,3 s, sem câmera lenta, dessaturação ou flash de tela. Aura prateada original: dois contornos curtos e partidos junto ao corpo, pontos de luz que percorrem o contorno e olhos claros discretos, misturando o texto claro do UiPalette com pouco da cor do tier. A aura permanece fina; os sucessos usam os movimentos do rig e um rastro curto, sem anel de parry. Tudo preso à grade e com opacidade em degraus. Efeitos reduzidos mantêm um único contorno estático e os movimentos legíveis, sem rastros ou cintilação. Parâmetros em PowerVfxConfig; nenhum efeito após a morte.

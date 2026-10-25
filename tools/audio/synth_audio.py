@@ -408,6 +408,14 @@ def power_sounds():
     save("powers/resisted.wav", lowpass(thump(90, 0.3, 0.7) + 0.4 * noise(0.3) * envelope(0.3, 0.001, 4.0), 600))
 
 
+def instinct_sounds():
+    rng = np.random.default_rng(404)
+    air = bandpass(rng.normal(0, 1, int(0.8 * RATE)), 1600, 4800)
+    save("powers/instinct.wav", (sweep(540, 1080, 0.8) * 0.4 + air * 0.2) * envelope(0.8, 0.08, 1.8))
+    air = bandpass(rng.normal(0, 1, int(0.2 * RATE)), 2500, 6800)
+    save("powers/instinct_evade.wav", (air * 0.6 + sweep(1200, 700, 0.2) * 0.2) * envelope(0.2, 0.01, 2.5))
+
+
 if __name__ == "__main__":
     blade_sounds()
     impact_sounds()
@@ -417,6 +425,7 @@ if __name__ == "__main__":
     music()
     ambience()
     power_sounds()
+    instinct_sounds()
     arena_ambiences()
     themes()
     print("audio written")

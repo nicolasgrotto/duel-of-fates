@@ -14,6 +14,9 @@ static func step(sim: MatchSimulation, fighter: FighterState) -> void:
 		if fighter.power_cooldowns[slot] > 0:
 			fighter.power_cooldowns[slot] -= 1
 	_heal(fighter)
+	fighter.instinct_ticks = maxi(fighter.instinct_ticks - 1, 0)
+	fighter.instinct_counter_ticks = maxi(fighter.instinct_counter_ticks - 1, 0)
+	fighter.instinct_evade_ticks = maxi(fighter.instinct_evade_ticks - 1, 0)
 	fighter.focus_ticks = maxi(fighter.focus_ticks - 1, 0)
 	fighter.twisted_ticks = maxi(fighter.twisted_ticks - 1, 0)
 	fighter.rain_ticks = maxi(fighter.rain_ticks - 1, 0)

@@ -62,7 +62,7 @@ static func _guard(sim: MatchSimulation, caster: FighterState, target: FighterSt
 	var damage: float = impact.damage * scale * ratio * sim.wrath_scale(caster, target)
 	var event: CombatEvent = _event(sim, CombatEvent.Type.POWER_BLOCKED, caster, target, power, impact)
 	event.amount = damage
-	if damage > 0.0 and sim.apply_damage(target, damage):
+	if damage > 0.0 and sim.apply_damage(target, damage, true):
 		sim.kill(target, caster, null, power)
 		return
 	sim.drain_vigor(target, impact.guard_vigor * band.guard_vigor_ratio)
@@ -82,13 +82,13 @@ static func _hit(sim: MatchSimulation, caster: FighterState, target: FighterStat
 	var event: CombatEvent = _event(sim, CombatEvent.Type.POWER_HIT, caster, target, power, impact)
 	event.amount = damage
 	event.heavy = stagger > 0.0
-	var lethal: bool = damage > 0.0 and sim.apply_damage(target, damage)
+	var lethal: bool = damage > 0.0 and sim.apply_damage(target, damage, true)
 	if damage > 0.0 and not impact.periodic and impact.grants_flow:
 		sim.gain_flow(target, flow.gain_on_hurt)
 		sim.gain_flow(caster, flow.gain_on_hit)
 	if lethal or _executes(sim, caster, target, power):
 		if not lethal:
-			sim.apply_damage(target, target.health)
+			sim.apply_damage(target, target.health, true)
 		sim.kill(target, caster, null, power)
 		return
 	if stagger > 0.0:

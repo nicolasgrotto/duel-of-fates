@@ -7,15 +7,17 @@ func _story(path: int) -> StoryCampaign:
 
 func test_tree_order_costs_and_parents_match_the_story() -> void:
 	var ids: Array[Array] = [
-		[&"repulse", &"pull", &"barrier", &"throw", &"focus", &"heal", &"absorption", &"mind_twist", &"supreme_push", &"sanctuary", &"mass_telekinesis"],
+		[&"repulse", &"pull", &"barrier", &"throw", &"focus", &"heal", &"absorption", &"mind_twist", &"supreme_push", &"sanctuary", &"mass_telekinesis", &"higher_instinct"],
 		[&"pull", &"repulse", &"drain", &"choke", &"freeze", &"lightning", &"mind_twist", &"wrath", &"fracture", &"arsenal", &"storm"],
 	]
 	for path in 2:
 		var story: StoryCampaign = _story(path)
 		var tree: StoryPowerTree = StoryPowerTree.new(story)
 		var costs: Array[int] = [0, 1, 1, 2, 2, 2, 2, 2 if path == 0 else 3, 3, 3, 4]
+		if path == 0:
+			costs.append(4)
 		assert_eq(story.power_list(), ids[path])
-		assert_eq(tree.nodes.size(), 11)
+		assert_eq(tree.nodes.size(), ids[path].size())
 		for index in tree.nodes.size():
 			var node: StoryPowerTree.PowerNode = tree.nodes[index]
 			assert_eq(node.power.id, ids[path][index])

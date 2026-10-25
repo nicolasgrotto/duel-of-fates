@@ -31,7 +31,9 @@
 
 [ext_resource type="Resource" path="res://data/techniques/projected_cut.tres" id="t_projected_cut"]
 
+[ext_resource type="Resource" path="res://data/powers/higher_instinct.tres" id="p_higher_instinct"]
+
 [resource]
 script = ExtResource("1_script")
-powers = Array[ExtResource("2_power")]([ExtResource("p_repulse"), ExtResource("p_pull"), ExtResource("p_throw"), ExtResource("p_mind_twist"), ExtResource("p_supreme_push"), ExtResource("p_fracture"), ExtResource("p_barrier"), ExtResource("p_heal"), ExtResource("p_focus"), ExtResource("p_absorption"), ExtResource("p_sanctuary"), ExtResource("p_mass_telekinesis"), ExtResource("p_lightning"), ExtResource("p_choke"), ExtResource("p_freeze"), ExtResource("p_storm"), ExtResource("p_wrath"), ExtResource("p_drain"), ExtResource("p_arsenal")])
+powers = Array[ExtResource("2_power")]([ExtResource("p_repulse"), ExtResource("p_pull"), ExtResource("p_throw"), ExtResource("p_mind_twist"), ExtResource("p_supreme_push"), ExtResource("p_fracture"), ExtResource("p_barrier"), ExtResource("p_heal"), ExtResource("p_focus"), ExtResource("p_absorption"), ExtResource("p_sanctuary"), ExtResource("p_mass_telekinesis"), ExtResource("p_higher_instinct"), ExtResource("p_lightning"), ExtResource("p_choke"), ExtResource("p_freeze"), ExtResource("p_storm"), ExtResource("p_wrath"), ExtResource("p_drain"), ExtResource("p_arsenal")])
 techniques = Array[ExtResource("3_move")]([ExtResource("t_dash_slash"), ExtResource("t_blade_throw"), ExtResource("t_thrust"), ExtResource("t_rising_cut"), ExtResource("t_flurry"), ExtResource("t_plunge"), ExtResource("t_projected_cut")])

@@ -301,7 +301,7 @@ func mark_hazard_group(group: int, fighter_index: int) -> void:
 	hazard_groups_hit[fighter_index] = memory
 
 
-func apply_damage(fighter: FighterState, amount: float) -> bool:
+func apply_damage(fighter: FighterState, amount: float, power_damage: bool = false) -> bool:
 	if fighter.sanctuary_hp > 0.0:
 		var absorbed: float = minf(fighter.sanctuary_hp, amount)
 		fighter.sanctuary_hp -= absorbed
@@ -310,6 +310,10 @@ func apply_damage(fighter: FighterState, amount: float) -> bool:
 			fighter.sanctuary_ticks = 0
 	if amount <= 0.0:
 		return false
+	if power_damage:
+		fighter.instinct_ticks = 0
+		fighter.instinct_counter_ticks = 0
+		fighter.instinct_evade_ticks = 0
 	fighter.heal_ticks = 0
 	fighter.ticks_since_damage = 0
 	if rules.endless and not rules.endless_finishers:

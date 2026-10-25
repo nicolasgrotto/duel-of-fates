@@ -96,3 +96,18 @@ extends Resource
 @export var sky_bolt_life: float = 0.24
 @export var sky_flash: float = 0.35
 @export var sky_fade: float = 2.5
+
+
+@export_group("Higher instinct")
+@export var instinct_letterbox: float = 0.3
+@export var instinct_tier_tint: float = 0.18
+@export var instinct_aura: Vector2 = Vector2(34.0, 84.0)
+@export var instinct_aura_width: float = 2.0
+@export var instinct_aura_alpha: float = 0.36
+@export var instinct_flicker_rate: float = 8.0
+@export var instinct_points: int = 4
+@export var instinct_eye_size: Vector2 = Vector2(4.0, 2.0)
+@export var instinct_lean: float = 24.0
+@export var instinct_shift: float = 12.0
+@export var instinct_step: float = 14.0
+@export var instinct_slide: float = 20.0

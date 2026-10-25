@@ -43,6 +43,9 @@ static func activate(sim: MatchSimulation, caster: FighterState) -> void:
 			_heal(sim, caster, power)
 		PowerData.Kind.FOCUS:
 			caster.focus_ticks = Ticks.from_seconds(power.duration * caster.flow_potency)
+		PowerData.Kind.HIGHER_INSTINCT:
+			caster.instinct_power = power
+			caster.instinct_ticks = Ticks.from_seconds(power.duration * caster.flow_potency)
 		PowerData.Kind.SANCTUARY:
 			caster.sanctuary_ticks = Ticks.from_seconds(power.duration)
 			caster.sanctuary_hp = power.strength * caster.flow_potency
@@ -259,7 +262,7 @@ static func _choke_step(sim: MatchSimulation, caster: FighterState, target: Figh
 	target.y = minf(target.y + sim.config.flow.choke_lift_speed * Ticks.DELTA, lift)
 	target.vy = 0.0
 	target.on_ground = false
-	if sim.apply_damage(target, power.damage * band.scale * Ticks.DELTA):
+	if sim.apply_damage(target, power.damage * band.scale * Ticks.DELTA, true):
 		sim.kill(target, caster, null, power)
 		end_channel(sim, caster)
 

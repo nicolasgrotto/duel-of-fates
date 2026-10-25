@@ -30,6 +30,8 @@ static func _apply(sim: MatchSimulation, attacker: FighterState, defender: Fight
 	attacker.move_hit_done = true
 	if defender.state == FighterState.State.DODGING and defender.evade_window_ticks > 0:
 		_evade(sim, attacker, defender, move)
+	elif defender.instinct_ticks > 0 and move.is_blade() and not move.hits_behind:
+		_instinct_evade(sim, attacker, defender, move)
 	elif _focus_evades(sim, defender, move):
 		defender.flow -= sim.config.flow.focus_evade_cost
 		_evade(sim, attacker, defender, move)
@@ -104,13 +106,31 @@ static func _event(sim: MatchSimulation, type: CombatEvent.Type, attacker: Fight
 	return event
 
 
-static func _evade(sim: MatchSimulation, attacker: FighterState, defender: FighterState, move: MoveData) -> void:
+static func _evade(sim: MatchSimulation, attacker: FighterState, defender: FighterState, move: MoveData, preserve_airborne: bool = false) -> CombatEvent:
 	defender.evade_succeeded = true
 	defender.evade_streak += 1
 	var event: CombatEvent = _event(sim, CombatEvent.Type.EVADE_SUCCESS, attacker, defender, move)
 	event.amount = defender.evade_streak
 	event.frame_advantage = -attacker.ticks_left_in_move()
-	sim.change_state(defender, FighterState.State.IDLE)
+	sim.change_state(defender, FighterState.State.JUMPING if preserve_airborne and not defender.on_ground else FighterState.State.IDLE)
+	return event
+
+
+static func _instinct_evade(sim: MatchSimulation, attacker: FighterState, defender: FighterState, move: MoveData) -> void:
+	var event: CombatEvent = _evade(sim, attacker, defender, move, true)
+	defender.instinct_counter_ticks = Ticks.from_seconds(defender.instinct_power.counter_window)
+	defender.instinct_evade_ticks = Ticks.from_seconds(defender.instinct_power.evade_duration)
+	match move.cut:
+		MoveData.Cut.THRUST:
+			defender.instinct_motion = FighterState.InstinctMotion.TURN
+		MoveData.Cut.DESCENDING:
+			defender.instinct_motion = FighterState.InstinctMotion.SLIDE
+		MoveData.Cut.RISING:
+			defender.instinct_motion = FighterState.InstinctMotion.STEP_BACK
+		_:
+			defender.instinct_motion = FighterState.InstinctMotion.LEAN
+	event.power = defender.instinct_power
+	event.motion = defender.instinct_motion
 
 
 static func _shove(sim: MatchSimulation, attacker: FighterState, defender: FighterState, move: MoveData) -> void:

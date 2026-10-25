@@ -82,6 +82,7 @@ func _fighter_lines(i: int) -> PackedStringArray:
 		"exhausted %s  wound %s  freeze %d  reserve %.0f" % [fighter.exhausted, FighterState.Wound.keys()[fighter.wound].to_lower(), fighter.freeze_ticks, fighter.guard_reserve],
 		"buffer %s %d" % [FighterState.Action.keys()[fighter.buffered_action].to_lower(), fighter.buffer_ticks],
 	]
+	lines.append("instinct %d  counter %d  motion %s (%d)" % [fighter.instinct_ticks, fighter.instinct_counter_ticks, FighterState.InstinctMotion.keys()[fighter.instinct_motion], fighter.instinct_evade_ticks])
 	lines.append_array(sim.state_logic(fighter).debug_lines(sim, fighter))
 	if i < views.size():
 		lines.append_array(views[i].intro_debug_lines())

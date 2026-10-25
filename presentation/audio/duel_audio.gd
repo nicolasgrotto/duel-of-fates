@@ -37,6 +37,7 @@ const POWER_STARTS: Dictionary = {
 	PowerData.Kind.WRATH: &"power_wrath",
 }
 const POWER_ACTIVES: Dictionary = {
+	PowerData.Kind.HIGHER_INSTINCT: &"power_instinct",
 	PowerData.Kind.REPULSE: &"power_repulse",
 	PowerData.Kind.SUPREME_PUSH: &"power_supreme_push",
 	PowerData.Kind.PULL: &"power_pull",
@@ -161,7 +162,9 @@ func on_ticked() -> void:
 
 func on_event(event: CombatEvent) -> void:
 	var at: Vector2 = Vector2(event.position.x, -event.position.y)
-	if SOUNDS.has(event.type):
+	if event.type == CombatEvent.Type.EVADE_SUCCESS and event.power != null and event.power.kind == PowerData.Kind.HIGHER_INSTINCT:
+		AudioDirector.play(&"power_instinct_evade", at, POWER_DB)
+	elif SOUNDS.has(event.type):
 		AudioDirector.play(SOUNDS[event.type], at, 0.0, randf_range(1.0 - PITCH_JITTER, 1.0 + PITCH_JITTER))
 	match event.type:
 		CombatEvent.Type.HIT:

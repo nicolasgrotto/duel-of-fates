@@ -57,6 +57,14 @@ static func spends_fourth_reserve(me: FighterState, slot: int) -> bool:
 	return me.flow - cost < fourth.cost_for(me.flow_level)
 
 
+static func instinct_slot(sim: MatchSimulation, me: FighterState, opponent: FighterState, gap: float) -> int:
+	for slot in FighterState.POWER_SLOTS:
+		var power: PowerData = me.powers[slot]
+		if power != null and power.kind == PowerData.Kind.HIGHER_INSTINCT and is_ready(sim, me, slot) and _wants(me, opponent, gap, power):
+			return slot
+	return NO_SLOT
+
+
 static func escape_slot(sim: MatchSimulation, me: FighterState) -> int:
 	for slot in FighterState.POWER_SLOTS:
 		var power: PowerData = me.powers[slot]
@@ -114,6 +122,8 @@ static func _wants(me: FighterState, opponent: FighterState, gap: float, power: 
 			return gap > FAR_GAP
 		return gap > FAR_GAP and not _status_active(me, power.kind)
 	match power.kind:
+		PowerData.Kind.HIGHER_INSTINCT:
+			return me.instinct_ticks <= 0 and gap <= reach and (opponent.is_attacking() or me.vigor_ratio() < 0.4)
 		PowerData.Kind.MIND_TWIST:
 			return gap <= reach and opponent.twisted_ticks == 0 and _commits_to_a_direction(opponent)
 		PowerData.Kind.REPULSE:

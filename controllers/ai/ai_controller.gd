@@ -88,6 +88,8 @@ func _reset_plan() -> void:
 
 
 func _think(sim: MatchSimulation, me: FighterState, opponent: FighterState) -> void:
+	if _answer_instinct(sim, me, opponent):
+		return
 	if (_chain_left > 0 and me.is_attacking()) or _hold_command != 0 or _channel_ticks > 0:
 		return
 	if _try_escape(sim, me):
@@ -120,6 +122,16 @@ func _think(sim: MatchSimulation, me: FighterState, opponent: FighterState) -> v
 	_position(me, opponent, gap)
 
 
+func _answer_instinct(sim: MatchSimulation, me: FighterState, opponent: FighterState) -> bool:
+	if opponent.instinct_ticks <= 0 or me.is_casting():
+		return false
+	_reset_plan()
+	var gap: float = CombatGeometry.gap(sim.config, me, opponent)
+	if not _try_power(sim, me, opponent, gap):
+		_set_plan(Plan.RETREAT if gap <= me.character.heavy.reach else Plan.WAIT, _reaction_ticks(), "wait instinct")
+	return true
+
+
 func _try_defend(sim: MatchSimulation, me: FighterState, opponent: FighterState, gap: float) -> bool:
 	if not opponent.is_attacking() or opponent.move == null or opponent.move_phase != FighterState.Phase.STARTUP:
 		return false
@@ -132,6 +144,10 @@ func _try_defend(sim: MatchSimulation, me: FighterState, opponent: FighterState,
 			_set_plan(Plan.RETREAT, ticks_to_active + move.active_ticks(), "whiff bait")
 			return true
 		return false
+	var instinct: int = AiPowers.instinct_slot(sim, me, opponent, gap)
+	if instinct != AiPowers.NO_SLOT and ticks_to_active > me.powers[instinct].startup_ticks() and rng.randf() < difficulty.power_defense_chance:
+		_schedule_power(me, instinct, 0, "instinct under pressure")
+		return true
 	var defend_chance: float = difficulty.defend_chance * lerpf(0.6, 1.4, profile.defense)
 	defend_chance *= 1.0 + difficulty.habit_weight * memory.light_share()
 	if rng.randf() > defend_chance:

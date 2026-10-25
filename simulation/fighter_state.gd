@@ -21,6 +21,7 @@ enum State {
 enum Phase { NONE, STARTUP, ACTIVE, RECOVERY }
 enum DodgeKind { NONE, GROUND, AIR, EVADE, DASH, SPIN }
 enum Action { NONE, JUMP, BLOCK, LIGHT, HEAVY, SHOVE, EVADE, DODGE, SPECIAL, POWER, FOURTH }
+enum InstinctMotion { LEAN, STEP_BACK, TURN, SLIDE }
 enum Wound { NONE, ARM, LEG }
 
 const NO_PARRY: int = -1
@@ -128,6 +129,11 @@ var pulse_ticks: int = 0
 var spawned: int = 0
 var heal_ticks: int = 0
 var heal_per_tick: float = 0.0
+var instinct_ticks: int = 0
+var instinct_counter_ticks: int = 0
+var instinct_evade_ticks: int = 0
+var instinct_motion: InstinctMotion = InstinctMotion.LEAN
+var instinct_power: PowerData
 var focus_ticks: int = 0
 var wrath_ticks: int = 0
 var wrath_armor: int = 0
@@ -298,6 +304,11 @@ func reset_for_round(start_x: float, start_facing: int) -> void:
 	spawned = 0
 	heal_ticks = 0
 	heal_per_tick = 0.0
+	instinct_ticks = 0
+	instinct_counter_ticks = 0
+	instinct_evade_ticks = 0
+	instinct_motion = InstinctMotion.LEAN
+	instinct_power = null
 	focus_ticks = 0
 	wrath_ticks = 0
 	wrath_armor = 0

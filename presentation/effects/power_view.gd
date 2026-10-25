@@ -246,6 +246,8 @@ func _draw_fighter(fighter: FighterState) -> void:
 		draw_circle(hand, 2.0 + 3.0 * progress, Color(Color.WHITE, 0.6))
 	if fighter.state == FighterState.State.CHANNELING and fighter.power != null:
 		_draw_channel(fighter, view, color)
+	if fighter.instinct_ticks > 0:
+		_draw_instinct(fighter, view, center)
 	if fighter.heal_ticks > 0:
 		var rise: float = fmod(_time * 1.6, 1.0)
 		draw_circle(center + Vector2(0.0, 30.0 - rise * 70.0), 16.0, Color(color, 0.25 * (1.0 - rise)))
@@ -635,3 +637,26 @@ func _draw_ellipse(center: Vector2, radii: Vector2, color: Color, width: float) 
 		var angle: float = i * TAU / 32.0
 		points.append(center + Vector2(cos(angle) * radii.x, sin(angle) * radii.y))
 	draw_polyline(points, color, width)
+
+
+func _draw_instinct(fighter: FighterState, view: FighterView, center: Vector2) -> void:
+	var silver: Color = PALETTE.text.lerp(tier_color(fighter.flow_tier), vfx.instinct_tier_tint)
+	var step: float = 1.0 if reduced else (floorf(fmod(_time * vfx.instinct_flicker_rate, 1.0) * FADE_STEPS) + 1.0) / FADE_STEPS
+	var alpha: float = vfx.instinct_aura_alpha * (0.6 + 0.4 * step)
+	var radii: Vector2 = vfx.instinct_aura
+	for side_index in 2:
+		var side: float = -1.0 if side_index == 0 else 1.0
+		var previous: Vector2 = center + Vector2(side * radii.x * 0.5, -radii.y * 0.8)
+		for point in 7:
+			var ratio: float = float(point + 1) / 8.0
+			var at: Vector2 = center + Vector2(side * radii.x * sin(ratio * PI), lerpf(-radii.y * 0.8, radii.y * 0.8, ratio))
+			if point != 3:
+				draw_line(previous.snapped(Vector2.ONE * GRID), at.snapped(Vector2.ONE * GRID), Color(silver, alpha), vfx.instinct_aura_width)
+			previous = at
+	if not reduced:
+		for point in vfx.instinct_points:
+			var phase: float = fposmod(_time * 0.7 + float(point) / vfx.instinct_points, 1.0)
+			var at: Vector2 = center + Vector2(cos(phase * TAU) * radii.x, sin(phase * TAU) * radii.y)
+			draw_rect(Rect2(at.snapped(Vector2.ONE * GRID), Vector2.ONE * GRID), Color(silver, alpha))
+	var eye: Vector2 = (view.head_position() + Vector2(fighter.facing * 4.0, -2.0)).snapped(Vector2.ONE * GRID)
+	draw_rect(Rect2(eye, vfx.instinct_eye_size), Color(silver, 0.6))

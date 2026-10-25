@@ -62,6 +62,7 @@ var limb: MoveData.Limb = MoveData.Limb.NONE
 var finisher: Finisher.Kind = Finisher.Kind.NONE
 var from_front: bool = true
 var frame_advantage: int = 0
+var motion: int = -1
 var combo: int = 0
 var hitstop_ticks: int = 0
 
@@ -78,6 +79,7 @@ func reset() -> void:
 	finisher = Finisher.Kind.NONE
 	from_front = true
 	frame_advantage = 0
+	motion = -1
 	combo = 0
 	hitstop_ticks = 0
 

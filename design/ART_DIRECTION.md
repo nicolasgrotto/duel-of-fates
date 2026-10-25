@@ -92,7 +92,7 @@ Fundo `#05070d`, texto `#e8ecf5`, texto secundário `#8a94ab`, destaque `#9fb4d9
 
 ### Ícones de poder
 
-Os dezenove poderes recebem glifos originais de 24×24 pixels, em `assets/ui/powers/<id>.png`, gerados deterministicamente por `tools/art/make_power_icons.py`. Silhuetas distintas representam a função: onda de empurrão, garra que puxa, arco de escudo, raio, cristal de gelo, aperto no pescoço e assim por diante. Tons planos e borda escura de um pixel, reutilizando o cálculo de borda do pintor; sem gradiente ou desenho cartunesco. A fonte de cores é `UiPalette`: Aurora `#5aa2ff`, Eclipse `#ff4458`, comuns no destaque `#9fb4d9`, borda no fundo e luz no texto. A tela mostra ×3 em 1080p (×2 em 720p), com filtro nearest; o detalhe pode ampliar para ×6. Estado bloqueado usa modulação secundária e moldura/legenda, sem cor nova. O ícone pertence ao próprio `PowerData`, para futura reutilização na Galeria e no HUD, sem catálogo paralelo.
+Os vinte poderes recebem glifos originais de 24×24 pixels, em `assets/ui/powers/<id>.png`, gerados deterministicamente por `tools/art/make_power_icons.py`. Silhuetas distintas representam a função: onda de empurrão, garra que puxa, arco de escudo, raio, cristal de gelo, aperto no pescoço e assim por diante. Tons planos e borda escura de um pixel, reutilizando o cálculo de borda do pintor; sem gradiente ou desenho cartunesco. A fonte de cores é `UiPalette`: Aurora `#5aa2ff`, Eclipse `#ff4458`, comuns no destaque `#9fb4d9`, borda no fundo e luz no texto. A tela mostra ×3 em 1080p (×2 em 720p), com filtro nearest; o detalhe pode ampliar para ×6. Estado bloqueado usa modulação secundária e moldura/legenda, sem cor nova. O ícone pertence ao próprio `PowerData`, para futura reutilização na Galeria e no HUD, sem catálogo paralelo.
 
 ## A lâmina
 
@@ -241,3 +241,7 @@ Minimalista, cinematográfica, legível e pouco intrusiva. Uma única fonte: **O
 ### Ícones de lâmina
 
 Os nós de Lâmina usam a mesma grade de 24×24, contorno de um pixel, tons planos e filtro nearest dos ícones de poder. Glifos originais por estilo de técnica (arco, avanço, arremesso, estocada, ascendente, rajada, investida, mergulho e onda) mostram uma lâmina no destaque neutro do UiPalette. Habilidades usam um glifo por tipo (golpe, postura, avanço, carga, salto). Gerados por `tools/art/make_power_icons.py`, em `assets/ui/blade/<id>.png`; sem cor de caminho ou tier.
+
+### Instinto Superior
+
+Postura de ativação calma, joelhos suaves, lâmina baixa e palma aberta junto ao peito. Nas esquivas: inclinar o tronco contra horizontais/arcos, meio passo atrás contra ascendentes, giro curto em escorço contra estocadas e deslize baixo contra descendentes. Nenhum teleporte, cabelo transformado, silhueta nova ou referência visual de outra obra. A simulação escolhe e guarda a variante; a pose apenas a lê. Aura e olhos usam UiPalette.text com toque da cor de tier. O ícone de 24×24 representa um olho sob quatro marcas abertas de movimento, no azul da Aurora.

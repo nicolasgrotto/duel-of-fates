@@ -32,6 +32,7 @@
 [ext_resource type="Resource" path="res://data/powers/supreme_push.tres" id="p_aurora_8"]
 [ext_resource type="Resource" path="res://data/powers/sanctuary.tres" id="p_aurora_9"]
 [ext_resource type="Resource" path="res://data/powers/mass_telekinesis.tres" id="p_aurora_10"]
+[ext_resource type="Resource" path="res://data/powers/higher_instinct.tres" id="p_aurora_11"]
 [ext_resource type="Resource" path="res://data/powers/pull.tres" id="p_eclipse_0"]
 [ext_resource type="Resource" path="res://data/powers/repulse.tres" id="p_eclipse_1"]
 [ext_resource type="Resource" path="res://data/powers/drain.tres" id="p_eclipse_2"]
@@ -120,6 +121,13 @@ script = ExtResource("tree_node")
 power = ExtResource("p_aurora_10")
 cost = 4
 parent = 9
+branch = 1
+
+[sub_resource type="Resource" id="aurora_11"]
+script = ExtResource("tree_node")
+power = ExtResource("p_aurora_11")
+cost = 4
+parent = 10
 branch = 1
 
 [sub_resource type="Resource" id="eclipse_0"]
@@ -247,7 +255,7 @@ aurora_normal_ending = ExtResource("n_ring_silent")
 aurora_secret_ending = ExtResource("n_heir_returns")
 eclipse_normal_ending = ExtResource("n_forest_yields")
 eclipse_secret_ending = ExtResource("n_balance")
-aurora_tree = Array[ExtResource("tree_node")]([SubResource("aurora_0"), SubResource("aurora_1"), SubResource("aurora_2"), SubResource("aurora_3"), SubResource("aurora_4"), SubResource("aurora_5"), SubResource("aurora_6"), SubResource("aurora_7"), SubResource("aurora_8"), SubResource("aurora_9"), SubResource("aurora_10")])
+aurora_tree = Array[ExtResource("tree_node")]([SubResource("aurora_0"), SubResource("aurora_1"), SubResource("aurora_2"), SubResource("aurora_3"), SubResource("aurora_4"), SubResource("aurora_5"), SubResource("aurora_6"), SubResource("aurora_7"), SubResource("aurora_8"), SubResource("aurora_9"), SubResource("aurora_10"), SubResource("aurora_11")])
 eclipse_tree = Array[ExtResource("tree_node")]([SubResource("eclipse_0"), SubResource("eclipse_1"), SubResource("eclipse_2"), SubResource("eclipse_3"), SubResource("eclipse_4"), SubResource("eclipse_5"), SubResource("eclipse_6"), SubResource("eclipse_7"), SubResource("eclipse_8"), SubResource("eclipse_9"), SubResource("eclipse_10")])
 skill_points_win = 3
 skill_points_loss = 1

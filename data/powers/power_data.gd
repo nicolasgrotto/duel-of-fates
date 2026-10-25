@@ -5,7 +5,7 @@ enum Path { COMMON, AURORA, ECLIPSE }
 enum Kind {
 	REPULSE, PULL, THROW, MIND_TWIST, SUPREME_PUSH, FRACTURE,
 	BARRIER, HEAL, FOCUS, ABSORPTION, SANCTUARY, MASS_TELEKINESIS, UNUSED_FLOW_CLEAVE,
-	LIGHTNING, CHOKE, FREEZE, STORM, WRATH, DRAIN, ARSENAL,
+	LIGHTNING, CHOKE, FREEZE, STORM, WRATH, DRAIN, ARSENAL, HIGHER_INSTINCT,
 }
 
 @export var id: StringName
@@ -31,6 +31,8 @@ enum Kind {
 @export var pulse_interval: float = 0.1
 @export var apex_repeat_delay: float = 0.0
 @export var cinematic_freeze: float = 0.0
+@export var counter_window: float = 0.0
+@export var evade_duration: float = 0.0
 
 @export_group("Effect")
 @export var reach: float = 320.0
