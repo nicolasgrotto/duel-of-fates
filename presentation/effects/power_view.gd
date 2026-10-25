@@ -234,6 +234,8 @@ func _draw() -> void:
 
 
 func _draw_fighter(fighter: FighterState) -> void:
+	if not fighter.is_alive():
+		return
 	var view: FighterView = views[fighter.index]
 	var color: Color = tier_color(fighter.flow_tier)
 	var center: Vector2 = view.body_center()
