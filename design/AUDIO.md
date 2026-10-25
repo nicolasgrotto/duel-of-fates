@@ -77,3 +77,7 @@ Fora do escopo inicial: as falas são texto. Se entrar voz no futuro, em PT-BR e
 ## Mixagem e opções
 
 Barramentos separados para música, efeitos, interface e ambiência, com volumes nas Opções e opção de desligar som e música. Prioridade de mixagem: golpes e defesas > poderes > corpo > ambiência > música.
+
+## Finalizações em etapas
+
+Cada coreografia de finalização (`FinisherMotion`) traz uma lista de deixas de som (`FinisherCue`: instante, som do banco, volume e tom). Quem corta emite a deixa (`FighterView.finisher_cue`) e o `DuelAudio` toca o som. Só sons já existentes no banco: golpes (`swing_light`, `swing_heavy`), acertos (`hit_light`, `hit_heavy`), o puxão (`power_pull`), a ignição e o apagar da lâmina emprestada (`ignition`, `extinguish`). O estilo do personagem estica as deixas junto com a animação.

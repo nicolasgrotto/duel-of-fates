@@ -316,6 +316,7 @@ Com o poder Foco ativo, um lutador **parado em guarda, sem nenhum comando**, esq
 | Fonte | Finalização | Quando |
 | --- | --- | --- |
 | Forte parado de quem usa lâmina simples ou haste (Guardião, Sombra, Sombra Desperta, Espelho, Soberano, Haste, Brasa, Eco, Garça, Ancião, Predestinado) | **duas lâminas**: dois cortes rápidos levam um antebraço cada; a lâmina da vítima cai no chão; quem corta estende a mão e puxa a lâmina caída pelo Fluxo até a mão livre, que acende; as duas lâminas se abrem dos dois lados do pescoço e se fecham em X; o corpo fica de pé um instante, cai de joelhos e tomba para a frente | o golpe mata e a vítima usa lâmina simples; contra lâmina dupla, bastão ou haste vira desarme e execução. K.O. mais longo (`ConsequenceConfig.long_cinematic_ko_time`) |
+| Forte de avanço da **Garça** | **giro**: a Garça contorna a vítima girando, com um corte baixo que a desequilibra, passa para trás dela, corta na horizontal na altura do pescoço, termina com a lâmina subindo e fica composta, de costas para o corpo que cai; ela nunca para de se mover | o golpe mata; quem corta é posto atrás da vítima, virado para ela (determinístico) |
 | Forte de avanço (todos, salvo abaixo) | **desarme e execução**: o forte leva os dois antebraços, a lâmina da vítima cai e apaga, ela cai de joelhos e um corte horizontal leva a cabeça | o golpe mata |
 | Forte parado de Bastião e Forja | **execução por cima**: o forte empurra a vítima, que perde o equilíbrio e cai de joelhos; quem corta ergue a lâmina acima da cabeça e desce um corte vertical; as metades caem para os lados | o golpe mata |
 | Forte parado do Ceifador | **giro duplo**: o primeiro giro do bastão leva os dois antebraços, o segundo passa pelo pescoço; o corpo cai de joelhos e tomba | o golpe mata |
@@ -330,7 +331,7 @@ Com o poder Foco ativo, um lutador **parado em guarda, sem nenhum comando**, esq
 | Puxão | puxado e cortado ao meio | o Puxão acerta com a vida do alvo em até 12 (`PowerData.execute_below`): a execução é garantida |
 | Estrangular | estalo de energia no pescoço e queda | o estrangulamento mata |
 
-  O K.O. com cinemática dura mais `ConsequenceConfig.cinematic_ko_time` (1,6 s). No Avanço com corte, quem corta é posto 24 u atrás da vítima no instante da morte (determinístico). Na execução, na tesoura e na estocada, os dois param no instante da morte (sem o avanço do golpe nem o recuo da vítima) e quem corta fica pelo menos `ConsequenceConfig.execution_clearance` (16 u) à frente da vítima.
+  O K.O. com cinemática dura mais `ConsequenceConfig.cinematic_ko_time` (1,6 s). No Avanço com corte, quem corta é posto 24 u atrás da vítima no instante da morte (determinístico). No giro, a Garça é posta atrás da vítima (`dash_through_clearance`) e virada para ela. Na execução, na tesoura, na estocada, nas duas lâminas, na execução por cima e no giro duplo, os dois param no instante da morte (sem o avanço do golpe nem o recuo da vítima) e quem corta fica pelo menos `ConsequenceConfig.execution_clearance` (16 u) à frente da vítima.
 - Sempre estilizado: sem sangue, corte cauterizado em brasa, cabeça sem rosto visível. A opção Finalizações desliga o desenho sem mudar nenhum resultado; o replay mostra o mesmo corte.
 
 ## 11. Atributos
