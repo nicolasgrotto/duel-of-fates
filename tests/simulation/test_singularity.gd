@@ -265,7 +265,7 @@ func test_hard_ai_saves_meter_and_prioritizes_singularity_in_any_slot() -> void:
 	var duel: DuelFixture = _duel(false)
 	duel.fighter(0).powers[0] = load("res://data/powers/lightning.tres")
 	duel.give_power(0, &"singularity", 2)
-	duel.fighter(0).flow = 80.0
+	duel.fighter(0).flow = POWER.cost - 2.0
 	assert_true(AiPowers.spends_singularity_reserve(duel.fighter(0), 0))
 	assert_eq(AiPowers.offensive_slot(duel.sim, duel.fighter(0), duel.fighter(1), 250.0, true), AiPowers.NO_SLOT)
 	duel.fighter(0).flow = 100.0
@@ -287,3 +287,28 @@ func test_diagonal_projectile_snapshot_and_pool_reuse_preserve_velocity() -> voi
 	var reused: Projectile = original.sim.spawn_projectile(Projectile.Kind.ROCK, original.fighter(0), load("res://data/powers/throw.tres"))
 	assert_true(reused == projectile)
 	assert_almost(reused.vy, 0.0)
+
+
+func _wave_marks(level: int) -> Array[float]:
+	var duel: DuelFixture = DuelFixture.versus(&"sovereign", &"guardian")
+	duel.place(440.0)
+	duel.set_level(0, level)
+	duel.set_level(1, 7)
+	duel.give_power(0, &"singularity")
+	duel.cast(0)
+	duel.step_until(func() -> bool: return duel.fighter(0).singularity_ticks > 0, 60)
+	_mark(duel)
+	var marks: Array[float] = []
+	for hazard in duel.sim.hazards:
+		if hazard.active and hazard.kind == Hazard.Kind.EXTRACTION:
+			marks.append(hazard.x)
+	return marks
+
+
+func test_apex_tier_pulls_three_areas_with_safe_ground_between() -> void:
+	assert_eq(_wave_marks(7).size(), 2, "tier III extracts two areas")
+	var marks: Array[float] = _wave_marks(10)
+	assert_eq(marks.size(), 3, "tier IV extracts three areas")
+	marks.sort()
+	for i in marks.size() - 1:
+		assert_true(marks[i + 1] - marks[i] >= POWER.mark_half_width * 2.0 + POWER.safe_width - 0.01, "marks keep a safe lane")

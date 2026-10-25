@@ -1,5 +1,7 @@
 extends RefCounted
 
+const BASE_MARKS: int = 2
+
 
 static func start(sim: MatchSimulation, caster: FighterState, power: PowerData) -> void:
 	var target: FighterState = sim.opponent_of(caster)
@@ -67,9 +69,26 @@ static func _wave(sim: MatchSimulation, caster: FighterState, power: PowerData) 
 		second = first + (spacing if first <= 0.0 else -spacing)
 	second = clampf(second, -limit, limit)
 	var group: int = sim.next_hazard_group()
-	sim.spawn_hazard(Hazard.Kind.EXTRACTION, caster, first, power.mark_half_width, power.warning, group, power.extraction_damage * caster.flow_potency, power)
-	sim.spawn_hazard(Hazard.Kind.EXTRACTION, caster, second, power.mark_half_width, power.warning, group, power.extraction_damage * caster.flow_potency, power)
+	var damage: float = power.extraction_damage * caster.flow_potency
+	sim.spawn_hazard(Hazard.Kind.EXTRACTION, caster, first, power.mark_half_width, power.warning, group, damage, power)
+	sim.spawn_hazard(Hazard.Kind.EXTRACTION, caster, second, power.mark_half_width, power.warning, group, damage, power)
+	if int(power.tier_value(caster.flow_tier)) > BASE_MARKS:
+		var third: float = _third_mark(sim, caster, power, first, second, limit, spacing)
+		sim.spawn_hazard(Hazard.Kind.EXTRACTION, caster, third, power.mark_half_width, power.warning, group, damage, power)
 	caster.singularity_wave += 1
+
+
+static func _third_mark(sim: MatchSimulation, caster: FighterState, power: PowerData, first: float, second: float, limit: float, spacing: float) -> float:
+	var wanted: float = clampf(caster.singularity_center.x + sim.rng.randf_range(-power.reach, power.reach), -limit, limit)
+	var best: float = wanted
+	var best_shift: float = INF
+	for candidate in [wanted, first - spacing, first + spacing, second - spacing, second + spacing]:
+		if absf(candidate) > limit or absf(candidate - first) < spacing - 0.01 or absf(candidate - second) < spacing - 0.01:
+			continue
+		if absf(candidate - wanted) < best_shift:
+			best = candidate
+			best_shift = absf(candidate - wanted)
+	return best
 
 
 static func _launch(sim: MatchSimulation, caster: FighterState, power: PowerData) -> void:
