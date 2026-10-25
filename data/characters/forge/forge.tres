@@ -97,6 +97,7 @@ finisher_limb = 1
 blade_angle_windup = -200.0
 blade_angle_strike = 60.0
 cut = 1
+cinematic_finisher = 9
 
 [sub_resource type="Resource" id="forge_forward_heavy"]
 script = ExtResource("2_move")
@@ -123,6 +124,7 @@ finisher_limb = 2
 blade_angle_windup = -160.0
 blade_angle_strike = 60.0
 cut = 1
+cinematic_finisher = 9
 
 [sub_resource type="Resource" id="forge_ability_move"]
 script = ExtResource("2_move")

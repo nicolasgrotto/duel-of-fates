@@ -123,3 +123,44 @@ func test_thrown_blade_returns_to_the_thrower_after_the_deciding_ko() -> void:
 	assert_true(returned, "the blade comes back to the thrower")
 	for projectile in duel.sim.projectiles:
 		assert_false(projectile.active and projectile.kind == Projectile.Kind.BLADE)
+
+
+func _heavy(duel: DuelFixture, forward: bool) -> Dictionary:
+	duel.place(70.0)
+	duel.fighter(1).health = 1.0
+	duel.intents[0].move_x = duel.fighter(0).facing if forward else 0
+	duel.press(0, Intent.Command.HEAVY)
+	duel.step(1)
+	duel.intents[0].move_x = 0
+	return _death(duel, 120)
+
+
+func test_deciding_heavy_executes_after_disarming() -> void:
+	var result: Dictionary = _heavy(_duel(&"guardian", &"shadow"), false)
+	assert_eq(result["finisher"], Finisher.Kind.EXECUTION)
+	assert_eq(result["limb"], MoveData.Limb.NONE)
+	assert_true(Finisher.is_execution(result["finisher"]))
+
+
+func test_wasp_closes_the_scissors() -> void:
+	assert_eq(_heavy(_duel(&"wasp", &"shadow"), false)["finisher"], Finisher.Kind.SCISSORS)
+	assert_eq(_heavy(_duel(&"wasp", &"shadow"), true)["finisher"], Finisher.Kind.SCISSORS)
+
+
+func test_fencer_forward_heavy_stabs() -> void:
+	for id in [&"mirror", &"lance", &"sovereign"]:
+		assert_eq(_heavy(_duel(id, &"shadow"), true)["finisher"], Finisher.Kind.STAB, String(id))
+		assert_eq(_heavy(_duel(id, &"shadow"), false)["finisher"], Finisher.Kind.EXECUTION, String(id))
+
+
+func test_heavy_before_the_deciding_round_cuts_a_limb() -> void:
+	var result: Dictionary = _heavy(_duel(&"guardian", &"shadow", 2), false)
+	assert_eq(result["finisher"], Finisher.Kind.NONE)
+	assert_eq(result["limb"], DuelFixture.character(&"guardian").heavy.finisher_limb)
+
+
+func test_every_heavy_has_a_cinematic_finisher() -> void:
+	for id in DuelMode.CAST:
+		var data: CharacterData = DuelFixture.character(id)
+		assert_ne(data.heavy.cinematic_finisher, Finisher.Kind.NONE, String(id))
+		assert_ne(data.forward_heavy.cinematic_finisher, Finisher.Kind.NONE, String(id))
