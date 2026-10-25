@@ -15,7 +15,7 @@ extends Resource
 @export var chord_window: float = 0.1
 
 @export_group("Tiers")
-@export var tier_floors: PackedInt32Array = PackedInt32Array([1, 3, 8, 10])
+@export var tier_floors: PackedInt32Array = PackedInt32Array([1, 4, 7, 10])
 
 @export_group("Airborne")
 @export var air_push_multiplier: float = 1.3

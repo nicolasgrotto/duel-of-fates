@@ -14,6 +14,7 @@ description_key = "POWER_ARSENAL_TEXT"
 path = 2
 kind = 19
 cost = 55.0
+min_level = 4
 startup = 0.35
 recovery = 0.3
 duration = 6.0

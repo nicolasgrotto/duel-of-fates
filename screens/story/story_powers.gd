@@ -1,6 +1,7 @@
 extends Control
 
 const PALETTE: UiPalette = preload("res://ui/palette.tres")
+const COMBAT: CombatConfig = preload("res://data/balance/combat_config.tres")
 const SLOT_KEYS: Array[String] = ["TREE_SLOT_NEUTRAL", "TREE_SLOT_FORWARD", "TREE_SLOT_BACK"]
 const STATE_KEYS: Array[String] = ["TREE_LOCKED", "TREE_NEXT", "TREE_LEARNED", "TREE_EQUIPPED"]
 const PATH_KEYS: Array[String] = ["PATH_COMMON", "PATH_AURORA", "PATH_ECLIPSE"]
@@ -217,7 +218,7 @@ func _show_detail() -> void:
 	_facts.text = tr("TREE_FACTS").format({"path": tr(PATH_KEYS[power.path]), "cost": String.num(power.cost_for(level), 1), "cooldown": String.num(power.cooldown_for(level), 1), "flow": level})
 	_requirement.text = tr("TREE_CREATION") if node.initial else tr("TREE_REQUIREMENT").format({"chapter": node.encounter.chapter, "title": tr(node.encounter.title_key)})
 	if not node.allowed:
-		_requirement.text += "\n" + tr("TREE_FLOW_REQUIRED").format({"level": power.min_level})
+		_requirement.text += "\n" + tr("TREE_FLOW_REQUIRED").format({"level": power.min_level, "tier": power.min_tier(COMBAT.flow) + 1})
 	_status.text = tr("TREE_IN_SLOT").format({"slot": tr(SLOT_KEYS[node.slot])}) if node.slot >= 0 else tr(STATE_KEYS[node.state])
 	for slot in _slots.size():
 		var equipped: PowerData = StoryCampaign.load_power(campaign.equipped[slot])

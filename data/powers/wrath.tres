@@ -13,6 +13,7 @@ description_key = "POWER_WRATH_TEXT"
 path = 2
 kind = 17
 cost = 60.0
+min_level = 4
 high_cost = true
 mark_color = Color(1.0000, 0.5490, 0.1020, 1)
 startup = 0.3

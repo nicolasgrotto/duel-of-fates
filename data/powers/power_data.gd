@@ -100,6 +100,10 @@ func _by_level(values: PackedFloat32Array, level: int, fallback: float) -> float
 	return values[clampi(level, 1, values.size()) - 1]
 
 
+func min_tier(flow: FlowConfig) -> int:
+	return flow.tier_for(min_level)
+
+
 func targeted_reach(tier: int) -> float:
 	match kind:
 		Kind.PULL:

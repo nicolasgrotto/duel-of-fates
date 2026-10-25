@@ -27,6 +27,7 @@ const SIDE_KEYS: Dictionary = {
 	PowerData.Path.AURORA: "GALLERY_SIDE_AURORA",
 	PowerData.Path.ECLIPSE: "GALLERY_SIDE_ECLIPSE",
 }
+const LOCKED_ALPHA: float = 0.35
 
 var runner: TickRunner
 var config: TrainingConfig
@@ -224,6 +225,8 @@ func _stage(sim: MatchSimulation) -> void:
 		other.health = minf(config.gallery_finisher_health, other.max_health)
 	var target_powers: Array[PowerData] = [null if finishing else CATALOG.find(TARGET_POWERS.get(target.behavior, &"")), null, null]
 	other.equip_powers(target_powers)
+	if power != null and _tier < power.min_tier(sim.config.flow):
+		return
 	caster.perform(power, technique)
 	_wait = Ticks.from_seconds(config.gallery_max_time)
 	_pause = Ticks.from_seconds(config.gallery_pause)
@@ -255,14 +258,18 @@ func _refresh(sim: MatchSimulation) -> void:
 	_name.add_theme_color_override(&"font_color", PALETTE.eclipse if path == CharacterData.Path.ECLIPSE else PALETTE.aurora)
 	_description.text = tr(power.description_key) if power != null else ""
 	_side.text = tr(SIDE_KEYS[power.path] if power != null else "GALLERY_SIDE_TECHNIQUE")
+	var lowest: int = power.min_tier(sim.config.flow) if power != null else 0
 	for tier in _chips.size():
 		var active: bool = tier == _tier
-		_chips[tier].modulate.a = 1.0 if active else 0.4
-		_underlines[tier].modulate.a = 1.0 if active else 0.25
+		var locked: bool = tier < lowest
+		_chips[tier].modulate.a = (1.0 if active else 0.4) * (LOCKED_ALPHA if locked else 1.0)
+		_underlines[tier].modulate.a = (1.0 if active else 0.25) * (LOCKED_ALPHA if locked else 1.0)
 	var details: PackedStringArray = PackedStringArray([
 		tr("GALLERY_TARGET").format({"target": tr(TARGET_KEYS[target.behavior])}),
 		tr("GALLERY_REPEAT_ON" if _repeat else "GALLERY_REPEAT_OFF"),
 	])
+	if lowest > 0:
+		details.insert(0, tr("POWER_TIER_REQUIRED").format({"tier": lowest + 1, "level": power.min_level}))
 	if has_finisher(entry):
 		details.append(tr("GALLERY_FINISHER_ON" if _finishers else "GALLERY_FINISHER_OFF"))
 	_details.text = ControlHints.line(details)

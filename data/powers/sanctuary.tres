@@ -13,6 +13,7 @@ description_key = "POWER_SANCTUARY_TEXT"
 path = 1
 kind = 10
 cost = 65.0
+min_level = 4
 high_cost = true
 mark_color = Color(0.9569, 0.9451, 0.8157, 1)
 startup = 0.3

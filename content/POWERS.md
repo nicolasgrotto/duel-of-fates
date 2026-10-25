@@ -13,10 +13,19 @@ Os poderes são uma camada opcional do duelo (opção **Poderes**, ligada por pa
 
 | Tier (PT / EN) | Níveis | Cor | Quem |
 | --- | --- | --- | --- |
-| Tênue / Faint | 1–2 | azul-claro `#9cc4ff` | Bastião, Forja |
-| Firme / Steady | 3–7 | azul `#5d8dff` | o resto do elenco |
-| Profundo / Deep | 8–9 | roxo `#b26bff` | Ancião, Soberano |
+| Tênue / Faint | 1–3 | azul-claro `#9cc4ff` | Bastião, Forja, Vespa |
+| Firme / Steady | 4–6 | azul `#5d8dff` | o resto do elenco |
+| Profundo / Deep | 7–9 | roxo `#b26bff` | Sombra Desperta, Ancião, Soberano |
 | Ápice / Apex | 10 | vermelho `#ff2b45` | só o Predestinado |
+
+  Pisos dos tiers revistos pelo autor: Tier II a partir do Fluxo 4, Tier III a partir do 7 (o protagonista da História chega a ele com o Fluxo no máximo) e Tier IV só no 10 (só o Predestinado). Simulação da matriz no Difícil antes e depois: totais de vitória dentro de ±2 pontos.
+
+- **Supremas exigem tier** (decisão do autor). Nenhuma suprema existe no Tier I. O requisito é o nível de Fluxo do poder (`PowerData.min_level`), lido como tier por `PowerData.min_tier`; a simulação recusa o lançamento abaixo dele, a Galeria apaga os tiers bloqueados e avisa "Só a partir do Tier N", e a árvore da História mostra Fluxo e tier.
+
+| Tier mínimo | Fluxo | Supremas |
+| --- | --- | --- |
+| II | 4+ | Repulsão Suprema, Santuário, Fratura, Ira, Arsenal Telecinético |
+| III | 7+ | Telecinese em Massa, Tempestade, Instinto Superior, Singularidade Devastadora |
 
   Tiers mais altos mudam a **forma**: mais feixes no Raio, ondas maiores, mais pedras, Barreira maior, mais objetos no Arsenal. Nunca escondem o alcance real do poder.
 - **Medidor de Fluxo** (0–100): começa cada round em 20, enche devagar com o tempo e mais rápido ao acertar (+7), ser atingido (+9), bloquear (+4) e aparar (+10). Separado do Vigor.
@@ -74,8 +83,8 @@ A Repulsão usa uma tabela própria, simétrica:
 | **Puxão** / Pull | 40 | Puxa o oponente para perto e o desequilibra. Alcance pelo tier: 330 / 380 / 430 / 480 u. Na guarda, sem dano e puxa pela metade. |
 | **Arremesso** / Throw | 30–48 | Arranca pedras do chão e as lança em linha reta (alcance 700 u). Tamanho pela faixa de Fluxo (tabela abaixo). Some ao bater na parede. |
 | **Truque Mental** / Mind Twist | 30 | Inverte **só a direção** do alvo (andar e a escolha frente/trás de poderes e técnicas) por 0,8 s, reduzido pela tabela. Alcance 320 u. Ataque, guarda, esquiva e pulo não mudam. Vale igual para jogador e IA. |
-| **Repulsão Suprema** / Supreme Push | 60 | Onda em volta do corpo todo (240 u). Pode ser lançada **enquanto o lutador apanha**: como fuga, 4 de dano; livre, como ataque, 14. Guarda e resultado pela tabela da Repulsão. Recarga própria de 6 s. Custo alto. |
-| **Fratura** / Fracture | 70 | Golpeia o chão: uma rachadura corre à frente até a parede, cada trecho fica rachado ~0,25 s e explode. Só acerta quem está no chão: **a única saída é pular**. Guarda, Absorção, Barreira e até a esquiva invulnerável não seguram. Custo alto. |
+| **Repulsão Suprema** / Supreme Push | 60 | Onda em volta do corpo todo (240 u). Pode ser lançada **enquanto o lutador apanha**: como fuga, 4 de dano; livre, como ataque, 14. Guarda e resultado pela tabela da Repulsão. Recarga própria de 6 s. Custo alto. Tier II. |
+| **Fratura** / Fracture | 70 | Golpeia o chão: uma rachadura corre à frente até a parede, cada trecho fica rachado ~0,25 s e explode. Só acerta quem está no chão: **a única saída é pular**. Guarda, Absorção, Barreira e até a esquiva invulnerável não seguram. Custo alto. Tier II. |
 
 **Arremesso por faixa de Fluxo**
 
@@ -94,11 +103,11 @@ Valem a tabela de interação, a guarda de frente (um quarto do dano passa), a B
 | Poder (PT / EN) | Custo | Resumo |
 | --- | --- | --- |
 | **Barreira** / Barrier | 10 + 38/s | Segurado: domo grande em volta do corpo que segura lâminas e poderes, até 1,5 s. Contra a Repulsão, segura mas recua. Cada pulso de Raio segurado drena 5 de medidor; cada raio da Tempestade, 30. Cai quando o medidor acaba. |
-| **Cura** / Heal | 40 | Devolve vida ao longo de 2 s, até 14 × potência e nunca mais que 35% da vida perdida. Fecha ferimentos se completar. Ser atingido interrompe. Pode ser lançada com vida cheia. |
+| **Cura** / Heal | 40 | Lançamento curto (preparação 0,18 s, recuperação 0,2 s; antes 0,3 + 0,3). Devolve vida ao longo de 2 s, até 14 × potência e nunca mais que 35% da vida perdida. Fecha ferimentos se completar. Ser atingido interrompe. Pode ser lançada com vida cheia. |
 | **Foco** / Focus | 35 | Por 4 s × potência, atacar, bloquear e esquivar custam metade do Vigor; habilita o Foco automático (GAME_DESIGN). |
 | **Absorção** / Absorption | 10 + 20/s | Segurada até 1,5 s: absorve **qualquer poder** que chega, pulso a pulso no caso do Raio (como a troca de raios entre dois mestres), reduzindo ou anulando pela diferença de Fluxo e convertendo parte da energia em medidor. Não segura lâmina e não absorve a Tempestade. |
-| **Santuário** / Sanctuary | 65 | Escudo colado ao corpo que absorve 20 × potência de dano enquanto o lutador age normalmente, por até 6 s. Racha conforme absorve e se quebra no limite. Custo alto. |
-| **Telecinese em Massa** / Mass Telekinesis | 80 (Fluxo 6+) | Invocação de ~0,8 s, interrompível, só com a mão erguida. Quando o poder sai, o duelo congela por 1,05 s (determinístico, em dado) para a mini-cinemática de ~1,5 s: a câmera sobe ao céu, um meteoro é puxado e racha, e a câmera desce com os pedaços. Os pedaços caem sobre marcas no chão (5, 6 ou 7 impactos pelo tier, 7 de dano cada, com empurrão). Quem lança pode se mover, mas não atacar, durante a chuva. Sem céu à vista, fragmentos conjurados. Custo alto. |
+| **Santuário** / Sanctuary | 65 | Escudo colado ao corpo que absorve 20 × potência de dano enquanto o lutador age normalmente, por até 6 s. Racha conforme absorve e se quebra no limite. Custo alto. Tier II. |
+| **Telecinese em Massa** / Mass Telekinesis | 80 (Tier III, Fluxo 7+) | Invocação de ~0,8 s, interrompível, só com a mão erguida. Quando o poder sai, o duelo congela por 1,05 s (determinístico, em dado) para a mini-cinemática de ~1,5 s: a câmera sobe ao céu, um meteoro é puxado e racha, e a câmera desce com os pedaços. Os pedaços caem sobre marcas no chão (5, 6 ou 7 impactos pelo tier, 7 de dano cada, com empurrão). Quem lança pode se mover, mas não atacar, durante a chuva. Sem céu à vista, fragmentos conjurados. Custo alto. |
 | **Corte de Fluxo** / Flow Cleave | 20 | Um corte de cima para baixo solta uma onda em meia-lua que viaja em linha reta (520 u). Pode ser esquivada, bloqueada e **devolvida por um parry perfeito** (o projétil volta contra quem lançou). No Ápice, dois cortes descendentes em sequência, espaçados por 0,35 s e cada um com o arco completo, com uma onda em cada (a recovery cresce os mesmos 0,35 s). |
 
 ### Eclipse
@@ -108,10 +117,10 @@ Valem a tabela de interação, a guarda de frente (um quarto do dano passa), a B
 | **Raio** / Lightning | 15 + 55/s | Segurado até 1 s: raios da mão até o alvo (480 u) que ferem e prendem a cada pulso. Na guarda, um quarto do dano passa. Feixes pelo tier: 1, 1 com ramo, 2, 3. |
 | **Estrangular** / Choke | 45 + 10/s | Segurado até 1,8 s (240 u): ergue a vítima no ar, que não age e perde 3 de vida por segundo. Quem estrangula fica parado, sem atacar. Ao soltar, os dois voltam ao neutro **sem vantagem de punição**. +3 ou mais fura a guarda; −2 dura e drena metade; −3 falha. |
 | **Congelar** / Freeze | 40 | Prende o alvo por 1,1 s sem dano (340 u); o primeiro golpe quebra o gelo. −1 dura 75%, −2 dura 40%, −3 falha; +3 fura a guarda. |
-| **Tempestade** / Storm | 70 (Fluxo 6+) | Em fases: **Invocação** (~0,5 s, o braço sobe e um raio vai ao céu, a arena escurece; a **única janela de interrupção**); **escudo de raios** em volta de quem lança, que fica parado e imune a lâmina e poder; **tempestade** (~5 s) com ondas de 2, 3 ou 4 raios ao mesmo tempo pelo tier, dois sempre perto do oponente e os outros espalhados de forma determinística, cada um marcado no chão 0,5 s antes, 5 de dano e no máximo um acerto por onda; **encerramento** (~0,8 s), vulnerável. A guarda não bloqueia, a Absorção não absorve, a esquiva invulnerável passa, a Barreira segura pagando 30 de medidor por raio. No Ápice, cada raio abre fissuras para os dois lados (só pulando). Custo alto. |
-| **Ira** / Wrath | 60 | Por 5 s × potência: dano causado × 1,2 e recebido × 0,85, em lâminas e poderes; dano periódico não muda. Cargas de armadura contra **2 golpes de lâmina** (quebra de guarda, empurrão, parry, poderes e projéteis continuam interrompendo). Reaplicar reinicia, sem empilhar. Custo alto. |
+| **Tempestade** / Storm | 70 (Tier III, Fluxo 7+) | Em fases: **Invocação** (~0,5 s, o braço sobe e um raio vai ao céu, a arena escurece; a **única janela de interrupção**); **escudo de raios** em volta de quem lança, que fica parado e imune a lâmina e poder; **tempestade** (~5 s) com ondas de 2, 3 ou 4 raios ao mesmo tempo pelo tier, dois sempre perto do oponente e os outros espalhados de forma determinística, cada um marcado no chão 0,5 s antes, 5 de dano e no máximo um acerto por onda; **encerramento** (~0,8 s), vulnerável. A guarda não bloqueia, a Absorção não absorve, a esquiva invulnerável passa, a Barreira segura pagando 30 de medidor por raio. No Ápice, cada raio abre fissuras para os dois lados (só pulando). Custo alto. |
+| **Ira** / Wrath | 60 | Por 5 s × potência: dano causado × 1,2 e recebido × 0,85, em lâminas e poderes; dano periódico não muda. Cargas de armadura contra **2 golpes de lâmina** (quebra de guarda, empurrão, parry, poderes e projéteis continuam interrompendo). Reaplicar reinicia, sem empilhar. Custo alto. Tier II. |
 | **Dreno** / Drain | 15 | Segurado até 1,5 s (300 u): rouba medidor de Fluxo e um pouco de Vigor do alvo e devolve parte a quem drena. Não tira vida. O laço rompe se o alvo sair do alcance. |
-| **Arsenal Telecinético** / Telekinetic Arsenal | 55 | Lâminas curtas de energia (2, 2, 3 ou 4 pelo tier) orbitam o corpo por 6 s. **Repetir o comando** lança uma no oponente; cada uma em órbita **segura sozinha um projétil** que chega. Escolha entre defesa e ataque. |
+| **Arsenal Telecinético** / Telekinetic Arsenal | 55 (Tier II) | Lâminas curtas de energia (2, 2, 3 ou 4 pelo tier) orbitam o corpo por 6 s. **Repetir o comando** lança uma no oponente; cada uma em órbita **segura sozinha um projétil** que chega. Escolha entre defesa e ataque. |
 
 ### Técnicas de lâmina (os dois caminhos)
 
@@ -124,7 +133,7 @@ Usam Habilidade com direção ou no ar, gastam **Vigor** (não Fluxo), escalam c
 | **Estocada** / Thrust | Golpe reto e estreito no peito, o maior alcance de lâmina (55 u além do forte). Prep. 0,24 · ativo 0,1 · rec. 0,5 · dano 14 · Vigor 26. | pular por cima, esquivar |
 | **Corte ascendente** / Rising cut | De baixo para cima até acima da cabeça. Contra alguém no ar, +30% de dano e lança para cima. Prep. 0,3 · ativo 0,14 · rec. 0,55 · dano 15 · Vigor 26. | ficar no chão e punir |
 | **Rajada** / Flurry | Quatro estocadas curtas a cada 0,07 s, 4 de dano cada; cada uma na guarda gasta Vigor. Prep. 0,18 · rec. 0,42 · Vigor 30. | aparar qualquer estocada encerra a sequência |
-| **Investida descendente** / Plunging strike | No ar: mergulho com a lâmina para baixo e para a frente, uma vez por pulo (conta como o golpe aéreo). Prep. 0,12 · ativo 0,36 · rec. 0,6 · dano 16 · Vigor 28. | sair do ponto de queda, punir a recovery |
+| **Investida descendente** / Plunging strike | No ar: mergulho com a lâmina para baixo e para a frente, uma vez por pulo (conta como o golpe aéreo). Prep. 0,12 · ativo 0,36 · rec. 0,6 · dano 16 · Vigor 28. **No acerto, recuperação 0,27 s** (`recovery_on_hit`): quem acerta fica cerca de +4 quadros (antes ficava −15 e era punido mesmo acertando); na guarda continua −24. | sair do ponto de queda, punir a recovery |
 
 **Choque entre técnicas**: quando as lâminas de duas técnicas corpo a corpo ativas se cruzam, as duas são interrompidas num choque grande (GAME_DESIGN, seção 7).
 

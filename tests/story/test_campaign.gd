@@ -93,7 +93,7 @@ func test_tree_equipping_preserves_full_unique_slots_and_save_format() -> void:
 			for slot in campaign.slots_open:
 				var other: int = campaign.equipped.find(tree.nodes[index].power.id)
 				var changed: bool = tree.equip(index, slot)
-				assert_eq(changed, other < 0 or other == slot)
+				assert_eq(changed, tree.nodes[index].allowed and (other < 0 or other == slot))
 				var seen: Dictionary = {}
 				for open_slot in campaign.slots_open:
 					var id: StringName = campaign.equipped[open_slot]
