@@ -255,6 +255,7 @@ func spawn_projectile(kind: Projectile.Kind, owner: FighterState, power: PowerDa
 		projectile.delay_ticks = 0
 		projectile.power = power
 		projectile.move = null
+		projectile.bolt = null
 		var event: CombatEvent = emit(CombatEvent.Type.PROJECTILE_SPAWNED, owner.index, CombatEvent.NO_FIGHTER)
 		event.power = power
 		event.amount = kind

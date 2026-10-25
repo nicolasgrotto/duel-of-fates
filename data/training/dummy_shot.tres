@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="MoveData" format=3]
+
+[ext_resource type="Script" path="res://data/move_data.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/bolts/standard_bolt.tres" id="2_bolt"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"dummy_shot"
+kind = 10
+startup = 0.2
+active = 0.05
+recovery = 0.3
+damage = 0.0
+vigor_cost = 0.0
+lunge = 0.0
+reach = 0.0
+bolt = ExtResource("2_bolt")
+technique_style = 9

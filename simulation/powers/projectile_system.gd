@@ -38,13 +38,13 @@ static func _move(sim: MatchSimulation, projectile: Projectile, owner: FighterSt
 			_end(sim, projectile)
 			return
 	projectile.x += step
-	if projectile.kind == Projectile.Kind.SINGULARITY:
+	if projectile.kind == Projectile.Kind.SINGULARITY or projectile.kind == Projectile.Kind.BOLT:
 		projectile.y += projectile.vy * Ticks.DELTA
 		projectile.travelled += Vector2(step, projectile.vy * Ticks.DELTA).length()
 	else:
 		projectile.travelled += absf(step)
 	var limit: float = sim.config.half_width()
-	var reached: bool = projectile.travelled >= projectile.max_distance or absf(projectile.x) >= limit or (projectile.kind == Projectile.Kind.SINGULARITY and projectile.y < -projectile.size)
+	var reached: bool = projectile.travelled >= projectile.max_distance or absf(projectile.x) >= limit or ((projectile.kind == Projectile.Kind.SINGULARITY or projectile.kind == Projectile.Kind.BOLT) and projectile.y < -projectile.size)
 	if not reached:
 		return
 	if projectile.kind == Projectile.Kind.BLADE and not projectile.returning:
@@ -67,6 +67,11 @@ static func _collide(sim: MatchSimulation, projectile: Projectile, owner: Fighte
 		caught.power = projectile.power
 		caught.position = Vector2(projectile.x, projectile.y)
 		_end(sim, projectile)
+		return
+	if projectile.kind == Projectile.Kind.BOLT:
+		BoltResolver.resolve(sim, projectile, owner, target)
+		if projectile.hit_done:
+			_end(sim, projectile)
 		return
 	if projectile.kind == Projectile.Kind.CLEAVE and _perfect_parry(target, projectile):
 		_reflect(sim, projectile, target)

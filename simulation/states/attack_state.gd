@@ -21,12 +21,14 @@ func step(sim: MatchSimulation, fighter: FighterState, intent: Intent) -> void:
 	fighter.phase_ticks += 1
 	match fighter.move_phase:
 		FighterState.Phase.ACTIVE:
+			_continue_burst(sim, fighter, move)
 			_rearm_multi_hit(fighter, move)
 			if fighter.phase_ticks >= move.active_ticks():
 				fighter.move_phase = FighterState.Phase.RECOVERY
 				fighter.phase_ticks = 0
 		FighterState.Phase.RECOVERY:
 			decelerate(sim, fighter)
+			_continue_burst(sim, fighter, move)
 			if _try_chain(sim, fighter):
 				return
 			var recovery: int = fighter.recovery_cut if fighter.recovery_cut >= 0 else move.recovery_ticks()
@@ -68,12 +70,33 @@ func _enter_active(sim: MatchSimulation, fighter: FighterState, move: MoveData) 
 		_throw_blade(sim, fighter, move)
 	elif move.technique_style == MoveData.TechniqueStyle.WAVE:
 		_project_wave(sim, fighter, move)
+	if move.bolt != null:
+		_start_burst(sim, fighter, move)
 	if move.dash_in_startup:
 		fighter.vx = 0.0
 	elif fighter.on_ground and move.lunge > 0.0 and move.active > 0.0:
 		fighter.vx = fighter.facing * move.lunge * fighter.agility_multiplier / move.active
 	if move.dive_speed > 0.0 and fighter.is_airborne():
 		fighter.vy = -move.dive_speed
+
+
+func _start_burst(sim: MatchSimulation, fighter: FighterState, move: MoveData) -> void:
+	if move.reach <= 0.0:
+		fighter.move_hit_done = true
+	BoltResolver.fire(sim, fighter, move.bolt)
+	fighter.bolts_left = move.bolt.count - 1
+	fighter.bolt_ticks = move.bolt.interval_ticks()
+
+
+func _continue_burst(sim: MatchSimulation, fighter: FighterState, move: MoveData) -> void:
+	if fighter.bolts_left <= 0:
+		return
+	fighter.bolt_ticks -= 1
+	if fighter.bolt_ticks > 0:
+		return
+	BoltResolver.fire(sim, fighter, move.bolt)
+	fighter.bolts_left -= 1
+	fighter.bolt_ticks = move.bolt.interval_ticks()
 
 
 func _holds_charge(fighter: FighterState, move: MoveData, intent: Intent) -> bool:

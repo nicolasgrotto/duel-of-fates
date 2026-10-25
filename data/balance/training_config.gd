@@ -9,6 +9,8 @@ extends Resource
 @export var parry_challenge_time: float = 45.0
 @export var evade_punish_window: float = 1.0
 @export var walk_distance: float = 160.0
+@export var dummy_shot: MoveData
+@export var dummy_shot_interval: float = 1.2
 
 @export_group("Power gallery")
 @export var gallery_pause: float = 1.0

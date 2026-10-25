@@ -1,6 +1,8 @@
 [gd_resource type="Resource" script_class="TrainingConfig" format=3]
 
 [ext_resource type="Script" path="res://data/balance/training_config.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/training/dummy_shot.tres" id="2_shot"]
 
 [resource]
 script = ExtResource("1_script")
+dummy_shot = ExtResource("2_shot")

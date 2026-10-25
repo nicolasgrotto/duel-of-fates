@@ -4,7 +4,7 @@ extends Resource
 enum Kind { LIGHT, HEAVY, FORWARD_HEAVY, COUNTER, SHOVE, AERIAL_LIGHT, AERIAL_HEAVY, LOCK_FINISH, ABILITY, STANCE, TECHNIQUE, DISENGAGE }
 enum Limb { NONE, ARM, LEG, HEAD }
 enum Cut { ARC, DESCENDING, RISING, HORIZONTAL, THRUST, SPIN }
-enum TechniqueStyle { ARC, DASH, THROW, THRUST, RISING, FLURRY, LUNGE, PLUNGE, WAVE }
+enum TechniqueStyle { ARC, DASH, THROW, THRUST, RISING, FLURRY, LUNGE, PLUNGE, WAVE, SHOT }
 
 @export var id: StringName
 @export var icon: Texture2D
@@ -51,6 +51,7 @@ enum TechniqueStyle { ARC, DASH, THROW, THRUST, RISING, FLURRY, LUNGE, PLUNGE, W
 @export var projectile_size: float = 0.0
 @export var projectile_growth: float = 0.0
 @export var follow_up: MoveData
+@export var bolt: BoltData
 @export var recovery_on_hit: float = -1.0
 @export var dash_in_startup: bool = false
 
@@ -100,4 +101,4 @@ func is_blade() -> bool:
 
 
 func can_clash() -> bool:
-	return is_blade() and not throws_blade and technique_style != TechniqueStyle.WAVE
+	return is_blade() and not throws_blade and technique_style != TechniqueStyle.WAVE and technique_style != TechniqueStyle.SHOT

@@ -67,6 +67,8 @@ var phase_ticks: int = 0
 var move_hit_done: bool = false
 var move_connected: bool = false
 var chain_index: int = 0
+var bolts_left: int = 0
+var bolt_ticks: int = 0
 
 var dodge_kind: DodgeKind = DodgeKind.NONE
 var dodge_direction: int = 0
@@ -353,6 +355,8 @@ func clear_move() -> void:
 	charge_level = 0
 	recovery_cut = -1
 	multi_hit_ticks = 0
+	bolts_left = 0
+	bolt_ticks = 0
 
 
 func capture() -> Dictionary:

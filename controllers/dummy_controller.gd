@@ -1,7 +1,7 @@
 class_name DummyController
 extends FighterController
 
-enum Behavior { STAND, GUARD, ATTACK, PLAYBACK, HEAVY, MIRROR }
+enum Behavior { STAND, GUARD, ATTACK, PLAYBACK, HEAVY, MIRROR, SHOOT }
 
 var behavior: Behavior = Behavior.STAND
 var playback: IntentRecording = IntentRecording.new(1)
@@ -43,6 +43,10 @@ func produce(sim: MatchSimulation, fighter_index: int, intent: Intent) -> void:
 				_next_heavy = _ticks + Ticks.from_seconds(_rng.randf_range(_config.heavy_interval_min, _config.heavy_interval_max))
 		Behavior.MIRROR:
 			_mirror(sim, fighter_index, intent)
+		Behavior.SHOOT:
+			if _ticks % Ticks.from_seconds(_config.dummy_shot_interval) == 0:
+				intent.move_x = sim.fighters[fighter_index].facing
+				intent.press(Intent.Command.SPECIAL)
 
 
 func _mirror(sim: MatchSimulation, fighter_index: int, intent: Intent) -> void:
