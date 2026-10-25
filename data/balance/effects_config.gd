@@ -87,12 +87,6 @@ extends Resource
 @export var neck_embers: int = 14
 @export var ember_speed: float = 260.0
 @export var ember_life: float = 0.8
-@export var execution_windup: float = 0.3
-@export var execution_cut: float = 0.85
-@export var execution_end: float = 1.9
-@export var stab_hold: float = 0.75
-@export var stab_withdraw: float = 0.25
-@export var stab_end: float = 1.4
 @export var stab_hole_radius: float = 5.0
 
 @export_group("Letterbox")

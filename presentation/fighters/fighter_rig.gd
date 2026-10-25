@@ -313,6 +313,24 @@ func reset_cloths() -> void:
 		cloth.reset()
 
 
+func hilt_segment() -> PackedVector2Array:
+	return PackedVector2Array([to_global(_hilt.geometry.hilt_from), to_global(_hilt.geometry.hilt_to)])
+
+
+func hilt_colors() -> PackedColorArray:
+	return PackedColorArray([_hilt.metal, _hilt.grip_color])
+
+
+func hold_borrowed_hilt(shown: bool, from: Vector2 = Vector2.ZERO, to: Vector2 = Vector2.ZERO, colors: PackedColorArray = PackedColorArray()) -> void:
+	_hilt.borrowed_shown = shown
+	if shown:
+		_hilt.borrowed_from = from
+		_hilt.borrowed_to = to
+		_hilt.borrowed_metal = colors[0]
+		_hilt.borrowed_grip = colors[1]
+	_hilt.queue_redraw()
+
+
 func set_hilt_button(color: Color) -> void:
 	_hilt.button_color = color
 

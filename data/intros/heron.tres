@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="IntroData" format=3]
 
 [ext_resource type="Script" path="res://data/intro_data.gd" id="1_script"]
-[ext_resource type="Script" path="res://data/intro_key.gd" id="2_key"]
+[ext_resource type="Script" path="res://data/pose_key.gd" id="2_key"]
 
 [sub_resource type="Resource" id="key_0"]
 script = ExtResource("2_key")

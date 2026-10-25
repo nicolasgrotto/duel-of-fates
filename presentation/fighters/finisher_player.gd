@@ -16,7 +16,7 @@ const SMOKE_RISE: float = 30.0
 const SMOKE_LIFE: float = 1.1
 const BONE_WIDTH: float = 2.0
 const SKULL_RADIUS: float = 6.0
-const STAB_SHARE: float = 0.7
+const HOLE_SHARE: float = 0.7
 const HOLE_OPEN_TIME: float = 0.1
 
 var kind: Finisher.Kind = Finisher.Kind.NONE
@@ -41,8 +41,9 @@ var _next_smoke: int = 0
 var _smoke_clock: float = 0.0
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var _away: int = 1
-var _beheaded: bool = false
-var _knelt: bool = false
+var _motion: FinisherMotion
+var _split_as: Finisher.Kind = Finisher.Kind.NONE
+var _split_offset: float = 0.0
 
 
 func _init() -> void:
@@ -65,11 +66,10 @@ func start(owner_view: FighterView, finisher: Finisher.Kind, killer_x: float) ->
 	var away_local: float = away_world * signf(view.scale.x)
 	slide = -away_local if kind == Finisher.Kind.DASH_THROUGH or kind == Finisher.Kind.PULL_CUT else away_local
 	_away = int(away_world)
-	if Finisher.is_execution(kind):
-		view.sever_part(MoveData.Limb.ARM, true, _away)
-		view.sever_part(MoveData.Limb.ARM, false, _away)
-		view.kneel()
-		_knelt = true
+	_split_as = kind
+	_motion = FinisherMotion.for_kind(kind)
+	if _motion != null:
+		_fire(-1.0, 0.0)
 	match kind:
 		Finisher.Kind.BLAST:
 			_burst(_local_point(rig.chest), config.blast_embers, config.ember_speed)
@@ -80,7 +80,7 @@ func start(owner_view: FighterView, finisher: Finisher.Kind, killer_x: float) ->
 
 
 func is_split() -> bool:
-	return kind in [Finisher.Kind.DASH_THROUGH, Finisher.Kind.WAIST, Finisher.Kind.VERTICAL, Finisher.Kind.DIAGONAL, Finisher.Kind.PULL_CUT]
+	return (_split_as if _split_as != Finisher.Kind.NONE else kind) in [Finisher.Kind.DASH_THROUGH, Finisher.Kind.WAIST, Finisher.Kind.VERTICAL, Finisher.Kind.DIAGONAL, Finisher.Kind.PULL_CUT]
 
 
 func moves_body() -> bool:
@@ -88,17 +88,13 @@ func moves_body() -> bool:
 
 
 func fall_delay() -> float:
-	if Finisher.is_execution(kind):
-		return config.execution_cut
-	if kind == Finisher.Kind.STAB:
-		return config.stab_hold + config.stab_withdraw
+	if _motion != null:
+		return _motion.fall_at
 	return config.xray_time if kind == Finisher.Kind.CHARRED else 0.0
 
 
 func fall_limb() -> MoveData.Limb:
-	if Finisher.is_execution(kind) or kind == Finisher.Kind.STAB:
-		return MoveData.Limb.HEAD
-	return MoveData.Limb.NONE
+	return MoveData.Limb.HEAD if _motion != null else MoveData.Limb.NONE
 
 
 func clear() -> void:
@@ -110,11 +106,12 @@ func clear() -> void:
 	rig.set_xray(0.0)
 	rig.show_hilt(true)
 	kind = Finisher.Kind.NONE
+	_split_as = Finisher.Kind.NONE
 	queue_free()
 
 
 func _prepare_split() -> void:
-	match kind:
+	match _split_as:
 		Finisher.Kind.VERTICAL:
 			_cut_point = rig.pelvis_point
 			_cut_normal = Vector2.RIGHT
@@ -135,7 +132,12 @@ func _prepare_split() -> void:
 
 
 func update(delta: float, pose: RigPose, facing: int) -> void:
+	var before: float = age
 	age += delta
+	if _motion != null:
+		_fire(before, age)
+		if _motion.push_back != 0.0:
+			rig.position.x += slide * _motion.push_back * smoothstep(0.0, _motion.push_time, age)
 	var base: Transform2D = rig.transform
 	if is_split():
 		half.transform = _half_motion(base) * base
@@ -153,15 +155,30 @@ func update(delta: float, pose: RigPose, facing: int) -> void:
 			rig.set_charred(smoothstep(config.xray_time, config.xray_time + config.char_time, age))
 			if age >= config.xray_time:
 				_emit_smoke(delta)
-	if Finisher.is_execution(kind) and not _beheaded and age >= config.execution_cut:
-		_beheaded = true
-		view.sever_part(MoveData.Limb.HEAD, true, _away)
-		_burst(_local_point(rig.head_base), config.neck_embers, config.ember_speed * 0.6)
-	if kind == Finisher.Kind.STAB and not _knelt and age >= fall_delay():
-		_knelt = true
-		view.kneel()
 	_step_particles(delta)
 	queue_redraw()
+
+
+func _fire(before: float, now: float) -> void:
+	if FinisherMotion.fired(_motion.front_arm_at, before, now):
+		if _motion.drops_hilt:
+			view.drop_hilt()
+		view.sever_part(MoveData.Limb.ARM, true, _away)
+	if FinisherMotion.fired(_motion.back_arm_at, before, now):
+		view.sever_part(MoveData.Limb.ARM, false, _away)
+	if FinisherMotion.fired(_motion.kneel_at, before, now):
+		view.kneel()
+	if FinisherMotion.fired(_motion.head_at, before, now):
+		view.sever_part(MoveData.Limb.HEAD, true, _away)
+		_burst(_local_point(rig.head_base), config.neck_embers, config.ember_speed * 0.6)
+	if FinisherMotion.fired(_motion.split_at, before, now):
+		_split_as = Finisher.Kind.VERTICAL
+		_split_offset = _motion.split_at
+		_prepare_split()
+
+
+func _split_clock() -> float:
+	return age - _split_offset
 
 
 func _apply_clip(target: FighterRig, normal: Vector2) -> void:
@@ -179,16 +196,16 @@ func _rotation_about(pivot: Vector2, angle: float, offset: Vector2) -> Transform
 
 func _half_motion(base: Transform2D) -> Transform2D:
 	var pivot: Vector2 = _pivot(base, _cut_point)
-	var after: float = maxf(age - config.finisher_hold, 0.0)
-	match kind:
+	var after: float = maxf(_split_clock() - config.finisher_hold, 0.0)
+	match _split_as:
 		Finisher.Kind.PULL_CUT:
-			return _fling(pivot, age)
+			return _fling(pivot, _split_clock())
 		Finisher.Kind.VERTICAL:
 			var ground: Vector2 = Vector2(pivot.x, 0.0)
 			return _rotation_about(ground, minf(after * config.finisher_topple_speed, FALL_ANGLE), Vector2(config.finisher_slide_distance * 0.3, 0.0))
 	var sliding: float = smoothstep(0.0, config.finisher_slide_time, after)
 	var along: Vector2 = Vector2(slide, 0.0)
-	if kind == Finisher.Kind.DIAGONAL:
+	if _split_as == Finisher.Kind.DIAGONAL:
 		along = Vector2(-DIAGONAL_NORMAL.y, DIAGONAL_NORMAL.x) * signf(slide * -DIAGONAL_NORMAL.y)
 	var offset: Vector2 = along * config.finisher_slide_distance * sliding
 	var falling: float = maxf(after - config.finisher_slide_time, 0.0)
@@ -211,14 +228,14 @@ func _fling(pivot: Vector2, time: float) -> Transform2D:
 
 func _rest_motion(base: Transform2D) -> Transform2D:
 	var feet: Vector2 = _pivot(base, Vector2.ZERO)
-	if kind == Finisher.Kind.VERTICAL:
-		var after: float = maxf(age - config.finisher_hold, 0.0)
+	if _split_as == Finisher.Kind.VERTICAL:
+		var after: float = maxf(_split_clock() - config.finisher_hold, 0.0)
 		var ground: Vector2 = Vector2(_pivot(base, _cut_point).x, 0.0)
 		return _rotation_about(ground, -minf(after * config.finisher_topple_speed, FALL_ANGLE), Vector2(-config.finisher_slide_distance * 0.3, 0.0))
 	var push: float = 0.0
-	if kind == Finisher.Kind.PULL_CUT:
-		push = slide * config.finisher_fling_speed.x * 0.4 * minf(age, config.finisher_lower_delay)
-	var sinking: float = maxf(age - config.finisher_lower_delay, 0.0)
+	if _split_as == Finisher.Kind.PULL_CUT:
+		push = slide * config.finisher_fling_speed.x * 0.4 * minf(_split_clock(), config.finisher_lower_delay)
+	var sinking: float = maxf(_split_clock() - config.finisher_lower_delay, 0.0)
 	return _rotation_about(feet, -slide * minf(sinking * config.finisher_topple_speed, FALL_ANGLE), Vector2(push, 0.0))
 
 
@@ -271,7 +288,7 @@ func _draw() -> void:
 		_draw_edge(half)
 	if kind == Finisher.Kind.CHARRED and age < config.xray_time and int(age * config.xray_flicker) % 2 == 0:
 		_draw_skeleton()
-	if kind == Finisher.Kind.STAB:
+	if _motion != null and _motion.hole:
 		_draw_hole()
 	for i in EMBER_POOL:
 		if _ember_life[i] <= 0.0:
@@ -296,7 +313,7 @@ func _draw_edge(piece: FighterRig) -> void:
 
 
 func _draw_hole() -> void:
-	var at: Vector2 = _local_point(rig.pelvis_point.lerp(rig.chest, STAB_SHARE)).snapped(Vector2(GRID, GRID))
+	var at: Vector2 = _local_point(rig.pelvis_point.lerp(rig.chest, HOLE_SHARE)).snapped(Vector2(GRID, GRID))
 	var color: Color = _cooling_color()
 	var radius: float = config.stab_hole_radius * minf(age / HOLE_OPEN_TIME, 1.0)
 	draw_circle(at, radius * 1.8, Color(color, 0.35))

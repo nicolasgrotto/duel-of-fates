@@ -27,6 +27,7 @@ var lock_ticks: int = 0
 var lock_cooldown_ticks: int = 0
 var cinematic_ticks: int = 0
 var cinematic_ko: bool = false
+var long_cinematic: bool = false
 var contact_streak: int = 0
 var contact_idle_ticks: int = 0
 var contact_parrier: int = -1
@@ -321,12 +322,15 @@ func apply_damage(fighter: FighterState, amount: float) -> bool:
 func kill(victim: FighterState, killer: FighterState, move: MoveData, power: PowerData = null, thrown: MoveData = null) -> void:
 	var deciding: bool = is_deciding(killer)
 	victim.finisher_kind = Consequences.finisher_for(self, move if thrown == null else thrown, power, deciding)
+	if victim.finisher_kind == Finisher.Kind.TWIN_BLADES and victim.character.weapon.kind != WeaponData.Kind.SINGLE:
+		victim.finisher_kind = Finisher.Kind.EXECUTION
 	victim.finisher_limb = Consequences.finisher_limb(self, killer, victim, move, deciding) if victim.finisher_kind == Finisher.Kind.NONE else MoveData.Limb.NONE
 	victim.finisher_from_front = CombatGeometry.faces(victim, killer)
 	cinematic_ko = victim.finisher_kind != Finisher.Kind.NONE
+	long_cinematic = Finisher.is_long(victim.finisher_kind)
 	if victim.finisher_kind == Finisher.Kind.DASH_THROUGH:
 		_pass_behind(killer, victim)
-	elif Finisher.is_execution(victim.finisher_kind) or victim.finisher_kind == Finisher.Kind.STAB:
+	elif Finisher.is_staged(victim.finisher_kind):
 		_hold_in_front(killer, victim)
 	change_state(victim, FighterState.State.DEAD)
 	var event: CombatEvent = emit(CombatEvent.Type.DEATH, killer.index, victim.index)
@@ -336,6 +340,12 @@ func kill(victim: FighterState, killer: FighterState, move: MoveData, power: Pow
 	event.limb = victim.finisher_limb
 	event.from_front = victim.finisher_from_front
 	event.position = Vector2(victim.x, victim.y + config.body_height * 0.5)
+
+
+func cinematic_seconds() -> float:
+	if not cinematic_ko:
+		return 0.0
+	return config.consequences.long_cinematic_ko_time if long_cinematic else config.consequences.cinematic_ko_time
 
 
 func intro_seconds() -> float:
@@ -388,6 +398,7 @@ func capture() -> Dictionary:
 		"lock_cooldown_ticks": lock_cooldown_ticks,
 		"cinematic_ticks": cinematic_ticks,
 		"cinematic_ko": cinematic_ko,
+		"long_cinematic": long_cinematic,
 		"contact_streak": contact_streak,
 		"contact_idle_ticks": contact_idle_ticks,
 		"contact_parrier": contact_parrier,
@@ -412,6 +423,7 @@ func restore(snapshot: Dictionary) -> void:
 	lock_cooldown_ticks = snapshot["lock_cooldown_ticks"]
 	cinematic_ticks = snapshot["cinematic_ticks"]
 	cinematic_ko = snapshot["cinematic_ko"]
+	long_cinematic = snapshot["long_cinematic"]
 	contact_streak = snapshot["contact_streak"]
 	contact_idle_ticks = snapshot["contact_idle_ticks"]
 	contact_parrier = snapshot["contact_parrier"]
@@ -445,6 +457,7 @@ func _start_round() -> void:
 func restage() -> void:
 	cinematic_ticks = 0
 	cinematic_ko = false
+	long_cinematic = false
 	BladePress.reset(self)
 	var half_distance: float = config.round_start_distance * 0.5
 	fighters[0].reset_for_round(-half_distance, 1)
@@ -473,7 +486,7 @@ func _advance_phase() -> void:
 				_set_phase(Phase.FIGHT)
 				emit(CombatEvent.Type.FIGHT_STARTED, CombatEvent.NO_FIGHTER, CombatEvent.NO_FIGHTER).amount = round_number
 		Phase.KO:
-			if phase_ticks >= Ticks.from_seconds(config.ko_duration + (config.consequences.cinematic_ko_time if cinematic_ko else 0.0)):
+			if phase_ticks >= Ticks.from_seconds(config.ko_duration + cinematic_seconds()):
 				_after_ko()
 
 

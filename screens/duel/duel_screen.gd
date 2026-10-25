@@ -197,6 +197,7 @@ func _bind_presentation(simulation: MatchSimulation) -> void:
 		_views[i].set_blade_color(setup.blade_colors[i])
 		_views[i].rig.wind = setup.arena.wind
 		_views[i].reset_round(simulation.phase == MatchSimulation.Phase.INTRO)
+		_views[i].rival = _views[1 - i]
 	if _reflections.is_empty() and setup.arena.fighter_reflection > 0.0:
 		for view in _views:
 			var reflection: FighterReflection = FighterReflection.new()
@@ -336,7 +337,8 @@ func _start_replay() -> void:
 			if not is_inside_tree():
 				return
 	_replay_controllers = [ReplayController.new(recording, 0, start), ReplayController.new(recording, 1, start)]
-	_replay_end = mini(_death_index + Ticks.from_seconds(CONFIG.replay_tail), recording.length())
+	var tail: float = CONFIG.consequences.long_replay_tail if sim.long_cinematic else CONFIG.replay_tail
+	_replay_end = mini(_death_index + Ticks.from_seconds(tail), recording.length())
 	_replaying = true
 	_rumble.setup([], [])
 	_runner.records = false

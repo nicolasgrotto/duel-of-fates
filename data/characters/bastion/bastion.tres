@@ -97,7 +97,7 @@ finisher_limb = 1
 blade_angle_windup = -200.0
 blade_angle_strike = 60.0
 cut = 1
-cinematic_finisher = 9
+cinematic_finisher = 13
 
 [sub_resource type="Resource" id="bastion_forward_heavy"]
 script = ExtResource("2_move")

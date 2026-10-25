@@ -21,6 +21,8 @@ const GLINT_SIZE: float = 9.0
 const GLINT_CORE: float = 2.0
 
 var color: Color = Color.WHITE
+var second_color: Color = Color.WHITE
+var own_second_color: bool = false
 var width_scale: float = 1.0
 var length_ratio: float = 0.0
 var second_ratio: float = 1.0
@@ -85,13 +87,17 @@ func _draw() -> void:
 	if length_ratio <= 0.0:
 		return
 	for i in _blade_count:
-		_trails[i].draw_on(self, color, TRAIL_ALPHA, fade_steps)
+		_trails[i].draw_on(self, _tint(i), TRAIL_ALPHA, fade_steps)
 	for i in _blade_count:
-		_draw_blade(_blades[i][0], _blades[i][1])
+		_draw_blade(_blades[i][0], _blades[i][1], _tint(i))
 		if reflect:
-			_draw_reflection(_blades[i][0], _blades[i][1])
+			_draw_reflection(_blades[i][0], _blades[i][1], _tint(i))
 	if glint > 0.0:
 		_draw_glint(_blades[0][1])
+
+
+func _tint(blade_index: int) -> Color:
+	return second_color if blade_index == 1 and own_second_color else color
 
 
 func _draw_glint(at: Vector2) -> void:
@@ -101,13 +107,13 @@ func _draw_glint(at: Vector2) -> void:
 	draw_rect(Rect2(at - Vector2.ONE * GLINT_CORE, Vector2.ONE * GLINT_CORE * 2.0), Color.WHITE)
 
 
-func _draw_blade(base: Vector2, tip: Vector2) -> void:
+func _draw_blade(base: Vector2, tip: Vector2, tint: Color) -> void:
 	var outer_alpha: float = OUTER_ALPHA * (randf_range(0.3, 1.0) if tremble else 1.0)
 	var boost: float = 1.0 + flare * 3.0
 	var thickness: float = maxf(width_scale, 0.6)
-	_pixel_beam(base, tip, _odd(OUTER_PIXELS * thickness * boost), Color(color, outer_alpha * 0.6 * boost), 0)
-	_pixel_beam(base, tip, _odd(GLOW_PIXELS * thickness * boost), Color(color, outer_alpha * boost), 1)
-	_pixel_beam(base, tip, _odd(INNER_PIXELS * thickness), Color(color, INNER_ALPHA), 1)
+	_pixel_beam(base, tip, _odd(OUTER_PIXELS * thickness * boost), Color(tint, outer_alpha * 0.6 * boost), 0)
+	_pixel_beam(base, tip, _odd(GLOW_PIXELS * thickness * boost), Color(tint, outer_alpha * boost), 1)
+	_pixel_beam(base, tip, _odd(INNER_PIXELS * thickness), Color(tint, INNER_ALPHA), 1)
 	_pixel_beam(base, tip, CORE_PIXELS * thickness, Color.WHITE, 2)
 	var emitter: Vector2 = base.snapped(Vector2(GRID, GRID))
 	draw_rect(Rect2(emitter - Vector2(GRID, GRID), Vector2(GRID, GRID) * 2.0), Color(Color.WHITE, 0.9))
@@ -136,8 +142,8 @@ static func _odd(pixels: float) -> float:
 	return float(whole if whole % 2 == 1 else whole + 1)
 
 
-func _draw_reflection(base: Vector2, tip: Vector2) -> void:
+func _draw_reflection(base: Vector2, tip: Vector2, tint: Color) -> void:
 	var mirrored_base: Vector2 = Vector2(base.x, -base.y * REFLECTION_SQUASH)
 	var mirrored_tip: Vector2 = Vector2(tip.x, -tip.y * REFLECTION_SQUASH)
-	draw_line(mirrored_base, mirrored_tip, Color(color, REFLECTION_ALPHA), OUTER_WIDTH * width_scale)
-	draw_line(mirrored_base, mirrored_tip, Color(color, REFLECTION_ALPHA * 1.5), REFLECTION_WIDTH * width_scale)
+	draw_line(mirrored_base, mirrored_tip, Color(tint, REFLECTION_ALPHA), OUTER_WIDTH * width_scale)
+	draw_line(mirrored_base, mirrored_tip, Color(tint, REFLECTION_ALPHA * 1.5), REFLECTION_WIDTH * width_scale)

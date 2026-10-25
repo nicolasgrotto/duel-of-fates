@@ -1,0 +1,56 @@
+[gd_resource type="Resource" script_class="FinisherMotion" format=3]
+
+[ext_resource type="Script" path="res://data/finisher_motion.gd" id="1_script"]
+[ext_resource type="Script" path="res://data/pose_key.gd" id="2_key"]
+
+[sub_resource type="Resource" id="key_0"]
+script = ExtResource("2_key")
+time = 0.05
+grip = Vector2(20, -30)
+blade_angle = 0
+
+[sub_resource type="Resource" id="key_1"]
+script = ExtResource("2_key")
+time = 0.4
+grip = Vector2(22, -30)
+blade_angle = 0
+twirl = 1
+trail = true
+
+[sub_resource type="Resource" id="key_2"]
+script = ExtResource("2_key")
+time = 0.6
+grip = Vector2(14, -34)
+blade_angle = -30
+
+[sub_resource type="Resource" id="key_3"]
+script = ExtResource("2_key")
+time = 1
+grip = Vector2(30, -26)
+blade_angle = 0
+twirl = 1
+crouch = 8
+lean = 10
+step = 14
+trail = true
+
+[sub_resource type="Resource" id="key_4"]
+script = ExtResource("2_key")
+time = 1.6
+grip = Vector2(30, -26)
+blade_angle = 0
+crouch = 8
+lean = 10
+step = 14
+
+[resource]
+script = ExtResource("1_script")
+keys = Array[ExtResource("2_key")]([SubResource("key_0"), SubResource("key_1"), SubResource("key_2"), SubResource("key_3"), SubResource("key_4")])
+lead_in = true
+front_arm_at = 0.25
+back_arm_at = 0.25
+kneel_at = 1.3
+head_at = 0.95
+fall_at = 1.3
+streak_at = 0.95
+streaks_both = true

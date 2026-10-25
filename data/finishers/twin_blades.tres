@@ -1,0 +1,137 @@
+[gd_resource type="Resource" script_class="FinisherMotion" format=3]
+
+[ext_resource type="Script" path="res://data/finisher_motion.gd" id="1_script"]
+[ext_resource type="Script" path="res://data/pose_key.gd" id="2_key"]
+
+[sub_resource type="Resource" id="key_0"]
+script = ExtResource("2_key")
+time = 0.12
+grip = Vector2(30, -14)
+blade_angle = 50
+crouch = 8
+places_off_hand = true
+off_hand = Vector2(-14, -10)
+off_blade_angle = 90
+
+[sub_resource type="Resource" id="key_1"]
+script = ExtResource("2_key")
+time = 0.3
+grip = Vector2(32, -40)
+blade_angle = -50
+crouch = 6
+places_off_hand = true
+off_hand = Vector2(-14, -10)
+off_blade_angle = 90
+trail = true
+
+[sub_resource type="Resource" id="key_2"]
+script = ExtResource("2_key")
+time = 0.6
+grip = Vector2(18, -34)
+blade_angle = -70
+places_off_hand = true
+off_hand = Vector2(-14, -10)
+off_blade_angle = 90
+
+[sub_resource type="Resource" id="key_3"]
+script = ExtResource("2_key")
+time = 0.95
+grip = Vector2(-4, -30)
+blade_angle = -120
+lean = -4
+places_off_hand = true
+off_hand = Vector2(34, -34)
+off_blade_angle = -60
+open_hand = true
+
+[sub_resource type="Resource" id="key_4"]
+script = ExtResource("2_key")
+time = 1.45
+grip = Vector2(-4, -30)
+blade_angle = -120
+lean = -4
+places_off_hand = true
+off_hand = Vector2(26, -34)
+off_blade_angle = -60
+open_hand = true
+
+[sub_resource type="Resource" id="key_5"]
+script = ExtResource("2_key")
+time = 1.6
+grip = Vector2(-4, -30)
+blade_angle = -120
+places_off_hand = true
+off_hand = Vector2(14, -30)
+off_blade_angle = -60
+
+[sub_resource type="Resource" id="key_6"]
+script = ExtResource("2_key")
+time = 1.95
+grip = Vector2(10, -56)
+blade_angle = -150
+crouch = 4
+places_off_hand = true
+off_hand = Vector2(6, 0)
+off_blade_angle = 150
+
+[sub_resource type="Resource" id="key_7"]
+script = ExtResource("2_key")
+time = 2.25
+grip = Vector2(10, -56)
+blade_angle = -150
+crouch = 4
+places_off_hand = true
+off_hand = Vector2(6, 0)
+off_blade_angle = 150
+
+[sub_resource type="Resource" id="key_8"]
+script = ExtResource("2_key")
+time = 2.4
+grip = Vector2(26, -46)
+blade_angle = 24
+crouch = 10
+lean = 12
+step = 12
+places_off_hand = true
+off_hand = Vector2(26, 2)
+off_blade_angle = -24
+trail = true
+off_trail = true
+
+[sub_resource type="Resource" id="key_9"]
+script = ExtResource("2_key")
+time = 3.1
+grip = Vector2(26, -46)
+blade_angle = 24
+crouch = 10
+lean = 12
+step = 12
+places_off_hand = true
+off_hand = Vector2(26, 2)
+off_blade_angle = -24
+
+[sub_resource type="Resource" id="key_10"]
+script = ExtResource("2_key")
+time = 3.4
+grip = Vector2(24, -34)
+blade_angle = -60
+places_off_hand = true
+off_hand = Vector2(-10, -12)
+off_blade_angle = 90
+
+[resource]
+script = ExtResource("1_script")
+keys = Array[ExtResource("2_key")]([SubResource("key_0"), SubResource("key_1"), SubResource("key_2"), SubResource("key_3"), SubResource("key_4"), SubResource("key_5"), SubResource("key_6"), SubResource("key_7"), SubResource("key_8"), SubResource("key_9"), SubResource("key_10")])
+blend_time = 0.5
+lead_in = true
+front_arm_at = 0
+back_arm_at = 0.3
+drops_hilt = true
+kneel_at = 2.85
+head_at = 2.4
+fall_at = 2.85
+streak_at = 2.4
+streaks_both = true
+pull_at = 0.95
+catch_at = 1.5
+release_at = 3.3

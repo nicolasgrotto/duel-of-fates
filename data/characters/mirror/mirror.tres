@@ -97,7 +97,7 @@ finisher_limb = 1
 blade_angle_windup = -150.0
 blade_angle_strike = 45.0
 cut = 1
-cinematic_finisher = 9
+cinematic_finisher = 12
 
 [sub_resource type="Resource" id="mirror_forward_heavy"]
 script = ExtResource("2_move")

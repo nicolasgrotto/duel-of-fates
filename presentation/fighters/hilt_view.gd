@@ -12,6 +12,8 @@ const POMMEL_LENGTH: float = 2.5
 const SHINE_WIDTH: float = 1.2
 const BUTTON_SIZE: float = 2.0
 const BUTTON_AT: float = 0.62
+const BORROWED_GRIP_FROM: float = 0.2
+const BORROWED_GRIP_TO: float = 0.7
 
 var weapon: WeaponData
 var metal: Color = Color.GRAY
@@ -19,6 +21,11 @@ var grip_color: Color = Color.DIM_GRAY
 var geometry: WeaponPose = WeaponPose.new()
 var hidden_main: bool = false
 var button_color: Color = Color.WHITE
+var borrowed_shown: bool = false
+var borrowed_from: Vector2 = Vector2.ZERO
+var borrowed_to: Vector2 = Vector2.ZERO
+var borrowed_metal: Color = Color.GRAY
+var borrowed_grip: Color = Color.DIM_GRAY
 
 
 func setup(weapon_data: WeaponData, costume: CostumeData) -> void:
@@ -33,6 +40,9 @@ func update_pose(pose: RigPose, _front_hand: Vector2, _back_hand: Vector2) -> vo
 
 
 func _draw() -> void:
+	if borrowed_shown:
+		draw_line(borrowed_from, borrowed_to, borrowed_metal, HILT_WIDTH)
+		draw_line(borrowed_from.lerp(borrowed_to, BORROWED_GRIP_FROM), borrowed_from.lerp(borrowed_to, BORROWED_GRIP_TO), borrowed_grip, GRIP_WIDTH)
 	if weapon == null or hidden_main:
 		return
 	var long_haft: bool = weapon.kind == WeaponData.Kind.LANCE or weapon.kind == WeaponData.Kind.STAFF

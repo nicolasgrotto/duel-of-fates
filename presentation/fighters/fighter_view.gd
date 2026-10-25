@@ -17,6 +17,7 @@ const LIGHT_TEXTURE_SIZE: int = 256
 const CHARGE_FLARE: float = 0.08
 const TELEPORT_DISTANCE: float = 150.0
 const MIN_TURN_WIDTH: float = 0.2
+const HILT_DROP_TOSS: Vector2 = Vector2(70.0, -260.0)
 
 var fighter: FighterState
 var opponent: FighterState
@@ -47,7 +48,17 @@ var _severed: Array[SeveredPiece] = []
 var _fall_limb: MoveData.Limb = MoveData.Limb.NONE
 var _lost_blade: bool = false
 var _finisher: FinisherPlayer
-var _pending_streaks: int = 0
+var _cutter: FinisherMotion
+var _cutter_time: float = -1.0
+var _borrowing: bool = false
+var _borrow_ignition: float = 0.0
+var _borrow_weapon: WeaponData
+var _borrow_colors: PackedColorArray = PackedColorArray()
+var _geometry_hilt_from: Vector2 = Vector2.ZERO
+var _geometry_hilt_to: Vector2 = Vector2.ZERO
+
+var rival: FighterView
+var loose_hilt: LooseHilt
 var _prosthetics: Array[Vector2i] = []
 
 
@@ -118,8 +129,13 @@ func reset_round(ignite: bool) -> void:
 	_staging = false
 	_solver.intro_time = -1.0
 	_solver.kneeling = false
-	_solver.stop_execution()
-	_pending_streaks = 0
+	_solver.stop_motion()
+	_cutter = null
+	_cutter_time = -1.0
+	_release_borrowed(false)
+	if loose_hilt != null:
+		loose_hilt.queue_free()
+		loose_hilt = null
 	rig.remove_intro_cloak()
 	rotation = 0.0
 	if _finisher != null:
@@ -204,9 +220,10 @@ func _start_death(event: CombatEvent) -> void:
 
 
 func _start_cutter_pose(event: CombatEvent) -> void:
-	if Finisher.is_execution(event.finisher) or event.finisher == Finisher.Kind.STAB:
-		_solver.start_execution(event.finisher, absf(opponent.x - fighter.x), effects)
-		_pending_streaks = 0 if reduced_effects or event.finisher == Finisher.Kind.STAB else 1
+	if Finisher.is_staged(event.finisher):
+		_cutter = FinisherMotion.for_kind(event.finisher)
+		_solver.start_motion(_cutter)
+		_cutter_time = 0.0 if _cutter != null else -1.0
 		return
 	if event.finisher != Finisher.Kind.DASH_THROUGH and event.finisher != Finisher.Kind.PULL_CUT:
 		return
@@ -233,20 +250,81 @@ func kneel() -> void:
 	_solver.kneeling = true
 
 
-func _emit_execution_streaks() -> void:
-	if _pending_streaks == 0 or _solver.execution_time < effects.execution_cut:
+func drop_hilt() -> void:
+	if loose_hilt != null:
 		return
-	_pending_streaks = 0
-	_add_streak(_geometry.blade_base, _geometry.tip())
-	if fighter.character.weapon.kind == WeaponData.Kind.DUAL and _solver.execution == Finisher.Kind.SCISSORS:
-		_add_streak(_geometry.second_base, _geometry.second_base + _geometry.second_direction * _geometry.second_length)
+	loose_hilt = LooseHilt.new()
+	get_parent().add_child(loose_hilt)
+	loose_hilt.setup(fighter.character.weapon.hilt_length, rig.hilt_colors())
+	loose_hilt.drop(rig.hilt_segment(), Vector2(-fighter.facing * HILT_DROP_TOSS.x, HILT_DROP_TOSS.y))
 
 
-func _add_streak(from_point: Vector2, to_point: Vector2) -> void:
+func _update_cutter(delta: float) -> void:
+	if _borrowing:
+		_borrow_ignition = minf(_borrow_ignition + delta / effects.ignition, 1.0)
+	if _cutter == null:
+		return
+	var before: float = _cutter_time
+	_cutter_time += delta
+	if FinisherMotion.fired(_cutter.streak_at, before, _cutter_time) and not reduced_effects:
+		_add_streak(_geometry.blade_base, _geometry.tip(), blade.color)
+		if _cutter.streaks_both and _geometry.has_second:
+			_add_streak(_geometry.second_base, _geometry.second_base + _geometry.second_direction * _geometry.second_length, blade.second_color if blade.own_second_color else blade.color)
+	if FinisherMotion.fired(_cutter.pull_at, before, _cutter_time) and rival != null and rival.loose_hilt != null:
+		rival.loose_hilt.pull(_off_hand_position, _cutter.catch_at - _cutter.pull_at)
+	if FinisherMotion.fired(_cutter.catch_at, before, _cutter_time) and rival != null and rival.loose_hilt != null:
+		_borrow(rival)
+	if FinisherMotion.fired(_cutter.release_at, before, _cutter_time):
+		_release_borrowed(true)
+	if _cutter_time > _cutter.end_time() and not _borrowing:
+		_cutter = null
+
+
+func _off_hand_position() -> Vector2:
+	return rig.to_global(_pose.off_hand)
+
+
+func _borrow(owner: FighterView) -> void:
+	_borrowing = true
+	_borrow_ignition = 0.0
+	_borrow_weapon = owner.fighter.character.weapon
+	_borrow_colors = owner.rig.hilt_colors()
+	blade.second_color = owner.blade.color
+	blade.own_second_color = true
+
+
+func _release_borrowed(drop: bool) -> void:
+	if not _borrowing:
+		return
+	_borrowing = false
+	blade.own_second_color = false
+	rig.hold_borrowed_hilt(false)
+	if drop and rival != null and rival.loose_hilt != null:
+		var segment: PackedVector2Array = PackedVector2Array([rig.to_global(_geometry_hilt_from), rig.to_global(_geometry_hilt_to)])
+		rival.loose_hilt.drop(segment, Vector2(fighter.facing * HILT_DROP_TOSS.x, HILT_DROP_TOSS.y))
+
+
+func _apply_borrowed() -> void:
+	if not _borrowing or _geometry.has_second:
+		return
+	var direction: Vector2 = Vector2.from_angle(deg_to_rad(_pose.off_blade_angle))
+	var half: Vector2 = direction * _borrow_weapon.hilt_length * 0.5
+	_geometry_hilt_from = _pose.off_hand - half
+	_geometry_hilt_to = _pose.off_hand + half
+	_geometry.has_second = true
+	_geometry.second_hilt_from = _geometry_hilt_from
+	_geometry.second_hilt_to = _geometry_hilt_to
+	_geometry.second_base = _geometry_hilt_to
+	_geometry.second_direction = direction
+	_geometry.second_length = _borrow_weapon.blade_length
+	rig.hold_borrowed_hilt(true, _geometry_hilt_from, _geometry_hilt_to, _borrow_colors)
+
+
+func _add_streak(from_point: Vector2, to_point: Vector2, tint: Color) -> void:
 	var streak: SlashStreak = SlashStreak.new()
 	streak.from_point = from_point
 	streak.to_point = to_point
-	streak.color = blade.color
+	streak.color = tint
 	streak.life = effects.finisher_streak_time
 	streak.width = effects.finisher_streak_width
 	get_parent().add_child(streak)
@@ -297,7 +375,7 @@ func _process(delta: float) -> void:
 	rig.set_wound(fighter.wound)
 	rig.set_blade_out(fighter.blade_out)
 	_update_blade()
-	_emit_execution_streaks()
+	_update_cutter(delta)
 	if (fighter.state == FighterState.State.DODGING or _solver.afterimage) and not reduced_effects:
 		afterimages.capture(rig, delta)
 
@@ -348,7 +426,7 @@ func _update_intro() -> void:
 
 func finisher_debug_line() -> String:
 	var playing: String = Finisher.Kind.keys()[_finisher.kind] if _finisher != null else "-"
-	return "finisher %s  execution %s %.2f  kneel %s  limb %s" % [playing, Finisher.Kind.keys()[_solver.execution], _solver.execution_time, _solver.kneeling, MoveData.Limb.keys()[fighter.finisher_limb]]
+	return "finisher %s  cutter %.2f  borrowed %s %.2f  kneel %s  limb %s" % [playing, _cutter_time, _borrowing, _borrow_ignition, _solver.kneeling, MoveData.Limb.keys()[fighter.finisher_limb]]
 
 
 func intro_debug_lines() -> PackedStringArray:
@@ -401,6 +479,7 @@ func _update_death(delta: float) -> void:
 
 func _update_blade() -> void:
 	_geometry.compute(fighter.character.weapon, _pose)
+	_apply_borrowed()
 	var global_pose: Transform2D = rig.get_global_transform()
 	_geometry.blade_base = global_pose * _geometry.blade_base
 	var main_span: Vector2 = global_pose.basis_xform(_geometry.blade_direction)
@@ -411,7 +490,7 @@ func _update_blade() -> void:
 	_geometry.blade_length *= main_span.length()
 	_geometry.second_length *= second_span.length()
 	blade.length_ratio = 0.0 if _lost_blade or fighter.blade_out else _ignition * (1.0 - _extinguish)
-	blade.second_ratio = _second_ignition
+	blade.second_ratio = _borrow_ignition if _borrowing else _second_ignition
 	blade.tremble = _pose.tremble
 	if fighter.charge_level > 1:
 		blade.flare = maxf(blade.flare, CHARGE_FLARE * (fighter.charge_level - 1))

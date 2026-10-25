@@ -135,11 +135,31 @@ func _heavy(duel: DuelFixture, forward: bool) -> Dictionary:
 	return _death(duel, 120)
 
 
-func test_deciding_heavy_executes_after_disarming() -> void:
+func test_deciding_heavy_takes_the_blade_or_executes() -> void:
 	var result: Dictionary = _heavy(_duel(&"guardian", &"shadow"), false)
-	assert_eq(result["finisher"], Finisher.Kind.EXECUTION)
+	assert_eq(result["finisher"], Finisher.Kind.TWIN_BLADES)
 	assert_eq(result["limb"], MoveData.Limb.NONE)
-	assert_true(Finisher.is_execution(result["finisher"]))
+	assert_eq(_heavy(_duel(&"guardian", &"shadow"), true)["finisher"], Finisher.Kind.EXECUTION)
+	for victim in [&"wasp", &"reaper", &"lance"]:
+		assert_eq(_heavy(_duel(&"guardian", victim), false)["finisher"], Finisher.Kind.EXECUTION, "no single blade to take from %s" % victim)
+
+
+func test_colossus_and_reaper_have_their_own_heavy_finisher() -> void:
+	for id in [&"bastion", &"forge"]:
+		assert_eq(_heavy(_duel(id, &"shadow"), false)["finisher"], Finisher.Kind.OVERHEAD, String(id))
+	assert_eq(_heavy(_duel(&"reaper", &"shadow"), false)["finisher"], Finisher.Kind.DOUBLE_ROTATION)
+
+
+func test_twin_blades_holds_the_knockout_longer() -> void:
+	var duel: DuelFixture = _duel(&"guardian", &"shadow")
+	_heavy(duel, false)
+	assert_true(duel.sim.long_cinematic)
+	var config: CombatConfig = duel.sim.config
+	assert_eq(duel.sim.cinematic_seconds(), config.consequences.long_cinematic_ko_time)
+	duel.step(Ticks.from_seconds(config.ko_duration + config.consequences.cinematic_ko_time) + 2)
+	assert_eq(duel.sim.phase, MatchSimulation.Phase.KO, "still playing")
+	duel.step(Ticks.from_seconds(config.consequences.long_cinematic_ko_time - config.consequences.cinematic_ko_time) + 2)
+	assert_ne(duel.sim.phase, MatchSimulation.Phase.KO)
 
 
 func test_wasp_closes_the_scissors() -> void:
@@ -150,7 +170,7 @@ func test_wasp_closes_the_scissors() -> void:
 func test_fencer_forward_heavy_stabs() -> void:
 	for id in [&"mirror", &"lance", &"sovereign"]:
 		assert_eq(_heavy(_duel(id, &"shadow"), true)["finisher"], Finisher.Kind.STAB, String(id))
-		assert_eq(_heavy(_duel(id, &"shadow"), false)["finisher"], Finisher.Kind.EXECUTION, String(id))
+		assert_eq(_heavy(_duel(id, &"shadow"), false)["finisher"], Finisher.Kind.TWIN_BLADES, String(id))
 
 
 func test_heavy_before_the_deciding_round_cuts_a_limb() -> void:
