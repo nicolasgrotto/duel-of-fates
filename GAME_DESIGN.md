@@ -179,8 +179,8 @@ Implementada na fase 7.5 (`DodgeKind.SPIN`, números em `CombatConfig`, grupo Do
 
 ### Choque de lâminas (clash)
 
-- Quando os dois estão no active ao mesmo tempo e as lâminas se encostam. O choque tem prioridade sobre o hit: ninguém leva dano.
-- **Rápido contra rápido**: faíscas, som e tremor; os golpes deixam de acertar, um empurrão curto (120 u) separa os dois, ninguém entra em recuo e a sequência continua.
+- Quando as lâminas se encostam, pelo menos uma já está no active e a outra está no active ou nos últimos **4 ticks de preparação** (`CombatConfig.clash_window = 0,067 s`, arredondado a 60 Hz). Duas preparações sozinhas não chocam. A janela acomoda golpes já comprometidos que começaram poucos quadros separados, inclusive o boneco que espelha no tick seguinte; fora dela, a vantagem de velocidade continua valendo. Alcance de lâmina, altura, orientação e golpe ainda não consumido continuam obrigatórios. O choque tem prioridade sobre o hit: ninguém leva dano.
+- **Rápido contra rápido**: faíscas, som e tremor; os golpes deixam de acertar e passam à recuperação, um empurrão curto (120 u) separa os dois, ninguém entra em recuo e a sequência continua. Isso também consome o golpe capturado no fim da preparação, sem ativo atrasado nem novos acertos do mesmo golpe.
 - **Com um forte envolvido**: os dois ataques são cancelados, os dois são empurrados (280 u) e ficam 0,25 s em recuo (`HIT`, sem dano).
 - **Forte contra forte** elegíveis iniciam a **disputa de lâminas**.
 - **Choque entre técnicas de lâmina**: as duas são interrompidas num choque grande, os dois recuam 420 u, ficam desequilibrados por 0,4 s e perdem 12 de Vigor.
@@ -202,7 +202,7 @@ Implementada na fase 7.5 (`BladePress`, números no grupo Blade press do `BladeL
 
 O momento mais físico do duelo: rostos próximos, lâminas cruzadas num X, tremor e som crescente.
 
-- **Entrada**: dois fortes comuns ou de avanço se chocam no active a até ~70 u de distância. Recarga de 4 s entre disputas.
+- **Entrada**: dois fortes comuns ou de avanço se chocam dentro da janela acima a até ~70 u de distância. Recarga de 4 s entre disputas.
 - **Durante**: cada aperto de ataque rápido é uma pressão (no máximo 15 por segundo contam). Quem abrir **5 pressões de vantagem** vence. Tempo máximo de 3 s.
 - **Vitória**: o perdedor leva 8 de dano e perde 35 de Vigor uma única vez, fica `STAGGERED` por 0,35 s; o vencedor tem 0,25 s de recovery. Os dois se separam 420 u. A recuperação e a separação impedem converter a disputa num forte garantido.
 - **Empate** (tempo acabou com vantagem menor que 1): só separa. Se o tempo acabar com vantagem de 1 ou mais, quem lidera vence.
