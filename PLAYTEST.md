@@ -157,6 +157,18 @@ Para ver cada uma, jogue Duelar com 1 round (ou o último round) e deixe o adver
 | 4b.16 | Partida de 2 rounds: vença o 1º com o mesmo rápido descendente | sai o braço, **nunca a cabeça** (ele volta no 2º com a prótese) | idem |
 | 4b.17 | Último round: mate com um rápido ascendente o adversário **no ar** | sai a perna (o corte passa baixo nele) | idem |
 
+## 4c. Exibição
+
+Extras › Exibição. Assista sem tocar em nada e depois repita pulando com Confirmar.
+
+| # | Como testar | Esperado | Onde ajustar |
+| --- | --- | --- | --- |
+| 4c.1 | Duelo **Lâminas** (Guardião × Sombra) | cartão de título durante as entradas; guardas, choque de rápidos, disputa vencida pelo Guardião, esquiva precisa da Sombra com punição, esquiva com giro, parry perfeito com contra-ataque e as duas lâminas no fim | `data/exhibition/exhibition.tres` (ticks dos `cues`) |
+| 4c.2 | Duelo **Fluxo** (Ancião × Sombra Desperta) | Raio segurado contra a Barreira, Avanço com corte bloqueado, choque de fortes, Ira, Telecinese em Massa com a câmera no céu e o Puxão que corta ao meio; nenhuma aura fica sobre o corpo depois da morte | idem |
+| 4c.3 | Duelo **Dança** (Garça × Vespa) | pulo duplo por cima da Vespa, sequência de cinco da Vespa bloqueada, choque de fortes, esquiva com giro através da Rajada, punição e o giro da Garça no fim | idem |
+| 4c.4 | Entre os duelos e no fim | fade do roteador e o próximo cartão; depois do terceiro, volta ao menu | — |
+| 4c.5 | Confirmar durante um duelo; Pausa | Confirmar pula para o próximo; Pausa abre o menu de pausa e permite sair | — |
+
 ## 5. IA
 
 Duelar contra a IA no **Difícil** (Opções › Dificuldade).

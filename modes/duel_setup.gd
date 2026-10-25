@@ -1,7 +1,7 @@
 class_name DuelSetup
 extends RefCounted
 
-enum ControllerKind { PLAYER, AI, DUMMY, GALLERY }
+enum ControllerKind { PLAYER, AI, DUMMY, GALLERY, CHOREOGRAPHY }
 
 var characters: Array[CharacterData] = []
 var costumes: Array[CostumeData] = []
@@ -20,6 +20,7 @@ var awakening: Array = [null, null]
 var banner: String = ""
 var objective: bool = false
 var power_sets: Array = [[], []]
+var bout: ExhibitionBout
 
 
 func fill_default_looks() -> void:

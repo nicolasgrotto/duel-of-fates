@@ -1,0 +1,471 @@
+[gd_resource type="Resource" script_class="ExhibitionData" format=3]
+
+[ext_resource type="Script" path="res://data/exhibition_data.gd" id="r1"]
+[ext_resource type="Script" path="res://data/exhibition_bout.gd" id="r2"]
+[ext_resource type="Script" path="res://data/exhibition_cue.gd" id="r3"]
+[ext_resource type="Script" path="res://data/character_data.gd" id="r4"]
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="r5"]
+[ext_resource type="Resource" path="res://data/characters/guardian/guardian.tres" id="r6"]
+[ext_resource type="Resource" path="res://data/characters/shadow/shadow.tres" id="r7"]
+[ext_resource type="Resource" path="res://data/arenas/refinery_platform.tres" id="r8"]
+[ext_resource type="Resource" path="res://data/characters/elder/elder.tres" id="r9"]
+[ext_resource type="Resource" path="res://data/characters/awakened_shadow/awakened_shadow.tres" id="r10"]
+[ext_resource type="Resource" path="res://data/arenas/eclipse_citadel.tres" id="r11"]
+[ext_resource type="Resource" path="res://data/powers/mass_telekinesis.tres" id="r12"]
+[ext_resource type="Resource" path="res://data/powers/pull.tres" id="r13"]
+[ext_resource type="Resource" path="res://data/powers/barrier.tres" id="r14"]
+[ext_resource type="Resource" path="res://data/powers/lightning.tres" id="r15"]
+[ext_resource type="Resource" path="res://data/powers/choke.tres" id="r16"]
+[ext_resource type="Resource" path="res://data/powers/wrath.tres" id="r17"]
+[ext_resource type="Resource" path="res://data/characters/heron/heron.tres" id="r18"]
+[ext_resource type="Resource" path="res://data/characters/wasp/wasp.tres" id="r19"]
+[ext_resource type="Resource" path="res://data/arenas/luminous_forest.tres" id="r20"]
+
+[sub_resource type="Resource" id="blades_cue_0"]
+script = ExtResource("r3")
+at = 0
+move = 1
+hold = 44
+
+[sub_resource type="Resource" id="blades_cue_1"]
+script = ExtResource("r3")
+at = 0
+fighter = 1
+move = 1
+hold = 44
+
+[sub_resource type="Resource" id="blades_cue_2"]
+script = ExtResource("r3")
+at = 30
+command = 8
+hold = 40
+
+[sub_resource type="Resource" id="blades_cue_3"]
+script = ExtResource("r3")
+at = 48
+fighter = 1
+command = 2
+
+[sub_resource type="Resource" id="blades_cue_4"]
+script = ExtResource("r3")
+at = 56
+fighter = 1
+command = 8
+hold = 34
+
+[sub_resource type="Resource" id="blades_cue_5"]
+script = ExtResource("r3")
+at = 74
+command = 2
+
+[sub_resource type="Resource" id="blades_cue_6"]
+script = ExtResource("r3")
+at = 110
+command = 2
+
+[sub_resource type="Resource" id="blades_cue_7"]
+script = ExtResource("r3")
+at = 111
+fighter = 1
+command = 2
+
+[sub_resource type="Resource" id="blades_cue_8"]
+script = ExtResource("r3")
+at = 140
+move = 1
+hold = 14
+
+[sub_resource type="Resource" id="blades_cue_9"]
+script = ExtResource("r3")
+at = 140
+fighter = 1
+move = 1
+hold = 14
+
+[sub_resource type="Resource" id="blades_cue_10"]
+script = ExtResource("r3")
+at = 160
+command = 4
+
+[sub_resource type="Resource" id="blades_cue_11"]
+script = ExtResource("r3")
+at = 161
+fighter = 1
+command = 4
+
+[sub_resource type="Resource" id="blades_cue_12"]
+script = ExtResource("r3")
+at = 184
+command = 2
+
+[sub_resource type="Resource" id="blades_cue_13"]
+script = ExtResource("r3")
+at = 191
+command = 2
+
+[sub_resource type="Resource" id="blades_cue_14"]
+script = ExtResource("r3")
+at = 196
+fighter = 1
+command = 2
+
+[sub_resource type="Resource" id="blades_cue_15"]
+script = ExtResource("r3")
+at = 198
+command = 2
+
+[sub_resource type="Resource" id="blades_cue_16"]
+script = ExtResource("r3")
+at = 205
+command = 2
+
+[sub_resource type="Resource" id="blades_cue_17"]
+script = ExtResource("r3")
+at = 212
+command = 2
+
+[sub_resource type="Resource" id="blades_cue_18"]
+script = ExtResource("r3")
+at = 219
+command = 2
+
+[sub_resource type="Resource" id="blades_cue_19"]
+script = ExtResource("r3")
+at = 226
+command = 2
+
+[sub_resource type="Resource" id="blades_cue_20"]
+script = ExtResource("r3")
+at = 233
+command = 2
+
+[sub_resource type="Resource" id="blades_cue_21"]
+script = ExtResource("r3")
+at = 250
+move = 1
+hold = 46
+
+[sub_resource type="Resource" id="blades_cue_22"]
+script = ExtResource("r3")
+at = 250
+fighter = 1
+move = 1
+hold = 46
+
+[sub_resource type="Resource" id="blades_cue_23"]
+script = ExtResource("r3")
+at = 300
+command = 2
+
+[sub_resource type="Resource" id="blades_cue_24"]
+script = ExtResource("r3")
+at = 304
+fighter = 1
+command = 32
+
+[sub_resource type="Resource" id="blades_cue_25"]
+script = ExtResource("r3")
+at = 314
+fighter = 1
+command = 2
+
+[sub_resource type="Resource" id="blades_cue_26"]
+script = ExtResource("r3")
+at = 345
+move = 1
+hold = 9
+
+[sub_resource type="Resource" id="blades_cue_27"]
+script = ExtResource("r3")
+at = 354
+command = 16
+move = 1
+hold = 4
+
+[sub_resource type="Resource" id="blades_cue_28"]
+script = ExtResource("r3")
+at = 375
+fighter = 1
+command = 4
+
+[sub_resource type="Resource" id="blades_cue_29"]
+script = ExtResource("r3")
+at = 393
+command = 8
+hold = 4
+
+[sub_resource type="Resource" id="blades_cue_30"]
+script = ExtResource("r3")
+at = 405
+command = 2
+
+[sub_resource type="Resource" id="blades_cue_31"]
+script = ExtResource("r3")
+at = 430
+command = 4
+
+[sub_resource type="Resource" id="bout_blades"]
+script = ExtResource("r2")
+id = &"blades"
+title_key = "EXHIBITION_BLADES"
+characters = Array[ExtResource("r4")]([ExtResource("r6"), ExtResource("r7")])
+costumes = PackedInt32Array(0, 0)
+arena = ExtResource("r8")
+powers_left = Array[ExtResource("r5")]([])
+powers_right = Array[ExtResource("r5")]([])
+start_health = PackedFloat32Array(1, 0.5)
+match_seed = 11
+cues = Array[ExtResource("r3")]([SubResource("blades_cue_0"), SubResource("blades_cue_1"), SubResource("blades_cue_2"), SubResource("blades_cue_3"), SubResource("blades_cue_4"), SubResource("blades_cue_5"), SubResource("blades_cue_6"), SubResource("blades_cue_7"), SubResource("blades_cue_8"), SubResource("blades_cue_9"), SubResource("blades_cue_10"), SubResource("blades_cue_11"), SubResource("blades_cue_12"), SubResource("blades_cue_13"), SubResource("blades_cue_14"), SubResource("blades_cue_15"), SubResource("blades_cue_16"), SubResource("blades_cue_17"), SubResource("blades_cue_18"), SubResource("blades_cue_19"), SubResource("blades_cue_20"), SubResource("blades_cue_21"), SubResource("blades_cue_22"), SubResource("blades_cue_23"), SubResource("blades_cue_24"), SubResource("blades_cue_25"), SubResource("blades_cue_26"), SubResource("blades_cue_27"), SubResource("blades_cue_28"), SubResource("blades_cue_29"), SubResource("blades_cue_30"), SubResource("blades_cue_31")])
+
+[sub_resource type="Resource" id="flow_cue_0"]
+script = ExtResource("r3")
+at = 0
+move = 1
+hold = 10
+
+[sub_resource type="Resource" id="flow_cue_1"]
+script = ExtResource("r3")
+at = 0
+fighter = 1
+move = 1
+hold = 10
+
+[sub_resource type="Resource" id="flow_cue_2"]
+script = ExtResource("r3")
+at = 20
+fighter = 1
+command = 128
+hold = 70
+
+[sub_resource type="Resource" id="flow_cue_3"]
+script = ExtResource("r3")
+at = 22
+command = 128
+move = -1
+hold = 72
+
+[sub_resource type="Resource" id="flow_cue_4"]
+script = ExtResource("r3")
+at = 110
+fighter = 1
+move = 1
+hold = 30
+
+[sub_resource type="Resource" id="flow_cue_5"]
+script = ExtResource("r3")
+at = 128
+command = 8
+hold = 30
+
+[sub_resource type="Resource" id="flow_cue_6"]
+script = ExtResource("r3")
+at = 130
+fighter = 1
+command = 64
+move = 1
+
+[sub_resource type="Resource" id="flow_cue_7"]
+script = ExtResource("r3")
+at = 160
+move = -1
+hold = 16
+
+[sub_resource type="Resource" id="flow_cue_8"]
+script = ExtResource("r3")
+at = 185
+command = 4
+
+[sub_resource type="Resource" id="flow_cue_9"]
+script = ExtResource("r3")
+at = 185
+fighter = 1
+command = 4
+
+[sub_resource type="Resource" id="flow_cue_10"]
+script = ExtResource("r3")
+at = 225
+fighter = 1
+command = 128
+move = -1
+
+[sub_resource type="Resource" id="flow_cue_11"]
+script = ExtResource("r3")
+at = 262
+command = 128
+
+[sub_resource type="Resource" id="flow_cue_12"]
+script = ExtResource("r3")
+at = 520
+command = 128
+move = 1
+
+[sub_resource type="Resource" id="bout_flow"]
+script = ExtResource("r2")
+id = &"flow"
+title_key = "EXHIBITION_FLOW"
+characters = Array[ExtResource("r4")]([ExtResource("r9"), ExtResource("r10")])
+costumes = PackedInt32Array(0, 0)
+arena = ExtResource("r11")
+powers_left = Array[ExtResource("r5")]([ExtResource("r12"), ExtResource("r13"), ExtResource("r14")])
+powers_right = Array[ExtResource("r5")]([ExtResource("r15"), ExtResource("r16"), ExtResource("r17")])
+start_health = PackedFloat32Array(1, 0.18)
+match_seed = 23
+cues = Array[ExtResource("r3")]([SubResource("flow_cue_0"), SubResource("flow_cue_1"), SubResource("flow_cue_2"), SubResource("flow_cue_3"), SubResource("flow_cue_4"), SubResource("flow_cue_5"), SubResource("flow_cue_6"), SubResource("flow_cue_7"), SubResource("flow_cue_8"), SubResource("flow_cue_9"), SubResource("flow_cue_10"), SubResource("flow_cue_11"), SubResource("flow_cue_12")])
+
+[sub_resource type="Resource" id="dance_cue_0"]
+script = ExtResource("r3")
+at = 0
+move = 1
+hold = 50
+
+[sub_resource type="Resource" id="dance_cue_1"]
+script = ExtResource("r3")
+at = 0
+fighter = 1
+move = 1
+hold = 30
+
+[sub_resource type="Resource" id="dance_cue_2"]
+script = ExtResource("r3")
+at = 8
+command = 1
+move = 1
+
+[sub_resource type="Resource" id="dance_cue_3"]
+script = ExtResource("r3")
+at = 22
+command = 1
+move = 1
+
+[sub_resource type="Resource" id="dance_cue_4"]
+script = ExtResource("r3")
+at = 60
+command = 8
+hold = 75
+
+[sub_resource type="Resource" id="dance_cue_5"]
+script = ExtResource("r3")
+at = 78
+fighter = 1
+command = 2
+
+[sub_resource type="Resource" id="dance_cue_6"]
+script = ExtResource("r3")
+at = 92
+fighter = 1
+command = 2
+
+[sub_resource type="Resource" id="dance_cue_7"]
+script = ExtResource("r3")
+at = 106
+fighter = 1
+command = 2
+
+[sub_resource type="Resource" id="dance_cue_8"]
+script = ExtResource("r3")
+at = 120
+fighter = 1
+command = 2
+
+[sub_resource type="Resource" id="dance_cue_9"]
+script = ExtResource("r3")
+at = 134
+fighter = 1
+command = 2
+
+[sub_resource type="Resource" id="dance_cue_10"]
+script = ExtResource("r3")
+at = 165
+move = -1
+hold = 13
+
+[sub_resource type="Resource" id="dance_cue_11"]
+script = ExtResource("r3")
+at = 165
+fighter = 1
+move = -1
+hold = 13
+
+[sub_resource type="Resource" id="dance_cue_12"]
+script = ExtResource("r3")
+at = 190
+command = 4
+
+[sub_resource type="Resource" id="dance_cue_13"]
+script = ExtResource("r3")
+at = 190
+fighter = 1
+command = 4
+
+[sub_resource type="Resource" id="dance_cue_14"]
+script = ExtResource("r3")
+at = 232
+move = 1
+hold = 36
+
+[sub_resource type="Resource" id="dance_cue_15"]
+script = ExtResource("r3")
+at = 232
+fighter = 1
+move = 1
+hold = 36
+
+[sub_resource type="Resource" id="dance_cue_16"]
+script = ExtResource("r3")
+at = 270
+move = 1
+hold = 6
+
+[sub_resource type="Resource" id="dance_cue_17"]
+script = ExtResource("r3")
+at = 272
+fighter = 1
+command = 64
+move = 1
+
+[sub_resource type="Resource" id="dance_cue_18"]
+script = ExtResource("r3")
+at = 276
+command = 16
+move = 1
+hold = 4
+
+[sub_resource type="Resource" id="dance_cue_19"]
+script = ExtResource("r3")
+at = 312
+command = 2
+
+[sub_resource type="Resource" id="dance_cue_20"]
+script = ExtResource("r3")
+at = 324
+command = 2
+
+[sub_resource type="Resource" id="dance_cue_21"]
+script = ExtResource("r3")
+at = 350
+move = -1
+hold = 18
+
+[sub_resource type="Resource" id="dance_cue_22"]
+script = ExtResource("r3")
+at = 415
+command = 4
+move = 1
+hold = 4
+
+[sub_resource type="Resource" id="bout_dance"]
+script = ExtResource("r2")
+id = &"dance"
+title_key = "EXHIBITION_DANCE"
+characters = Array[ExtResource("r4")]([ExtResource("r18"), ExtResource("r19")])
+costumes = PackedInt32Array(0, 0)
+arena = ExtResource("r20")
+powers_left = Array[ExtResource("r5")]([])
+powers_right = Array[ExtResource("r5")]([])
+start_health = PackedFloat32Array(1, 0.5)
+match_seed = 37
+cues = Array[ExtResource("r3")]([SubResource("dance_cue_0"), SubResource("dance_cue_1"), SubResource("dance_cue_2"), SubResource("dance_cue_3"), SubResource("dance_cue_4"), SubResource("dance_cue_5"), SubResource("dance_cue_6"), SubResource("dance_cue_7"), SubResource("dance_cue_8"), SubResource("dance_cue_9"), SubResource("dance_cue_10"), SubResource("dance_cue_11"), SubResource("dance_cue_12"), SubResource("dance_cue_13"), SubResource("dance_cue_14"), SubResource("dance_cue_15"), SubResource("dance_cue_16"), SubResource("dance_cue_17"), SubResource("dance_cue_18"), SubResource("dance_cue_19"), SubResource("dance_cue_20"), SubResource("dance_cue_21"), SubResource("dance_cue_22")])
+
+[resource]
+script = ExtResource("r1")
+bouts = Array[ExtResource("r2")]([SubResource("bout_blades"), SubResource("bout_flow"), SubResource("bout_dance")])

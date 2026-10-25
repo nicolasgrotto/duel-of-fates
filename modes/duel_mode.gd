@@ -38,6 +38,10 @@ func build_setup() -> DuelSetup:
 	return DuelSetup.new()
 
 
+func after_match() -> bool:
+	return false
+
+
 func result_options() -> Array[StringName]:
 	return [&"rematch", &"menu"]
 

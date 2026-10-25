@@ -68,6 +68,17 @@ func open(params: Dictionary) -> void:
 	if _objective != null:
 		_objective.finished.connect(_on_objective_finished)
 	_bind_presentation(sim)
+	if setup.bout != null:
+		_start_exhibition()
+
+
+func _start_exhibition() -> void:
+	_hud.visible = false
+	var card: ExhibitionCard = ExhibitionCard.new()
+	add_child(card)
+	var names: String = "%s  ·  %s" % [tr(setup.characters[0].name_key), tr(setup.characters[1].name_key)]
+	var footer: String = ControlHints.line(PackedStringArray([ControlHints.hint(&"ui_accept", "HINT_NEXT_BOUT"), ControlHints.hint(&"p1_pause", "HINT_PAUSE")]))
+	card.play(tr(setup.bout.title_key), names, footer, setup.bout.card_fade, setup.bout.card_hold)
 
 
 func _build_scene() -> void:
@@ -176,6 +187,8 @@ func _build_controllers() -> Array[FighterController]:
 				ai.awakening = setup.awakening[i]
 				controllers.append(ai)
 				_ai.append(ai)
+			DuelSetup.ControllerKind.CHOREOGRAPHY:
+				controllers.append(ChoreographyController.new(setup.bout, i))
 			DuelSetup.ControllerKind.DUMMY:
 				var dummy: DummyController = DummyController.new(TRAINING, setup.match_seed)
 				controllers.append(dummy)
@@ -236,6 +249,11 @@ func _unhandled_input(event: InputEvent) -> void:
 			_finish_replay()
 			get_viewport().set_input_as_handled()
 		return
+	if setup.bout != null and event.is_action_pressed(&"ui_accept"):
+		_finished = true
+		get_viewport().set_input_as_handled()
+		mode.after_match()
+		return
 	if event.is_action_pressed(&"p1_pause") or event.is_action_pressed(&"p2_pause"):
 		SceneRouter.push(&"pause", {"mode": mode})
 		get_viewport().set_input_as_handled()
@@ -263,7 +281,7 @@ func _on_ticked() -> void:
 		_hud.set_banner(_objective.instruction())
 		_hud.set_progress(_objective.progress_line())
 	var cinematic: bool = sim.phase == MatchSimulation.Phase.INTRO or sim.phase == MatchSimulation.Phase.KO
-	_screen.letterbox_target = 1.0 if cinematic and not setup.training else 0.0
+	_screen.letterbox_target = 1.0 if (cinematic and not setup.training) or setup.bout != null else 0.0
 	if _training != null:
 		_training.on_ticked()
 	if _gallery != null:
@@ -315,6 +333,10 @@ func _on_combat_event(event: CombatEvent) -> void:
 
 
 func _on_match_ended() -> void:
+	if setup.bout != null:
+		_finished = true
+		mode.after_match()
+		return
 	if Settings.final_blow_replay and _death_index > 0:
 		_start_replay()
 	else:
