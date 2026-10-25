@@ -122,6 +122,12 @@ Para ver cada uma, jogue Duelar com 1 round (ou o último round) e deixe o adver
 | 4b.9 | Partida de 2 rounds: vença o 1º com um forte | o adversário volta no 2º round com o braço (ou a perna) metálico | `UiPalette.prosthetic_metal` |
 | 4b.10 | Opções › Finalizações desligada | nenhuma cinemática; queda comum | — |
 | 4b.11 | Depois do K.O. decisivo, assista ao replay | a cinemática se repete igual | — |
+| 4b.12 | Forte (parado ou de avanço) que mata, com qualquer personagem exceto Vespa | **desarme e execução**: os dois antebraços saem, a lâmina dele apaga, ele cai de joelhos; você recolhe a lâmina e passa um corte horizontal com rastro no pescoço; a cabeça rola e o corpo tomba para a frente. Ninguém escorrega pelo corpo | `execution_windup`, `execution_cut`, `execution_end` (`EffectsConfig`); poses `EXECUTION_*` em `PoseSolver`; `ConsequenceConfig.execution_clearance` |
+| 4b.13 | Forte da **Vespa** que mata | o mesmo desarme; as duas lâminas abrem para trás e se fecham em X no pescoço, com dois rastros | `SCISSORS_*` em `PoseSolver` |
+| 4b.14 | Forte de avanço de **Espelho, Haste ou Soberano** que mata | **estocada**: a lâmina atravessa o peito, a ponta sai pelas costas, anel em brasa no peito; você segura, recolhe, e ele cai de joelhos e tomba para a frente | `stab_hold`, `stab_withdraw`, `stab_end`, `stab_hole_radius`; `STAB_*` em `PoseSolver` |
+| 4b.15 | Último round: mate com o **rápido descendente** (1º da sequência na maioria) no chão | a cabeça sai | `ConsequenceConfig.cut_heights`, `head_line`, `leg_line` |
+| 4b.16 | Partida de 2 rounds: vença o 1º com o mesmo rápido descendente | sai o braço, **nunca a cabeça** (ele volta no 2º com a prótese) | idem |
+| 4b.17 | Último round: mate com um rápido ascendente o adversário **no ar** | sai a perna (o corte passa baixo nele) | idem |
 
 ## 5. IA
 

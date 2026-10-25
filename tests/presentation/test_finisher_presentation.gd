@@ -55,3 +55,69 @@ func test_cleared_finisher_stops_drawing_the_cut() -> void:
 	player.clear()
 	assert_false(player.is_split(), "the queued player no longer draws the freed half")
 	player.rig.free()
+
+
+func test_rig_keeps_every_severed_part() -> void:
+	var rig: FighterRig = _rig()
+	rig.sever(MoveData.Limb.ARM, true)
+	rig.sever(MoveData.Limb.ARM, false)
+	rig.sever(MoveData.Limb.HEAD, true)
+	assert_true(rig.lost_main_hand())
+	for key in rig._sprites:
+		var name: String = String(key)
+		if name.begins_with("forearm_") or name.begins_with("hand_") or name.begins_with("head:"):
+			assert_false(rig._sprites[key].visible, "%s stays hidden after later cuts" % name)
+	rig.restore()
+	assert_false(rig.lost_main_hand())
+	rig.free()
+
+
+func test_execution_kinds_kneel_and_fall_forward() -> void:
+	var player: FinisherPlayer = FinisherPlayer.new()
+	var effects: EffectsConfig = load("res://data/balance/effects_config.tres")
+	player.config = effects
+	for kind in [Finisher.Kind.EXECUTION, Finisher.Kind.SCISSORS, Finisher.Kind.STAB]:
+		player.kind = kind
+		assert_false(player.moves_body(), "kind %d keeps the body in place" % kind)
+		assert_eq(player.fall_limb(), MoveData.Limb.HEAD, "kind %d kneels and falls forward" % kind)
+	player.kind = Finisher.Kind.EXECUTION
+	assert_eq(player.fall_delay(), effects.execution_cut, "the body falls once the head is off")
+	player.kind = Finisher.Kind.STAB
+	assert_eq(player.fall_delay(), effects.stab_hold + effects.stab_withdraw, "the body falls once the blade is out")
+	player.free()
+
+
+func _execution_pose(id: StringName, kind: Finisher.Kind, at: float) -> RigPose:
+	var data: CharacterData = DuelFixture.character(id)
+	var fighter: FighterState = FighterState.new()
+	fighter.setup(0, data, DuelFixture.CONFIG)
+	var solver: PoseSolver = PoseSolver.new()
+	solver.setup(data, data.art)
+	var effects: EffectsConfig = load("res://data/balance/effects_config.tres")
+	solver.start_execution(kind, 62.0, effects)
+	var pose: RigPose = RigPose.new()
+	while solver.execution_time >= 0.0 and solver.execution_time < at:
+		solver.advance(Ticks.DELTA)
+	solver.solve(fighter, fighter, pose)
+	return pose
+
+
+func test_execution_swing_ends_level_at_the_neck() -> void:
+	var effects: EffectsConfig = load("res://data/balance/effects_config.tres")
+	var pose: RigPose = _execution_pose(&"guardian", Finisher.Kind.EXECUTION, effects.execution_cut)
+	assert_lt(absf(rad_to_deg(pose.torso_angle) + pose.blade_angle - PoseSolver.EXECUTION_STRIKE_ANGLE), 25.0, "blade level at the cut")
+	assert_gt(ArmGeometry.to_body(pose.grip, pose).x, 20.0, "hand forward at the cut")
+
+
+func test_scissors_close_both_blades_in_an_x() -> void:
+	var effects: EffectsConfig = load("res://data/balance/effects_config.tres")
+	var pose: RigPose = _execution_pose(&"wasp", Finisher.Kind.SCISSORS, effects.execution_cut)
+	assert_gt(wrapf(pose.blade_angle, -180.0, 180.0), 5.0, "the high blade comes down to the neck")
+	assert_lt(wrapf(pose.off_blade_angle, -180.0, 180.0), -5.0, "the low blade comes up to the neck")
+
+
+func test_stab_holds_the_blade_level_through_the_chest() -> void:
+	var effects: EffectsConfig = load("res://data/balance/effects_config.tres")
+	var pose: RigPose = _execution_pose(&"mirror", Finisher.Kind.STAB, effects.stab_hold * 0.5)
+	assert_lt(absf(pose.blade_angle), 10.0)
+	assert_gt(ArmGeometry.to_body(pose.grip, pose).x, PoseSolver.STAB_MIN_GRIP - 1.0)

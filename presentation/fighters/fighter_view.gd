@@ -47,6 +47,7 @@ var _severed: Array[SeveredPiece] = []
 var _fall_limb: MoveData.Limb = MoveData.Limb.NONE
 var _lost_blade: bool = false
 var _finisher: FinisherPlayer
+var _pending_streaks: int = 0
 var _prosthetics: Array[Vector2i] = []
 
 
@@ -116,6 +117,9 @@ func reset_round(ignite: bool) -> void:
 	_second_ignition = 1.0
 	_staging = false
 	_solver.intro_time = -1.0
+	_solver.kneeling = false
+	_solver.stop_execution()
+	_pending_streaks = 0
 	rig.remove_intro_cloak()
 	rotation = 0.0
 	if _finisher != null:
@@ -188,6 +192,7 @@ func _start_death(event: CombatEvent) -> void:
 		_finisher = FinisherPlayer.new()
 		add_child(_finisher)
 		_finisher.start(self, event.finisher, opponent.x)
+		_fall_limb = _finisher.fall_limb()
 		return
 	if show_finishers and event.limb != MoveData.Limb.NONE and (event.limb == MoveData.Limb.ARM or event.limb == MoveData.Limb.LEG):
 		_prosthetics.append(Vector2i(event.limb, 1 if event.from_front else 0))
@@ -199,6 +204,10 @@ func _start_death(event: CombatEvent) -> void:
 
 
 func _start_cutter_pose(event: CombatEvent) -> void:
+	if Finisher.is_execution(event.finisher) or event.finisher == Finisher.Kind.STAB:
+		_solver.start_execution(event.finisher, absf(opponent.x - fighter.x), effects)
+		_pending_streaks = 0 if reduced_effects or event.finisher == Finisher.Kind.STAB else 1
+		return
 	if event.finisher != Finisher.Kind.DASH_THROUGH and event.finisher != Finisher.Kind.PULL_CUT:
 		return
 	_solver.finish_hold_left = effects.finisher_cutter_pose
@@ -208,6 +217,35 @@ func _start_cutter_pose(event: CombatEvent) -> void:
 	var lift: Vector2 = Vector2(0.0, -effects.finisher_streak_height)
 	streak.from_point = global_position + lift
 	streak.to_point = Vector2(fighter.x, -fighter.y) + lift
+	streak.color = blade.color
+	streak.life = effects.finisher_streak_time
+	streak.width = effects.finisher_streak_width
+	get_parent().add_child(streak)
+
+
+func sever_part(limb: MoveData.Limb, front: bool, away: int) -> void:
+	_spawn_piece(limb, front, away)
+	rig.sever(limb, front)
+	_lost_blade = rig.lost_main_hand()
+
+
+func kneel() -> void:
+	_solver.kneeling = true
+
+
+func _emit_execution_streaks() -> void:
+	if _pending_streaks == 0 or _solver.execution_time < effects.execution_cut:
+		return
+	_pending_streaks = 0
+	_add_streak(_geometry.blade_base, _geometry.tip())
+	if fighter.character.weapon.kind == WeaponData.Kind.DUAL and _solver.execution == Finisher.Kind.SCISSORS:
+		_add_streak(_geometry.second_base, _geometry.second_base + _geometry.second_direction * _geometry.second_length)
+
+
+func _add_streak(from_point: Vector2, to_point: Vector2) -> void:
+	var streak: SlashStreak = SlashStreak.new()
+	streak.from_point = from_point
+	streak.to_point = to_point
 	streak.color = blade.color
 	streak.life = effects.finisher_streak_time
 	streak.width = effects.finisher_streak_width
@@ -259,6 +297,7 @@ func _process(delta: float) -> void:
 	rig.set_wound(fighter.wound)
 	rig.set_blade_out(fighter.blade_out)
 	_update_blade()
+	_emit_execution_streaks()
 	if (fighter.state == FighterState.State.DODGING or _solver.afterimage) and not reduced_effects:
 		afterimages.capture(rig, delta)
 
@@ -305,6 +344,11 @@ func _update_intro() -> void:
 		rig.fade_intro_cloak(ceilf(opacity * effects.fade_steps) / effects.fade_steps)
 	if title:
 		rig.remove_intro_cloak()
+
+
+func finisher_debug_line() -> String:
+	var playing: String = Finisher.Kind.keys()[_finisher.kind] if _finisher != null else "-"
+	return "finisher %s  execution %s %.2f  kneel %s  limb %s" % [playing, Finisher.Kind.keys()[_solver.execution], _solver.execution_time, _solver.kneeling, MoveData.Limb.keys()[fighter.finisher_limb]]
 
 
 func intro_debug_lines() -> PackedStringArray:

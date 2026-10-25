@@ -401,16 +401,18 @@ func set_wound(wound: FighterState.Wound) -> void:
 
 
 func sever(limb: MoveData.Limb, front: bool) -> void:
+	if limb == MoveData.Limb.NONE:
+		return
 	_missing = limb
-	_cuts.clear()
 	var side: String = "front" if front else "back"
+	var severed: String = "head"
 	match limb:
 		MoveData.Limb.ARM:
-			_cuts.append("arm_" + side)
+			severed = "arm_" + side
 		MoveData.Limb.LEG:
-			_cuts.append("leg_" + side)
-		MoveData.Limb.HEAD:
-			_cuts.append("head")
+			severed = "leg_" + side
+	if not _cuts.has(severed):
+		_cuts.append(severed)
 	var hidden: Array[String] = []
 	for cut in _cuts:
 		match cut:

@@ -142,6 +142,26 @@ const TUMBLE_LIFT: float = 26.0
 const FINISH_HOLD_GRIP: Vector2 = Vector2(30.0, -34.0)
 const FINISH_HOLD_ANGLE: float = 4.0
 const FINISH_HOLD_BLEND: float = 0.2
+const EXECUTION_WINDUP_GRIP: Vector2 = Vector2(-6.0, -46.0)
+const EXECUTION_WINDUP_ANGLE: float = -160.0
+const EXECUTION_STRIKE_GRIP: Vector2 = Vector2(34.0, -22.0)
+const EXECUTION_STRIKE_ANGLE: float = 6.0
+const EXECUTION_SWING: float = 0.15
+const EXECUTION_RELEASE: float = 0.4
+const EXECUTION_NECK: float = -22.0
+const SCISSORS_HIGH_GRIP: Vector2 = Vector2(26.0, -46.0)
+const SCISSORS_LOW_GRIP: Vector2 = Vector2(26.0, 2.0)
+const SCISSORS_OFF_WINDUP_GRIP: Vector2 = Vector2(-12.0, -22.0)
+const SCISSORS_OFF_WINDUP_ANGLE: float = 150.0
+const STAB_HEIGHT: float = -30.0
+const STAB_REACH_SHARE: float = 0.5
+const STAB_MIN_GRIP: float = 16.0
+const STAB_MAX_GRIP: float = 40.0
+const STAB_THRUST_TIME: float = 0.1
+const STAB_PULLED_GRIP: Vector2 = Vector2(4.0, -30.0)
+const EXECUTION_STEP: float = 12.0
+const EXECUTION_CROUCH: float = 10.0
+const EXECUTION_LEAN: float = 12.0
 const SPIN_DODGE_GRIP: Vector2 = Vector2(-2.0, -18.0)
 const SPIN_DODGE_ANGLE: float = 110.0
 const SKID_CROUCH: float = 22.0
@@ -157,6 +177,11 @@ var flip_progress: float = -1.0
 var vault_progress: float = -1.0
 var tumble_left: float = 0.0
 var finish_hold_left: float = 0.0
+var kneeling: bool = false
+var execution: Finisher.Kind = Finisher.Kind.NONE
+var execution_time: float = -1.0
+var _execution_reach: float = 0.0
+var _execution_timing: PackedFloat32Array = PackedFloat32Array([0.0, 0.0, 0.0, 0.0])
 var intro: IntroData
 var intro_time: float = -1.0
 var _intro_from: IntroKey
@@ -193,6 +218,10 @@ func advance(delta: float) -> void:
 	clash_left = maxf(clash_left - delta, 0.0)
 	tumble_left = maxf(tumble_left - delta, 0.0)
 	finish_hold_left = maxf(finish_hold_left - delta, 0.0)
+	if execution_time >= 0.0:
+		execution_time += delta
+		if execution_time > _execution_timing[3]:
+			stop_execution()
 	if vault_progress >= 0.0:
 		vault_progress = minf(vault_progress + delta / family.vault_time, 1.0)
 	_lock_pulse = maxf(_lock_pulse - delta * LOCK_PULSE_DECAY, 0.0)
@@ -294,7 +323,7 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 			pose.grip = HIT_GRIP
 			pose.blade_angle = HIT_ANGLE
 			off_free = true
-			match fighter.finisher_limb:
+			match MoveData.Limb.HEAD if kneeling else fighter.finisher_limb:
 				MoveData.Limb.HEAD:
 					crouch += KNEEL_DROP
 					lean = 16.0
@@ -330,6 +359,10 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 		pose.back_foot.x -= 14.0 * hold
 		crouch += 12.0 * hold
 		lean = lerpf(lean, 10.0, hold)
+	if execution_time >= 0.0 and fighter.is_alive():
+		var staged: Vector2 = _execute(pose, crouch, lean)
+		crouch = staged.x
+		lean = staged.y
 	if fighter.blade_out and (fighter.is_free() or fighter.state == FighterState.State.BLOCKING):
 		pose.grip = pose.grip.lerp(THROW_CATCH_HAND, CATCH_REACH)
 		pose.open_hand = true
@@ -361,6 +394,8 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 		_place_second_blade(fighter, pose, off_free)
 	if intro != null and intro_time >= 0.0 and _intro_settle < 1.0:
 		_intro_off_hand(pose)
+	if execution == Finisher.Kind.SCISSORS and execution_time >= 0.0 and fighter.is_alive():
+		_scissors_off_hand(pose)
 	pose.grip = pose.pelvis + (pose.grip - pose.pelvis).rotated(pose.torso_angle)
 	pose.off_hand = pose.pelvis + (pose.off_hand - pose.pelvis).rotated(pose.torso_angle)
 	if tumble_left > 0.0 and fighter.on_ground and not family.acrobatic_recovery:
@@ -368,6 +403,64 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 		pose.off_hand = pose.off_hand.lerp(Vector2(SKID_HAND.x, 0.0), skid)
 	_set_arm_intent(fighter, pose)
 	ArmGeometry.constrain(pose, character)
+
+
+func start_execution(kind: Finisher.Kind, reach: float, effects: EffectsConfig) -> void:
+	execution = kind
+	execution_time = 0.0
+	_execution_reach = reach
+	if kind == Finisher.Kind.STAB:
+		_execution_timing = PackedFloat32Array([0.0, effects.stab_hold, effects.stab_hold + effects.stab_withdraw, effects.stab_end])
+	else:
+		_execution_timing = PackedFloat32Array([effects.execution_windup, effects.execution_cut - EXECUTION_SWING, effects.execution_cut, effects.execution_end])
+
+
+func stop_execution() -> void:
+	execution = Finisher.Kind.NONE
+	execution_time = -1.0
+
+
+func _execute(pose: RigPose, crouch: float, lean: float) -> Vector2:
+	var release: float = smoothstep(_execution_timing[3] - EXECUTION_RELEASE, _execution_timing[3], execution_time)
+	var grip: Vector2
+	var angle: float
+	var engaged: float
+	if execution == Finisher.Kind.STAB:
+		engaged = smoothstep(0.0, STAB_THRUST_TIME, execution_time)
+		var pull: float = smoothstep(_execution_timing[1], _execution_timing[2], execution_time)
+		var thrust_x: float = clampf(_execution_reach - character.weapon.blade_length * STAB_REACH_SHARE, STAB_MIN_GRIP, STAB_MAX_GRIP)
+		grip = Vector2(thrust_x, STAB_HEIGHT).lerp(STAB_PULLED_GRIP, pull)
+		angle = 0.0
+	else:
+		var windup: float = smoothstep(_execution_timing[0], _execution_timing[1], execution_time)
+		var strike: float = smoothstep(_execution_timing[1], _execution_timing[2], execution_time)
+		engaged = maxf(windup, strike)
+		var strike_grip: Vector2 = SCISSORS_HIGH_GRIP if execution == Finisher.Kind.SCISSORS else EXECUTION_STRIKE_GRIP
+		var strike_angle: float = _aim_at_neck(strike_grip) if execution == Finisher.Kind.SCISSORS else EXECUTION_STRIKE_ANGLE
+		grip = pose.grip.lerp(EXECUTION_WINDUP_GRIP, windup).lerp(strike_grip, strike)
+		angle = rad_to_deg(lerp_angle(lerp_angle(deg_to_rad(pose.blade_angle), deg_to_rad(EXECUTION_WINDUP_ANGLE), windup), deg_to_rad(strike_angle), strike))
+		pose.trail = execution_time >= _execution_timing[1] and execution_time <= _execution_timing[2] + EXECUTION_SWING
+	var weight: float = engaged * (1.0 - release)
+	pose.grip = pose.grip.lerp(grip, weight)
+	pose.blade_angle = rad_to_deg(lerp_angle(deg_to_rad(pose.blade_angle), deg_to_rad(angle), weight))
+	pose.front_foot.x += EXECUTION_STEP * weight
+	return Vector2(crouch + EXECUTION_CROUCH * weight, lerpf(lean, EXECUTION_LEAN, weight))
+
+
+func _scissors_off_hand(pose: RigPose) -> void:
+	var release: float = smoothstep(_execution_timing[3] - EXECUTION_RELEASE, _execution_timing[3], execution_time)
+	var windup: float = smoothstep(_execution_timing[0], _execution_timing[1], execution_time)
+	var strike: float = smoothstep(_execution_timing[1], _execution_timing[2], execution_time)
+	var weight: float = maxf(windup, strike) * (1.0 - release)
+	var hand: Vector2 = (pose.off_hand - pose.pelvis).lerp(SCISSORS_OFF_WINDUP_GRIP, windup).lerp(SCISSORS_LOW_GRIP, strike)
+	var angle: float = rad_to_deg(lerp_angle(deg_to_rad(SCISSORS_OFF_WINDUP_ANGLE), deg_to_rad(_aim_at_neck(SCISSORS_LOW_GRIP)), strike))
+	pose.off_hand = pose.off_hand.lerp(pose.pelvis + hand, weight)
+	pose.off_blade_angle = rad_to_deg(lerp_angle(deg_to_rad(pose.off_blade_angle), deg_to_rad(angle), weight))
+	pose.off_trail = pose.trail
+
+
+func _aim_at_neck(grip: Vector2) -> float:
+	return rad_to_deg((Vector2(maxf(_execution_reach, grip.x + 1.0), EXECUTION_NECK) - grip).angle())
 
 
 func _set_arm_intent(fighter: FighterState, pose: RigPose) -> void:
