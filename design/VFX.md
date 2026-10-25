@@ -119,6 +119,16 @@ Sempre na cor do tier de quem lança. Tiers mais altos mudam a **forma** (mais f
 
 Usam o rastro, o som e o impacto dos golpes fortes. O **choque entre técnicas** é o maior choque do jogo: clarão, tremor forte, anel e faíscas nas duas cores, os dois recuando visivelmente.
 
+## Disparos
+
+O disparo precisa ler como **"não é lâmina"**. As lâminas ocupam quase todos os matizes saturados, então o disparo se separa pela **forma** e pela **saturação**: um traço curto e duro de 18 × 4 px, preso à grade, com núcleo branco e borda na cor `UiPalette.bolt` (`#ffe2b0`, branco quente de baixa saturação), sem halo largo nem rastro longo. Um ponto de luz na saída (2 quadros) marca o tiro.
+
+- **Desfeito na guarda**: 4 a 6 faíscas curtas na cor do disparo, espalhadas para trás, sem anel.
+- **Devolvido (parry)**: faíscas na cor da lâmina de quem devolveu, e o disparo passa a usar essa cor na borda. **Parry perfeito**: as mesmas faíscas e um anel pequeno de 0,12 s.
+- **Acerto**: um clarão pequeno no ponto de contato, sem hitstop longo.
+- Efeitos reduzidos mantêm o traço e o contato, sem faíscas extras nem anel.
+- A guarda mira a lâmina na linha do disparo que chega, como faz com uma lâmina.
+
 ## Arena
 
 Poeira no knockback (Salinas), cristais e fungos que pegam a cor da lâmina, vapor nas lâminas sob a chuva, ondulações na água, vento nas capas: tudo como apresentação, sem mudar a simulação.

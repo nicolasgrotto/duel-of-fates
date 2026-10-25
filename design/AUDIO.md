@@ -89,3 +89,7 @@ Ativação: acorde breve e claro em três parciais, com sopro suave; cada esquiv
 ### Singularidade Devastadora (task 05)
 
 Quatro amostras originais em synth_audio.py::singularity_sounds, com semente própria: criação grave ascendente (power_singularity), extração curta de pedra e ar (power_singularity_extract), arremesso com queda de frequência (power_singularity_throw), impacto grave seco (power_singularity_impact). A marca reaproveita power_mark_tick; cada onda aciona o aviso, cada extração seu estalo. Sem loop adicional, ruído de franquia ou dependência externa. Volume/canais do DuelAudio existentes; efeitos reduzidos não removem os avisos sonoros.
+
+### Disparos (task 06)
+
+Quatro sons originais em `synth_audio.py::bolt_sounds`, com semente própria: tiro seco e curto com queda rápida de frequência (`bolt_shot`), desvio na lâmina como um chiado curto e metálico (`bolt_deflect`), devolução com o chiado e um tom ascendente (`bolt_reflect`), acerto abafado e curto (`bolt_hit`). Nenhum lembra o som de armas da franquia: sem o "pew" ressonante com mola. Volume abaixo das lâminas.

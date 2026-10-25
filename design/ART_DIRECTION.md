@@ -51,6 +51,10 @@ Uma cor por personagem, espaçada no círculo cromático. **Sem moral**: nenhuma
 
 A cor vem do tier de quem lança: Tênue `#9cc4ff`, Firme `#5d8dff`, Profundo `#b26bff`, Ápice `#ff2b45`. Nunca da lâmina. O lado de um poder (na interface) usa Aurora `#5aa2ff` e Eclipse `#ff4458`.
 
+### Disparos
+
+Branco quente de baixa saturação `#ffe2b0` (`UiPalette.bolt`) com núcleo branco, em traço curto e duro. Fica fora do círculo saturado das lâminas e das cores do Fluxo, para o disparo ler como "não é lâmina" pela forma e pela saturação. Ver [VFX.md](VFX.md#disparos).
+
 ### Revisão de animação aprovada (próxima etapa)
 
 Decisões do autor para a revisão de combate e animação (ver ROADMAP, fase 7.5). Só apresentação, salvo onde GAME_DESIGN indica regra nova. Referência de sensação: duelos técnicos, velozes e acrobáticos, com coreografia de esgrima e artes marciais; cada família com o seu corpo e temperamento.

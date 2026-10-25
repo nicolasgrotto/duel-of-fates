@@ -250,6 +250,28 @@ Os personagens em [content/CHARACTERS.md](content/CHARACTERS.md) não fixavam n�
 - **Mergulho** (forte no ar da Garça e do Ancião): no active, a velocidade vertical vira 900 u/s para baixo.
 - **Habilidade** entra na prioridade de entrada logo depois do empurrão. Só no chão; Habilidade com direção e no ar dispara as técnicas (fase 5, content/POWERS.md).
 
+### Disparos e desvio
+
+Base da família Versáteis e dos inimigos da Infiltração (decisão do autor, task 06). Um **disparo** é um projétil curto e rápido, saído de um golpe que dispara (`MoveData.bolt`, dados em `BoltData`). A lâmina o desvia.
+
+| Valor | Disparo padrão (`data/bolts/standard_bolt.tres`) |
+| --- | --- |
+| Velocidade | 900 u/s (atravessa 450 u em 0,5 s: dá para reagir de meia distância) |
+| Alcance | 1.100 u |
+| Dano | 4 |
+| Tranco | 0,12 s, sem empurrão |
+| Custo na guarda | 4 de Vigor |
+| Saída | 100 u de altura (peito) e 30 u à frente do corpo |
+
+- **Acerto**: dano e um **tranco** curto, só em quem está parado, andando ou na recovery de um golpe. Quem está no startup ou no active de um ataque, lançando um poder, no ar ou esquivando leva o dano e **continua o que fazia**: disparo nunca interrompe um ataque sozinho (regra do autor). Disparo mata, mas sem finalização cinematográfica.
+- **Guarda de frente**: o disparo se desfaz na lâmina; o defensor perde 4 de Vigor, sem blockstun. Disparo não quebra a guarda: com o Vigor em zero, a guarda ainda segura e o defensor entra em exaustão. Guarda de costas não segura.
+- **Parry** (janela do toque, 0,08 a 0,20 s): o disparo volta **pela mesma linha**, agora do defensor. A janela não fecha ao desviar, então um toque bem colocado devolve uma rajada inteira.
+- **Parry perfeito** (0 a 0,08 s): o disparo volta **mirado no peito de quem atirou**, 25% mais rápido.
+- Devolvido, o disparo acerta quem atirou com as mesmas regras (dano, tranco, guarda, parry): dá para devolver de volta.
+- **Outras defesas**: a esquiva invulnerável e a de precisão atravessam; a Barreira segura sem custo extra; o Arsenal intercepta como qualquer projétil; o Santuário absorve o dano normalmente. O Instinto Superior não evita disparos. Disparos não se chocam entre si nem com lâminas em ataque.
+- Disparos não geram Fluxo, para a distância não virar fonte de medidor.
+- **Rajada**: `BoltData.count` disparos com `interval` entre eles, a partir do primeiro tick ativo do golpe. Golpe que só dispara (`reach` 0) não tem hitbox de lâmina.
+
 ### Ser atingido
 
 - Perde vida, recebe knockback na direção do golpe e entra em `HIT`. Se estava atacando, o ataque é cancelado.
@@ -370,7 +392,7 @@ Valores que fazem parte da regra porque mudam o tempo do duelo:
 
 ## 14. Eventos de combate
 
-A simulação emite eventos; efeitos, câmera, som, HUD, estatísticas e tutoriais reagem a eles: `attack_started`, `hit`, `block`, `guard_break`, `parry`, `perfect_parry`, `clash`, `technique_clash`, `blade_lock_started`, `blade_lock_pressed`, `blade_lock_ended`, `blade_press_started`, `blade_press_ended`, `disengage`, `shove`, `dodge`, `evade_success`, `response`, `action_rejected`, `exhaustion`, `exhaustion_recovered`, `wound`, `feint`, `armor_absorbed`, `power_started`, `power_active`, `power_hit`, `power_blocked`, `power_resisted`, `power_absorbed`, `projectile_*`, `death`, `round_started`, `round_ended`.
+A simulação emite eventos; efeitos, câmera, som, HUD, estatísticas e tutoriais reagem a eles: `attack_started`, `hit`, `block`, `guard_break`, `parry`, `perfect_parry`, `clash`, `technique_clash`, `blade_lock_started`, `blade_lock_pressed`, `blade_lock_ended`, `blade_press_started`, `blade_press_ended`, `disengage`, `shove`, `dodge`, `evade_success`, `response`, `action_rejected`, `exhaustion`, `exhaustion_recovered`, `wound`, `feint`, `armor_absorbed`, `power_started`, `power_active`, `power_hit`, `power_blocked`, `power_resisted`, `power_absorbed`, `projectile_*`, `bolt_hit`, `bolt_blocked`, `bolt_reflected`, `death`, `round_started`, `round_ended`.
 
 ## 15. IA
 
