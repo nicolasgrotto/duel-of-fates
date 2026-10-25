@@ -100,6 +100,7 @@ extends Resource
 @export var replay_speed: float = 0.45
 @export var replay_length: float = 3.5
 @export var replay_tail: float = 1.0
+@export var replay_blade_return_limit: float = 3.0
 
 @export_group("Match")
 @export var round_intro: float = 1.6

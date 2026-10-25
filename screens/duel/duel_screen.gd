@@ -251,7 +251,7 @@ func _on_ticked() -> void:
 		view.on_ticked()
 	_audio.on_ticked()
 	if _replaying:
-		if _replay_controllers[0] is ReplayController and (_replay_controllers[0] as ReplayController).cursor >= _replay_end:
+		if _replay_controllers[0] is ReplayController and _replay_done((_replay_controllers[0] as ReplayController).cursor):
 			_finish_replay()
 		return
 	stats.on_tick(sim)
@@ -346,6 +346,14 @@ func _start_replay() -> void:
 	_hud.visible = false
 	_screen.letterbox_target = 1.0
 	_screen.show_replay(true, ControlHints.hint(&"ui_accept", "HINT_SKIP"))
+
+
+func _replay_done(cursor: int) -> bool:
+	if cursor < _replay_end:
+		return false
+	if cursor >= _replay_end + Ticks.from_seconds(CONFIG.replay_blade_return_limit):
+		return true
+	return not _runner.sim.fighters.any(func(fighter: FighterState) -> bool: return fighter.blade_out)
 
 
 func _finish_replay() -> void:

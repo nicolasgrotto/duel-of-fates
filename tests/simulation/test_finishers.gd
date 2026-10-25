@@ -111,3 +111,15 @@ func test_cinematic_ko_lasts_longer() -> void:
 	assert_eq(duel.sim.phase, MatchSimulation.Phase.KO, "the cinematic gets extra time")
 	duel.step(Ticks.from_seconds(config.consequences.cinematic_ko_time) + 2)
 	assert_ne(duel.sim.phase, MatchSimulation.Phase.KO)
+
+
+func test_thrown_blade_returns_to_the_thrower_after_the_deciding_ko() -> void:
+	var duel: DuelFixture = _duel(&"guardian", &"shadow")
+	duel.place(250.0)
+	duel.fighter(1).health = 1.0
+	_technique(duel, -1)
+	_death(duel, 120)
+	var returned: bool = duel.step_until(func() -> bool: return not duel.fighter(0).blade_out, 900)
+	assert_true(returned, "the blade comes back to the thrower")
+	for projectile in duel.sim.projectiles:
+		assert_false(projectile.active and projectile.kind == Projectile.Kind.BLADE)
