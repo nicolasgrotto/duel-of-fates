@@ -13,7 +13,7 @@ TREE_OPEN,Aberto,Open
 TREE_PICK_SLOT,Escolha o espaço,Choose a slot
 TREE_SLOT_CONTENT,{slot} · {power},{slot} · {power}
 TREE_MILESTONE,{slot} · Capítulo {chapter} · {state},{slot} · Chapter {chapter} · {state}
-TREE_FACTS,{path} · Fluxo {flow}\nCusto {cost} · Recarga {cooldown} s,{path} · Flow {flow}\nCost {cost} · Cooldown {cooldown} s
+TREE_FACTS,{path}\nCusto {cost} · Recarga {cooldown} s · Fluxo atual: {flow},{path}\nCost {cost} · Cooldown {cooldown} s · Current Flow: {flow}
 TREE_CREATION,Origem · Criação do personagem,Origin · Character creation
 TREE_REQUIREMENT,Requisito · Capítulo {chapter} · {title},Requirement · Chapter {chapter} · {title}
 TREE_FLOW_REQUIRED,Requer Fluxo {level} · Tier {tier},Requires Flow {level} · Tier {tier}
