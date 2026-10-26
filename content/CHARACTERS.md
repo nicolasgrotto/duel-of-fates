@@ -217,7 +217,7 @@ O desafio vale em qualquer duelo vencido contra a IA (Duelar ou Arcade, qualquer
 - **Habilidade — Voo da Garça**: salto alto para a frente que passa por cima do oponente; dá para emendar um aéreo.
 - **Sequência**: 3 rápidos (de cima; reverso cruzado; corte largo de trás do ombro com giro da lâmina).
 - **IA**: muda de lado pelo ar e ataca de cima.
-- **Visual**: túnica curta azul-acinzentada (`#2f4a52`), corpo `#16232a`; **cachecol longo** que voa atrás; sem capuz; cabelo preso em coque; botas altas. Leve, inclinada, sempre pronta para pular. Lâmina alta, apontando para trás por cima do ombro. Cabo com anel.
+- **Visual**: túnica curta azul-acinzentada (`#2f4a52`), corpo `#16232a`; **cachecol longo** que voa atrás; sem capuz; cabelo preso em coque; botas altas. Leve, inclinada, sempre pronta para pular. Lâmina alta, apontando para trás por cima do ombro, com a mão acima da cabeça (o antebraço não cobre o rosto; ajuste do autor, que vale também para o estilo Voo da História). Cabo com anel.
 - **Família — Dançarina**: base alta e solta, arcos largos com o corpo acompanhando, pirueta do corpo na recuperação do forte. Disputa leve, vitória com giro da lâmina.
 
 ## Ceifador / Reaper

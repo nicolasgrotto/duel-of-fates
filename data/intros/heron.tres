@@ -20,7 +20,7 @@ turn = 1
 [sub_resource type="Resource" id="key_2"]
 script = ExtResource("2_key")
 time = 1.6
-grip = Vector2(12, -66)
+grip = Vector2(2, -80)
 blade_angle = -150
 
 [resource]
