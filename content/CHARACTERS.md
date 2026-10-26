@@ -328,6 +328,7 @@ Os três têm **potencial**: o teto de todos os atributos sobe (+1, +2, +3), e a
 - Potencial +2 (até 9).
 - **Visual**: manto preto até o chão (`#211c27`, um tom acima do preto puro para a silhueta ler), corpo `#131016`; capuz fundo com o rosto na sombra, só os olhos do Eclipse visíveis; sem ombreiras; tronco curvado para a frente, ombros estreitos; gola alta e mangas largas. Lâmina carmesim apontada para o rival, braço adiantado com cotovelo flexível e mão livre recuada (família Esgrimista).
 - **Trajes**: Original; **Legado** (final secreto): capa `#34394a`, capa longa e máscara.
+- **Disputa pelo Fluxo**: na disputa de lâminas, segura a lâmina do rival no ar com a mão aberta em vez de cruzar a sua; no choque, empurra com a palma (só apresentação, ver design/VFX.md).
 - Liberado ao vencê-lo na História ou ao concluir a campanha do Eclipse.
 
 ### Ancião / Elder

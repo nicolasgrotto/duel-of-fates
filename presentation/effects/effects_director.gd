@@ -240,12 +240,20 @@ func _feed_lock(delta: float) -> void:
 		_lock_spark_clock = 0.0
 		for side in 2:
 			var angle: float = -PI * 0.5 + randf_range(-1.2, 1.2)
-			_spawn_spark(contact, Vector2.from_angle(angle) * randf_range(180.0, 380.0), blade_colors[side] if randf() < 0.5 else PALETTE.spark_hot)
+			_spawn_spark(contact, Vector2.from_angle(angle) * randf_range(180.0, 380.0), _lock_spark_color(side))
 	_lock_pulse_clock += delta
 	if _lock_pulse_clock >= config.lock_pulse_interval:
 		_lock_pulse_clock = 0.0
 		_lock_pulse_side = 1 - _lock_pulse_side
-		_ring(contact, config.lock_pulse_radius, blade_colors[_lock_pulse_side])
+		_ring(contact, config.lock_pulse_radius, _lock_spark_color(_lock_pulse_side))
+
+
+func _lock_spark_color(side: int) -> Color:
+	for fighter in sim.fighters:
+		if fighter.character.lock_style == CharacterData.LockStyle.FLOW_HOLD:
+			var tiers: PackedColorArray = PALETTE.flow_tiers
+			return tiers[clampi(fighter.flow_tier, 0, tiers.size() - 1)]
+	return blade_colors[side] if randf() < 0.5 else PALETTE.spark_hot
 
 
 func _draw() -> void:

@@ -257,3 +257,9 @@ func test_elder_leap_dives_while_falling() -> void:
 func test_awakened_shadow_has_boss_health() -> void:
 	var duel: DuelFixture = DuelFixture.versus(&"awakened_shadow", &"guardian")
 	assert_almost(duel.fighter(0).max_health, 150.0)
+
+
+func test_only_the_sovereign_holds_locks_with_the_flow() -> void:
+	for id in DuelMode.CAST + [&"sovereign", &"elder", &"foretold", &"awakened_shadow"]:
+		var expected: CharacterData.LockStyle = CharacterData.LockStyle.FLOW_HOLD if id == &"sovereign" else CharacterData.LockStyle.BLADE
+		assert_eq(DuelFixture.character(id).lock_style, expected, String(id))

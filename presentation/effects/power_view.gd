@@ -103,6 +103,19 @@ func on_event(event: CombatEvent) -> void:
 			_on_hazard(event, at)
 		CombatEvent.Type.PROJECTILE_REFLECTED:
 			_burst(Burst.RING_OUT, at, 0.0, 0.25, 70.0, blade_colors[event.source])
+		CombatEvent.Type.BLADE_LOCK_ENDED:
+			if event.source >= 0 and _flow_holder(event.source):
+				var holder: FighterState = sim.fighters[event.source]
+				_burst(Burst.RING_OUT, views[event.source].hand_position(false), 0.0, 0.3, vfx.flow_hold_win_radius, tier_color(holder.flow_tier))
+				_start_shockwave(holder, vfx.flow_hold_win_reach, holder.facing, false)
+		CombatEvent.Type.CLASH:
+			for index in [event.source, event.target]:
+				if index >= 0 and _flow_holder(index):
+					_burst(Burst.RING_OUT, views[index].hand_position(false), 0.0, 0.2, vfx.flow_hold_radius * 3.0, tier_color(sim.fighters[index].flow_tier))
+
+
+func _flow_holder(index: int) -> bool:
+	return sim.fighters[index].character.lock_style == CharacterData.LockStyle.FLOW_HOLD
 
 
 func _on_power_active(event: CombatEvent) -> void:
@@ -239,6 +252,8 @@ func _draw_fighter(fighter: FighterState) -> void:
 	var view: FighterView = views[fighter.index]
 	var color: Color = tier_color(fighter.flow_tier)
 	var center: Vector2 = view.body_center()
+	if fighter.state == FighterState.State.BLADE_LOCK and fighter.character.lock_style == CharacterData.LockStyle.FLOW_HOLD:
+		_draw_flow_hold(view, views[1 - fighter.index], color)
 	if fighter.state == FighterState.State.CASTING and fighter.power_phase == FighterState.Phase.STARTUP and fighter.power != null:
 		var progress: float = clampf(float(fighter.power_ticks) / maxf(fighter.power.startup_ticks(), 1.0), 0.0, 1.0)
 		var hand: Vector2 = view.hand_position(false)
@@ -714,6 +729,24 @@ func _draw_instinct_sparks(center: Vector2, radii: Vector2, silver: Color) -> vo
 		var fade: float = ceilf((1.0 - phase) * FADE_STEPS) / FADE_STEPS
 		var at: Vector2 = (center + Vector2(side * width, height)).snapped(Vector2.ONE * GRID)
 		draw_rect(Rect2(at, size), Color(silver, vfx.instinct_outline_alpha.y * fade))
+
+
+func _draw_flow_hold(view: FighterView, rival: FighterView, color: Color) -> void:
+	var palm: Vector2 = view.hand_position(false)
+	var held: Vector2 = Geometry2D.get_closest_point_to_segment(palm, rival.active_blade_base(), rival.active_blade_tip())
+	var pulse: float = 0.0 if reduced else (floorf(fmod(_time * vfx.flow_hold_pulse_rate, 1.0) * FADE_STEPS) / FADE_STEPS)
+	for ring in vfx.flow_hold_rings:
+		var radius: float = vfx.flow_hold_radius * (1.0 + float(ring) * 0.6 + pulse * 0.4)
+		draw_arc(palm, radius, 0.0, TAU, 16, Color(color, vfx.flow_hold_alpha * (1.0 - float(ring) / vfx.flow_hold_rings)), GRID)
+	var jitter: Vector2 = Vector2.ZERO if reduced else Vector2(0.0, sin(_time * 47.0) * GRID)
+	draw_line(palm.snapped(Vector2.ONE * GRID), (held + jitter).snapped(Vector2.ONE * GRID), Color(color, vfx.flow_hold_alpha), GRID)
+	draw_circle(held, vfx.flow_hold_radius * 0.7, Color(color, vfx.flow_hold_alpha * 0.5))
+	if reduced:
+		return
+	for mote in vfx.flow_hold_motes:
+		var phase: float = fposmod(_time * vfx.flow_hold_mote_rate + float(mote) / vfx.flow_hold_motes, 1.0)
+		var at: Vector2 = held.lerp(palm, phase) + Vector2(0.0, sin(phase * TAU + mote) * vfx.flow_hold_radius * 0.5)
+		draw_rect(Rect2(at.snapped(Vector2.ONE * GRID), Vector2.ONE * GRID), Color(color, 1.0 - phase))
 
 
 func _draw_singularity(fighter: FighterState) -> void:

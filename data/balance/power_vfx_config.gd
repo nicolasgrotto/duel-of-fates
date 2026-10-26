@@ -98,6 +98,16 @@ extends Resource
 @export var sky_fade: float = 2.5
 
 
+@export_group("Flow hold")
+@export var flow_hold_radius: float = 8.0
+@export var flow_hold_rings: int = 3
+@export var flow_hold_alpha: float = 0.7
+@export var flow_hold_pulse_rate: float = 3.0
+@export var flow_hold_motes: int = 6
+@export var flow_hold_mote_rate: float = 1.4
+@export var flow_hold_win_radius: float = 90.0
+@export var flow_hold_win_reach: float = 180.0
+
 @export_group("Bolts")
 @export var bolt_length: float = 18.0
 @export var bolt_width: float = 4.0

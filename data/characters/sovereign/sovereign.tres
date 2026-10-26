@@ -234,3 +234,4 @@ guard_grip = Vector2(30, -32)
 intro = ExtResource("intro_res")
 finisher_style = ExtResource("finisher_style_res")
 eclipse_eyes = true
+lock_style = 1

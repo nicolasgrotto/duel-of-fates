@@ -68,6 +68,8 @@ Sem câmera lenta, sem dessaturação, sem tela sobreposta. A tensão vem da pos
 - **Vitória**: 12–16 faíscas na direção do perdedor, luz na cor do vencedor, tremor, flash fraco, hit flash no perdedor.
 - **Empate**: 10–14 faíscas para os dois lados, luz nas duas cores, tremor leve.
 
+
+**Disputa do Soberano pelo Fluxo** (decisão do autor; só apresentação, a regra da disputa é a mesma): o Soberano não cruza a lâmina. Ele a recolhe baixa e para trás e estende a mão aberta; a lâmina do rival para no ar diante da palma, presa por anéis concêntricos e um fio trêmulo de Fluxo na cor do tier dele, com partículas correndo da lâmina para a mão (no lugar das faíscas de lâmina contra lâmina). Cada pressão pulsa os anéis. Se o Soberano vence, a palma empurra e sai uma onda como a da Repulsão; se perde, a mão cede e o recuo é o comum. No **choque** de lâminas, a mão livre do Soberano empurra aberta à frente por um instante com um anel pequeno. Original: nenhuma pose ou efeito copiado de outro jogo. Efeitos reduzidos mantêm a mão, um anel estático e o fio.
 ## Consequências
 
 - **Exaustão**: sem efeito de tela; o corpo mostra (respiração funda, guarda pendendo).

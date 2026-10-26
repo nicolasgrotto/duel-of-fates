@@ -185,6 +185,8 @@ func on_event(event: CombatEvent) -> void:
 		CombatEvent.Type.BLADE_LOCK_ENDED, CombatEvent.Type.BLADE_PRESS_ENDED:
 			_lock_loop.stop()
 			AudioDirector.play(&"lock_tie" if event.source == CombatEvent.NO_FIGHTER else &"lock_win", at)
+			if event.type == CombatEvent.Type.BLADE_LOCK_ENDED and event.source >= 0 and sim.fighters[event.source].character.lock_style == CharacterData.LockStyle.FLOW_HOLD:
+				AudioDirector.play(&"power_repulse", at, POWER_DB)
 		CombatEvent.Type.DEATH:
 			AudioDirector.play(&"knockout", at)
 			AudioDirector.play(&"extinguish", views[event.target].blade.center(), 0.0, 1.0, &"Blades")

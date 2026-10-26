@@ -2,6 +2,7 @@ class_name CharacterData
 extends Resource
 
 enum Path { AURORA, ECLIPSE }
+enum LockStyle { BLADE, FLOW_HOLD }
 
 @export var id: StringName
 @export var name_key: String
@@ -81,6 +82,7 @@ enum Path { AURORA, ECLIPSE }
 @export var guard_angle: float = -55.0
 @export var guard_grip: Vector2 = Vector2(14.0, -24.0)
 @export var eclipse_eyes: bool = false
+@export var lock_style: LockStyle = LockStyle.BLADE
 @export var intro: IntroData
 @export var finisher_style: FinisherStyle
 @export var variant: CharacterData

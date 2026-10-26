@@ -1,6 +1,10 @@
 class_name PoseSolver
 extends RefCounted
 
+const FLOW_PALM_GAP: float = 6.0
+const FLOW_HOLD_GRIP: Vector2 = Vector2(-4.0, -12.0)
+const FLOW_HOLD_ANGLE: float = 125.0
+const FLOW_CLASH_HAND: Vector2 = Vector2(40.0, -50.0)
 const POWER_VFX: PowerVfxConfig = preload("res://data/balance/power_vfx_config.tres")
 
 const COMBAT: CombatConfig = preload("res://data/balance/combat_config.tres")
@@ -392,6 +396,9 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 		pose.grip += Vector2(-CLASH_SHIFT, -4.0) * recoil
 		pose.blade_angle -= CLASH_BLADE * recoil
 		pose.pelvis.x = _body_shift
+		if character.lock_style == CharacterData.LockStyle.FLOW_HOLD:
+			pose.off_hand = RELAXED_HAND.lerp(FLOW_CLASH_HAND, recoil)
+			pose.open_hand = true
 	pose.torso_angle = deg_to_rad(lean)
 	pose.head_angle = -pose.torso_angle * 0.55 + _head_snap
 	pose.grip += pose.pelvis
@@ -622,6 +629,11 @@ func _blade_lock(fighter: FighterState, opponent: FighterState, pose: RigPose) -
 		pose.front_foot.x += pressure * PRESS_STEP
 		pose.back_foot.x += pressure * PRESS_STEP
 	pose.blade_angle = rad_to_deg((cross - pose.grip).angle())
+	if character.lock_style == CharacterData.LockStyle.FLOW_HOLD:
+		pose.off_hand = cross - Vector2(FLOW_PALM_GAP, 0.0) + Vector2(push * LOCK_PUSH, 0.0)
+		pose.open_hand = true
+		pose.grip = FLOW_HOLD_GRIP
+		pose.blade_angle = FLOW_HOLD_ANGLE
 	pose.front_foot.x = family.stance_width * 0.35
 	pose.back_foot.x = -family.stance_width * 0.75 - maxf(pressure, 0.0) * 6.0
 	pose.tremble = true
