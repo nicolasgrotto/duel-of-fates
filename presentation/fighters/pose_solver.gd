@@ -23,6 +23,10 @@ const CAST_ANGLE: float = 150.0
 const CAST_HAND: Vector2 = Vector2(32.0, -42.0)
 const SHOT_HAND: Vector2 = Vector2(38.0, -48.0)
 const SHOT_KICK: float = 6.0
+const SHOT_GRIP: Vector2 = Vector2(32.0, -34.0)
+const SHOT_BLADE_ANGLE: float = -95.0
+const SHOT_LOWERED_GRIP: Vector2 = Vector2(4.0, -6.0)
+const SHOT_LOWERED_ANGLE: float = 35.0
 const INVOKE_HAND: Vector2 = Vector2(10.0, -88.0)
 const INVOKE_ANGLE: float = 100.0
 const GROUND_HAND: Vector2 = Vector2(26.0, 6.0)
@@ -241,6 +245,7 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 	pose.off_trail = false
 	pose.hand_spacing = 0.0
 	pose.arm_extension = 0.0
+	pose.sidearm_raise = 0.0
 	pose.front_elbow_hint = family.front_elbow
 	pose.back_elbow_hint = family.back_elbow
 	pose.grip = guard_grip
@@ -261,6 +266,7 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 			var extra: Vector2 = _attack(fighter, pose, guard_angle, guard_grip)
 			crouch += extra.x
 			lean += extra.y
+			_raise_sidearm(fighter, pose)
 			off_free = fighter.move != null and fighter.move.kind == MoveData.Kind.SHOVE
 		FighterState.State.BLOCKING:
 			crouch += family.block_crouch * guard.engagement
@@ -1073,9 +1079,36 @@ func _shot(fighter: FighterState, pose: RigPose) -> Vector2:
 		kick = 1.0 - smoothstep(0.0, 0.3, settle)
 	else:
 		kick = 1.0
+	if character.weapon.sidearm == WeaponData.Sidearm.HILT_EMITTER:
+		pose.grip = pose.grip.lerp(SHOT_GRIP, aim) + Vector2(-SHOT_KICK * kick, 0.0)
+		pose.blade_angle = lerpf(pose.blade_angle, SHOT_BLADE_ANGLE, aim)
+		return Vector2(-2.0 * kick, 0.0)
 	pose.off_hand = RELAXED_HAND.lerp(SHOT_HAND, aim) + Vector2(-SHOT_KICK * kick, -SHOT_KICK * 0.5 * kick)
+	pose.sidearm_raise = aim
+	pose.grip = pose.grip.lerp(SHOT_LOWERED_GRIP, aim)
+	pose.blade_angle = lerpf(pose.blade_angle, SHOT_LOWERED_ANGLE, aim)
 	pose.open_hand = false
 	return Vector2(-2.0 * kick, 0.0)
+
+
+func _raise_sidearm(fighter: FighterState, pose: RigPose) -> void:
+	var move: MoveData = fighter.move
+	if move == null or move.bolt == null or move.technique_style == MoveData.TechniqueStyle.SHOT:
+		return
+	if character.weapon.sidearm != WeaponData.Sidearm.BLASTER:
+		return
+	var aim: float = 0.0
+	match fighter.move_phase:
+		FighterState.Phase.STARTUP:
+			aim = smoothstep(0.4, 1.0, float(fighter.phase_ticks) / maxf(move.startup_ticks(), 1.0))
+		FighterState.Phase.ACTIVE:
+			aim = 1.0
+		FighterState.Phase.RECOVERY:
+			aim = 1.0 - smoothstep(0.2, 0.8, float(fighter.phase_ticks) / maxf(move.recovery_ticks(), 1.0))
+	if aim <= 0.0:
+		return
+	pose.off_hand = RELAXED_HAND.lerp(SHOT_HAND, aim)
+	pose.sidearm_raise = aim
 
 
 func _cleave_rewind(progress: float, pose: RigPose) -> Vector2:

@@ -242,7 +242,7 @@ func _on_flow_event(event: CombatEvent, at: Vector2) -> void:
 				Projectile.Kind.BLADE:
 					AudioDirector.play(&"swing_heavy", views[event.source].global_position, 0.0, 1.2, &"Blades")
 				Projectile.Kind.BOLT:
-					AudioDirector.play(&"bolt_shot", views[event.source].global_position, BOLT_DB, randf_range(0.95, 1.05))
+					AudioDirector.play(&"bolt_shot", views[event.source].global_position, BOLT_DB, _bolt_pitch(event.source) * randf_range(0.95, 1.05))
 		CombatEvent.Type.PROJECTILE_REFLECTED:
 			AudioDirector.play(&"power_cleave_return", at)
 		CombatEvent.Type.BOLT_HIT:
@@ -254,6 +254,11 @@ func _on_flow_event(event: CombatEvent, at: Vector2) -> void:
 		CombatEvent.Type.TECHNIQUE_CLASH:
 			AudioDirector.play(&"clash", at, 2.0, 0.8)
 			AudioDirector.play(&"power_supreme_push", at, -4.0, 1.4)
+
+
+func _bolt_pitch(index: int) -> float:
+	var move: MoveData = sim.fighters[index].move
+	return move.bolt.pitch if move != null and move.bolt != null else 1.0
 
 
 func _process(delta: float) -> void:

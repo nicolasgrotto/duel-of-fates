@@ -1,6 +1,7 @@
 class_name FighterRig
 extends Node2D
 
+const BACK_HAND_DEPTH: int = -8
 const MATERIAL_SHADER: Shader = preload("res://presentation/fighters/fighter_material.gdshader")
 const PALETTE: UiPalette = preload("res://ui/palette.tres")
 const LIMB_BONES: Dictionary = {
@@ -38,6 +39,7 @@ var _sprites: Dictionary = {}
 var _cloths: Array[ClothStrip] = []
 var _cloth_anchors: Array[String] = []
 var _hilt: HiltView
+var _sidearm: SidearmView
 var _marks: CutMarks
 var _cuts: Array[String] = []
 var _layers: Array[CanvasItem] = []
@@ -115,6 +117,11 @@ func build(data: CharacterData, look: CostumeData) -> void:
 	_hilt.z_index = 14
 	_hilt.setup(data.weapon, costume)
 	add_child(_hilt)
+	if data.weapon.sidearm == WeaponData.Sidearm.BLASTER:
+		_sidearm = SidearmView.new()
+		_sidearm.z_index = BACK_HAND_DEPTH
+		_sidearm.setup(costume)
+		add_child(_sidearm)
 	clear_prosthetics()
 	_marks = CutMarks.new()
 	_marks.z_index = 16
@@ -237,6 +244,8 @@ func apply(pose: RigPose, facing: int, delta: float) -> void:
 	back_knee = _leg("back", hip_back, pose.back_foot)
 	_set_open_hand(pose.open_hand)
 	_hilt.update_pose(pose, front_hand, back_hand)
+	if _sidearm != null:
+		_sidearm.update_pose(pose)
 	_simulate_cloths(pose, pelvis, facing, delta)
 	_update_marks(delta)
 
@@ -248,7 +257,9 @@ func _set_back_arm_depth(in_front: bool) -> void:
 	if _sprites.has("forearm_back:forearm"):
 		(_sprites["forearm_back:forearm"] as Sprite2D).z_index = 10 if in_front else -9
 	if _sprites.has("hand_back:hand"):
-		(_sprites["hand_back:hand"] as Sprite2D).z_index = 15 if in_front else -8
+		(_sprites["hand_back:hand"] as Sprite2D).z_index = 15 if in_front else BACK_HAND_DEPTH
+	if _sidearm != null:
+		_sidearm.z_index = 15 if in_front else BACK_HAND_DEPTH
 	_layers.clear()
 
 
@@ -328,6 +339,12 @@ func hold_borrowed_hilt(shown: bool, from: Vector2 = Vector2.ZERO, to: Vector2 =
 		_hilt.borrowed_to = to
 		_hilt.borrowed_metal = colors[0]
 		_hilt.borrowed_grip = colors[1]
+	_hilt.queue_redraw()
+
+
+func set_emitter_glow(amount: float, color: Color) -> void:
+	_hilt.emitter_glow = amount
+	_hilt.emitter_color = color
 	_hilt.queue_redraw()
 
 

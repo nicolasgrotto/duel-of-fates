@@ -123,3 +123,4 @@ extends Resource
 @export_group("Bolts")
 @export var bolt_guard_lead: float = 0.35
 @export var bolt_guard_segment: float = 60.0
+@export var emitter_flash: float = 0.25

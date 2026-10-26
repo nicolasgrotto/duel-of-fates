@@ -21,6 +21,7 @@ const TELEPORT_DISTANCE: float = 150.0
 const MIN_TURN_WIDTH: float = 0.2
 const HILT_DROP_TOSS: Vector2 = Vector2(70.0, -260.0)
 const TRAVEL_DEPTH: int = -1
+const PALETTE: UiPalette = preload("res://ui/palette.tres")
 
 var fighter: FighterState
 var opponent: FighterState
@@ -33,6 +34,7 @@ var reduced_effects: bool = false
 var rig: FighterRig
 var blade: BladeView
 var afterimages: Afterimages
+var _emitter_left: float = 0.0
 var _light: PointLight2D
 var _solver: PoseSolver = PoseSolver.new()
 var _target: RigPose = RigPose.new()
@@ -185,6 +187,9 @@ func on_event(event: CombatEvent) -> void:
 			if event.target == fighter.index:
 				blade.flare = effects.parry_flare * fighter.character.family.block_parry_recoil
 				_solver.guard_recoiled(event.heavy, false)
+		CombatEvent.Type.PROJECTILE_SPAWNED:
+			if event.source == fighter.index and int(event.amount) == Projectile.Kind.BOLT:
+				_emitter_left = effects.emitter_flash
 		CombatEvent.Type.BOLT_BLOCKED:
 			if event.target == fighter.index and event.power == null:
 				blade.flare = effects.parry_flare * fighter.character.family.block_parry_recoil
@@ -387,6 +392,7 @@ func _process(delta: float) -> void:
 	if fighter == null:
 		return
 	_flash_left = maxf(_flash_left - delta, 0.0)
+	_emitter_left = maxf(_emitter_left - delta, 0.0)
 	var alpha: float = runner.alpha if runner != null else 1.0
 	var shake: float = 0.0
 	if fighter.freeze_ticks > 0 and fighter.state == FighterState.State.HIT:
@@ -419,6 +425,8 @@ func _process(delta: float) -> void:
 		_finisher.update(delta, _pose, fighter.facing)
 	rig.apply(_pose, fighter.facing, delta)
 	rig.set_flash(1.0 if _flash_left > 0.0 else 0.0)
+	if fighter.character.weapon.sidearm == WeaponData.Sidearm.HILT_EMITTER:
+		rig.set_emitter_glow(_emitter_left / maxf(effects.emitter_flash, 0.001), PALETTE.bolt)
 	rig.set_wound(fighter.wound)
 	rig.set_blade_out(fighter.blade_out)
 	_update_blade()

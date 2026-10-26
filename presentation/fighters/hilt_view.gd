@@ -14,6 +14,9 @@ const BUTTON_SIZE: float = 2.0
 const BUTTON_AT: float = 0.62
 const BORROWED_GRIP_FROM: float = 0.2
 const BORROWED_GRIP_TO: float = 0.7
+const EMITTER_AT: float = 0.72
+const EMITTER_SIZE: Vector2 = Vector2(5.0, 4.0)
+const LENS_SIZE: float = 3.0
 
 var weapon: WeaponData
 var metal: Color = Color.GRAY
@@ -26,6 +29,8 @@ var borrowed_from: Vector2 = Vector2.ZERO
 var borrowed_to: Vector2 = Vector2.ZERO
 var borrowed_metal: Color = Color.GRAY
 var borrowed_grip: Color = Color.DIM_GRAY
+var emitter_glow: float = 0.0
+var emitter_color: Color = Color.WHITE
 
 
 func setup(weapon_data: WeaponData, costume: CostumeData) -> void:
@@ -50,6 +55,8 @@ func _draw() -> void:
 	draw_line(geometry.hilt_from, geometry.hilt_to, metal, width)
 	_draw_details(geometry.hilt_from, geometry.hilt_to, long_haft)
 	_draw_finish(geometry.hilt_from, geometry.hilt_to, width, long_haft)
+	if weapon.sidearm == WeaponData.Sidearm.HILT_EMITTER:
+		_draw_emitter(geometry.hilt_from, geometry.hilt_to, width)
 	if geometry.has_second and weapon.kind == WeaponData.Kind.DUAL:
 		draw_line(geometry.second_hilt_from, geometry.second_hilt_to, metal, HILT_WIDTH)
 		_draw_grip(geometry.second_hilt_from, geometry.second_hilt_to)
@@ -93,6 +100,14 @@ func _draw_finish(from: Vector2, to: Vector2, width: float, long_haft: bool) -> 
 		draw_line(from, from + direction * POMMEL_LENGTH, metal.darkened(0.45), width + 1.0)
 	var button: Vector2 = from.lerp(to, BUTTON_AT) + side * width * 0.5
 	draw_rect(Rect2(button - Vector2.ONE * BUTTON_SIZE * 0.5, Vector2.ONE * BUTTON_SIZE), button_color)
+
+
+func _draw_emitter(from: Vector2, to: Vector2, width: float) -> void:
+	var side: Vector2 = (to - from).normalized().orthogonal()
+	var center: Vector2 = from.lerp(to, EMITTER_AT) + side * (width * 0.5 + EMITTER_SIZE.y * 0.5)
+	draw_rect(Rect2(center - EMITTER_SIZE * 0.5, EMITTER_SIZE), metal.lightened(0.2))
+	var lens: Color = metal.darkened(0.6).lerp(emitter_color, emitter_glow)
+	draw_rect(Rect2(center - Vector2.ONE * LENS_SIZE * 0.5, Vector2.ONE * LENS_SIZE), lens)
 
 
 func _draw_grip(from: Vector2, to: Vector2) -> void:
