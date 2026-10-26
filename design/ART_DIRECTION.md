@@ -53,7 +53,7 @@ A cor vem do tier de quem lança: Tênue `#9cc4ff`, Firme `#5d8dff`, Profundo `#
 
 ### Armas de disparo (família Versáteis)
 
-Desenhadas pelo jogo, como os cabos, na cor de metal e de couro do traje. **Blaster da Corsária**: corpo compacto de 12 × 5 u, cano curto e grosso com uma aleta em cima e cabo inclinado; em repouso aponta para o chão à frente, no tiro fica na horizontal. **Emissor do Lince**: anel com lente na lateral do cabo, perto do emissor da lâmina; a lente brilha na cor do disparo por um instante a cada tiro. Nenhuma forma copia armas da franquia: sem cano longo com mira telescópica, sem anéis de refrigeração no cano.
+Desenhadas pelo jogo, como os cabos, na cor de metal e de couro do traje. **Blaster da Corsária** (revisto a pedido do autor, para ler como arma): cabo de couro inclinado com guarda-mato, corpo de 15 × 5,5 u com faixa escura embaixo, trilho claro em cima, cano mais escuro e boca clara; uma célula de energia na lateral, na cor do disparo (`UiPalette.bolt`). Em repouso aponta para o chão à frente; no tiro fica na horizontal. **Cabo do Lince**: um bloco preso de lado no cabo, perpendicular a ele e virado para a frente, com cano curto e lente na ponta, e um anel de gatilho perto da mão: o cabo parece uma empunhadura de pistola. A lente fica acesa fraca e brilha na cor do disparo a cada tiro. Nenhuma forma copia armas da franquia: sem cano longo com mira telescópica, sem anéis de refrigeração no cano.
 
 ### Disparos
 

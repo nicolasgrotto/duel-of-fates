@@ -14,9 +14,15 @@ const BUTTON_SIZE: float = 2.0
 const BUTTON_AT: float = 0.62
 const BORROWED_GRIP_FROM: float = 0.2
 const BORROWED_GRIP_TO: float = 0.7
-const EMITTER_AT: float = 0.72
-const EMITTER_SIZE: Vector2 = Vector2(5.0, 4.0)
-const LENS_SIZE: float = 3.0
+const EMITTER_AT: float = 0.62
+const EMITTER_BLOCK_HALF: float = 3.0
+const EMITTER_BLOCK_DEPTH: float = 5.0
+const EMITTER_BARREL: float = 5.0
+const EMITTER_BARREL_WIDTH: float = 2.5
+const EMITTER_IDLE_GLOW: float = 0.25
+const LENS_SIZE: float = 2.0
+const TRIGGER_AT: float = 0.35
+const TRIGGER_RADIUS: float = 1.8
 
 var weapon: WeaponData
 var metal: Color = Color.GRAY
@@ -103,11 +109,20 @@ func _draw_finish(from: Vector2, to: Vector2, width: float, long_haft: bool) -> 
 
 
 func _draw_emitter(from: Vector2, to: Vector2, width: float) -> void:
-	var side: Vector2 = (to - from).normalized().orthogonal()
-	var center: Vector2 = from.lerp(to, EMITTER_AT) + side * (width * 0.5 + EMITTER_SIZE.y * 0.5)
-	draw_rect(Rect2(center - EMITTER_SIZE * 0.5, EMITTER_SIZE), metal.lightened(0.2))
-	var lens: Color = metal.darkened(0.6).lerp(emitter_color, emitter_glow)
-	draw_rect(Rect2(center - Vector2.ONE * LENS_SIZE * 0.5, Vector2.ONE * LENS_SIZE), lens)
+	var direction: Vector2 = (to - from).normalized()
+	var forward: Vector2 = -direction.orthogonal()
+	var base: Vector2 = from.lerp(to, EMITTER_AT)
+	var half: Vector2 = direction * EMITTER_BLOCK_HALF
+	var reach: Vector2 = forward * (width * 0.5 + EMITTER_BLOCK_DEPTH)
+	draw_colored_polygon(PackedVector2Array([base - half, base + half, base + half + reach, base - half + reach]), metal.lightened(0.15))
+	var barrel_from: Vector2 = base + reach
+	var barrel_to: Vector2 = barrel_from + forward * EMITTER_BARREL
+	draw_line(barrel_from, barrel_to, metal.darkened(0.3), EMITTER_BARREL_WIDTH)
+	var lens: Color = metal.darkened(0.6).lerp(emitter_color, maxf(emitter_glow, EMITTER_IDLE_GLOW))
+	draw_line(barrel_to - forward * LENS_SIZE * 0.5, barrel_to + forward * LENS_SIZE * 0.5, lens, EMITTER_BARREL_WIDTH + 1.0)
+	var guard_at: Vector2 = from.lerp(to, TRIGGER_AT) + forward * (width * 0.5)
+	draw_arc(guard_at + forward * TRIGGER_RADIUS, TRIGGER_RADIUS, 0.0, TAU, 8, metal.darkened(0.45), 1.0)
+	draw_line(base - half * 2.0 - direction, base + half * 2.0 + direction, metal.darkened(0.2), width + 1.5)
 
 
 func _draw_grip(from: Vector2, to: Vector2) -> void:
