@@ -1,15 +1,19 @@
 class_name SceneryLayer
 extends Node2D
 
-enum Kind { SKY, DISC, RIDGE, TOWERS, COLUMNS, TRUNKS, CRYSTALS, CEILING, CLOUDS, SHIP, MONASTERY, BRUTALIST, RING, FLOOR, MIRAGE }
+enum Kind { SKY, DISC, RIDGE, TOWERS, COLUMNS, TRUNKS, CRYSTALS, CEILING, CLOUDS, SHIP, MONASTERY, BRUTALIST, RING, FLOOR, MIRAGE, LAVA }
 enum Disc { MOON, SUN, PLANET, ECLIPSE }
-enum Floor { STONE, WATER, ROOF, METAL, MOSS, SALT, DECK, SNOW, POLISHED }
+enum Floor { STONE, WATER, ROOF, METAL, MOSS, SALT, DECK, SNOW, POLISHED, BASALT }
 
 const GRID: float = 2.0
 const SKY_TOP: float = -2400.0
 const SKY_BOTTOM: float = 900.0
 const FLOOR_DEPTH: float = 900.0
 const STAR_COUNT: int = 140
+const LAVA_FALL_WIDTH: float = 6.0
+const LAVA_FALL_HEIGHT: float = 160.0
+const LAVA_CRUST_ALPHA: float = 0.55
+const BASALT_CRACKS: int = 18
 
 @export var kind: Kind = Kind.SKY
 @export var base_color: Color = Color("#0b0f18")
@@ -37,7 +41,7 @@ var _time: float = 0.0
 func _ready() -> void:
 	if not lit_by_blades:
 		light_mask = 0
-	set_process(drift != 0.0 or kind == Kind.MIRAGE)
+	set_process(drift != 0.0 or kind == Kind.MIRAGE or kind == Kind.LAVA)
 
 
 func _process(delta: float) -> void:
@@ -78,6 +82,8 @@ func _draw() -> void:
 			_draw_floor()
 		Kind.MIRAGE:
 			_draw_mirage()
+		Kind.LAVA:
+			_draw_lava()
 
 
 func _rng() -> RandomNumberGenerator:
@@ -345,6 +351,35 @@ func _draw_mirage() -> void:
 		draw_rect(Rect2(x + wobble, y, width, GRID), Color(accent_color, accent_color.a * shimmer))
 
 
+func _draw_lava() -> void:
+	var top: float = _snap(level - height)
+	draw_rect(Rect2(-span, top, span * 2.0, SKY_BOTTOM - top), base_color)
+	var rng: RandomNumberGenerator = _rng()
+	var row_height: float = height / maxf(bands, 1)
+	for band in bands:
+		var y: float = _snap(top + GRID * 2.0 + band * row_height)
+		var speed: float = 1.0 + band * 0.35
+		var x: float = -span - spacing + fposmod(_offset * speed + band * 53.0, spacing)
+		while x < span:
+			var length: float = _snap(element_width * rng.randf_range(0.5, 1.2))
+			var wobble: float = _snap(sin(x * 0.013 + _time * 0.8 + band) * GRID * 2.0)
+			var current: Color = detail_color if band % 2 == 0 else base_color.lerp(detail_color, 0.45)
+			draw_rect(Rect2(_snap(x), y + wobble, length, GRID), current)
+			if band % 3 == 0:
+				draw_rect(Rect2(_snap(x + length * 0.3), y + wobble, _snap(length * 0.25), GRID), Color(accent_color, 0.6))
+			var crust: float = _snap(element_width * rng.randf_range(0.3, 0.7))
+			draw_rect(Rect2(_snap(x + length + spacing * 0.2), y, crust, GRID * 2.0), Color(base_color.darkened(0.5), LAVA_CRUST_ALPHA))
+			x += spacing * rng.randf_range(0.6, 1.0)
+	draw_rect(Rect2(-span, top - GRID, span * 2.0, GRID), Color(accent_color, 0.7))
+	var fall_x: float = -span + radius * 0.5
+	var flicker: float = floorf(fmod(_time * 6.0, 1.0) * 3.0) / 3.0
+	while fall_x < span:
+		var drop: float = LAVA_FALL_HEIGHT * rng.randf_range(0.6, 1.0)
+		draw_rect(Rect2(_snap(fall_x), _snap(top - drop), LAVA_FALL_WIDTH, _snap(drop)), Color(detail_color, 0.75))
+		draw_rect(Rect2(_snap(fall_x + GRID), _snap(top - drop), GRID, _snap(drop)), Color(accent_color, 0.5 + 0.3 * flicker))
+		fall_x += radius * rng.randf_range(0.8, 1.6)
+
+
 func _draw_floor() -> void:
 	var half: float = arena_width * 0.5
 	var edge: float = span
@@ -382,6 +417,20 @@ func _draw_floor() -> void:
 				while puddle < edge:
 					draw_rect(Rect2(puddle, GRID * 2.0, 70.0, GRID), Color(accent_color, 0.25))
 					puddle += 230.0
+		Floor.BASALT:
+			var slab: float = 96.0
+			var x: float = -edge
+			while x < edge:
+				draw_rect(Rect2(x, 0.0, GRID, 36.0), detail_color)
+				x += slab
+			draw_rect(Rect2(-edge, 36.0, edge * 2.0, GRID), detail_color)
+			var rng: RandomNumberGenerator = _rng()
+			for i in BASALT_CRACKS:
+				var crack: Vector2 = Vector2(_snap(rng.randf_range(-half, half)), _snap(rng.randf_range(GRID * 2.0, 30.0)))
+				for step in 4:
+					var next: Vector2 = crack + Vector2(_snap(rng.randf_range(6.0, 16.0)), _snap(rng.randf_range(-4.0, 4.0)))
+					draw_line(crack, next, Color(accent_color, 0.45), GRID)
+					crack = next
 		Floor.MOSS:
 			var rng: RandomNumberGenerator = _rng()
 			var x: float = -edge

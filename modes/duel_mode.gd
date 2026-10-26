@@ -17,9 +17,10 @@ const ARENAS: Array[ArenaData] = [
 	preload("res://data/arenas/skyborne_deck.tres"),
 	preload("res://data/arenas/snowbound_peak.tres"),
 	preload("res://data/arenas/eclipse_citadel.tres"),
+	preload("res://data/arenas/magma_forge.tres"),
 	TRAINING_ARENA,
 ]
-const ROTATION_SIZE: int = 10
+const ROTATION_SIZE: int = 11
 const MODES: ModesConfig = preload("res://data/balance/modes_config.tres")
 const BOSS_PATH: String = "res://data/characters/awakened_shadow/awakened_shadow.tres"
 const BOSS_DIFFICULTY: AiDifficultyData = preload("res://data/balance/ai/difficulty_boss.tres")

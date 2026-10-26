@@ -101,6 +101,16 @@ As cores entre parênteses são a paleta-base de referência; a arte final pode 
 - **Assinatura**: **o eclipse escurece tudo menos as lâminas**: arena e corpos ficam numa sombra densa; as lâminas, a luz delas nos corpos e os efeitos vêm por cima com cor total. Os lutadores leem pela luz das próprias lâminas.
 - **Ambiente**: pó lento na cor da coroa.
 
+## Forja de Magma / Magma Forge
+
+*"Uma forja cravada no vulcão, sobre um mar de lava."* Pedido do autor (um cenário com lava ao fundo); a arte é original, sem reproduzir planetas ou estruturas de filmes.
+
+- **Fundo**: céu em faixas vermelho-escuras (`#0a0406` → `#3a1208`), cinza no ar; picos vulcânicos recortados com o topo em brasa; um **mar de lava** no horizonte, com correntes que deslizam devagar e quedas de lava escorrendo dos picos. A lava é laranja contido (`#7a2a0c`, correntes `#c8501a`, borda `#ffb060` fina): ilumina o horizonte, mas fica abaixo do brilho das lâminas.
+- **Meio**: silhuetas de torres de forja com janelas acesas em laranja.
+- **Chão**: basalto escuro em placas, com rachaduras finas em brasa.
+- **Assinatura**: **brasas subindo** do chão e da lava, e **cinza caindo** devagar; a poeira do knockback sai como cinza.
+- **Música e ambiência**: ambiência própria (borbulhar grave e estalos); música compartilhada até ganhar tema próprio.
+
 ## Plataforma de Treino / Training Platform
 
 Arena neutra do Treino, do Tutorial, dos Treinos guiados e da Galeria de poderes: plataforma simples, fundo escuro sem distrações e marcações discretas de distância no chão (úteis para ler alcance).
@@ -109,10 +119,10 @@ Arena neutra do Treino, do Tutorial, dos Treinos guiados e da Galeria de poderes
 
 ## Implementação
 
-As nove arenas novas são cenas montadas com `SceneryLayer` (`arenas/common/scenery_layer.gd`), um pintor de cenário em pixel art com tipos de camada (céu em faixas, lua, sol, planeta, eclipse, cordilheira, torres com letreiros de glifos, colunas, troncos com fungos, cristais, teto de caverna, nuvens que correm, navio, mosteiro, salão brutalista com janela, anel, chão por estilo) e partículas de clima (`CPUParticles2D`: chuva inclinada, neve em dois planos, esporos, poeira, brilhos, riscos de vento). As cenas e os `ArenaData` são gerados por `tools/art/make_arenas.py`; céu, discos, anel e nuvens ficam presos à tela na vertical, e o que fica no chão rola com ele. Cristais e fungos estão na máscara de luz das lâminas, então pegam a cor delas. O Convés tem `ArenaData.wind`, que empurra capas, túnicas, cachecóis e faixas. A Cidadela usa um ambiente bem escuro (as lâminas e efeitos ficam por cima com cor total).
+As nove arenas novas são cenas montadas com `SceneryLayer` (`arenas/common/scenery_layer.gd`), um pintor de cenário em pixel art com tipos de camada (céu em faixas, lua, sol, planeta, eclipse, cordilheira, mar de lava, torres com letreiros de glifos, colunas, troncos com fungos, cristais, teto de caverna, nuvens que correm, navio, mosteiro, salão brutalista com janela, anel, chão por estilo) e partículas de clima (`CPUParticles2D`: chuva inclinada, neve em dois planos, esporos, poeira, brilhos, riscos de vento). As cenas e os `ArenaData` são gerados por `tools/art/make_arenas.py`; céu, discos, anel e nuvens ficam presos à tela na vertical, e o que fica no chão rola com ele. Cristais e fungos estão na máscara de luz das lâminas, então pegam a cor delas. O Convés tem `ArenaData.wind`, que empurra capas, túnicas, cachecóis e faixas. A Cidadela usa um ambiente bem escuro (as lâminas e efeitos ficam por cima com cor total).
 
 Assinaturas de chão (flags do `ArenaData`): reflexo dos lutadores (`fighter_reflection`: Santuário 0,45, Telhado 0,25, Cidadela 0,2, Salinas 0,16), ondulações nos passos e aterrissagens (Santuário), vapor da chuva saindo das lâminas (Telhado), poeira de sal empurrada na direção do golpe (Salinas), pegadas e neve levantada nos passos, aterrissagens e esquivas (Cume). A miragem das Salinas é uma camada `MIRAGE` com linhas curtas que tremulam entre o horizonte e o chão. A seleção de arena mostra a miniatura da própria cena. Ainda faltam música e ambiência próprias (fase 8; até lá todas usam as da Plataforma de Refino).
 
 ## Rodízio
 
-Duelar começa na Plataforma de Refino. Arcade e Sobrevivência fazem rodízio na ordem: Plataforma de Refino, Santuário Alagado, Mina de Cristal, Telhado Neon, Anel Orbital, Floresta Lumínica, Salinas de Vidro, Convés em Voo, Cume Nevado, Cidadela do Eclipse. A seleção de arena começa com **Aleatória**.
+Duelar começa na Plataforma de Refino. Arcade e Sobrevivência fazem rodízio na ordem: Plataforma de Refino, Santuário Alagado, Mina de Cristal, Telhado Neon, Anel Orbital, Floresta Lumínica, Salinas de Vidro, Convés em Voo, Cume Nevado, Cidadela do Eclipse, Forja de Magma. A seleção de arena começa com **Aleatória**.

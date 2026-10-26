@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="ArenaData" format=3]
+
+[ext_resource type="Script" path="res://data/arena_data.gd" id="1_script"]
+[ext_resource type="Resource" path="res://data/audio/arena_music/magma_forge.tres" id="3_music"]
+[ext_resource type="AudioStream" path="res://assets/audio/ambience/magma_forge.wav" id="4_ambience"]
+[ext_resource type="PackedScene" path="res://arenas/magma_forge/magma_forge.tscn" id="2_scene"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"magma_forge"
+name_key = "ARENA_MAGMA_FORGE"
+phrase_key = "ARENA_PHRASE_MAGMA_FORGE"
+scene = ExtResource("2_scene")
+ambient = Color(0.62, 0.48, 0.44, 1)
+reflective_floor = false
+wind = 0.0
+fighter_reflection = 0.0
+knockback_dust = true
+footprints = false
+ripples = false
+rain_steam = false
+music = ExtResource("3_music")
+ambience = ExtResource("4_ambience")

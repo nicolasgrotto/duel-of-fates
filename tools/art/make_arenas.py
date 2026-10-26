@@ -10,9 +10,9 @@ import os
 
 os.chdir(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
-KINDS = {k: i for i, k in enumerate(["SKY", "DISC", "RIDGE", "TOWERS", "COLUMNS", "TRUNKS", "CRYSTALS", "CEILING", "CLOUDS", "SHIP", "MONASTERY", "BRUTALIST", "RING", "FLOOR", "MIRAGE"])}
+KINDS = {k: i for i, k in enumerate(["SKY", "DISC", "RIDGE", "TOWERS", "COLUMNS", "TRUNKS", "CRYSTALS", "CEILING", "CLOUDS", "SHIP", "MONASTERY", "BRUTALIST", "RING", "FLOOR", "MIRAGE", "LAVA"])}
 DISCS = {"MOON": 0, "SUN": 1, "PLANET": 2, "ECLIPSE": 3}
-FLOORS = {k: i for i, k in enumerate(["STONE", "WATER", "ROOF", "METAL", "MOSS", "SALT", "DECK", "SNOW", "POLISHED"])}
+FLOORS = {k: i for i, k in enumerate(["STONE", "WATER", "ROOF", "METAL", "MOSS", "SALT", "DECK", "SNOW", "POLISHED", "BASALT"])}
 
 
 def color(hex_value, alpha=1.0):
@@ -140,6 +140,17 @@ ARENAS = {
         dict(kind="BRUTALIST", base="#121214", detail="#1c1c20", level=0, height=560, radius=240, spacing=180, element_width=120, parallax=(0.45, 0.6)),
         dict(kind="FLOOR", floor="POLISHED", base="#141416", detail="#202024", accent="#4a4232", height=220),
     ], particles=[dict(y=-300, amount=20, life=10.0, dir=(0.3, 1), speed=(4, 8), color="#f2dcae", alpha=0.2, w=900, h=300, scale=(1, 2))]),
+    "magma_forge": dict(name="MagmaForge", ambient=(0.62, 0.48, 0.44), reflective=False, salt_dust=True, ambience="magma", layers=[
+        dict(kind="SKY", base="#0a0406", detail="#3a1208", level=180, height=560, bands=7, parallax=(0.0, 0.05), unlit=True),
+        dict(kind="RIDGE", base="#160a0a", detail="#5a1e0c", level=-150, height=360, spacing=360, seed_value=4, parallax=(0.08, 0.15), unlit=True),
+        dict(kind="LAVA", base="#7a2a0c", detail="#c8501a", accent="#ffb060", level=-20, height=130, bands=7, spacing=240, element_width=90, radius=480, drift=18.0, seed_value=6, parallax=(0.12, 0.2), unlit=True),
+        dict(kind="RIDGE", base="#0e0606", detail="#2a0e08", level=0, height=60, spacing=180, seed_value=13, parallax=(0.3, 0.4), unlit=True),
+        dict(kind="TOWERS", base="#0c0708", detail="#24130f", accent=("#ff7a2a", 0.45), level=20, height=420, spacing=760, element_width=110, seed_value=8, parallax=(0.6, 0.72), unlit=True),
+        dict(kind="FLOOR", floor="BASALT", base="#140c0c", detail="#24160f", accent="#ff7a2a", height=200),
+    ], particles=[
+        dict(y=0, amount=36, life=4.0, dir=(0.1, -1), spread=20, speed=(40, 90), color="#ffb060", alpha=0.55, w=1000, h=10, scale=(1, 2)),
+        dict(y=-600, amount=40, life=10.0, dir=(0.25, 1), spread=12, speed=(10, 24), color="#8a7f78", alpha=0.3, w=1000, h=300, scale=(1, 2)),
+    ]),
 }
 
 
@@ -183,7 +194,10 @@ def write_data(arena_id, spec):
         handle.write("\n".join(lines) + "\n")
 
 
-for arena_id, spec in ARENAS.items():
-    write_scene(arena_id, spec)
-    write_data(arena_id, spec)
-print("arenas:", len(ARENAS))
+import sys
+
+selected = sys.argv[1:] or list(ARENAS)
+for arena_id in selected:
+    write_scene(arena_id, ARENAS[arena_id])
+    write_data(arena_id, ARENAS[arena_id])
+print("arenas:", len(selected))

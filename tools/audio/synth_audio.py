@@ -438,6 +438,18 @@ def bolt_sounds():
     save("bolts/bolt_hit.wav", (thump(160, 0.14) * 0.7 + thud * 0.4) * envelope(0.14, 0.002, 2.4))
 
 
+def magma_ambience():
+    rate = AMBIENCE_RATE
+    total = AMBIENCE_SECONDS + 1.0
+    rng = np.random.default_rng(707)
+    t = t_axis(total, rate)
+    rumble = lowpass(rng.normal(0, 1, len(t)), 70, rate) * slow_wave(t, 0.08, 0.5) * 1.6
+    bubble = lambda: sweep(rng.uniform(70, 120), rng.uniform(160, 260), 0.18, 1.0, rate) * envelope(0.18, 0.02, 2.0, rate) * 0.25
+    bubbles = scatter(total, sorted(rng.uniform(0.2, AMBIENCE_SECONDS, 18)), bubble, rate)
+    crackles = highpass(crackle(total, 0.004, rate), 2500, rate) * 0.35
+    save_ambience("magma_forge", rumble + bubbles + crackles)
+
+
 if __name__ == "__main__":
     blade_sounds()
     impact_sounds()
@@ -450,6 +462,7 @@ if __name__ == "__main__":
     instinct_sounds()
     singularity_sounds()
     bolt_sounds()
+    magma_ambience()
     arena_ambiences()
     themes()
     print("audio written")
