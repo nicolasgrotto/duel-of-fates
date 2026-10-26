@@ -16,5 +16,4 @@ muzzle_forward = 34.0
 count = 1
 interval = 0.1
 perfect_reflect_speed = 1.25
-stagger = 0.0
 pitch = 0.92

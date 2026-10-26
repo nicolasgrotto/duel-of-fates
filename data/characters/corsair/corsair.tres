@@ -19,8 +19,7 @@
 [ext_resource type="Resource" path="res://data/powers/lightning.tres" id="p_lightning"]
 [ext_resource type="Resource" path="res://data/powers/pull.tres" id="p_pull"]
 [ext_resource type="Resource" path="res://data/powers/throw.tres" id="p_throw"]
-[ext_resource type="Resource" path="res://data/powers/unsettling_barrage.tres" id="p_barrage"]
-[ext_resource type="Resource" path="res://data/techniques/double_shot.tres" id="t_double"]
+[ext_resource type="Resource" path="res://data/techniques/unsettling_barrage.tres" id="t_barrage"]
 [ext_resource type="Resource" path="res://data/techniques/retreat_shot.tres" id="t_retreat"]
 
 [ext_resource type="Texture2D" path="res://assets/ui/blade/ability_dash.png" id="blade_icon"]
@@ -221,8 +220,7 @@ aerial_heavy = ExtResource("8_aerial_heavy")
 vigor_on_hit = 3.0
 ability = SubResource("corsair_ability")
 powers = Array[ExtResource("14_power")]([ExtResource("p_lightning"), ExtResource("p_pull"), ExtResource("p_throw")])
-fourth_power = ExtResource("p_barrage")
-technique_forward = ExtResource("t_double")
+technique_forward = ExtResource("t_barrage")
 technique_back = ExtResource("t_retreat")
 ai_profile = ExtResource("9_ai")
 path = 1

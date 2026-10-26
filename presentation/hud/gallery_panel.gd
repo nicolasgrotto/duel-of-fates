@@ -158,7 +158,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _select(index: int) -> void:
 	_entry_index = posmod(index, _entries.size())
-	var wielder: StringName = wielder_for(_entries[_entry_index] as PowerData, runner.sim.fighters[caster_index].character)
+	var wielder: StringName = wielder_for(_entries[_entry_index] as MoveData, runner.sim.fighters[caster_index].character)
 	if wielder != &"":
 		caster_required.emit(wielder, _entry_index)
 		return
@@ -170,12 +170,12 @@ func start_at(index: int) -> void:
 	_restart()
 
 
-static func wielder_for(power: PowerData, current: CharacterData) -> StringName:
-	if power == null or power.required_sidearm == WeaponData.Sidearm.NONE or current.weapon.sidearm == power.required_sidearm:
+static func wielder_for(technique: MoveData, current: CharacterData) -> StringName:
+	if technique == null or technique.usable_by(current):
 		return &""
 	for id in DuelMode.CAST:
 		var data: CharacterData = DuelMode.character(id)
-		if data.weapon.sidearm == power.required_sidearm:
+		if technique.usable_by(data):
 			return id
 	return &""
 

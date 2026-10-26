@@ -60,8 +60,8 @@ Direções relativas à frente do lutador. Técnicas usam Direção + Habilidade
 | Garça | Repulsão | Arremesso | Absorção | — | — | Avanço com corte | Investida descendente |
 | Ceifador | Repulsão | Puxão | Ira | — | Avanço com corte | Arremesso da lâmina | Investida descendente |
 | Eco | Raio | Puxão | Arremesso | — | Rajada | Avanço com corte | — |
-| Corsária | Raio | Puxão | Arremesso | Rajada Desestabilizadora | Disparo duplo | Recuo com disparo | — |
-| Lince | Repulsão | Arremesso | Barreira | Sequência Corte e Disparo | Tiro de guarda | Corte ascendente | — |
+| Corsária | Raio | Puxão | Arremesso | — | Rajada Desestabilizadora | Recuo com disparo | — |
+| Lince | Repulsão | Arremesso | Barreira | — | Tiro de guarda | Corte ascendente | — |
 | Sombra Desperta | Raio | Puxão | Estrangular | — | Avanço com corte | Corte ascendente | Investida descendente |
 | Soberano | Raio | Tempestade | Estrangular | — | Corte ascendente | Estocada | — |
 | Ancião | Repulsão | Cura | Barreira | — | Estocada | Corte ascendente | — |
@@ -251,7 +251,7 @@ O desafio vale em qualquer duelo vencido contra a IA (Duelar ou Arcade, qualquer
 
 ## Família Versáteis / Versatile
 
-Decisão do autor (tasks 07 e 08): lâmina numa mão e disparos de blaster. Mecânica da família: **Disparo Tático**, um disparo encaixado em certos recuos, reposicionamentos e passos da sequência (regras e números em GAME_DESIGN, "Disparo Tático"). Os disparos são projéteis que a guarda bloqueia e o parry devolve; **nunca interrompem um ataque sozinhos** (só dão um tranco em quem está parado, andando ou na recovery), para a família não ficar forte demais. A única exceção é a suprema, que custa Fluxo alto e exige o Tier II.
+Decisão do autor (tasks 07 e 08): lâmina numa mão e disparos de blaster. Mecânica da família: **Disparo Tático**, um disparo encaixado em certos recuos, reposicionamentos e passos da sequência (regras e números em GAME_DESIGN, "Disparo Tático"). Os disparos são projéteis que a guarda bloqueia e o parry devolve; **nunca interrompem um ataque sozinhos** (só dão um tranco em quem está parado, andando ou na recovery), para a família não ficar forte demais. A família não tem suprema própria (decisão do autor): as técnicas de disparo são técnicas de lâmina comuns que exigem blaster.
 
 | | Corsária (Duelista Armado) | Lince (Atirador de Lâmina) |
 | --- | --- | --- |
@@ -260,9 +260,9 @@ Decisão do autor (tasks 07 e 08): lâmina numa mão e disparos de blaster. Mec�
 | Corpo a corpo | equilibrado | principal |
 | Distância | forte | moderada |
 | Identidade | alternância de armas, pressão | surpresa, interrupção, controle de distância |
-| Suprema | rajada de disparos que desequilibra, seguida de um avanço com corte | sequência de cortes alternada com disparos à queima-roupa |
+| Técnica marcante | Rajada Desestabilizadora: cinco disparos e um avanço com corte | Tiro de guarda, que sai da guarda |
 
-- **Família de movimento — Versáteis**: perfil de esgrimista, lâmina média à frente na altura do peito; a mão livre fica baixa, junto ao quadril (a Corsária com o blaster apontado para o chão à frente). Swing de uma mão, curto e de punho; o tiro estica o braço livre na altura do peito com um coice curto.
+- **Família de movimento — Versáteis**: perfil de esgrimista, lâmina média à frente na altura do peito; a Corsária leva a mão do blaster baixa, à frente do quadril, apontando para o chão; o Lince, sem segunda arma, recolhe a mão livre atrás do corpo, escondida pela silhueta. Swing de uma mão, curto e de punho; o tiro estica o braço livre na altura do peito com um coice curto.
 - Nomes, aparência, cores e falas são originais; nenhuma referência a personagens da franquia.
 - **Liberação**: os dois já vêm liberados (como o elenco comum).
 - **Equilíbrio** (matriz de 6 duelos por par no Difícil, 13 personagens): Corsária 55,6%, Lince 54,2%, dentro da meta de 40–60%. Em 40 s de IA contra IA, a Corsária atira mais que o dobro do Lince (teste `test_blade_gunner_shoots_clearly_less_than_the_armed_duelist`).
@@ -277,8 +277,8 @@ Decisão do autor (tasks 07 e 08): lâmina numa mão e disparos de blaster. Mec�
 - **Traço — Saque rápido**: recupera 3 de Vigor a cada golpe de lâmina que acerta.
 - **Habilidade — Recuo tático**: avanço para trás (200 u, invulnerável 0,18 s, 14 de Vigor); com direção para frente, avança.
 - **Sequência**: 3 rápidos (ascendente; **corte com disparo**: o passo 2 corta e dispara no mesmo tick ativo; estocada).
-- **Técnicas**: frente **Disparo duplo** (dois disparos com 0,12 s entre eles; prep. 0,16 · rec. 0,3 · Vigor 10); trás **Recuo com disparo** (salta 110 u para trás e dispara no início; prep. 0,1 · rec. 0,3 · Vigor 12).
-- **Poderes**: Raio, Puxão, Arremesso; quarto poder **Rajada Desestabilizadora** (suprema, Tier II).
+- **Técnicas**: frente **Rajada Desestabilizadora** (técnica comum que exige blaster; ver content/POWERS.md); trás **Recuo com disparo** (salta 110 u para trás e dispara no início; prep. 0,1 · rec. 0,3 · Vigor 12).
+- **Poderes**: Raio, Puxão, Arremesso. Na seleção, o editor também oferece o **Disparo duplo** (dois disparos com 0,12 s entre eles; prep. 0,16 · rec. 0,3 · Vigor 10).
 - **IA**: mantém meia distância, atira em quem recua ou está em recovery, recua atirando quando o rival encosta; usa a técnica bem mais que a média.
 - **Visual**: casaco curto de abas, colete justo e faixa cruzada no peito, cabelo preso; cinto com coldre. Corpo `#2c3440`, casaco `#6a4a2e` (couro), acabamento `#c9a46a`. **Blaster** compacto na mão livre, cano curto e grosso com aleta, desenhado pelo jogo na cor de metal do traje.
 - **Lâmina**: Cobalto `#3f6bff` · Arcade Turquesa `#3fe0e0` · Desafio Ouro-rosa `#ffb08a` (vencer acertando 12 disparos).
@@ -295,7 +295,7 @@ Decisão do autor (tasks 07 e 08): lâmina numa mão e disparos de blaster. Mec�
 - **Habilidade — Contragolpe**: postura de resposta (0,4 s); a resposta é um corte rápido.
 - **Sequência**: 3 rápidos, todos de lâmina (horizontal; descendente; estocada).
 - **Técnicas**: frente **Tiro de guarda** (prep. 0,05 · rec. 0,25 · Vigor 8; disparo mais rápido e mais fraco, 3 de dano; **pode sair da guarda**); trás **Corte ascendente**.
-- **Poderes**: Repulsão, Arremesso, Barreira; quarto poder **Sequência Corte e Disparo** (suprema, Tier II).
+- **Poderes**: Repulsão, Arremesso, Barreira. A Sequência Corte e Disparo foi removida (decisão do autor).
 - **IA**: luta de perto; usa o tiro de guarda contra quem avança ou dá um avanço com corte de longe.
 - **Visual**: sobretudo longo e fechado até o pescoço, mangas justas, botas altas, cabelo curto raspado dos lados. Corpo `#1f2a2a`, sobretudo `#3e4f4a` (verde-ardósia), acabamento `#b7c4b0`. **Emissor no cabo**: um anel com lente na lateral do cabo, que acende na cor do disparo ao atirar.
 - **Lâmina**: Amarelo-lima `#e0ff3f` · Arcade Âmbar-claro `#ffe68a` · Desafio Azul-violeta `#8a7bff` (vencer acertando 4 disparos).

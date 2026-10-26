@@ -43,7 +43,7 @@ func test_technique_cycle_offers_wave_in_every_slot_and_keeps_air_moves_in_air()
 	for slot in 3:
 		var found: bool = false
 		for step in CATALOG.techniques.size() + 1:
-			CATALOG.cycle_technique(chosen, slot, 1)
+			CATALOG.cycle_technique(chosen, slot, 1, GUARDIAN)
 			found = found or chosen[slot].id == &"projected_cut"
 			assert_true(slot == 2 or not chosen[slot].is_aerial())
 		assert_true(found)

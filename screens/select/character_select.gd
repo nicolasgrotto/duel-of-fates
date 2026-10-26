@@ -335,7 +335,7 @@ func _on_power_adjusted(id: StringName, step: int) -> void:
 	if id == EDIT_RESET or id == EDIT_DONE:
 		return
 	if String(id).begins_with("technique_"):
-		CATALOG.cycle_technique(_techniques, int(String(id).get_slice("_", 1)), step)
+		CATALOG.cycle_technique(_techniques, int(String(id).get_slice("_", 1)), step, _current_character())
 	else:
 		CATALOG.cycle(_custom, int(String(id)), step, _current_character())
 	_refresh_editor()

@@ -26,7 +26,6 @@ Os poderes são uma camada opcional do duelo (opção **Poderes**, ligada por pa
 | --- | --- | --- |
 | II | 4+ | Repulsão Suprema, Santuário, Fratura, Ira, Arsenal Telecinético |
 | III | 7+ | Telecinese em Massa, Tempestade, Instinto Superior, Singularidade Devastadora |
-| II | 4+ | (família Versáteis) Rajada Desestabilizadora, Sequência Corte e Disparo |
 
   Tiers mais altos mudam a **forma**: mais feixes no Raio, ondas maiores, mais pedras, Barreira maior, mais objetos no Arsenal. Nunca escondem o alcance real do poder.
 - **Medidor de Fluxo** (0–100): começa cada round em 20, enche devagar com o tempo e mais rápido ao acertar (+7), ser atingido (+9), bloquear (+4) e aparar (+10). Separado do Vigor.
@@ -136,19 +135,13 @@ Usam Habilidade com direção ou no ar, gastam **Vigor** (não Fluxo), escalam c
 | **Estocada** / Thrust | Golpe reto e estreito no peito, o maior alcance de lâmina (55 u além do forte). Prep. 0,24 · ativo 0,1 · rec. 0,5 · dano 14 · Vigor 26. | pular por cima, esquivar |
 | **Corte ascendente** / Rising cut | De baixo para cima até acima da cabeça. Contra alguém no ar, +30% de dano e lança para cima. Prep. 0,3 · ativo 0,14 · rec. 0,55 · dano 15 · Vigor 26. | ficar no chão e punir |
 | **Rajada** / Flurry | Quatro estocadas curtas a cada 0,07 s, 4 de dano cada; cada uma na guarda gasta Vigor. Prep. 0,18 · rec. 0,42 · Vigor 30. | aparar qualquer estocada encerra a sequência |
+| **Rajada Desestabilizadora** / Unsettling Barrage | Exige blaster (só a Corsária hoje). Cinco disparos a 0,08 s (3 de dano cada, 6 de Vigor na guarda, tranco comum: não interrompem ataques) e logo um avanço de 240 u com corte (16 de dano, conta como forte; finalização atravessando no K.O. decisivo). Prep. 0,12 · Vigor 30. Antes era suprema de Fluxo; o autor a tornou técnica de lâmina comum. | guarda segura a rajada; esquiva ou parry no avanço |
+| **Disparo duplo** / Double Shot | Exige blaster. Dois disparos com 0,12 s entre eles. Prep. 0,16 · rec. 0,3 · Vigor 10. | guarda; parry devolve |
+| **Recuo com disparo** / Retreating Shot | Exige blaster. Recua 110 u durante o ativo e dispara para a frente. Prep. 0,1 · rec. 0,3 · Vigor 12. | avançar com guarda |
 | **Corte Projetado** / Projected Cut | Prep. 0,25 · ativo 0,1 · rec. 0,45 · dano 12 · Vigor 24. Técnica neutra: corte de cima para baixo que solta a onda em meia-lua (520 u). Bloqueável, esquivável e devolvida pelo parry perfeito. Apertar a técnica de novo durante o corte lança um **segundo corte** (prep. 0,3, mais 24 de Vigor) com a lâmina girando de volta ao alto; no máximo dois seguidos. A onda cresce com o tier de Fluxo de quem lança (0,8 / 1,0 / 1,2 / 1,4 do tamanho de referência, desenho e área de acerto). Gasta Vigor e escala com a Lâmina. Neutra. | guarda, parry perfeito para devolver |
 | **Investida descendente** / Plunging strike | No ar: mergulho com a lâmina para baixo e para a frente, uma vez por pulo (conta como o golpe aéreo). Prep. 0,12 · ativo 0,36 · rec. 0,6 · dano 16 · Vigor 28. **No acerto, recuperação 0,27 s** (`recovery_on_hit`): quem acerta fica cerca de +4 quadros (antes ficava −15 e era punido mesmo acertando); na guarda continua −24. | sair do ponto de queda, punir a recovery |
 
 **Choque entre técnicas**: quando as lâminas de duas técnicas corpo a corpo ativas se cruzam, as duas são interrompidas num choque grande (GAME_DESIGN, seção 7).
-
-### Supremas da família Versáteis
-
-Poderes do tipo **sequência de lâmina** (`PowerData.Kind.BLADE_SEQUENCE`): a invocação curta gasta o Fluxo e, ao sair, o lutador entra numa cadeia de golpes que se encadeiam sozinhos. Cada golpe é bloqueável e aparável como os outros; parar a cadeia com parry ou esquiva é a resposta. Ficam no quarto espaço do conjunto base de cada um, aparecem na Galeria e não entram nas árvores da História. **Exigem a arma da família** (`PowerData.required_sidearm`): a Rajada só para quem tem blaster, a Sequência só para quem tem emissor no cabo; o editor de conjunto não as oferece a mais ninguém (decisão do autor: o Guardião disparando pela mão não fazia sentido).
-
-| Poder (PT / EN) | Custo | Resumo |
-| --- | --- | --- |
-| **Rajada Desestabilizadora** / Unsettling Barrage (Eclipse, Corsária) | 60 (Tier II, Fluxo 4+) | Invocação 0,25 s, recarga 10 s. Cinco disparos a 0,08 s (3 de dano cada, **desequilibram** por 0,25 s mesmo quem ataca; 8 de Vigor na guarda), e logo um avanço de 240 u com corte (18 de dano, conta como forte). No K.O. decisivo, finalização atravessando. |
-| **Sequência Corte e Disparo** / Cut-and-Fire Sequence (Aurora, Lince) | 55 (Tier II, Fluxo 4+) | Invocação 0,2 s, recarga 10 s. Corte (8) → disparo à queima-roupa (4, desequilibra 0,2 s) → corte (8) → disparo (4) → corte final (14, conta como forte). No K.O. decisivo, execução por cima. |
 
 ## 6. Conjuntos
 

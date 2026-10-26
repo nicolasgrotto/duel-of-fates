@@ -14,8 +14,6 @@ static func technique_key(technique: MoveData) -> String:
 static func is_allowed(power: PowerData, character: CharacterData) -> bool:
 	if power.min_level > character.flow:
 		return false
-	if power.required_sidearm != WeaponData.Sidearm.NONE and character.weapon.sidearm != power.required_sidearm:
-		return false
 	match power.path:
 		PowerData.Path.AURORA:
 			return character.path == CharacterData.Path.AURORA
@@ -58,9 +56,11 @@ func cycle(current: Array[PowerData], slot: int, step: int, character: Character
 	current[slot] = next
 
 
-func cycle_technique(current: Array[MoveData], slot: int, step: int) -> void:
+func cycle_technique(current: Array[MoveData], slot: int, step: int, character: CharacterData) -> void:
 	var choices: Array[MoveData] = []
 	for technique in techniques:
+		if not technique.usable_by(character):
+			continue
 		if slot == 2 or not technique.is_aerial():
 			choices.append(technique)
 	var index: int = choices.find(current[slot])

@@ -286,8 +286,8 @@ Suíte final das tasks 04–05: **353 testes passando, zero falhas** (`build/tas
 | --- | --- | --- | --- |
 | 07.1 | Duelar com a Corsária: três rápidos de perto | O segundo corte também dispara; o blaster sobe e volta ao quadril | `build/batch10/renders/versatile/corsair_kit_*`; teste do passo 2 |
 | 07.2 | Frente + Habilidade de longe; Trás + Habilidade com o rival encostado | Dois disparos seguidos; recuo de ~110 u atirando para a frente | testes de Disparo duplo e Recuo com disparo |
-| 07.3 | Fluxo 4+, Poder + Habilidade juntos | Cinco disparos que desequilibram e um avanço com corte; finalização atravessando no K.O. decisivo; abaixo do Fluxo 4, recusado | `corsair_ultimate_*`; testes da suprema e do tier |
+| 07.3 | Corsária: Frente + Habilidade | Cinco disparos (gastam Vigor, não Fluxo) e um avanço com corte que sai sozinho; finalização atravessando no K.O. decisivo | teste da Rajada |
 | 08.1 | Lince: segurar a guarda e apertar Frente + Habilidade | O tiro sai da guarda, o emissor do cabo brilha | `lynx_kit_*`; teste do tiro de guarda |
-| 08.2 | Lince, Fluxo 4+, Poder + Habilidade colado no rival | Corte, disparo, corte, disparo, corte final; execução por cima no K.O. decisivo | `lynx_ultimate_*`; teste da ordem |
+| 08.2 | Seleção: editor de técnicas com o Guardião e com a Corsária | Técnicas de disparo só aparecem para a Corsária | teste do editor |
 | 08.3 | Comparar os dois em duelos | A Corsária atira muito; o Lince quase só de perto | teste de disparos por duelo; matriz 55,6% / 54,2% |
 | 08.4 | Julgar silhuetas, introduções e o blaster pequeno | Silhuetas distintas (casaco curto e rabo de cavalo × sobretudo longo); blaster legível no tiro | `corsair_intro_*`, `lynx_intro_*` |

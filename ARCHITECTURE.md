@@ -435,9 +435,9 @@ Corsária (`data/characters/corsair/`) e Lince (`data/characters/lynx/`) usam a 
 
 - `MoveData.bolt` em golpes comuns (o passo 2 da Corsária corta e dispara); técnicas de disparo em `data/techniques/` (`double_shot`, `retreat_shot`, `snap_shot`) com disparos em `data/bolts/`. Impulso negativo (`lunge` < 0) agora recua durante o ativo (Recuo com disparo).
 - `MoveData.from_guard`: `BlockState` inicia direto a técnica que tiver o campo (Tiro de guarda).
-- `MoveData.follow_up_auto`: o `follow_up` começa sozinho no primeiro tick da recovery; encadeia as sequências das supremas.
-- `PowerData.Kind.BLADE_SEQUENCE` + `PowerData.sequence`: ao ativar, o poder chama `ActionStarter.start_attack` com o primeiro golpe da cadeia, que fica como sub-recurso no `.tres` do poder (`unsettling_barrage`, `cut_and_fire`). Vigor zero nos golpes da cadeia; o custo é o Fluxo.
-- `BoltData.stagger` (só nas supremas) desequilibra mesmo quem ataca; `BoltData.pitch` afina o som do tiro.
+- `MoveData.follow_up_auto`: o `follow_up` começa sozinho no primeiro tick da recovery (Rajada Desestabilizadora: rajada → avanço).
+- As supremas da família (`BLADE_SEQUENCE`) foram removidas a pedido do autor; a Rajada virou técnica (`data/techniques/unsettling_barrage.tres`, com disparo e avanço como sub-recursos).
+- `BoltData.pitch` afina o som do tiro.
 - `WeaponData.sidearm` (`NONE`, `BLASTER`, `HILT_EMITTER`): só apresentação. `SidearmView` desenha o blaster na mão livre, na camada da mão de trás, apontado para baixo em repouso e erguido por `RigPose.sidearm_raise`; `HiltView` desenha o emissor no cabo, que brilha (`EffectsConfig.emitter_flash`) quando o lutador dispara. A pose `SHOT` estica o braço da arma e baixa a lâmina (Corsária) ou leva o cabo à frente com a lâmina para cima (Lince); golpes de lâmina com disparo erguem o blaster durante o ativo.
-- `PowerData.required_sidearm`: `PowerCatalog.is_allowed` recusa a suprema a quem não tem a arma. A Galeria pede outro lançador com o sinal `GalleryPanel.caster_required`; a `DuelScreen` reabre um `GalleryMode` com `caster_id` e `entry_index`.
+- `MoveData.required_sidearm` + `MoveData.usable_by(character)`: `PowerCatalog.cycle_technique` só oferece técnicas que o personagem pode usar. A Galeria pede outro lançador com o sinal `GalleryPanel.caster_required`; a `DuelScreen` reabre um `GalleryMode` com `caster_id` e `entry_index`.
 - Estatística `bolt_hits` (`StatsTracker`) para os desafios de cor; IA usa técnicas de disparo a até 60% do alcance do disparo e o recuo com disparo quando o rival está perto (`technique_bias` alto na Corsária, baixo no Lince).

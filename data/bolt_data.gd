@@ -13,7 +13,6 @@ extends Resource
 @export var count: int = 1
 @export var interval: float = 0.1
 @export var perfect_reflect_speed: float = 1.25
-@export var stagger: float = 0.0
 @export var pitch: float = 1.0
 
 

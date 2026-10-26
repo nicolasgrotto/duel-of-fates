@@ -53,6 +53,7 @@ enum TechniqueStyle { ARC, DASH, THROW, THRUST, RISING, FLURRY, LUNGE, PLUNGE, W
 @export var follow_up: MoveData
 @export var follow_up_auto: bool = false
 @export var from_guard: bool = false
+@export var required_sidearm: WeaponData.Sidearm = WeaponData.Sidearm.NONE
 @export var bolt: BoltData
 @export var recovery_on_hit: float = -1.0
 @export var dash_in_startup: bool = false
@@ -74,6 +75,10 @@ func projectile_scale(tier: int) -> float:
 	if projectile_tier_scales.is_empty():
 		return 1.0
 	return projectile_tier_scales[clampi(tier, 0, projectile_tier_scales.size() - 1)]
+
+
+func usable_by(character: CharacterData) -> bool:
+	return required_sidearm == WeaponData.Sidearm.NONE or character.weapon.sidearm == required_sidearm
 
 
 func startup_ticks() -> int:

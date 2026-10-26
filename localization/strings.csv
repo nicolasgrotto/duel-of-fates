@@ -712,6 +712,7 @@ TECHNIQUE_PROJECTED_CUT_FOLLOW,Corte Projetado · segundo,Projected Cut · secon
 TECHNIQUE_DOUBLE_SHOT,Disparo duplo,Double shot
 TECHNIQUE_RETREAT_SHOT,Recuo com disparo,Retreating shot
 TECHNIQUE_SNAP_SHOT,Tiro de guarda,Snap shot
+TECHNIQUE_UNSETTLING_BARRAGE,Rajada Desestabilizadora,Unsettling Barrage
 STORY_SKILLS,Habilidades · {points} pontos,Skills · {points} points
 STORY_NOTE_SKILL_POINTS,+{points} pontos de habilidade,+{points} skill points
 TREE_TAB_POWERS,Poderes,Powers
@@ -739,7 +740,3 @@ POWER_HIGHER_INSTINCT,Instinto Superior,Higher Instinct
 POWER_HIGHER_INSTINCT_TEXT,Esquiva de lâminas corpo a corpo e abre uma resposta curta. Poderes e áreas passam; dano de poder encerra.,Evades aimed melee blade attacks and opens a brief counter. Powers and areas get through; power damage ends it.
 POWER_SINGULARITY,Singularidade Devastadora,Devastating Singularity
 POWER_SINGULARITY_TEXT,Arranca o chão marcado e atrai quem está no ar. Corra entre as zonas e saia da trajetória da massa final.,Tears up marked ground and pulls airborne fighters. Run between zones and leave the final mass trajectory.
-POWER_UNSETTLING_BARRAGE,Rajada Desestabilizadora,Unsettling Barrage
-POWER_UNSETTLING_BARRAGE_TEXT,Rajada de disparos que desequilibra e um avanço com corte.,A barrage of shots that unsettles and a dashing cut.
-POWER_CUT_AND_FIRE,Sequência Corte e Disparo,Cut-and-Fire Sequence
-POWER_CUT_AND_FIRE_TEXT,Cortes alternados com disparos à queima-roupa até o corte final.,Cuts alternating with point-blank shots up to a final cut.

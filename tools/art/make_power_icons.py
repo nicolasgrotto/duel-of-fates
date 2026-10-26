@@ -119,15 +119,6 @@ def glyph(power_id):
         box((10, 9, 13, 14))
         line([(12, 1), (12, 4)], 2)
         line([(12, 20), (12, 23)], 2)
-    elif power_id == "unsettling_barrage":
-        for y in (4, 10, 16):
-            box((2, y, 9, y + 2))
-        polygon([(12, 20), (19, 4), (22, 3), (21, 7), (15, 21)])
-    elif power_id == "cut_and_fire":
-        line([(3, 20), (12, 4)])
-        line([(12, 20), (21, 4)])
-        box((7, 11, 10, 13))
-        box((16, 11, 19, 13))
     elif power_id.startswith("blade_"):
         style = power_id[6:]
         if style == "arc":

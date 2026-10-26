@@ -23,4 +23,5 @@ blockstun = 0.0
 lunge = 0.0
 reach = 0.0
 technique_style = 9
+required_sidearm = 1
 bolt = ExtResource("2_bolt")

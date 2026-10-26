@@ -5,7 +5,7 @@ enum Path { COMMON, AURORA, ECLIPSE }
 enum Kind {
 	REPULSE, PULL, THROW, MIND_TWIST, SUPREME_PUSH, FRACTURE,
 	BARRIER, HEAL, FOCUS, ABSORPTION, SANCTUARY, MASS_TELEKINESIS, UNUSED_FLOW_CLEAVE,
-	LIGHTNING, CHOKE, FREEZE, STORM, WRATH, DRAIN, ARSENAL, HIGHER_INSTINCT, SINGULARITY, BLADE_SEQUENCE,
+	LIGHTNING, CHOKE, FREEZE, STORM, WRATH, DRAIN, ARSENAL, HIGHER_INSTINCT, SINGULARITY,
 }
 
 @export var id: StringName
@@ -46,10 +46,6 @@ enum Kind {
 @export var interaction: InteractionTable
 @export var guard_vigor: float = 10.0
 @export var barrier_drain: float = 0.0
-
-@export_group("Sequence")
-@export var sequence: MoveData
-@export var required_sidearm: WeaponData.Sidearm = WeaponData.Sidearm.NONE
 
 @export_group("Singularity")
 @export var suspension: float = 0.0

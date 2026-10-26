@@ -1,8 +1,8 @@
 extends TestCase
 
 const VERSATILE: MotionFamily = preload("res://data/families/versatile.tres")
-const BARRAGE: PowerData = preload("res://data/powers/unsettling_barrage.tres")
-const SEQUENCE: PowerData = preload("res://data/powers/cut_and_fire.tres")
+const BARRAGE: MoveData = preload("res://data/techniques/unsettling_barrage.tres")
+const CATALOG: PowerCatalog = preload("res://data/powers/catalog.tres")
 const HARD: AiDifficultyData = preload("res://data/balance/ai/difficulty_hard.tres")
 
 
@@ -29,13 +29,6 @@ func _special(duel: DuelFixture, direction: int) -> void:
 	duel.step_until(func() -> bool: return duel.fighter(0).is_attacking(), Ticks.from_seconds(duel.sim.config.flow.chord_window) + 3)
 
 
-func _fourth(duel: DuelFixture) -> void:
-	duel.press(0, Intent.Command.POWER)
-	duel.press(0, Intent.Command.SPECIAL)
-	duel.step()
-	duel.release(0)
-
-
 func test_both_versatiles_share_the_family_and_differ_in_their_sidearm() -> void:
 	var corsair: CharacterData = DuelFixture.character(&"corsair")
 	var lynx: CharacterData = DuelFixture.character(&"lynx")
@@ -43,8 +36,8 @@ func test_both_versatiles_share_the_family_and_differ_in_their_sidearm() -> void
 	assert_eq(lynx.family, VERSATILE)
 	assert_eq(corsair.weapon.sidearm, WeaponData.Sidearm.BLASTER)
 	assert_eq(lynx.weapon.sidearm, WeaponData.Sidearm.HILT_EMITTER)
-	assert_eq(corsair.fourth_power, BARRAGE)
-	assert_eq(lynx.fourth_power, SEQUENCE)
+	assert_eq(corsair.technique_forward, BARRAGE)
+	assert_true(corsair.fourth_power == null and lynx.fourth_power == null, "no versatile ultimate")
 	assert_true(DuelMode.CAST.has(&"corsair") and DuelMode.CAST.has(&"lynx"))
 
 
@@ -58,16 +51,6 @@ func test_corsair_second_light_cuts_and_fires_on_its_first_active_tick() -> void
 	var ticks: Array[int] = _bolt_ticks(duel)
 	assert_eq(ticks.size(), 1)
 	assert_eq(ticks[0] - started, second.startup_ticks())
-
-
-func test_double_shot_fires_two_bolts_at_its_interval() -> void:
-	var duel: DuelFixture = _duel(&"corsair", 700.0)
-	var double_shot: MoveData = duel.fighter(0).character.technique_forward
-	_special(duel, 1)
-	duel.step(double_shot.startup_ticks() + double_shot.bolt.interval_ticks() + 2)
-	var ticks: Array[int] = _bolt_ticks(duel)
-	assert_eq(ticks.size(), 2)
-	assert_eq(ticks[1] - ticks[0], double_shot.bolt.interval_ticks())
 
 
 func test_retreating_shot_moves_back_while_the_bolt_flies_forward() -> void:
@@ -109,59 +92,6 @@ func test_non_guard_techniques_do_not_leave_the_guard() -> void:
 	assert_false(duel.fighter(0).is_attacking())
 
 
-func test_corsair_barrage_is_tier_gated() -> void:
-	var duel: DuelFixture = _duel(&"corsair")
-	duel.set_level(0, BARRAGE.min_level - 1)
-	duel.fighter(0).flow = 100.0
-	_fourth(duel)
-	duel.step(3)
-	assert_gt(duel.count_events(CombatEvent.Type.POWER_REJECTED), 0)
-	assert_false(duel.fighter(0).is_casting())
-
-
-func test_corsair_barrage_fires_five_unsettling_bolts_then_dashes_in() -> void:
-	var duel: DuelFixture = _duel(&"corsair", 260.0)
-	duel.set_level(0, BARRAGE.min_level)
-	duel.fighter(0).flow = 100.0
-	_fourth(duel)
-	assert_true(duel.step_until(func() -> bool: return duel.fighter(0).move == BARRAGE.sequence, 40), "the barrage starts")
-	assert_true(duel.step_until(func() -> bool: return duel.fighter(0).move == BARRAGE.sequence.follow_up, 60), "the dash follows on its own")
-	assert_eq(_bolt_ticks(duel).size(), BARRAGE.sequence.bolt.count)
-	assert_gt(duel.count_events(CombatEvent.Type.BOLT_HIT), 0)
-	duel.step(40)
-	assert_gt(duel.count_events(CombatEvent.Type.HIT), 0, "the dashing cut lands on the unsettled rival")
-
-
-func test_unsettling_bolt_staggers_even_an_attacker() -> void:
-	var duel: DuelFixture = _duel(&"corsair", 300.0)
-	var barrage_bolt: BoltData = BARRAGE.sequence.bolt
-	duel.press(1, Intent.Command.HEAVY)
-	duel.step()
-	duel.release(1)
-	assert_true(duel.fighter(1).is_attacking())
-	BoltResolver.fire(duel.sim, duel.fighter(0), barrage_bolt)
-	for projectile in duel.sim.projectiles:
-		if projectile.active and projectile.kind == Projectile.Kind.BOLT:
-			projectile.x = duel.fighter(1).x - 30.0
-	duel.step()
-	assert_eq(duel.fighter(1).state, FighterState.State.STAGGERED)
-
-
-func test_lynx_sequence_alternates_cuts_and_point_blank_shots() -> void:
-	var duel: DuelFixture = _duel(&"lynx", 40.0)
-	duel.set_level(0, SEQUENCE.min_level)
-	duel.fighter(0).flow = 100.0
-	_fourth(duel)
-	var order: Array[StringName] = []
-	for tick in 200:
-		var current: MoveData = duel.fighter(0).move
-		if current != null and (order.is_empty() or order[-1] != current.id):
-			order.append(current.id)
-		duel.step()
-	assert_eq(order, [&"sequence_cut_1", &"sequence_shot_1", &"sequence_cut_2", &"sequence_shot_2", &"sequence_finish"] as Array[StringName])
-	assert_eq(_bolt_ticks(duel).size(), 2)
-
-
 func _shots_in_ai_duel(id: StringName) -> int:
 	var rules: MatchRules = MatchRules.new()
 	rules.endless = true
@@ -183,20 +113,60 @@ func test_blade_gunner_shoots_clearly_less_than_the_armed_duelist() -> void:
 	assert_gt(float(corsair), float(lynx) * 2.0, "corsair %d vs lynx %d" % [corsair, lynx])
 
 
-func test_sidearm_ultimates_are_only_allowed_to_their_weapon() -> void:
+func test_double_shot_fires_two_bolts_at_its_interval() -> void:
+	var duel: DuelFixture = _duel(&"corsair", 700.0)
+	var double_shot: MoveData = load("res://data/techniques/double_shot.tres")
+	duel.fighter(0).character = duel.fighter(0).character.duplicate() as CharacterData
+	duel.fighter(0).character.technique_forward = double_shot
+	_special(duel, 1)
+	duel.step(double_shot.startup_ticks() + double_shot.bolt.interval_ticks() + 2)
+	var ticks: Array[int] = _bolt_ticks(duel)
+	assert_eq(ticks.size(), 2)
+	assert_eq(ticks[1] - ticks[0], double_shot.bolt.interval_ticks())
+
+
+func test_barrage_costs_vigor_fires_five_bolts_then_dashes_in() -> void:
+	var duel: DuelFixture = _duel(&"corsair", 260.0)
+	var vigor: float = duel.fighter(0).vigor
+	var flow: float = duel.fighter(0).flow
+	_special(duel, 1)
+	assert_eq(duel.fighter(0).move, BARRAGE)
+	assert_almost(duel.fighter(0).vigor, vigor - BARRAGE.vigor_cost, 1.0)
+	assert_true(duel.step_until(func() -> bool: return duel.fighter(0).move == BARRAGE.follow_up, 60), "the dash follows on its own")
+	assert_eq(_bolt_ticks(duel).size(), BARRAGE.bolt.count)
+	assert_gt(duel.fighter(0).flow + 0.01, flow, "no flow is spent")
+	duel.step(40)
+	assert_gt(duel.count_events(CombatEvent.Type.HIT) + duel.count_events(CombatEvent.Type.BLOCK), 0, "the dashing cut reaches the rival")
+
+
+func test_barrage_bolts_never_interrupt_an_attack() -> void:
+	var duel: DuelFixture = _duel(&"corsair", 300.0)
+	duel.press(1, Intent.Command.HEAVY)
+	duel.step()
+	duel.release(1)
+	BoltResolver.fire(duel.sim, duel.fighter(0), BARRAGE.bolt)
+	for projectile in duel.sim.projectiles:
+		if projectile.active and projectile.kind == Projectile.Kind.BOLT:
+			projectile.x = duel.fighter(1).x - 30.0
+	duel.step()
+	assert_true(duel.fighter(1).is_attacking())
+
+
+func test_blaster_techniques_are_offered_only_to_blaster_users() -> void:
 	var corsair: CharacterData = DuelFixture.character(&"corsair")
-	var lynx: CharacterData = DuelFixture.character(&"lynx")
-	var shadow: CharacterData = DuelFixture.character(&"shadow")
 	var guardian: CharacterData = DuelFixture.character(&"guardian")
-	assert_true(PowerCatalog.is_allowed(BARRAGE, corsair))
-	assert_false(PowerCatalog.is_allowed(BARRAGE, shadow), "no blaster, no barrage")
-	assert_true(PowerCatalog.is_allowed(SEQUENCE, lynx))
-	assert_false(PowerCatalog.is_allowed(SEQUENCE, guardian), "no hilt emitter, no sequence")
+	assert_true(CATALOG.techniques.has(BARRAGE))
+	assert_true(BARRAGE.usable_by(corsair))
+	assert_false(BARRAGE.usable_by(guardian))
+	assert_false(BARRAGE.usable_by(DuelFixture.character(&"lynx")), "the hilt emitter is not a blaster")
+	var chosen: Array[MoveData] = [guardian.technique_forward, guardian.technique_back, guardian.technique_air]
+	for step in CATALOG.techniques.size() * 2:
+		CATALOG.cycle_technique(chosen, 0, 1, guardian)
+		assert_true(chosen[0].usable_by(guardian), String(chosen[0].id))
 
 
-func test_gallery_hands_sidearm_ultimates_to_a_wielder() -> void:
+func test_gallery_hands_blaster_techniques_to_a_wielder() -> void:
 	var guardian: CharacterData = DuelFixture.character(&"guardian")
 	assert_eq(GalleryPanel.wielder_for(BARRAGE, guardian), &"corsair")
-	assert_eq(GalleryPanel.wielder_for(SEQUENCE, guardian), &"lynx")
 	assert_eq(GalleryPanel.wielder_for(BARRAGE, DuelFixture.character(&"corsair")), &"")
-	assert_eq(GalleryPanel.wielder_for(load("res://data/powers/repulse.tres"), guardian), &"")
+	assert_eq(GalleryPanel.wielder_for(CATALOG.techniques[0], guardian), &"")

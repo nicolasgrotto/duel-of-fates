@@ -41,8 +41,6 @@ Todo asset do projeto (arte, fonte, som, música, shader de terceiros) tem uma l
 | `assets/audio/powers/instinct_evade.wav` | esquiva automática do Instinto Superior | original, sintetizado por `tools/audio/synth_audio.py::instinct_sounds` | mesma licença do projeto | sopro curto, sem amostras |
 
 | `assets/ui/powers/singularity.png` | ícone da Singularidade, 24×24 | original, gerado por `tools/art/make_power_icons.py` | mesma licença do projeto | anel partido e placas convergentes na paleta Eclipse |
-| `assets/ui/powers/unsettling_barrage.png` | ícone da Rajada Desestabilizadora, 24×24 | original, gerado por `tools/art/make_power_icons.py` | mesma licença do projeto | três traços de disparo e um corte, paleta Eclipse |
-| `assets/ui/powers/cut_and_fire.png` | ícone da Sequência Corte e Disparo, 24×24 | original, gerado por `tools/art/make_power_icons.py` | mesma licença do projeto | dois cortes alternados com disparos, paleta Aurora |
 | `assets/audio/powers/singularity.wav` | criação grave ascendente | original, sintetizado por `tools/audio/synth_audio.py::singularity_sounds` | mesma licença do projeto | osciladores e ruído determinístico, sem amostras |
 | `assets/audio/powers/singularity_extract.wav` | extração de placas | original, sintetizado por `tools/audio/synth_audio.py::singularity_sounds` | mesma licença do projeto | osciladores e ruído determinístico, sem amostras |
 | `assets/audio/powers/singularity_throw.wav` | arremesso da massa | original, sintetizado por `tools/audio/synth_audio.py::singularity_sounds` | mesma licença do projeto | osciladores e ruído determinístico, sem amostras |

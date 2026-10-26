@@ -72,11 +72,7 @@ static func _hit(sim: MatchSimulation, projectile: Projectile, owner: FighterSta
 	if sim.apply_damage(target, projectile.damage):
 		sim.kill(target, owner, null)
 		return
-	if projectile.bolt.stagger > 0.0 and target.on_ground:
-		sim.change_state(target, FighterState.State.STAGGERED)
-		target.stun_ticks = maxi(Ticks.from_seconds(projectile.bolt.stagger), 1)
-		target.vx = 0.0
-	elif flinches(target):
+	if flinches(target):
 		sim.change_state(target, FighterState.State.HIT)
 		target.stun_ticks = projectile.bolt.flinch_ticks()
 		target.vx = 0.0

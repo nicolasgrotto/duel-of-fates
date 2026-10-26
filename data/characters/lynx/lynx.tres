@@ -18,7 +18,6 @@
 [ext_resource type="Resource" path="res://data/powers/repulse.tres" id="p_repulse"]
 [ext_resource type="Resource" path="res://data/powers/throw.tres" id="p_throw"]
 [ext_resource type="Resource" path="res://data/powers/barrier.tres" id="p_barrier"]
-[ext_resource type="Resource" path="res://data/powers/cut_and_fire.tres" id="p_sequence"]
 [ext_resource type="Resource" path="res://data/techniques/snap_shot.tres" id="t_snap"]
 [ext_resource type="Resource" path="res://data/techniques/rising_cut.tres" id="t_rising"]
 
@@ -241,7 +240,6 @@ aerial_heavy = ExtResource("8_aerial_heavy")
 punish_bonus = 0.15
 ability = SubResource("lynx_ability")
 powers = Array[ExtResource("14_power")]([ExtResource("p_repulse"), ExtResource("p_throw"), ExtResource("p_barrier")])
-fourth_power = ExtResource("p_sequence")
 technique_forward = ExtResource("t_snap")
 technique_back = ExtResource("t_rising")
 ai_profile = ExtResource("9_ai")

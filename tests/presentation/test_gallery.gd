@@ -72,7 +72,7 @@ func test_every_technique_reaches_the_standing_target() -> void:
 			panel.caster.produce(fixture.sim, 0, fixture.intents[0])
 			panel.target.produce(fixture.sim, 1, fixture.intents[1])
 			fixture.step(1)
-		assert_gt(fixture.count_events(CombatEvent.Type.HIT), 0, "%s hits the gallery target" % technique.id)
+		assert_gt(fixture.count_events(CombatEvent.Type.HIT) + fixture.count_events(CombatEvent.Type.BOLT_HIT), 0, "%s hits the gallery target" % technique.id)
 	panel.free()
 
 
