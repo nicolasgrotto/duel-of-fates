@@ -291,3 +291,13 @@ Suíte final das tasks 04–05: **353 testes passando, zero falhas** (`build/tas
 | 08.2 | Seleção: editor de técnicas com o Guardião e com a Corsária | Técnicas de disparo só aparecem para a Corsária | teste do editor |
 | 08.3 | Comparar os dois em duelos | A Corsária atira muito; o Lince quase só de perto | teste de disparos por duelo; matriz 55,6% / 54,2% |
 | 08.4 | Julgar silhuetas, introduções e o blaster pequeno | Silhuetas distintas (casaco curto e rabo de cavalo × sobretudo longo); blaster legível no tiro | `corsair_intro_*`, `lynx_intro_*` |
+
+## Ajustes depois das tasks 07/08
+
+| Caso | Ação | Resultado esperado |
+| --- | --- | --- |
+| A.1 | Forte da Corsária no K.O. decisivo | Execução Cruzada: antebraços, joelhos, disparo no peito, queda para trás, giro e lâmina apagada |
+| A.2 | Forte do Lince no K.O. decisivo | Sentença Precisa: corte diagonal, passa para trás, vítima se vira, disparo do cabo, queda para a frente, lâmina apagada |
+| A.3 | Disputa contra (ou com) o Soberano | Ele segura a lâmina do rival com a palma e anéis de Fluxo; vencendo, empurra com uma onda |
+| A.4 | Galeria: ir até a Rajada Desestabilizadora | "Carregando" no fade; a Corsária assume e lança |
+| A.5 | Seleção: editor de técnicas do Guardião | Técnicas de disparo não aparecem |
