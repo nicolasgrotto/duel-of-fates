@@ -265,10 +265,11 @@ Decisão do autor (tasks 07 e 08): lâmina numa mão e disparos de blaster. Mec�
 - **Família de movimento — Versáteis**: perfil de esgrimista, lâmina média à frente na altura do peito; a mão livre fica baixa, junto ao quadril (a Corsária com o blaster apontado para o chão à frente). Swing de uma mão, curto e de punho; o tiro estica o braço livre na altura do peito com um coice curto.
 - Nomes, aparência, cores e falas são originais; nenhuma referência a personagens da franquia.
 - **Liberação**: os dois já vêm liberados (como o elenco comum).
+- **Equilíbrio** (matriz de 6 duelos por par no Difícil, 13 personagens): Corsária 55,6%, Lince 54,2%, dentro da meta de 40–60%. Em 40 s de IA contra IA, a Corsária atira mais que o dobro do Lince (teste `test_blade_gunner_shoots_clearly_less_than_the_armed_duelist`).
 
 ## Corsária / Corsair
 
-- **Introdução**: Gira o blaster no dedo, guarda-o baixo junto ao quadril e só então acende a lâmina à frente.
+- **Introdução**: Ergue o blaster junto ao rosto, baixa-o ao quadril e só então acende a lâmina à frente.
 
 **A pressão de duas armas.** Corta de perto, atira de longe e atira recuando: quem foge da sequência leva um disparo.
 
@@ -285,7 +286,7 @@ Decisão do autor (tasks 07 e 08): lâmina numa mão e disparos de blaster. Mec�
 
 ## Lince / Lynx
 
-- **Introdução**: Estende a lâmina apagada como quem mira, dispara um clarão do cabo para o chão e acende a lâmina na mesma linha.
+- **Introdução**: Estende o cabo apagado à frente como quem mira, ergue-o e acende a lâmina para cima.
 
 **A surpresa.** Luta de lâmina e guarda o tiro para cortar a aproximação no momento certo.
 

@@ -279,3 +279,15 @@ Suíte final das tasks 04–05: **353 testes passando, zero falhas** (`build/tas
 | 06.5 | Comece um forte quando o disparo estiver chegando | Leva o dano e o forte continua | teste `test_bolt_never_interrupts_an_attack` |
 | 06.6 | Com uma gravação feita (F6), passe por todos os comportamentos com F5 | Ciclo parado → em guarda → atacando → atirando → reproduzindo, sem erro | correção do ciclo |
 | 06.7 | Julgar velocidade (900 u/s) e dano (4) | Dá para reagir de meia distância; disparo incomoda sem decidir a luta | ajuste em `data/bolts/standard_bolt.tres` |
+
+## Tasks 07 e 08 — Família Versáteis (Corsária e Lince)
+
+| Caso | Ação | Resultado esperado | Validação local |
+| --- | --- | --- | --- |
+| 07.1 | Duelar com a Corsária: três rápidos de perto | O segundo corte também dispara; o blaster sobe e volta ao quadril | `build/batch10/renders/versatile/corsair_kit_*`; teste do passo 2 |
+| 07.2 | Frente + Habilidade de longe; Trás + Habilidade com o rival encostado | Dois disparos seguidos; recuo de ~110 u atirando para a frente | testes de Disparo duplo e Recuo com disparo |
+| 07.3 | Fluxo 4+, Poder + Habilidade juntos | Cinco disparos que desequilibram e um avanço com corte; finalização atravessando no K.O. decisivo; abaixo do Fluxo 4, recusado | `corsair_ultimate_*`; testes da suprema e do tier |
+| 08.1 | Lince: segurar a guarda e apertar Frente + Habilidade | O tiro sai da guarda, o emissor do cabo brilha | `lynx_kit_*`; teste do tiro de guarda |
+| 08.2 | Lince, Fluxo 4+, Poder + Habilidade colado no rival | Corte, disparo, corte, disparo, corte final; execução por cima no K.O. decisivo | `lynx_ultimate_*`; teste da ordem |
+| 08.3 | Comparar os dois em duelos | A Corsária atira muito; o Lince quase só de perto | teste de disparos por duelo; matriz 55,6% / 54,2% |
+| 08.4 | Julgar silhuetas, introduções e o blaster pequeno | Silhuetas distintas (casaco curto e rabo de cavalo × sobretudo longo); blaster legível no tiro | `corsair_intro_*`, `lynx_intro_*` |
