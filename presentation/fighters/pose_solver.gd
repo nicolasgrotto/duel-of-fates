@@ -1,7 +1,9 @@
 class_name PoseSolver
 extends RefCounted
 
-const FLOW_PALM_GAP: float = 6.0
+const FLOW_PALM_GAP: float = 26.0
+const FLOW_HOLD_LEAN_BACK: float = 14.0
+const FLOW_HELD_SHORT: float = 16.0
 const FLOW_HOLD_GRIP: Vector2 = Vector2(-4.0, -12.0)
 const FLOW_HOLD_ANGLE: float = 125.0
 const FLOW_CLASH_HAND: Vector2 = Vector2(40.0, -50.0)
@@ -187,6 +189,7 @@ var block_line: MoveData.Cut = MoveData.Cut.HORIZONTAL
 var afterimage: bool = false
 var guard: GuardTracker = GuardTracker.new()
 var bolt_contact: float = -1.0
+var rival_lock_style: CharacterData.LockStyle = CharacterData.LockStyle.BLADE
 var _guard_prediction: RigPose = RigPose.new()
 var _guard_weapon: WeaponPose = WeaponPose.new()
 var _guard_heavy: bool = false
@@ -634,10 +637,15 @@ func _blade_lock(fighter: FighterState, opponent: FighterState, pose: RigPose) -
 		pose.open_hand = true
 		pose.grip = FLOW_HOLD_GRIP
 		pose.blade_angle = FLOW_HOLD_ANGLE
+	elif rival_lock_style == CharacterData.LockStyle.FLOW_HOLD:
+		cross.x -= FLOW_HELD_SHORT
+		pose.blade_angle = rad_to_deg((cross - pose.grip).angle())
 	pose.front_foot.x = family.stance_width * 0.35
 	pose.back_foot.x = -family.stance_width * 0.75 - maxf(pressure, 0.0) * 6.0
 	pose.tremble = true
 	_body_shift = pressure * (PRESS_STEP if press else 4.0) + push * 2.0
+	if character.lock_style == CharacterData.LockStyle.FLOW_HOLD:
+		_body_shift -= FLOW_HOLD_LEAN_BACK
 	var lean: float = family.lock_lean * (1.0 + pressure * 0.5) + push * 4.0
 	return Vector2(family.lock_crouch - pressure * 4.0 + (6.0 if press else 0.0), lean * (0.7 if press else 1.0))
 

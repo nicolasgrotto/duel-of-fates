@@ -98,6 +98,7 @@ func _build(glow_layer: Node) -> void:
 	add_child(rig)
 	rig.build(fighter.character, costume)
 	_solver.setup(fighter.character, fighter.character.art)
+	_solver.rival_lock_style = opponent.character.lock_style if opponent != null else CharacterData.LockStyle.BLADE
 	if blade == null:
 		blade = BladeView.new()
 		blade.z_index = 5
