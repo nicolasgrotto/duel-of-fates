@@ -1179,9 +1179,10 @@ func _place_off_hand(fighter: FighterState, pose: RigPose) -> void:
 		MotionFamily.Grip.DUAL:
 			pose.off_hand = family.off_guard_hand + pose.pelvis
 		MotionFamily.Grip.ONE_HANDED:
-			pose.off_hand = family.free_hand + pose.pelvis + Vector2(sin(time * 1.1) * 1.5, 0.0)
+			var armed: bool = character.weapon.sidearm == WeaponData.Sidearm.BLASTER
+			pose.off_hand = (family.sidearm_hand if armed else family.free_hand) + pose.pelvis + Vector2(sin(time * 1.1) * 1.5, 0.0)
 			if fighter.state == FighterState.State.WALKING:
-				pose.off_hand = family.walk_free_hand + pose.pelvis + Vector2(sin(walk_phase) * family.sway, 0.0)
+				pose.off_hand = (family.walk_sidearm_hand if armed else family.walk_free_hand) + pose.pelvis + Vector2(sin(walk_phase) * family.sway, 0.0)
 
 
 func _place_second_blade(fighter: FighterState, pose: RigPose, off_free: bool) -> void:

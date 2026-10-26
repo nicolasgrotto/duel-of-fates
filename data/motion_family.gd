@@ -27,6 +27,8 @@ enum Grip { TWO_HANDED, ONE_HANDED, DUAL, STAFF }
 @export var back_elbow: Vector2 = Vector2(-1.0, 0.6)
 @export var windup_elbow: Vector2 = Vector2(-1.0, 0.3)
 @export var walk_free_hand: Vector2 = Vector2(-12.0, -14.0)
+@export var sidearm_hand: Vector2 = Vector2(6.0, 4.0)
+@export var walk_sidearm_hand: Vector2 = Vector2(2.0, 0.0)
 @export var lance_hand_spacing: float = 22.0
 @export var staff_hand_spacing: float = 11.0
 
