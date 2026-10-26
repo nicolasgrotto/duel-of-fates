@@ -271,3 +271,26 @@ func test_every_selectable_fighter_has_a_short_description() -> void:
 	for id in select.ROSTER + [&"foretold_eclipse"]:
 		var key: String = select.description_key(DuelFixture.character(id))
 		assert_true(strings.contains("\n" + key + ","), "%s has %s" % [id, key])
+
+
+func _heavy_exchange(offset: int, command: Intent.Command, gap: float) -> DuelFixture:
+	var duel: DuelFixture = DuelFixture.versus(&"sovereign", &"guardian")
+	duel.skip_intro()
+	duel.place(gap)
+	duel.press(0, command)
+	if offset == 0:
+		duel.press(1, command)
+	duel.step()
+	for tick in range(1, 60):
+		if tick == offset:
+			duel.press(1, command)
+		duel.step()
+	return duel
+
+
+func test_heavies_meet_with_a_wider_window_than_lights() -> void:
+	var late: int = Ticks.from_seconds(DuelFixture.CONFIG.heavy_clash_window) - 1
+	assert_gt(_heavy_exchange(late, Intent.Command.HEAVY, 60.0).count_events(CombatEvent.Type.BLADE_LOCK_STARTED), 0, "heavies %d ticks apart still lock" % late)
+	assert_gt(_heavy_exchange(late, Intent.Command.HEAVY, 120.0).count_events(CombatEvent.Type.CLASH), 0, "and clash at mid range")
+	var light_late: int = Ticks.from_seconds(DuelFixture.CONFIG.clash_window) + 2
+	assert_eq(_heavy_exchange(light_late, Intent.Command.LIGHT, 60.0).count_events(CombatEvent.Type.CLASH), 0, "lights keep the short window")

@@ -123,7 +123,7 @@ func test_staggered_heavies_lock_within_the_clash_window() -> void:
 func test_faster_heavy_hits_just_outside_the_clash_window() -> void:
 	duel.place(20.0)
 	duel.press(0, Intent.Command.HEAVY)
-	duel.step(Ticks.from_seconds(duel.sim.config.clash_window) + 1)
+	duel.step(Ticks.from_seconds(duel.sim.config.heavy_clash_window) + 1)
 	duel.press(1, Intent.Command.HEAVY)
 	duel.step(50)
 	assert_eq(duel.count_events(CombatEvent.Type.BLADE_LOCK_STARTED), 0)

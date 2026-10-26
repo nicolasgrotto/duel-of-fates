@@ -21,7 +21,8 @@ static func resolve(sim: MatchSimulation) -> void:
 static func _blades_meet(sim: MatchSimulation, a: FighterState, b: FighterState) -> bool:
 	if not (a.is_active() or b.is_active()):
 		return false
-	if not (_in_clash_window(sim.config, a) and _in_clash_window(sim.config, b)):
+	var window: float = sim.config.heavy_clash_window if _both_heavy(a, b) else sim.config.clash_window
+	if not (_in_clash_window(window, a) and _in_clash_window(window, b)):
 		return false
 	if a.move_hit_done or b.move_hit_done:
 		return false
@@ -37,10 +38,14 @@ static func _blades_meet(sim: MatchSimulation, a: FighterState, b: FighterState)
 	return a_box.position.y <= b_box.end.y and b_box.position.y <= a_box.end.y
 
 
-static func _in_clash_window(config: CombatConfig, fighter: FighterState) -> bool:
+static func _both_heavy(a: FighterState, b: FighterState) -> bool:
+	return a.is_attacking() and b.is_attacking() and a.move != null and b.move != null and a.move.is_heavy() and b.move.is_heavy() and not a.move.is_technique() and not b.move.is_technique()
+
+
+static func _in_clash_window(window: float, fighter: FighterState) -> bool:
 	if not fighter.is_attacking() or fighter.move == null:
 		return false
-	return fighter.is_active() or (fighter.move_phase == FighterState.Phase.STARTUP and fighter.move.startup_ticks() - fighter.phase_ticks <= Ticks.from_seconds(config.clash_window))
+	return fighter.is_active() or (fighter.move_phase == FighterState.Phase.STARTUP and fighter.move.startup_ticks() - fighter.phase_ticks <= Ticks.from_seconds(window))
 
 
 static func _can_lock(sim: MatchSimulation, a: FighterState, b: FighterState, gap: float) -> bool:
