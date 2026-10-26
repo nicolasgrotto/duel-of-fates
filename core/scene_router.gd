@@ -25,11 +25,17 @@ const SINGLE_THREAD_FEATURE: String = "nothreads"
 const OVERLAY_LAYER: int = 50
 const FADE_LAYER: int = 100
 const PALETTE: UiPalette = preload("res://ui/palette.tres")
+const LOADING_WIDTH: float = 220.0
+const LOADING_MARGIN: Vector2 = Vector2(48.0, 36.0)
+const LOADING_DOTS: int = 3
+const LOADING_DOT_SECONDS: float = 0.3
 
 var _stack: Array[Node] = []
 var _overlay: CanvasLayer
 var _fade: ColorRect
 var _busy: bool = false
+var _loading: Label
+var _loading_time: float = 0.0
 
 
 func _ready() -> void:
@@ -46,6 +52,29 @@ func _ready() -> void:
 	_fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_fade.set_anchors_preset(Control.PRESET_FULL_RECT)
 	fade_layer.add_child(_fade)
+	_loading = Label.new()
+	_loading.theme_type_variation = &"HintLabel"
+	_loading.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+	_loading.offset_left = -LOADING_WIDTH - LOADING_MARGIN.x
+	_loading.offset_right = -LOADING_MARGIN.x
+	_loading.offset_bottom = -LOADING_MARGIN.y
+	_loading.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	_loading.visible = false
+	fade_layer.add_child(_loading)
+
+
+func _process(delta: float) -> void:
+	if not _loading.visible:
+		return
+	_loading_time += delta
+	var lit: int = int(_loading_time / LOADING_DOT_SECONDS) % (LOADING_DOTS + 1)
+	_loading.text = tr("LOADING") + ".".repeat(lit)
+
+
+func _show_loading(shown: bool) -> void:
+	_loading_time = 0.0
+	_loading.text = tr("LOADING")
+	_loading.visible = shown
 
 
 func change(screen: StringName, params: Dictionary = {}) -> void:
@@ -57,6 +86,8 @@ func change(screen: StringName, params: Dictionary = {}) -> void:
 	if background_loading:
 		ResourceLoader.load_threaded_request(path)
 	await _fade_to(1.0)
+	_show_loading(true)
+	await RenderingServer.frame_post_draw
 	if not background_loading:
 		ResourceLoader.load_threaded_request(path)
 	var scene: PackedScene = await _finish_loading(path)
@@ -79,6 +110,7 @@ func change(screen: StringName, params: Dictionary = {}) -> void:
 	held.clear()
 	for i in SETTLE_FRAMES:
 		await RenderingServer.frame_post_draw
+	_show_loading(false)
 	await _fade_to(0.0)
 	_busy = false
 

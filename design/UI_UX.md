@@ -24,6 +24,10 @@ Português (padrão) e inglês, escolhidos nas Opções e salvos. Todo texto de 
 
 ## Telas
 
+### Carregamento
+
+Toda troca de cena passa pelo fade do `SceneRouter`. Com a tela já escura, aparece **Carregando** (EN: **Loading**) em `HintLabel`, no canto inferior direito, com três pontos que acendem em sequência; some antes do fade de volta. Ele é desenhado antes do trabalho pesado (montar a cena, a simulação e os lutadores), então fica visível mesmo quando o jogo trava um instante para carregar personagens novos. Recursos que a cena seguinte já sabe que vai usar (personagens da Galeria e da seleção) carregam em segundo plano durante o fade.
+
 ### Abertura
 
 Fundo preto; uma lâmina horizontal acende do centro para as pontas (ciano-gelo), com núcleo branco e glow; o título **DUEL OF FATES** e a frase **UM DUELO DE LÂMINAS DE ENERGIA** entram em fade; depois "Pressione Enter" piscando devagar. Confirmar pula a animação. Direcionais não pulam nada: ali se digitam os segredos. Ao revelar um segredo, um brilho grande vermelho-Ápice atrás da lâmina e a frase do segredo por ~3 s.

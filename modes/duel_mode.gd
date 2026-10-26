@@ -74,6 +74,10 @@ static func character(id: StringName) -> CharacterData:
 	return load(CHARACTER_PATH % [id, id]) as CharacterData
 
 
+func required_resources() -> PackedStringArray:
+	return PackedStringArray()
+
+
 func start() -> void:
 	SceneRouter.change(&"duel", {"mode": self})
 

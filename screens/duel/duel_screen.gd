@@ -48,6 +48,10 @@ var _replay_end: int = 0
 var _finished: bool = false
 
 
+func required_resources(params: Dictionary) -> PackedStringArray:
+	return (params["mode"] as DuelMode).required_resources()
+
+
 func open(params: Dictionary) -> void:
 	mode = params["mode"]
 	setup = mode.build_setup()

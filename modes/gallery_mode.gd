@@ -9,6 +9,10 @@ func steps() -> Array[StringName]:
 	return []
 
 
+func required_resources() -> PackedStringArray:
+	return PackedStringArray([CHARACTER_PATH % [caster_id, caster_id], SHADOW.resource_path])
+
+
 func build_setup() -> DuelSetup:
 	var setup: DuelSetup = DuelSetup.new()
 	setup.characters = [DuelMode.character(caster_id).duplicate(), SHADOW.duplicate()]
