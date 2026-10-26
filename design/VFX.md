@@ -31,6 +31,8 @@ HUD       → barras, avisos
 
 ## Assinaturas
 
+- **Fases da Caçada a chefes**: anúncio central e pulso do letterbox reutilizam as durações do despertar em `ModesConfig`. Sem flash, tremor ou câmera lenta novos. Em efeitos reduzidos, só o anúncio. Os poderes conservam suas apresentações existentes; a troca de fase nunca inicia um efeito de poder sem evento ativo.
+
 - **Introduções**: a ignição existente segue os tempos de cada personagem e de cada ponta. A capa temporária do Ceifador cai e desaparece com `EffectsConfig.fade_steps`; o capuz desce em etapas da grade. Sem flashes, rastros extras ou movimentos de câmera adicionais.
 
 - **Dessaturação do parry perfeito**: por 0,15 s, arena e corpos perdem a cor e escurecem um pouco; lâminas, rastros e efeitos continuam com cor total. No momento mais importante, só a luz das lâminas tem cor.

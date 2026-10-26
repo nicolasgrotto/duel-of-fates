@@ -42,6 +42,14 @@ Fundo preto; uma lâmina horizontal acende do centro para as pontas (ciano-gelo)
 
 Título centralizado, maiúsculas espaçadas, frase de apoio em destaque. Dois níveis na mesma tela: **Jogar** (Duelar, História, Arcade, Sobrevivência, 2 Jogadores), **Aprender** (Tutorial, Treinos guiados, Treino, Desafio de parry, Controles), **Extras** (Desafios, Galeria de poderes, Galeria da História, Exibição), **Opções**. O nome do grupo aparece entre a frase e a lista; Voltar ou `Esc` volta à raiz.
 
+### Caçada a chefes
+
+Jogar › Caçada a chefes abre lista à esquerda e cartão de briefing à direita. A lista tem três títulos e Voltar; o cartão mostra miniatura da arena, chefe, condição especial, três limiares/fases, kit fixo do Guardião, recompensa e menor tempo ou Pendente. Confirmar abre as falas anteriores e inicia o duelo. Em missão concluída, esquerda/direita alternam Iniciar e Rever epílogo, com a ação escrita no cartão. Voltar retorna a Jogar com a caçada em foco. Tema Oxanium e cores exclusivamente do tema/paleta; composição sem moldura, espaço negativo e texto quebrado em linhas, válida a 720p e 1080p.
+
+O cartão usa corpo de 28 px no tema (18,7 px a 720p), inclusive dicas, e lista o poder principal de cada fase. A miniatura inclui o chão. Jogar compacta o espaçamento entre linhas para acomodar suas sete opções sem sobrepor Voltar ao rodapé.
+
+No duelo, faixa superior com nome da caçada e fase atual; progresso especial e tempo acima do rodapé. Cada fase anuncia seu nome usando o anúncio central existente e um pulso curto de letterbox do despertar, sem câmera lenta adicional. Efeitos reduzidos mantêm a informação e omitem o pulso. F3 inclui fase, contagem e estado da condição. A tela de resultado diferencia Caçada concluída de Condição não cumprida mesmo se houve K.O. do chefe, mostra tempo/recorde e desbloqueios; oferece Continuar (epílogo) no sucesso, Tentar de novo e Caçadas. O replay conserva as trocas de fase e nunca concede recompensas.
+
 ### Seleção de personagem
 
 > Implementada na fase 4 (`screens/select/`): lista com Aleatório e os secretos no fim, coluna central com estilo, caminho na cor do lado, traço, habilidade e as seis barras (potencial em dourado `#d9b45a`), lutador animado à direita com Visual, Lâmina e Variante. ← → trocam a cor da lâmina, `C` troca o visual, `V` a variante. Na fase 5 entraram as linhas de **Poderes** e técnicas, `Conjunto: Base/Personalizado` e o editor de poderes (`P`): três linhas `‹ Poder ›`, Voltar ao conjunto base e Pronto; Voltar ou `P` fecham. A Galeria de poderes segue a descrição abaixo, com o painel no topo e a barra de Fluxo só de quem lança. Bloqueio real (fase 6): os secretos só entram na lista depois de liberados; ← → e `C` percorrem só cores e visuais liberados; a linha "Libera:" mostra o próximo requisito pendente (traje ou cor). Avisos de desbloqueio aparecem no resultado em dourado. Ainda falta a miniatura da arena.

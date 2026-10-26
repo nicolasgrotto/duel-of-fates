@@ -335,6 +335,7 @@ Com o poder Foco ativo, um lutador **parado em guarda, sem nenhum comando**, esq
 | --- | --- | --- | --- |
 | Duelar, 2 Jogadores, Treino, Arcade, Sobrevivência | opção (ligada por padrão) | sim | com Poderes |
 | História | sempre | sim | sim |
+| Caçada a chefes | sempre, kit fixo | sim | sim |
 | Tutorial e Treinos guiados | não | sim | — |
 | Desafios | cada desafio define | sim | cada desafio define |
 | Desafio de parry | não | não | — |
@@ -479,6 +480,20 @@ Menu em dois níveis: **Jogar**, **Aprender**, **Extras**, **Opções**.
 - **Treino**: contra o boneco, sem limite de rounds. Comportamento do boneco (parado, guarda, atacando), gravação de até 10 s de comandos do jogador e reprodução no boneco em loop, hitboxes visíveis, **dados de quadro** do último golpe (ex.: `Forte · bloqueado · −0,30 s`; negativo = o oponente age primeiro), comandos dos dois na tela.
 - **Desafio de parry**: 45 s contra o boneco, que só lança fortes em intervalos aleatórios. Parry vale 1 ponto, perfeito 2. Recorde salvo.
 - **Controles**: tabela de ações e teclas atuais.
+
+### Caçada a chefes (task 09)
+
+Jogar › Caçada a chefes oferece três missões independentes, disponíveis desde o início. Cada uma usa o Guardião com Fluxo 7, Repulsão, Cura e Barreira, um round, Poderes sempre ligados e dificuldade-base Difícil. O conjunto é fixo e não altera o elenco. Não há moeda, atributos permanentes ou repetição obrigatória.
+
+| Caçada | Chefe / arena | Fases (vida restante) e padrão | Condição especial | Recompensa única |
+| --- | --- | --- | --- | --- |
+| A última lição | Ancião / Santuário Alagado | 100%: fortes e distância curta, Repulsão; 65%: defesa paciente, Barreira e Repulsão; 30%: contra-ataques e Instinto Superior | Aparar perfeitamente três fortes e vencer | Traje Viajante do Guardião |
+| O olho da tempestade | Soberano / Convés em Voo | 100%: pressão à distância, Raio; 65%: Tempestade e aproximação; 30%: pressão agressiva com Raio e Tempestade | Vencer em até 90 s de simulação de luta; guarda não segura Tempestade, use deslocamento, esquiva ou Barreira | Cor do Arcade do Guardião |
+| O peso do vazio | Sombra Desperta / Cidadela do Eclipse | 100%: avanços e Puxão; 65%: Singularidade Devastadora e reposicionamento; 30%: ofensiva curta, Singularidade e Repulsão | Sobreviver ao ciclo completo de uma Singularidade (massa lançada e encerrada, ambos vivos), depois vencer | Cor do desafio da Sombra |
+
+Cada fase é um recurso com limiar inclusivo, perfil de IA, conjunto de poderes, nível de Fluxo, reserva inicial de medidor e poder de abertura opcional. Limiares só avançam, uma vez por fase, sem curar nem reviver o chefe. Um golpe que cruza vários limiares vivos processa-os em ordem. O poder de abertura usa comandos normais da IA: pode ser interrompido e volta a ser tentado enquanto não ativar. A mudança de conjunto espera o fim de uma invocação/canal/campo anterior para preservar sua resolução. Não há armadura nem perigo novo de arena.
+
+O cronômetro conta ticks em FIGHT, incluindo hit stop e cinemáticas determinísticas, excluindo intro, pausa, K.O. e replay. A condição é avaliada junto da vitória: matar antes dos três parries ou antes de sobreviver à massa encerra a missão sem sucesso. A morte do lançador durante o campo não conta como sobrevivência. Uma derrota nunca grava conclusão ou recorde. Repetir com sucesso só melhora o menor tempo; recompensas são idempotentes. Falas curtas antes e depois contextualizam as missões. A lista permite rever o epílogo depois da primeira conclusão.
 
 ### Extras
 
