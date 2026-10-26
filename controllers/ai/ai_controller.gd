@@ -3,6 +3,7 @@ extends FighterController
 
 enum Plan { WAIT, APPROACH, RETREAT, GUARD, STEP_LEFT, STEP_RIGHT }
 
+const BOLT_REACH_SHARE: float = 0.6
 const PERFECT_PARRY_TARGET: int = 2
 const PARRY_TARGET: int = 7
 const EVADE_TARGET: int = 2
@@ -339,7 +340,12 @@ func _try_technique(sim: MatchSimulation, me: FighterState, gap: float) -> bool:
 		reach = sim.config.flow.blade_throw_base
 	elif technique.projectile_range > 0.0:
 		reach = technique.projectile_range
-	if gap > reach or gap < reach * 0.3:
+	elif technique.bolt != null:
+		reach = technique.bolt.max_range * BOLT_REACH_SHARE
+	if technique.lunge < 0.0:
+		if gap > profile.safe_gap:
+			return false
+	elif gap > reach or gap < reach * 0.3:
 		return false
 	_schedule(Intent.Command.SPECIAL, Ticks.from_seconds(difficulty.attack_warning), 0, Plan.WAIT, 0, "technique " + String(technique.id))
 	_press_direction = 1 if pick == 0 else -1

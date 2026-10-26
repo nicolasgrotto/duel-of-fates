@@ -3,6 +3,7 @@ extends Resource
 
 enum Kind { SINGLE, DUAL, LANCE, STAFF }
 enum Hilt { RING, CURVED_POMMEL, WRAPPED, CROSSGUARD, BANDED, DOUBLE, PLAIN }
+enum Sidearm { NONE, BLASTER, HILT_EMITTER }
 
 @export var kind: Kind = Kind.SINGLE
 @export var hilt: Hilt = Hilt.RING
@@ -12,6 +13,7 @@ enum Hilt { RING, CURVED_POMMEL, WRAPPED, CROSSGUARD, BANDED, DOUBLE, PLAIN }
 @export var second_blade_length: float = 0.0
 @export var hum_pitch: float = 1.0
 @export var hum_detune: float = 0.0
+@export var sidearm: Sidearm = Sidearm.NONE
 
 
 func reach_tip() -> float:

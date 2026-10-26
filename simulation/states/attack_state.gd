@@ -74,7 +74,7 @@ func _enter_active(sim: MatchSimulation, fighter: FighterState, move: MoveData) 
 		_start_burst(sim, fighter, move)
 	if move.dash_in_startup:
 		fighter.vx = 0.0
-	elif fighter.on_ground and move.lunge > 0.0 and move.active > 0.0:
+	elif fighter.on_ground and move.lunge != 0.0 and move.active > 0.0:
 		fighter.vx = fighter.facing * move.lunge * fighter.agility_multiplier / move.active
 	if move.dive_speed > 0.0 and fighter.is_airborne():
 		fighter.vy = -move.dive_speed
@@ -142,9 +142,12 @@ func _try_chain(sim: MatchSimulation, fighter: FighterState) -> bool:
 
 
 func _try_follow_up(sim: MatchSimulation, fighter: FighterState, move: MoveData) -> bool:
-	if move.follow_up == null or fighter.buffered_action != FighterState.Action.SPECIAL:
+	if move.follow_up == null:
 		return false
-	ActionStarter.consume(fighter)
+	if not move.follow_up_auto:
+		if fighter.buffered_action != FighterState.Action.SPECIAL:
+			return false
+		ActionStarter.consume(fighter)
 	return ActionStarter.start_attack(sim, fighter, move.follow_up, fighter.chain_index + 1) == ActionStarter.Result.STARTED
 
 

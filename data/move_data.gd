@@ -51,6 +51,8 @@ enum TechniqueStyle { ARC, DASH, THROW, THRUST, RISING, FLURRY, LUNGE, PLUNGE, W
 @export var projectile_size: float = 0.0
 @export var projectile_tier_scales: PackedFloat32Array = PackedFloat32Array([1.0])
 @export var follow_up: MoveData
+@export var follow_up_auto: bool = false
+@export var from_guard: bool = false
 @export var bolt: BoltData
 @export var recovery_on_hit: float = -1.0
 @export var dash_in_startup: bool = false

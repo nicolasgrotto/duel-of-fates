@@ -28,6 +28,9 @@ static func activate(sim: MatchSimulation, caster: FighterState) -> void:
 	event.power = power
 	event.amount = caster.flow_tier
 	event.position = Vector2(caster.x + caster.facing * 30.0, caster.y + 100.0)
+	if power.kind == PowerData.Kind.BLADE_SEQUENCE:
+		ActionStarter.start_attack(sim, caster, power.sequence)
+		return
 	match power.kind:
 		PowerData.Kind.REPULSE:
 			_repulse(sim, caster, target, power)

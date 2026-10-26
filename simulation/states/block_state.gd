@@ -14,8 +14,20 @@ func step(sim: MatchSimulation, fighter: FighterState, intent: Intent) -> void:
 		return
 	if ActionStarter.try_buffered(sim, fighter, intent, ActionStarter.GUARD_ACTIONS):
 		return
+	if _try_guard_technique(sim, fighter):
+		return
 	if not intent.is_held(Intent.Command.BLOCK) and fighter.parry_ticks == FighterState.NO_PARRY:
 		sim.change_state(fighter, FighterState.State.IDLE)
+
+
+func _try_guard_technique(sim: MatchSimulation, fighter: FighterState) -> bool:
+	if fighter.buffered_action != FighterState.Action.SPECIAL:
+		return false
+	var technique: MoveData = ActionStarter.technique_for(sim, fighter, fighter.buffered_direction)
+	if technique == null or not technique.from_guard:
+		return false
+	ActionStarter.consume(fighter)
+	return ActionStarter.start_attack(sim, fighter, technique) == ActionStarter.Result.STARTED
 
 
 func _guard_walk(sim: MatchSimulation, fighter: FighterState, intent: Intent) -> void:
