@@ -345,7 +345,7 @@ func _travel_shift() -> float:
 
 
 func _faces_back() -> bool:
-	return _travel_offset != 0.0 and _cutter != null and _cutter_time < (_cutter.travel_from + _cutter.travel_to) * 0.5
+	return _travel_offset != 0.0 and _cutter != null and _cutter.travel_faces_back and _cutter_time < (_cutter.travel_from + _cutter.travel_to) * 0.5
 
 
 func _off_hand_position() -> Vector2:

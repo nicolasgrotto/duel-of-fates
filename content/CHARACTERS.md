@@ -282,7 +282,7 @@ Decisão do autor (tasks 07 e 08): lâmina numa mão e disparos de blaster. Mec�
 - **IA**: mantém meia distância, atira em quem recua ou está em recovery, recua atirando quando o rival encosta; usa a técnica bem mais que a média.
 - **Visual**: casaco curto de abas, colete justo e faixa cruzada no peito, cabelo preso; cinto com coldre. Corpo `#2c3440`, casaco `#6a4a2e` (couro), acabamento `#c9a46a`. **Blaster** compacto na mão livre, cano curto e grosso com aleta, desenhado pelo jogo na cor de metal do traje.
 - **Lâmina**: Cobalto `#3f6bff` · Arcade Turquesa `#3fe0e0` · Desafio Ouro-rosa `#ffb08a` (vencer acertando 12 disparos).
-- **Finalização do forte**: Execução Cruzada (GAME_DESIGN §10): dois cortes nos antebraços, recuo, disparo no peito, queda para trás, giro e lâmina apagada.
+- **Finalização do forte**: Execução Cruzada (GAME_DESIGN §10): dois cortes nos antebraços, recuo de alguns passos, disparo no peito da vítima ajoelhada, queda para trás e lâmina apagada.
 - **Trajes**: Original; Viajante; Sentinela (regras do elenco comum).
 
 ## Lince / Lynx

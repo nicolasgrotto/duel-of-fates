@@ -345,6 +345,8 @@ func kill(victim: FighterState, killer: FighterState, move: MoveData, power: Pow
 		killer.facing = int(signf(victim.x - killer.x)) if victim.x != killer.x else killer.facing
 	elif Finisher.is_staged(victim.finisher_kind):
 		_hold_in_front(killer, victim)
+		if Finisher.steps_back(victim.finisher_kind):
+			_step_back(killer, victim)
 	change_state(victim, FighterState.State.DEAD)
 	var event: CombatEvent = emit(CombatEvent.Type.DEATH, killer.index, victim.index)
 	event.move = move if thrown == null else thrown
@@ -395,6 +397,12 @@ func _hold_in_front(killer: FighterState, victim: FighterState) -> void:
 	var side: float = signf(killer.x - victim.x) if killer.x != victim.x else -float(killer.facing)
 	var limit: float = config.half_width() - config.body_width * 0.5
 	killer.x = clampf(victim.x + side * minimum, -limit, limit)
+
+
+func _step_back(killer: FighterState, victim: FighterState) -> void:
+	var side: float = signf(killer.x - victim.x) if killer.x != victim.x else -float(killer.facing)
+	var limit: float = config.half_width() - config.body_width * 0.5
+	killer.x = clampf(killer.x + side * config.consequences.finisher_backstep, -limit, limit)
 
 
 func capture() -> Dictionary:

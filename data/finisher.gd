@@ -9,6 +9,10 @@ static func is_staged(kind: Kind) -> bool:
 	return STAGED.has(kind)
 
 
+static func steps_back(kind: Kind) -> bool:
+	return kind == Kind.CROSSED_EXECUTION
+
+
 static func passes_behind(kind: Kind) -> bool:
 	return kind == Kind.WHIRL or kind == Kind.PRECISE_SENTENCE
 

@@ -21,3 +21,4 @@ extends Resource
 @export var long_replay_tail: float = 2.4
 @export var dash_through_clearance: float = 24.0
 @export var execution_clearance: float = 16.0
+@export var finisher_backstep: float = 70.0

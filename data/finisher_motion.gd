@@ -6,6 +6,7 @@ const PATH: String = "res://data/finishers/%s.tres"
 
 @export var travel_from: float = NEVER
 @export var travel_to: float = NEVER
+@export var travel_faces_back: bool = true
 @export var pull_at: float = NEVER
 @export var catch_at: float = NEVER
 @export var release_at: float = NEVER

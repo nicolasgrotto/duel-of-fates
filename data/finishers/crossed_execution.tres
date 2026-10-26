@@ -50,10 +50,9 @@ grip = Vector2(4, -6)
 blade_angle = 35
 crouch = 4
 lean = -2
-step = -10
 places_off_hand = true
-off_hand = Vector2(38, -48)
-sidearm = 1.0
+off_hand = Vector2(38, -36)
+sidearm = 0.7
 
 [sub_resource type="Resource" id="key_5"]
 script = ExtResource("2_key")
@@ -62,10 +61,9 @@ grip = Vector2(4, -6)
 blade_angle = 35
 crouch = 4
 lean = -4
-step = -10
 places_off_hand = true
-off_hand = Vector2(34, -46)
-sidearm = 1.0
+off_hand = Vector2(34, -34)
+sidearm = 0.7
 
 [sub_resource type="Resource" id="key_6"]
 script = ExtResource("2_key")
@@ -73,8 +71,6 @@ time = 1.7
 grip = Vector2(16, -26)
 blade_angle = -40
 crouch = 6
-twirl = 1
-accent = true
 places_off_hand = true
 off_hand = Vector2(6, 4)
 
@@ -142,9 +138,8 @@ sound = &"bolt_hit"
 
 [sub_resource type="Resource" id="cue_6"]
 script = ExtResource("5_cue")
-time = 1.6
-sound = &"swing_light"
-pitch = 1.2
+time = 0.75
+sound = &"step"
 
 [sub_resource type="Resource" id="cue_7"]
 script = ExtResource("5_cue")
@@ -155,6 +150,9 @@ sound = &"extinguish"
 script = ExtResource("1_script")
 keys = Array[ExtResource("2_key")]([SubResource("key_0"), SubResource("key_1"), SubResource("key_2"), SubResource("key_3"), SubResource("key_4"), SubResource("key_5"), SubResource("key_6"), SubResource("key_7")])
 lead_in = true
+travel_from = 0.7
+travel_to = 0.95
+travel_faces_back = false
 extinguish_at = 1.95
 reaction = SubResource("reaction")
 effects = SubResource("effects")
