@@ -267,3 +267,15 @@ Para cada item ⚠️ ou ❌, escreva: número, personagem, arena, o que fez, o 
 | 05.8 | Experimentar saídas perto das bordas, evitando correr junto da massa | Sempre escolher passagem antes de a placa subir; invulnerabilidade exige momento correto | Sonda de 32 sementes/distâncias: parado atingido em 32/32; controlador heurístico de corrida/esquiva sem dano em 19/32. As 13 falhas reforçam a necessidade de validar legibilidade e tolerância com jogador humano; não é garantia de fuga automática |
 
 Suíte final das tasks 04–05: **353 testes passando, zero falhas** (`build/task05_tests_final.log`). Matriz padrão de 660 duelos mantém exatamente vitórias e contatos anteriores. Renderização executada na Godot 4.7.2; continuam pendentes avaliação humana de sensação, áudio e controle físico.
+
+## Task 06 — Disparos e desvio
+
+| Caso | Ação | Resultado esperado | Validação local |
+| --- | --- | --- | --- |
+| 06.1 | Treino com Poderes, F5 até "atirando"; fique parado | Disparo curto e claro sai da mão do boneco a cada 1,2 s; acerta com 4 de dano e um tranco curto, sem empurrão | `build/batch10/renders/bolts/hit_*` |
+| 06.2 | Segure a guarda de frente | O disparo se desfaz na lâmina com faíscas claras; 4 de Vigor; a lâmina vai na linha do disparo | `guard_*` |
+| 06.3 | Toque a guarda um pouco antes (parry) | Volta pela mesma linha, na cor da sua lâmina, e acerta o boneco | `parry_*`; teste `test_parry_sends_the_bolt_back_along_its_line` |
+| 06.4 | Toque no último instante (parry perfeito) | Anel pequeno; o disparo volta mais rápido, mirado no peito do boneco | `perfect_*`; teste do parry perfeito |
+| 06.5 | Comece um forte quando o disparo estiver chegando | Leva o dano e o forte continua | teste `test_bolt_never_interrupts_an_attack` |
+| 06.6 | Com uma gravação feita (F6), passe por todos os comportamentos com F5 | Ciclo parado → em guarda → atacando → atirando → reproduzindo, sem erro | correção do ciclo |
+| 06.7 | Julgar velocidade (900 u/s) e dano (4) | Dá para reagir de meia distância; disparo incomoda sem decidir a luta | ajuste em `data/bolts/standard_bolt.tres` |
