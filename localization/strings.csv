@@ -48,6 +48,21 @@ PAUSE_TITLE,PAUSADO,PAUSED
 PAUSE_CONTINUE,Continuar,Continue
 PAUSE_RESTART,Reiniciar duelo,Restart duel
 PAUSE_QUIT,Sair para o menu,Quit to menu
+PAUSE_MOVES,Lista de golpes,Move list
+PAUSE_MOVES_PLAYER,Lista de golpes · J{player},Move list · P{player}
+MOVES_TITLE,GOLPES · {name},MOVES · {name}
+MOVES_LIGHT_CHAIN,Sequência de rápidos ({count}),Light chain ({count})
+MOVES_FORWARD_HEAVY,Forte de avanço,Forward heavy
+MOVES_AERIAL,Golpe aéreo,Aerial attack
+MOVES_IN_AIR,no ar: {key},in the air: {key}
+MOVES_COUNTER,Contra-ataque,Counterattack
+MOVES_COUNTER_KEYS,{key} com o rival desequilibrado,{key} while the rival is staggered
+MOVES_LOCK,Disputa de lâminas,Blade lock
+MOVES_LOCK_KEYS,{key} repetido,mash {key}
+MOVES_PASSIVE,passivo,passive
+MOVES_HELD,{name} (segurar),{name} (hold)
+MOVES_FORWARD_PLUS,frente + {key},forward + {key}
+MOVES_BACK_PLUS,trás + {key},back + {key}
 RESULT_VICTORY,VITÓRIA,VICTORY
 RESULT_DEFEAT,DERROTA,DEFEAT
 RESULT_WINNER,{name} venceu o duelo,{name} won the duel

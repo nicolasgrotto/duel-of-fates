@@ -6,10 +6,18 @@ const TITLE_GAP: float = 48.0
 
 var mode: DuelMode
 var _list: MenuList
+var _move_lists: Array[Dictionary] = []
 
 
 func open(params: Dictionary) -> void:
 	mode = params["mode"]
+	_move_lists.assign(params.get("move_lists", []))
+	_list.add_item(&"continue", tr("PAUSE_CONTINUE"))
+	for index in _move_lists.size():
+		var label: String = tr("PAUSE_MOVES") if _move_lists.size() == 1 else tr("PAUSE_MOVES_PLAYER").format({"player": _move_lists[index]["player"]})
+		_list.add_item(StringName("moves_%d" % index), label)
+	_list.add_item(&"restart", tr("PAUSE_RESTART"))
+	_list.add_item(&"quit", tr("PAUSE_QUIT"))
 
 
 func _ready() -> void:
@@ -35,9 +43,6 @@ func _ready() -> void:
 	column.add_child(list_box)
 	_list = MenuList.new()
 	list_box.add_child(_list)
-	_list.add_item(&"continue", tr("PAUSE_CONTINUE"))
-	_list.add_item(&"restart", tr("PAUSE_RESTART"))
-	_list.add_item(&"quit", tr("PAUSE_QUIT"))
 	_list.chosen.connect(_on_chosen)
 
 
@@ -55,3 +60,6 @@ func _on_chosen(id: StringName) -> void:
 			mode.restart()
 		&"quit":
 			SceneRouter.change(&"menu")
+		_:
+			if String(id).begins_with("moves_"):
+				SceneRouter.push(&"moves", _move_lists[int(String(id).get_slice("_", 1))])

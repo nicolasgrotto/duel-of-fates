@@ -86,7 +86,7 @@ Overlay escuro sobre o duelo congelado. **PAUSADO**: Continuar, Lista de golpes 
 
 ### Lista de golpes
 
-Tela opaca, título `GOLPES · NOME`. Duas colunas: comando (do preset ativo) e descrição. Inclui a sequência de rápidos (com o tamanho do personagem), forte, forte de avanço, aéreo, aparar, contra-ataque, empurrão, esquiva, esquiva de precisão, disputa, habilidade, traço passivo, cada poder do conjunto (marcando os segurados) e cada técnica.
+Tela opaca, título `GOLPES · NOME`. Duas colunas: descrição à direita alinhada e comando à esquerda, com as teclas do jogador daquela lista (no 2 Jogadores, cada um vê as suas). Voltar, Confirmar ou Pausa fecham e voltam à pausa. Inclui a sequência de rápidos (com o tamanho do personagem), forte, forte de avanço, aéreo, aparar, contra-ataque, empurrão, esquiva, esquiva de precisão, disputa, habilidade, traço passivo, cada poder do conjunto (marcando os segurados) e cada técnica.
 
 ### Resultado
 

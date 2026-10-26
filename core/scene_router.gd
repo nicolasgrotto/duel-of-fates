@@ -6,6 +6,7 @@ const SCREENS: Dictionary = {
 	&"select": "res://screens/select/character_select.tscn",
 	&"duel": "res://screens/duel/duel_screen.tscn",
 	&"pause": "res://screens/pause/pause_screen.tscn",
+	&"moves": "res://screens/moves/move_list_screen.tscn",
 	&"result": "res://screens/result/result_screen.tscn",
 	&"options": "res://screens/options/options_screen.tscn",
 	&"keys": "res://screens/controls/key_config_screen.tscn",
