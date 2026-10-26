@@ -462,6 +462,7 @@ func _stage(track: PoseTrack, at: float, pose: RigPose, crouch: float, lean: flo
 	pose.trail = pose.trail or (to.trail and weight < 1.0 and keep < 0.5)
 	pose.off_trail = pose.off_trail or (to.off_trail and weight < 1.0 and keep < 0.5)
 	pose.front_foot.x += lerpf(from.step, to.step, weight) * (1.0 - keep)
+	pose.sidearm_raise = lerpf(from.sidearm, to.sidearm, weight) * (1.0 - keep)
 	if to.turn != 0.0 and weight < 1.0:
 		pose.turn = TAU * to.turn * weight
 	_head_snap = deg_to_rad(lerpf(from.head, to.head, weight)) * (1.0 - keep)

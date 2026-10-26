@@ -18,3 +18,4 @@ extends Resource
 @export var trail: bool = false
 @export var off_trail: bool = false
 @export var accent: bool = false
+@export_range(0.0, 1.0) var sidearm: float = 0.0

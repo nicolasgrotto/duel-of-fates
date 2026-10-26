@@ -80,7 +80,8 @@ func test_staged_kinds_play_their_motion_and_fall_forward() -> void:
 		assert_true(motion != null and not motion.keys.is_empty(), "kind %d has a motion" % kind)
 		player.kind = kind
 		player._motion = motion
-		assert_eq(player.fall_limb(), MoveData.Limb.HEAD, "kind %d kneels and falls forward" % kind)
+		var expected: MoveData.Limb = MoveData.Limb.NONE if motion.reaction.fall_backward else MoveData.Limb.HEAD
+		assert_eq(player.fall_limb(), expected, "kind %d falls the way its reaction says" % kind)
 		assert_eq(player.fall_delay(), motion.reaction.fall_at)
 		for key_index in range(1, motion.keys.size()):
 			assert_gt(motion.keys[key_index].time, motion.keys[key_index - 1].time, "kind %d keys in order" % kind)

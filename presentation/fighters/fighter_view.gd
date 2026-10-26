@@ -48,6 +48,8 @@ var _ignition: float = 1.0
 var _second_ignition: float = 1.0
 var _staging: bool = false
 var _extinguish: float = 0.0
+var _sheathed: bool = false
+var _turned: bool = false
 var _snap_pose: bool = true
 var _severed: Array[SeveredPiece] = []
 var _fall_limb: MoveData.Limb = MoveData.Limb.NONE
@@ -132,6 +134,8 @@ func reset_round(ignite: bool) -> void:
 	_death_time = -1.0
 	_lost_blade = false
 	_extinguish = 0.0
+	_sheathed = false
+	_turned = false
 	_ignition = 0.0 if ignite else 1.0
 	_second_ignition = 1.0
 	_staging = false
@@ -282,6 +286,14 @@ func kneel() -> void:
 	_solver.kneeling = true
 
 
+func turn_around() -> void:
+	_turned = true
+
+
+func _fall_facing() -> int:
+	return -fighter.facing if _turned else fighter.facing
+
+
 func drop_hilt() -> void:
 	if loose_hilt != null:
 		return
@@ -311,6 +323,11 @@ func _update_cutter(delta: float) -> void:
 		rival.loose_hilt.pull(_off_hand_position, _cutter.catch_at - _cutter.pull_at)
 	if FinisherMotion.fired(_cutter.catch_at, before, _cutter_time) and rival != null and rival.loose_hilt != null:
 		_borrow(rival)
+	for shot_at in effects_layer.shots:
+		if FinisherMotion.fired(shot_at, before, _cutter_time):
+			_finisher_shot()
+	if FinisherMotion.fired(_cutter.extinguish_at, before, _cutter_time):
+		_sheathed = true
 	if FinisherMotion.fired(_cutter.release_at, before, _cutter_time):
 		_release_borrowed(true)
 	if _cutter_time > _cutter.end_time() and not _borrowing:
@@ -371,6 +388,20 @@ func _apply_borrowed() -> void:
 	rig.hold_borrowed_hilt(true, _geometry_hilt_from, _geometry_hilt_to, _borrow_colors)
 
 
+func _finisher_shot() -> void:
+	if rival == null or not is_instance_valid(rival):
+		return
+	_emitter_left = effects.emitter_flash
+	var muzzle: Vector2 = rig.to_global(_pose.off_hand) if fighter.character.weapon.sidearm == WeaponData.Sidearm.BLASTER else _geometry.blade_base
+	var streak: SlashStreak = SlashStreak.new()
+	streak.from_point = muzzle
+	streak.to_point = rival.rig.to_global(rival.rig.chest)
+	streak.color = PALETTE.bolt
+	streak.life = effects.finisher_shot_time
+	streak.width = effects.finisher_shot_width
+	get_parent().add_child(streak)
+
+
 func _add_streak(from_point: Vector2, to_point: Vector2, tint: Color) -> void:
 	var streak: SlashStreak = SlashStreak.new()
 	streak.from_point = from_point
@@ -401,6 +432,8 @@ func _process(delta: float) -> void:
 	_advance_solver(delta)
 	_check_vault()
 	scale.x = -fighter.facing if (_solver.vault_turned() and _solver.vault_progress < 1.0 and not fighter.on_ground) or _faces_back() else fighter.facing
+	if _turned:
+		scale.x = -scale.x
 	_update_intro()
 	var frozen: bool = fighter.state == FighterState.State.HELD and not fighter.held_by_choke
 	if not frozen:
@@ -416,7 +449,7 @@ func _process(delta: float) -> void:
 			_pose.blend_toward(_target, 1.0 - exp(-follow * delta))
 	_update_death(delta)
 	if not _staging:
-		_ignition = minf(_ignition + delta / effects.ignition, 1.0)
+		_ignition = maxf(_ignition - delta / effects.ignition, 0.0) if _sheathed else minf(_ignition + delta / effects.ignition, 1.0)
 		_second_ignition = 1.0
 	rig.rotation = _pose.spin
 	rig.scale.x = fighter.character.art.dim("scale") * _turn_factor(_pose.turn)
@@ -576,11 +609,11 @@ func _update_death(delta: float) -> void:
 	match _fall_limb:
 		MoveData.Limb.HEAD:
 			var topple: float = clampf((falling - KNEEL_TIME) / FALL_DURATION, 0.0, 1.0)
-			rotation = FALL_ANGLE * ease(topple, 2.2) * fighter.facing
+			rotation = FALL_ANGLE * ease(topple, 2.2) * _fall_facing()
 		MoveData.Limb.LEG:
 			rotation = -FALL_ANGLE * ease(minf(falling / (FALL_DURATION * LEG_FALL_SPEED), 1.0), 1.8) * fighter.facing
 		_:
-			rotation = -FALL_ANGLE * ease(minf(falling / FALL_DURATION, 1.0), 0.4) * fighter.facing
+			rotation = -FALL_ANGLE * ease(minf(falling / FALL_DURATION, 1.0), 0.4) * _fall_facing()
 
 
 func _update_blade() -> void:

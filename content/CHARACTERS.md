@@ -282,6 +282,7 @@ Decisão do autor (tasks 07 e 08): lâmina numa mão e disparos de blaster. Mec�
 - **IA**: mantém meia distância, atira em quem recua ou está em recovery, recua atirando quando o rival encosta; usa a técnica bem mais que a média.
 - **Visual**: casaco curto de abas, colete justo e faixa cruzada no peito, cabelo preso; cinto com coldre. Corpo `#2c3440`, casaco `#6a4a2e` (couro), acabamento `#c9a46a`. **Blaster** compacto na mão livre, cano curto e grosso com aleta, desenhado pelo jogo na cor de metal do traje.
 - **Lâmina**: Cobalto `#3f6bff` · Arcade Turquesa `#3fe0e0` · Desafio Ouro-rosa `#ffb08a` (vencer acertando 12 disparos).
+- **Finalização do forte**: Execução Cruzada (GAME_DESIGN §10): dois cortes nos antebraços, recuo, disparo no peito, queda para trás, giro e lâmina apagada.
 - **Trajes**: Original; Viajante; Sentinela (regras do elenco comum).
 
 ## Lince / Lynx
@@ -299,6 +300,7 @@ Decisão do autor (tasks 07 e 08): lâmina numa mão e disparos de blaster. Mec�
 - **IA**: luta de perto; usa o tiro de guarda contra quem avança ou dá um avanço com corte de longe.
 - **Visual**: sobretudo longo e fechado até o pescoço, mangas justas, botas altas, cabelo curto raspado dos lados. Corpo `#1f2a2a`, sobretudo `#3e4f4a` (verde-ardósia), acabamento `#b7c4b0`. **Emissor no cabo**: um anel com lente na lateral do cabo, que acende na cor do disparo ao atirar.
 - **Lâmina**: Amarelo-lima `#e0ff3f` · Arcade Âmbar-claro `#ffe68a` · Desafio Azul-violeta `#8a7bff` (vencer acertando 4 disparos).
+- **Finalização do forte**: Sentença Precisa (GAME_DESIGN §10): corte diagonal, passagem para trás da vítima com corte lateral, disparo do cabo à queima-roupa, queda de joelhos e para a frente, lâmina apagada.
 - **Trajes**: Original; Viajante; Sentinela.
 
 ## Chefe: Sombra Desperta / Awakened Shadow

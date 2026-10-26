@@ -9,6 +9,7 @@ const PATH: String = "res://data/finishers/%s.tres"
 @export var pull_at: float = NEVER
 @export var catch_at: float = NEVER
 @export var release_at: float = NEVER
+@export var extinguish_at: float = NEVER
 @export var reaction: FinisherReaction
 @export var effects: FinisherEffects
 @export var cues: Array[FinisherCue] = []
@@ -49,10 +50,12 @@ func styled(style: FinisherStyle) -> FinisherMotion:
 	copy.pull_at = scaled(pull_at, style.tempo)
 	copy.catch_at = scaled(catch_at, style.tempo)
 	copy.release_at = scaled(release_at, style.tempo)
+	copy.extinguish_at = scaled(extinguish_at, style.tempo)
 	copy.reaction = reaction.duplicate()
 	copy.reaction.scale_times(style.tempo)
 	copy.effects = effects.duplicate()
 	copy.effects.streaks = effects.streaks.duplicate()
+	copy.effects.shots = effects.shots.duplicate()
 	copy.effects.scale_times(style.tempo)
 	var styled_cues: Array[FinisherCue] = []
 	for cue in cues:

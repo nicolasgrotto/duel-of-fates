@@ -124,3 +124,5 @@ extends Resource
 @export var bolt_guard_lead: float = 0.35
 @export var bolt_guard_segment: float = 60.0
 @export var emitter_flash: float = 0.25
+@export var finisher_shot_time: float = 0.12
+@export var finisher_shot_width: float = 5.0
