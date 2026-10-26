@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="AiProfileData" format=3]
+
+[ext_resource type="Script" path="res://data/balance/ai/ai_profile_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"lynx"
+aggression = 0.6
+defense = 0.55
+heavy_ratio = 0.3
+shove_bias = 0.45
+parry_bias = 0.55
+dodge_bias = 0.3
+patience = 0.4
+preferred_gap = 70.0
+safe_gap = 250.0
+low_vigor_ratio = 0.3
+ability_bias = 0.4
+power_bias = 0.45
+technique_bias = 0.2

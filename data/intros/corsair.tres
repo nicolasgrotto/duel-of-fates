@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="IntroData" format=3]
+
+[ext_resource type="Script" path="res://data/intro_data.gd" id="1_script"]
+[ext_resource type="Script" path="res://data/pose_key.gd" id="2_key"]
+
+[sub_resource type="Resource" id="key_0"]
+script = ExtResource("2_key")
+time = 0.0
+grip = Vector2(-4, 6)
+blade_angle = 100.0
+crouch = 4.0
+places_off_hand = true
+off_hand = Vector2(12, -64)
+head = 4.0
+
+[sub_resource type="Resource" id="key_1"]
+script = ExtResource("2_key")
+time = 0.8
+grip = Vector2(-4, 6)
+blade_angle = 100.0
+crouch = 4.0
+places_off_hand = true
+off_hand = Vector2(10, -60)
+head = -2.0
+
+[sub_resource type="Resource" id="key_2"]
+script = ExtResource("2_key")
+time = 1.2
+grip = Vector2(6, -6)
+blade_angle = 20.0
+crouch = 6.0
+places_off_hand = true
+off_hand = Vector2(6, 4)
+
+[sub_resource type="Resource" id="key_3"]
+script = ExtResource("2_key")
+time = 1.6
+grip = Vector2(18, -26)
+blade_angle = -40.0
+crouch = 6.0
+
+[resource]
+script = ExtResource("1_script")
+id = &"corsair"
+keys = Array[ExtResource("2_key")]([SubResource("key_0"), SubResource("key_1"), SubResource("key_2"), SubResource("key_3")])
+ignite_at = 1.25

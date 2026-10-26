@@ -3,7 +3,7 @@ extends SceneTree
 const CONFIG_PATH: String = "res://data/balance/combat_config.tres"
 const CHARACTER_PATH: String = "res://data/characters/%s/%s.tres"
 const DIFFICULTY_PATH: String = "res://data/balance/ai/difficulty_%s.tres"
-const MATRIX_CAST: Array[String] = ["guardian", "shadow", "bastion", "wasp", "mirror", "lance", "ember", "forge", "heron", "reaper", "echo"]
+const MATRIX_CAST: Array[String] = ["guardian", "shadow", "bastion", "wasp", "mirror", "lance", "ember", "forge", "heron", "reaper", "echo", "corsair", "lynx"]
 
 
 func _initialize() -> void:

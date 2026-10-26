@@ -110,7 +110,7 @@ func test_guard_defaults_breathe_and_preserve_family_identity() -> void:
 			solver.advance(Ticks.DELTA)
 			solver.solve(fighter, other, pose)
 		assert_true(first.distance_to(pose.pelvis) > 0.01, "%s breathes" % data.id)
-	assert_eq(signatures.values().size(), 8)
+	assert_eq(signatures.values().size(), 9)
 	for a in signatures:
 		for b in signatures:
 			if a != b:

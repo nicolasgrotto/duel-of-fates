@@ -4,7 +4,7 @@ extends RefCounted
 const STAT_KEYS: Array[StringName] = [
 	&"hits", &"damage", &"blocks", &"parries", &"perfect_parries", &"guard_breaks", &"shoves", &"best_combo",
 ]
-const EXTRA_KEYS: Array[StringName] = [&"aerial_hits", &"feints", &"responses"]
+const EXTRA_KEYS: Array[StringName] = [&"aerial_hits", &"feints", &"responses", &"bolt_hits"]
 
 var stats: Array[Dictionary] = []
 var fight_ticks: int = 0
@@ -33,6 +33,8 @@ func on_event(event: CombatEvent) -> void:
 				_add(event.source, &"aerial_hits", 1)
 		CombatEvent.Type.FEINT:
 			_add(event.source, &"feints", 1)
+		CombatEvent.Type.BOLT_HIT:
+			_add(event.source, &"bolt_hits", 1)
 		CombatEvent.Type.RESPONSE:
 			_add(event.target, &"responses", 1)
 		CombatEvent.Type.BLOCK:

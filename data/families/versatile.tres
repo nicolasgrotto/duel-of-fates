@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="MotionFamily" format=3]
+
+[ext_resource type="Script" path="res://data/motion_family.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"versatile"
+grip = 1
+stance_width = 30.0
+crouch = 6.0
+lean = 4.0
+breath = 1.0
+sway = 0.8
+stride = 10.5
+bob = 1.5
+windup_pull = 0.7
+strike_reach = 1.25
+strike_lean = 9.0
+follow_through = 8.0
+heavy_crouch = 7.0
+heavy_step = 12.0
+free_hand = Vector2(6, 4)
+walk_free_hand = Vector2(2, 0)
+wrist_lag = 0.9
+recover_share = 0.3
+front_elbow = Vector2(-0.25, 1)
+back_elbow = Vector2(-0.6, 1)
+block_frequency = 58.0
+block_crouch = 4.0
+block_lean = -1.0
+block_grip_offset = Vector2(2, -4)
+block_angle_offset = -14.0
+block_anticipation = 3.0
+block_recoil = 4.0
+block_stance = 1.12

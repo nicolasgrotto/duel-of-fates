@@ -119,6 +119,15 @@ def glyph(power_id):
         box((10, 9, 13, 14))
         line([(12, 1), (12, 4)], 2)
         line([(12, 20), (12, 23)], 2)
+    elif power_id == "unsettling_barrage":
+        for y in (4, 10, 16):
+            box((2, y, 9, y + 2))
+        polygon([(12, 20), (19, 4), (22, 3), (21, 7), (15, 21)])
+    elif power_id == "cut_and_fire":
+        line([(3, 20), (12, 4)])
+        line([(12, 20), (21, 4)])
+        box((7, 11, 10, 13))
+        box((16, 11, 19, 13))
     elif power_id.startswith("blade_"):
         style = power_id[6:]
         if style == "arc":
@@ -148,6 +157,11 @@ def glyph(power_id):
             polygon([(8, 2), (11, 2), (18, 16), (18, 22), (14, 18)])
             line([(5, 7), (13, 3)], 2)
             line([(2, 22), (9, 22)], 2)
+        elif style == "shot":
+            box((3, 11, 12, 14))
+            box((4, 14, 7, 20))
+            for x in (15, 19):
+                box((x, 11, x + 2, 13))
         elif style == "wave":
             line([(3, 19), (13, 7)])
             line([(2, 16), (7, 21)], 2)
@@ -186,7 +200,7 @@ def glyph(power_id):
 
 
 def blade_icons(palette):
-    styles = ["arc", "dash", "throw", "thrust", "rising", "flurry", "lunge", "plunge", "wave"]
+    styles = ["arc", "dash", "throw", "thrust", "rising", "flurry", "lunge", "plunge", "wave", "shot"]
     kinds = ["strike", "stance", "dash", "charge", "leap"]
     folder = ROOT / "assets/ui/blade"
     folder.mkdir(parents=True, exist_ok=True)
@@ -235,7 +249,7 @@ def main():
     folder = ROOT / "assets/ui/powers"
     folder.mkdir(parents=True, exist_ok=True)
     for resource in sorted((ROOT / "data/powers").glob("*.tres")):
-        source = resource.read_text(encoding="utf-8")
+        source = resource.read_text(encoding="utf-8").split("[resource]")[-1]
         match = re.search(r'^id = &"([\w]+)"', source, re.M)
         if match is None:
             continue

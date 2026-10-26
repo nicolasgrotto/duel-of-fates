@@ -8,7 +8,7 @@ const EDIT_RESET: StringName = &"reset"
 const EDIT_DONE: StringName = &"done"
 const CHARACTER_PATH: String = "res://data/characters/%s/%s.tres"
 const ROSTER: Array[StringName] = [
-	&"guardian", &"shadow", &"bastion", &"wasp", &"mirror", &"lance", &"ember", &"forge", &"heron", &"reaper", &"echo",
+	&"guardian", &"shadow", &"bastion", &"wasp", &"mirror", &"lance", &"ember", &"forge", &"heron", &"reaper", &"echo", &"corsair", &"lynx",
 	&"sovereign", &"elder", &"foretold",
 ]
 const RANDOM: StringName = &"random"

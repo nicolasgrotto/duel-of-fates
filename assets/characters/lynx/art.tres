@@ -1,0 +1,49 @@
+[gd_resource type="Resource" script_class="FighterArt" format=3]
+
+[ext_resource type="Script" path="res://presentation/fighters/fighter_art.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/torso.png" id="t_torso"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/torso_n.png" id="n_torso"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/head.png" id="t_head"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/head_n.png" id="n_head"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/hair.png" id="t_hair"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/hair_n.png" id="n_hair"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/hood.png" id="t_hood"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/hood_n.png" id="n_hood"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/mask.png" id="t_mask"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/mask_n.png" id="n_mask"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/upper_arm.png" id="t_upper_arm"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/upper_arm_n.png" id="n_upper_arm"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/forearm.png" id="t_forearm"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/forearm_n.png" id="n_forearm"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/hand.png" id="t_hand"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/hand_n.png" id="n_hand"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/hand_open.png" id="t_hand_open"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/hand_open_n.png" id="n_hand_open"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/thigh.png" id="t_thigh"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/thigh_n.png" id="n_thigh"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/shin.png" id="t_shin"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/shin_n.png" id="n_shin"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/boot.png" id="t_boot"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/boot_n.png" id="n_boot"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/pad.png" id="t_pad"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/pad_n.png" id="n_pad"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/neckerchief.png" id="t_neckerchief"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/neckerchief_n.png" id="n_neckerchief"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/plate.png" id="t_plate"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/plate_n.png" id="n_plate"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/collar.png" id="t_collar"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/collar_n.png" id="n_collar"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/skirt.png" id="t_skirt"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/skirt_n.png" id="n_skirt"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/cape.png" id="t_cape"]
+[ext_resource type="Texture2D" path="res://assets/characters/lynx/cape_n.png" id="n_cape"]
+
+[resource]
+script = ExtResource("1_script")
+pixels_per_unit = 0.5
+textures = {"torso": ExtResource("t_torso"), "head": ExtResource("t_head"), "hair": ExtResource("t_hair"), "hood": ExtResource("t_hood"), "mask": ExtResource("t_mask"), "upper_arm": ExtResource("t_upper_arm"), "forearm": ExtResource("t_forearm"), "hand": ExtResource("t_hand"), "hand_open": ExtResource("t_hand_open"), "thigh": ExtResource("t_thigh"), "shin": ExtResource("t_shin"), "boot": ExtResource("t_boot"), "pad": ExtResource("t_pad"), "neckerchief": ExtResource("t_neckerchief"), "plate": ExtResource("t_plate"), "collar": ExtResource("t_collar"), "skirt": ExtResource("t_skirt"), "cape": ExtResource("t_cape")}
+normals = {"torso": ExtResource("n_torso"), "head": ExtResource("n_head"), "hair": ExtResource("n_hair"), "hood": ExtResource("n_hood"), "mask": ExtResource("n_mask"), "upper_arm": ExtResource("n_upper_arm"), "forearm": ExtResource("n_forearm"), "hand": ExtResource("n_hand"), "hand_open": ExtResource("n_hand_open"), "thigh": ExtResource("n_thigh"), "shin": ExtResource("n_shin"), "boot": ExtResource("n_boot"), "pad": ExtResource("n_pad"), "neckerchief": ExtResource("n_neckerchief"), "plate": ExtResource("n_plate"), "collar": ExtResource("n_collar"), "skirt": ExtResource("n_skirt"), "cape": ExtResource("n_cape")}
+pivots = {"torso": Vector2(7.25, 24.00), "head": Vector2(7.68, 17.92), "hair": Vector2(7.68, 17.92), "hood": Vector2(10.24, 23.04), "mask": Vector2(7.68, 17.92), "upper_arm": Vector2(4.12, 4.12), "forearm": Vector2(3.75, 3.75), "hand": Vector2(2.50, 2.50), "hand_open": Vector2(2.00, 3.50), "thigh": Vector2(6.32, 6.32), "shin": Vector2(4.95, 4.95), "boot": Vector2(3.00, 3.00), "pad": Vector2(4.50, 3.50), "neckerchief": Vector2(5.00, 3.00), "plate": Vector2(6.25, 23.00), "collar": Vector2(7.00, 5.00), "skirt": Vector2(0.00, 0.00), "cape": Vector2(0.00, 0.00)}
+dims = {"shoulder_half": 10.5, "waist_half": 8.0, "hip_half": 8.0, "torso_length": 44.0, "neck": -2.5, "upper_arm": 23.0, "forearm": 21.0, "thigh": 35.0, "shin": 33.0, "ankle": 4.0, "foot": 13.0, "arm_width": 7.5, "leg_width": 11.0, "head": 1.28, "scale": 0.99, "hunch": 0.0}
+cloths = [{"name": "skirt", "anchor": "waist", "layer": "front", "length": 58.0, "top_width": 20.0, "bottom_width": 30.0, "stiffness": 0.7, "segments": 5}, {"name": "cape", "anchor": "shoulders", "layer": "back", "length": 100.0, "top_width": 22.0, "bottom_width": 32.0, "stiffness": 0.35, "segments": 7}]
+default_parts = PackedStringArray("hair", "skirt")

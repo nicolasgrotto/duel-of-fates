@@ -99,6 +99,8 @@ CHARACTER_WASP,Vespa,Wasp
 CHARACTER_MIRROR,Espelho,Mirror
 CHARACTER_LANCE,Haste,Lance
 CHARACTER_EMBER,Brasa,Ember
+CHARACTER_CORSAIR,Corsária,Corsair
+CHARACTER_LYNX,Lince,Lynx
 CHARACTER_FORGE,Forja,Forge
 CHARACTER_HERON,Garça,Heron
 CHARACTER_REAPER,Ceifador,Reaper
@@ -115,6 +117,8 @@ STYLE_WASP,"Velocidade, duas lâminas","Speed, twin blades"
 STYLE_MIRROR,"Defensivo, parry","Defensive, parry"
 STYLE_LANCE,"Alcance, lâmina em haste","Reach, hafted blade"
 STYLE_EMBER,"Resposta, leitura","Response, reading"
+STYLE_CORSAIR,"Versátil, duas armas","Versatile, two weapons"
+STYLE_LYNX,"Versátil, surpresa","Versatile, surprise"
 STYLE_FORGE,"Pesada, carga","Heavy, charge"
 STYLE_HERON,"Acrobática, mobilidade","Acrobatic, mobility"
 STYLE_REAPER,"Acrobata, lâmina dupla","Acrobat, double blade"
@@ -131,6 +135,8 @@ TRAIT_WASP,Sequência de 5; rápidos bloqueados drenam Vigor; pulo duplo forte,5
 TRAIT_MIRROR,Janelas de parry maiores,Wider parry windows
 TRAIT_LANCE,"Ponto doce: a ponta fere mais, de perto fere menos","Sweet spot: the tip hurts more, up close less"
 TRAIT_EMBER,+20% de dano contra quem está aberto,+20% damage against an open opponent
+TRAIT_CORSAIR,Saque rápido: +3 de Vigor a cada golpe de lâmina que acerta,Quick draw: +3 Vigor for every blade hit
+TRAIT_LYNX,Precisão: +15% de dano contra quem está aberto,Precision: +15% damage against an open opponent
 TRAIT_FORGE,Knockback maior em tudo,Bigger knockback on everything
 TRAIT_HERON,"Pulo na parede, esquiva que atravessa, dois aéreos","Wall jump, dodge through, two aerials"
 TRAIT_REAPER,O terceiro rápido empurra e atordoa mais,The third light pushes and stuns more
@@ -147,6 +153,8 @@ ABILITY_WASP,Zumbido: avanço invulnerável que atravessa,Buzz: invulnerable das
 ABILITY_MIRROR,Postura de Espera: apara tudo o que chegar,Waiting Stance: parries whatever comes
 ABILITY_LANCE,"Investida da Haste: lunge longo com a ponta","Lance Charge: a long lunge with the tip"
 ABILITY_EMBER,Brasa Viva: postura com resposta forte,Living Ember: stance with a strong answer
+ABILITY_CORSAIR,Recuo tático: avanço para trás invulnerável,Tactical retreat: an invulnerable backward dash
+ABILITY_LYNX,Contragolpe: postura com resposta rápida,Counterstrike: stance with a quick answer
 ABILITY_FORGE,Forja: segure para carregar até quebrar a guarda,Forge: hold to charge until it breaks guard
 ABILITY_HERON,Voo da Garça: salto alto por cima do oponente,Heron Flight: high leap over the opponent
 ABILITY_REAPER,Roda Dupla: acerta na frente e atrás,Twin Wheel: hits front and back
@@ -177,6 +185,12 @@ BLADE_LANCE_2,Fúcsia,Fuchsia
 BLADE_EMBER_0,Laranja-brasa,Ember orange
 BLADE_EMBER_1,Ouro,Gold
 BLADE_EMBER_2,Carmim,Carmine
+BLADE_CORSAIR_0,Cobalto,Cobalt
+BLADE_CORSAIR_1,Turquesa,Turquoise
+BLADE_CORSAIR_2,Ouro-rosa,Rose gold
+BLADE_LYNX_0,Amarelo-lima,Lime yellow
+BLADE_LYNX_1,Âmbar-claro,Pale amber
+BLADE_LYNX_2,Azul-violeta,Blue violet
 BLADE_FORGE_0,Vermelho-forja,Forge red
 BLADE_FORGE_1,Laranja-forno,Furnace orange
 BLADE_FORGE_2,Verde-escória,Slag green
@@ -508,6 +522,8 @@ CHALLENGE_COLOR_WASP,Vencer com uma sequência de 5 acertos,Win with a 5 hit seq
 CHALLENGE_COLOR_MIRROR,Vencer com 4 parries perfeitos,Win with 4 perfect parries
 CHALLENGE_COLOR_LANCE,Vencer com 15 golpes acertados,Win landing 15 hits
 CHALLENGE_COLOR_EMBER,Vencer com 3 golpes de resposta da postura,Win with 3 stance response strikes
+CHALLENGE_COLOR_CORSAIR,Vencer acertando 12 disparos,Win landing 12 shots
+CHALLENGE_COLOR_LYNX,Vencer acertando 4 disparos,Win landing 4 shots
 CHALLENGE_COLOR_FORGE,Vencer quebrando a guarda 2 vezes,Win breaking the guard 2 times
 CHALLENGE_COLOR_HERON,Vencer acertando 4 ataques aéreos,Win landing 4 aerial attacks
 CHALLENGE_COLOR_REAPER,Vencer com uma sequência de 5 acertos,Win with a 5 hit sequence
@@ -693,6 +709,9 @@ EXHIBITION_DANCE,DANÇA,DANCE
 POWER_TIER_REQUIRED,Só a partir do Tier {tier} (Fluxo {level}),Tier {tier} and up only (Flow {level})
 TECHNIQUE_PROJECTED_CUT,Corte Projetado,Projected Cut
 TECHNIQUE_PROJECTED_CUT_FOLLOW,Corte Projetado · segundo,Projected Cut · second
+TECHNIQUE_DOUBLE_SHOT,Disparo duplo,Double shot
+TECHNIQUE_RETREAT_SHOT,Recuo com disparo,Retreating shot
+TECHNIQUE_SNAP_SHOT,Tiro de guarda,Snap shot
 STORY_SKILLS,Habilidades · {points} pontos,Skills · {points} points
 STORY_NOTE_SKILL_POINTS,+{points} pontos de habilidade,+{points} skill points
 TREE_TAB_POWERS,Poderes,Powers
@@ -720,3 +739,7 @@ POWER_HIGHER_INSTINCT,Instinto Superior,Higher Instinct
 POWER_HIGHER_INSTINCT_TEXT,Esquiva de lâminas corpo a corpo e abre uma resposta curta. Poderes e áreas passam; dano de poder encerra.,Evades aimed melee blade attacks and opens a brief counter. Powers and areas get through; power damage ends it.
 POWER_SINGULARITY,Singularidade Devastadora,Devastating Singularity
 POWER_SINGULARITY_TEXT,Arranca o chão marcado e atrai quem está no ar. Corra entre as zonas e saia da trajetória da massa final.,Tears up marked ground and pulls airborne fighters. Run between zones and leave the final mass trajectory.
+POWER_UNSETTLING_BARRAGE,Rajada Desestabilizadora,Unsettling Barrage
+POWER_UNSETTLING_BARRAGE_TEXT,Rajada de disparos que desequilibra e um avanço com corte.,A barrage of shots that unsettles and a dashing cut.
+POWER_CUT_AND_FIRE,Sequência Corte e Disparo,Cut-and-Fire Sequence
+POWER_CUT_AND_FIRE_TEXT,Cortes alternados com disparos à queima-roupa até o corte final.,Cuts alternating with point-blank shots up to a final cut.

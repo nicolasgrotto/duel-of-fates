@@ -25,7 +25,7 @@ const BOSS_PATH: String = "res://data/characters/awakened_shadow/awakened_shadow
 const BOSS_DIFFICULTY: AiDifficultyData = preload("res://data/balance/ai/difficulty_boss.tres")
 const CHARACTER_PATH: String = "res://data/characters/%s/%s.tres"
 const DIFFICULTY_PATH: String = "res://data/balance/ai/difficulty_%s.tres"
-const CAST: Array[StringName] = [&"guardian", &"shadow", &"bastion", &"wasp", &"mirror", &"lance", &"ember", &"forge", &"heron", &"reaper", &"echo"]
+const CAST: Array[StringName] = [&"guardian", &"shadow", &"bastion", &"wasp", &"mirror", &"lance", &"ember", &"forge", &"heron", &"reaper", &"echo", &"corsair", &"lynx"]
 
 var selection: DuelSelection = DuelSelection.new()
 

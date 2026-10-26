@@ -1,0 +1,145 @@
+[gd_resource type="Resource" script_class="PowerData" format=3]
+
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="1_script"]
+[ext_resource type="Script" path="res://data/move_data.gd" id="2_move"]
+[ext_resource type="Script" path="res://data/bolt_data.gd" id="3_bolt"]
+[ext_resource type="Texture2D" path="res://assets/ui/powers/cut_and_fire.png" id="power_icon"]
+
+[sub_resource type="Resource" id="point_blank_bolt"]
+script = ExtResource("3_bolt")
+id = &"point_blank_bolt"
+speed = 1300.0
+max_range = 1100.0
+damage = 4.0
+size = 6.0
+flinch = 0.12
+guard_vigor = 6.0
+muzzle_height = 92.0
+muzzle_forward = 20.0
+count = 1
+interval = 0.1
+perfect_reflect_speed = 1.25
+stagger = 0.2
+pitch = 1.2
+
+[sub_resource type="Resource" id="sequence_finish"]
+script = ExtResource("2_move")
+id = &"sequence_finish"
+kind = 10
+startup = 0.14
+active = 0.1
+recovery = 0.45
+damage = 14.0
+vigor_cost = 0.0
+block_vigor_cost = 22.0
+knockback = 140.0
+block_push = 50.0
+hitstun = 0.5
+blockstun = 0.3
+lunge = 40.0
+reach = 110.0
+counts_as_heavy = true
+finisher_limb = 1
+cinematic_finisher = 13
+technique_style = 0
+cut = 1
+blade_angle_windup = -160.0
+blade_angle_strike = 60.0
+
+[sub_resource type="Resource" id="sequence_shot_2"]
+script = ExtResource("2_move")
+id = &"sequence_shot_2"
+kind = 10
+startup = 0.06
+active = 0.05
+recovery = 0.05
+damage = 0.0
+vigor_cost = 0.0
+lunge = 0.0
+reach = 0.0
+technique_style = 9
+follow_up_auto = true
+bolt = SubResource("point_blank_bolt")
+follow_up = SubResource("sequence_finish")
+
+[sub_resource type="Resource" id="sequence_cut_2"]
+script = ExtResource("2_move")
+id = &"sequence_cut_2"
+kind = 10
+startup = 0.12
+active = 0.08
+recovery = 0.06
+damage = 8.0
+vigor_cost = 0.0
+block_vigor_cost = 12.0
+knockback = 20.0
+block_push = 20.0
+hitstun = 0.45
+blockstun = 0.3
+lunge = 50.0
+reach = 105.0
+finisher_limb = 1
+technique_style = 0
+cut = 1
+blade_angle_windup = -150.0
+blade_angle_strike = 40.0
+follow_up_auto = true
+follow_up = SubResource("sequence_shot_2")
+
+[sub_resource type="Resource" id="sequence_shot_1"]
+script = ExtResource("2_move")
+id = &"sequence_shot_1"
+kind = 10
+startup = 0.06
+active = 0.05
+recovery = 0.05
+damage = 0.0
+vigor_cost = 0.0
+lunge = 0.0
+reach = 0.0
+technique_style = 9
+follow_up_auto = true
+bolt = SubResource("point_blank_bolt")
+follow_up = SubResource("sequence_cut_2")
+
+[sub_resource type="Resource" id="sequence_cut_1"]
+script = ExtResource("2_move")
+id = &"sequence_cut_1"
+kind = 10
+startup = 0.12
+active = 0.08
+recovery = 0.06
+damage = 8.0
+vigor_cost = 0.0
+block_vigor_cost = 12.0
+knockback = 20.0
+block_push = 20.0
+hitstun = 0.45
+blockstun = 0.3
+lunge = 50.0
+reach = 105.0
+finisher_limb = 1
+technique_style = 0
+cut = 3
+blade_angle_windup = 150.0
+blade_angle_strike = -20.0
+follow_up_auto = true
+follow_up = SubResource("sequence_shot_1")
+
+
+[resource]
+script = ExtResource("1_script")
+id = &"cut_and_fire"
+icon = ExtResource("power_icon")
+name_key = "POWER_CUT_AND_FIRE"
+description_key = "POWER_CUT_AND_FIRE_TEXT"
+path = 1
+kind = 22
+cost = 55.0
+min_level = 4
+high_cost = true
+mark_color = Color(0.85, 1.0, 0.45, 1)
+cooldown = 10.0
+startup = 0.2
+recovery = 0.2
+sequence = SubResource("sequence_cut_1")

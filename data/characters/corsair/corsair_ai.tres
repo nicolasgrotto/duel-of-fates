@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="AiProfileData" format=3]
+
+[ext_resource type="Script" path="res://data/balance/ai/ai_profile_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"corsair"
+aggression = 0.55
+defense = 0.5
+heavy_ratio = 0.25
+shove_bias = 0.4
+parry_bias = 0.45
+dodge_bias = 0.35
+patience = 0.35
+preferred_gap = 90.0
+safe_gap = 280.0
+low_vigor_ratio = 0.3
+ability_bias = 0.35
+power_bias = 0.5
+technique_bias = 0.75

@@ -1,0 +1,246 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Script" path="res://data/character_data.gd" id="1_script"]
+[ext_resource type="Script" path="res://data/move_data.gd" id="2_move"]
+[ext_resource type="Script" path="res://data/weapon_data.gd" id="3_weapon"]
+[ext_resource type="Script" path="res://data/costume_data.gd" id="4_costume"]
+[ext_resource type="Resource" path="res://data/characters/common/counter.tres" id="5_counter"]
+[ext_resource type="Resource" path="res://data/characters/common/shove.tres" id="6_shove"]
+[ext_resource type="Resource" path="res://data/characters/common/aerial_light.tres" id="7_aerial_light"]
+[ext_resource type="Resource" path="res://data/characters/common/aerial_heavy.tres" id="8_aerial_heavy"]
+[ext_resource type="Resource" path="res://data/characters/corsair/corsair_ai.tres" id="9_ai"]
+[ext_resource type="Resource" path="res://assets/characters/corsair/art.tres" id="10_art"]
+[ext_resource type="Resource" path="res://data/families/versatile.tres" id="11_family"]
+[ext_resource type="Script" path="res://data/ability_data.gd" id="12_ability"]
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="14_power"]
+[ext_resource type="Resource" path="res://data/intros/corsair.tres" id="intro_res"]
+[ext_resource type="Resource" path="res://data/finisher_styles/corsair.tres" id="style_res"]
+[ext_resource type="Resource" path="res://data/bolts/corsair_bolt.tres" id="b_corsair"]
+[ext_resource type="Resource" path="res://data/powers/lightning.tres" id="p_lightning"]
+[ext_resource type="Resource" path="res://data/powers/pull.tres" id="p_pull"]
+[ext_resource type="Resource" path="res://data/powers/throw.tres" id="p_throw"]
+[ext_resource type="Resource" path="res://data/powers/unsettling_barrage.tres" id="p_barrage"]
+[ext_resource type="Resource" path="res://data/techniques/double_shot.tres" id="t_double"]
+[ext_resource type="Resource" path="res://data/techniques/retreat_shot.tres" id="t_retreat"]
+
+[ext_resource type="Texture2D" path="res://assets/ui/blade/ability_dash.png" id="blade_icon"]
+
+[sub_resource type="Resource" id="corsair_light_1"]
+script = ExtResource("2_move")
+id = &"corsair_light_1"
+kind = 0
+startup = 0.1
+active = 0.1
+recovery = 0.2
+damage = 9.0
+vigor_cost = 8.0
+block_vigor_cost = 8.0
+knockback = 40.0
+block_push = 30.0
+hitstun = 0.35
+blockstun = 0.24
+lunge = 20.0
+reach = 100.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 60.0
+finisher_limb = 1
+cut = 2
+blade_angle_windup = 120.0
+blade_angle_strike = -40.0
+
+[sub_resource type="Resource" id="corsair_light_2"]
+script = ExtResource("2_move")
+id = &"corsair_light_2"
+kind = 0
+startup = 0.1
+active = 0.1
+recovery = 0.2
+damage = 8.0
+vigor_cost = 8.0
+block_vigor_cost = 8.0
+knockback = 40.0
+block_push = 30.0
+hitstun = 0.35
+blockstun = 0.24
+lunge = 20.0
+reach = 100.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 60.0
+finisher_limb = 1
+cut = 3
+blade_angle_windup = 160.0
+blade_angle_strike = -10.0
+bolt = ExtResource("b_corsair")
+
+[sub_resource type="Resource" id="corsair_light_3"]
+script = ExtResource("2_move")
+id = &"corsair_light_3"
+kind = 0
+startup = 0.1
+active = 0.1
+recovery = 0.2
+damage = 10.0
+vigor_cost = 8.0
+block_vigor_cost = 8.0
+knockback = 40.0
+block_push = 30.0
+hitstun = 0.35
+blockstun = 0.24
+lunge = 40.0
+reach = 108.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 60.0
+finisher_limb = 2
+cut = 4
+blade_angle_windup = -10.0
+blade_angle_strike = 0.0
+
+[sub_resource type="Resource" id="corsair_heavy"]
+script = ExtResource("2_move")
+id = &"corsair_heavy"
+kind = 1
+startup = 0.32
+active = 0.12
+recovery = 0.42
+damage = 22.0
+vigor_cost = 24.0
+block_vigor_cost = 30.0
+knockback = 120.0
+block_push = 60.0
+hitstun = 0.5
+blockstun = 0.3
+lunge = 40.0
+reach = 112.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 70.0
+can_blade_lock = true
+wound_limb = 1
+finisher_limb = 1
+blade_angle_windup = -150.0
+blade_angle_strike = 60.0
+cut = 1
+cinematic_finisher = 12
+
+[sub_resource type="Resource" id="corsair_forward_heavy"]
+script = ExtResource("2_move")
+id = &"corsair_forward_heavy"
+kind = 2
+startup = 0.36
+active = 0.12
+recovery = 0.52
+damage = 24.0
+vigor_cost = 30.0
+block_vigor_cost = 32.0
+knockback = 140.0
+block_push = 70.0
+hitstun = 0.5
+blockstun = 0.3
+lunge = 110.0
+reach = 112.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 70.0
+can_blade_lock = true
+wound_limb = 2
+finisher_limb = 2
+blade_angle_windup = -160.0
+blade_angle_strike = 60.0
+cut = 1
+cinematic_finisher = 9
+
+[sub_resource type="Resource" id="corsair_ability"]
+script = ExtResource("12_ability")
+icon = ExtResource("blade_icon")
+id = &"corsair_ability"
+kind = 2
+vigor_cost = 14.0
+dash_distance = 200.0
+dash_duration = 0.24
+dash_invulnerable = 0.18
+dash_through = false
+dash_forward_by_default = false
+
+[sub_resource type="Resource" id="corsair_weapon"]
+script = ExtResource("3_weapon")
+kind = 0
+hilt = 2
+blade_length = 84.0
+blade_width = 1.0
+hilt_length = 12.0
+hum_pitch = 1.04
+sidearm = 1
+
+[sub_resource type="Resource" id="corsair_costume_0"]
+script = ExtResource("4_costume")
+id = &"corsair_original"
+name_key = "COSTUME_ORIGINAL"
+requirement_key = ""
+colors = PackedColorArray(0.4157, 0.2902, 0.1804, 1, 0.1725, 0.2039, 0.2510, 1, 0.7882, 0.6431, 0.4157, 1, 0.7059, 0.5176, 0.4078, 1, 0.1647, 0.1020, 0.0784, 1, 0.5412, 0.5647, 0.5961, 1, 0.2275, 0.1647, 0.1255, 1, 1.0000, 0.6980, 0.1804, 1)
+show_parts = PackedStringArray()
+hide_parts = PackedStringArray()
+
+[sub_resource type="Resource" id="corsair_costume_1"]
+script = ExtResource("4_costume")
+id = &"corsair_traveler"
+name_key = "COSTUME_TRAVELER"
+requirement_key = "REQUIREMENT_TRAVELER"
+colors = PackedColorArray(0.2706, 0.3020, 0.3451, 1, 0.1333, 0.1529, 0.1882, 1, 0.5137, 0.5647, 0.6196, 1, 0.7059, 0.5176, 0.4078, 1, 0.1647, 0.1020, 0.0784, 1, 0.5412, 0.5647, 0.5961, 1, 0.2275, 0.1647, 0.1255, 1, 1.0000, 0.6980, 0.1804, 1)
+show_parts = PackedStringArray("collar", "neckerchief")
+hide_parts = PackedStringArray("hood", "mask")
+
+[sub_resource type="Resource" id="corsair_costume_2"]
+script = ExtResource("4_costume")
+id = &"corsair_sentinel"
+name_key = "COSTUME_SENTINEL"
+requirement_key = "REQUIREMENT_SENTINEL"
+colors = PackedColorArray(0.3176, 0.2824, 0.2353, 1, 0.1569, 0.1373, 0.1176, 1, 0.6275, 0.5843, 0.4941, 1, 0.7059, 0.5176, 0.4078, 1, 0.1647, 0.1020, 0.0784, 1, 0.5412, 0.5647, 0.5961, 1, 0.2275, 0.1647, 0.1255, 1, 1.0000, 0.6980, 0.1804, 1)
+show_parts = PackedStringArray("pad")
+hide_parts = PackedStringArray()
+
+[resource]
+script = ExtResource("1_script")
+id = &"corsair"
+name_key = "CHARACTER_CORSAIR"
+health = 4
+vigor = 5
+blade = 4
+defense = 4
+agility = 5
+flow = 4
+light_chain = Array[ExtResource("2_move")]([SubResource("corsair_light_1"), SubResource("corsair_light_2"), SubResource("corsair_light_3")])
+heavy = SubResource("corsair_heavy")
+forward_heavy = SubResource("corsair_forward_heavy")
+counter = ExtResource("5_counter")
+shove = ExtResource("6_shove")
+aerial_light = ExtResource("7_aerial_light")
+aerial_heavy = ExtResource("8_aerial_heavy")
+vigor_on_hit = 3.0
+ability = SubResource("corsair_ability")
+powers = Array[ExtResource("14_power")]([ExtResource("p_lightning"), ExtResource("p_pull"), ExtResource("p_throw")])
+fourth_power = ExtResource("p_barrage")
+technique_forward = ExtResource("t_double")
+technique_back = ExtResource("t_retreat")
+ai_profile = ExtResource("9_ai")
+path = 1
+style_key = "STYLE_CORSAIR"
+trait_key = "TRAIT_CORSAIR"
+ability_key = "ABILITY_CORSAIR"
+secret = false
+selectable = true
+art = ExtResource("10_art")
+family = ExtResource("11_family")
+weapon = SubResource("corsair_weapon")
+costumes = Array[ExtResource("4_costume")]([SubResource("corsair_costume_0"), SubResource("corsair_costume_1"), SubResource("corsair_costume_2")])
+blade_colors = PackedColorArray(0.2471, 0.4196, 1.0000, 1, 0.2471, 0.8784, 0.8784, 1, 1.0000, 0.6902, 0.5412, 1)
+blade_color_keys = PackedStringArray("BLADE_CORSAIR_0", "BLADE_CORSAIR_1", "BLADE_CORSAIR_2")
+guard_angle = -40.0
+guard_grip = Vector2(18, -26)
+intro = ExtResource("intro_res")
+finisher_style = ExtResource("style_res")
+challenge_stat = &"bolt_hits"
+challenge_target = 12
+challenge_key = "CHALLENGE_COLOR_CORSAIR"

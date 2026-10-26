@@ -112,6 +112,22 @@ SPECS = {
         legs=dict(boot="mid"),
         cloth=[skirt(24.0, top=18.0, bottom=22.0)],
     ),
+    "corsair": dict(
+        build=dict(shoulder_half=11.0, waist_half=8.5),
+        torso=dict(tunic="wrap", belt="wide", neck_sash=True),
+        head=dict(hair="ponytail"),
+        arms=dict(bracer=True, bracer_slot="leather", sleeve_slot="cloak"),
+        legs=dict(boot="high"),
+        cloth=[skirt(30.0, top=20.0, bottom=28.0, hem="tails", stiffness=0.6)],
+    ),
+    "lynx": dict(
+        build=dict(shoulder_half=10.5, waist_half=8.0, scale=0.99),
+        torso=dict(tunic="wrap", belt="plain", buckle=False, high_collar=True),
+        head=dict(hair="short"),
+        arms=dict(sleeve_slot="cloak"),
+        legs=dict(boot="high"),
+        cloth=[skirt(58.0, top=20.0, bottom=30.0, stiffness=0.7)],
+    ),
     "awakened_shadow": dict(
         build=dict(shoulder_half=14.0, waist_half=10.0, hunch=0.1, scale=1.05),
         torso=dict(tunic="wrap", belt="plain", buckle=False, plates=True),
