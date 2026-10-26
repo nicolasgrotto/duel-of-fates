@@ -230,12 +230,13 @@ def overlay_parts(spec, dims):
     return parts
 
 
-HAIR_STYLES = ["short", "mid_wavy", "wavy", "long", "ponytail", "bun"]
+HAIR_STYLES = ["short", "mid_wavy", "wavy", "long", "ponytail", "bun", "bob", "long_straight", "braid", "high_ponytail", "side_bangs"]
+LONG_HAIR = ["long_straight", "braid", "high_ponytail", "side_bangs"]
 BEARD_STYLES = ["short", "full", "long", "mustache"]
 
 
 def hair_part(name, style, k, cx, cy):
-    part = Part(name, -12 * k, -28 * k, 12 * k, 8 * k)
+    part = Part(name, -16 * k, -28 * k, 12 * k, 16 * k) if style in LONG_HAIR else Part(name, -12 * k, -28 * k, 12 * k, 8 * k)
     cap = [(cx - 7.4 * k, cy + 3 * k), (cx - 7.6 * k, cy - 4 * k), (cx - 3 * k, cy - 9.2 * k), (cx + 3.5 * k, cy - 9 * k), (cx + 7.6 * k, cy - 4.5 * k), (cx + 5 * k, cy - 5.5 * k), (cx + 0.5 * k, cy - 4.5 * k), (cx - 2.5 * k, cy + 1 * k), (cx - 3 * k, cy + 4.5 * k)]
     if style == "long":
         cap += [(cx - 4 * k, cy + 12 * k), (cx - 8.5 * k, cy + 13 * k)]
@@ -245,7 +246,21 @@ def hair_part(name, style, k, cx, cy):
         cap = [(cx - 7.6 * k, cy + 6 * k), (cx - 8 * k, cy - 4 * k), (cx - 3 * k, cy - 9.6 * k), (cx + 3.5 * k, cy - 9.4 * k), (cx + 7.8 * k, cy - 4.8 * k),
             (cx + 5.5 * k, cy - 6.2 * k), (cx + 2.5 * k, cy - 6.6 * k), (cx + 0.5 * k, cy - 3.5 * k), (cx - 1.4 * k, cy + 3 * k), (cx - 0.6 * k, cy + 6.4 * k),
             (cx - 3.4 * k, cy + 5.2 * k), (cx - 5.4 * k, cy + 7.4 * k)]
+    if style == "bob":
+        cap = [(cx - 8 * k, cy + 7 * k), (cx - 8.2 * k, cy - 4 * k), (cx - 3 * k, cy - 9.8 * k), (cx + 3.5 * k, cy - 9.6 * k), (cx + 8 * k, cy - 4.6 * k), (cx + 8 * k, cy - 2.6 * k),
+            (cx + 4.5 * k, cy - 3 * k), (cx + 2 * k, cy - 2.4 * k), (cx + 1.2 * k, cy + 2 * k), (cx + 1.6 * k, cy + 7 * k), (cx - 2 * k, cy + 7.6 * k)]
+    if style == "long_straight":
+        cap = [(cx - 8 * k, cy + 20 * k), (cx - 8.4 * k, cy - 4 * k), (cx - 3 * k, cy - 9.8 * k), (cx + 3.5 * k, cy - 9.6 * k), (cx + 7.8 * k, cy - 4.8 * k),
+            (cx + 5.5 * k, cy - 6 * k), (cx + 2 * k, cy - 5.5 * k), (cx + 0.5 * k, cy - 2 * k), (cx - 0.5 * k, cy + 6 * k), (cx - 2.5 * k, cy + 20 * k)]
+    if style == "side_bangs":
+        cap = [(cx - 7.8 * k, cy + 10 * k), (cx - 8.2 * k, cy - 4 * k), (cx - 3 * k, cy - 9.8 * k), (cx + 3.5 * k, cy - 9.8 * k), (cx + 8 * k, cy - 5 * k), (cx + 7.5 * k, cy - 1.8 * k),
+            (cx + 5 * k, cy - 3.4 * k), (cx + 2.5 * k, cy - 4.6 * k), (cx + 0.8 * k, cy - 1 * k), (cx + 0.2 * k, cy + 5 * k), (cx - 1.5 * k, cy + 10 * k)]
     mask = part.polygon_mask(cap)
+    if style == "braid":
+        for link in range(7):
+            mask = (mask + part.ellipse_mask((cx - 7.2 * k - link * 0.3 * k, cy + 2 * k + link * 3.4 * k), 2.1 * k, 1.9 * k)).clip(0, 1)
+    if style == "high_ponytail":
+        mask = (mask + part.polygon_mask([(cx - 4 * k, cy - 9 * k), (cx - 9 * k, cy - 11 * k), (cx - 13 * k, cy - 6 * k), (cx - 12.5 * k, cy + 6 * k), (cx - 10.5 * k, cy + 12 * k), (cx - 9.5 * k, cy + 2 * k), (cx - 7 * k, cy - 4 * k)])).clip(0, 1)
     if style == "ponytail":
         mask = (mask + part.polygon_mask([(cx - 6 * k, cy - 3 * k), (cx - 12 * k, cy + 1 * k), (cx - 11 * k, cy + 9 * k), (cx - 8 * k, cy + 2 * k)])).clip(0, 1)
     if style == "bun":

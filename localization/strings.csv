@@ -694,6 +694,11 @@ HAIR_WAVY,Ondulado até o queixo,Chin-length wavy
 HAIR_LONG,Longo,Long
 HAIR_PONYTAIL,Rabo de cavalo,Ponytail
 HAIR_BUN,Coque,Bun
+HAIR_BOB,Chanel com franja,Bob with bangs
+HAIR_LONG_STRAIGHT,Longo liso,Long straight
+HAIR_BRAID,Trança,Braid
+HAIR_HIGH_PONYTAIL,Rabo de cavalo alto,High ponytail
+HAIR_SIDE_BANGS,Franja lateral,Side-swept bangs
 BEARD_NONE,Sem barba,Clean shaven
 BEARD_SHORT,Curta,Short beard
 BEARD_FULL,Cheia aparada,Full trimmed beard
@@ -736,6 +741,12 @@ STYLE_FLIGHT,Voo,Flight
 LOOK_WANDERER,Errante,Wanderer
 LOOK_WATCHER,Vigia,Watcher
 LOOK_PILGRIM,Peregrino,Pilgrim
+LOOK_SCOUT,Batedor,Scout
+LOOK_NOBLE,Nobre,Noble
+LOOK_ASH,Cinzas,Ash
+LOOK_DUELIST,Duelista,Duelist
+LOOK_DESERT,Andarilho do deserto,Desert walker
+LOOK_SENTRY,Sentinela azul,Blue sentry
 MENU_EXHIBITION,Exibição,Exhibition
 HINT_NEXT_BOUT,próximo,next
 EXHIBITION_BLADES,LÂMINAS,BLADES

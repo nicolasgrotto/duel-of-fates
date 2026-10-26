@@ -19,9 +19,15 @@ const TreeNodeData = preload("res://data/story/story_tree_node.gd")
 	preload("res://data/story/outfits/wanderer.tres"), preload("res://data/story/outfits/watcher.tres"),
 	preload("res://data/story/outfits/pilgrim.tres"), preload("res://data/story/outfits/plate.tres"),
 	preload("res://data/story/outfits/layered.tres"),
+	preload("res://data/story/outfits/scout.tres"),
+	preload("res://data/story/outfits/noble.tres"),
+	preload("res://data/story/outfits/ash.tres"),
+	preload("res://data/story/outfits/duelist.tres"),
+	preload("res://data/story/outfits/desert.tres"),
+	preload("res://data/story/outfits/sentry.tres"),
 ]
-@export var hair_styles: PackedStringArray = ["", "hair_short", "hair_mid_wavy", "hair_wavy", "hair_long", "hair_ponytail", "hair_bun"]
-@export var hair_keys: PackedStringArray = ["HAIR_NONE", "HAIR_SHORT", "HAIR_MID_WAVY", "HAIR_WAVY", "HAIR_LONG", "HAIR_PONYTAIL", "HAIR_BUN"]
+@export var hair_styles: PackedStringArray = ["", "hair_short", "hair_mid_wavy", "hair_wavy", "hair_long", "hair_ponytail", "hair_bun", "hair_bob", "hair_long_straight", "hair_braid", "hair_high_ponytail", "hair_side_bangs"]
+@export var hair_keys: PackedStringArray = ["HAIR_NONE", "HAIR_SHORT", "HAIR_MID_WAVY", "HAIR_WAVY", "HAIR_LONG", "HAIR_PONYTAIL", "HAIR_BUN", "HAIR_BOB", "HAIR_LONG_STRAIGHT", "HAIR_BRAID", "HAIR_HIGH_PONYTAIL", "HAIR_SIDE_BANGS"]
 @export var beard_styles: PackedStringArray = ["", "beard_short", "beard_full", "beard_long", "beard_mustache"]
 @export var beard_keys: PackedStringArray = ["BEARD_NONE", "BEARD_SHORT", "BEARD_FULL", "BEARD_LONG", "BEARD_MUSTACHE"]
 @export var hair_colors: PackedColorArray = [Color("#3b2a1e"), Color("#5a3d26"), Color("#7a3a1c"), Color("#9a7a45"), Color("#1c1a1a"), Color("#8a8784")]

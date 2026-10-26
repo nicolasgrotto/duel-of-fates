@@ -64,7 +64,7 @@ Seis passos, com a prévia do personagem mudando junto com a opção destacada:
 1. **Nome**: lista pronta (Kael, Iria, Tarin, Vessa, Oren, Lyse) ou digitado, até 16 caracteres.
 2. **Caminho do Fluxo**: Caminho da Aurora ou Caminho do Eclipse. Define o poder inicial (Repulsão / Puxão), os poderes aprendidos, a rota e as falas.
 3. **Estilo de luta**: Técnica (base do Guardião), Fúria (base da Sombra), Voo (base da Garça).
-4. **Visual**: Errante, Vigia ou Peregrino.
+4. **Visual**: um dos visuais do protagonista (lista em [CHARACTERS.md](CHARACTERS.md#protagonista-da-história)), mais cabelo, barba, cor do cabelo e pele.
 5. **Cor da lâmina**: dez cores do elenco.
 6. **Dificuldade**: define o total de pontos de atributo da campanha.
 

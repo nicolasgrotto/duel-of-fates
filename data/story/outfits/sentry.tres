@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="CostumeData" format=3]
+
+[ext_resource type="Script" path="res://data/costume_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"story_sentry"
+name_key = "LOOK_SENTRY"
+requirement_key = ""
+colors = PackedColorArray(0.1725, 0.2275, 0.3216, 1, 0.0784, 0.1020, 0.1490, 1, 0.6039, 0.6902, 0.8000, 1, 0.6039, 0.4627, 0.3765, 1, 0.2902, 0.1961, 0.1255, 1, 0.6275, 0.6588, 0.7059, 1, 0.1098, 0.1255, 0.1569, 1, 1.0000, 0.6980, 0.1804, 1)
+show_parts = PackedStringArray("plate", "cape")
+hide_parts = PackedStringArray("hood", "mask", "pad", "neckerchief")
