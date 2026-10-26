@@ -352,12 +352,12 @@ func _off_hand_position() -> Vector2:
 	return rig.to_global(_pose.off_hand)
 
 
-func _borrow(owner: FighterView) -> void:
+func _borrow(lender: FighterView) -> void:
 	_borrowing = true
 	_borrow_ignition = 0.0
-	_borrow_weapon = owner.fighter.character.weapon
-	_borrow_colors = owner.rig.hilt_colors()
-	blade.second_color = owner.blade.color
+	_borrow_weapon = lender.fighter.character.weapon
+	_borrow_colors = lender.rig.hilt_colors()
+	blade.second_color = lender.blade.color
 	blade.own_second_color = true
 
 

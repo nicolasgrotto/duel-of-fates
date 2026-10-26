@@ -82,7 +82,7 @@ func on_event(event: CombatEvent) -> void:
 			dust(Vector2(shover.x + shover.facing * 20.0, floor_y), config.shove_dust, 10.0, 60.0)
 		CombatEvent.Type.PROJECTILE_ENDED:
 			if event.power != null and event.power.kind == PowerData.Kind.SINGULARITY:
-				chunks(at, config.singularity_plates / (2 if reduced else 1), config.chunk_gravity * 0.3, config.singularity_plate_size)
+				chunks(at, floori(config.singularity_plates / (2.0 if reduced else 1.0)), config.chunk_gravity * 0.3, config.singularity_plate_size)
 			if event.power != null and event.power.kind == PowerData.Kind.THROW:
 				chunks(at, config.throw_impact_chunks, 360.0, 6.0)
 				dust(Vector2(at.x, minf(at.y + 10.0, floor_y)), 2, 8.0, 40.0)
@@ -129,7 +129,7 @@ func _on_power_active(event: CombatEvent) -> void:
 				var reach: float = event.power.reach * (i + 1.0) / count
 				dust(Vector2(caster.x + caster.facing * reach, floor_y), 1, 6.0, 30.0)
 		PowerData.Kind.SUPREME_PUSH:
-			var count: int = (config.repulse_reduced_dust if reduced else config.repulse_dust) / 2
+			var count: int = floori((config.repulse_reduced_dust if reduced else config.repulse_dust) / 2.0)
 			for side in [-1.0, 1.0]:
 				for i in count:
 					dust(Vector2(caster.x + side * event.power.reach * (i + 1.0) / count, floor_y), 1, 6.0, 40.0)
@@ -423,7 +423,7 @@ func _draw_singularity_mass(at: Vector2, radius: float, mass: int, variant: int,
 	at = at.snapped(Vector2.ONE * GRID)
 	draw_rock(self, at, radius, _time * config.singularity_orbit_speed, variant + mass)
 	draw_circle(at, snappedf(radius * 0.72, GRID), PALETTE.background)
-	var count: int = mini(mass + 2, config.singularity_plates) / (2 if reduced else 1)
+	var count: int = floori(mini(mass + 2, config.singularity_plates) / (2.0 if reduced else 1.0))
 	for plate in count:
 		var angle: float = _time * config.singularity_orbit_speed + float(plate) * TAU / maxf(count, 1.0)
 		var offset: Vector2 = Vector2.from_angle(angle) * radius * (0.8 + 0.2 * sin(plate * 1.7))

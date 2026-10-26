@@ -43,8 +43,8 @@ func pull_back(amount: float, seconds: float) -> void:
 	_pull_back_target = amount
 
 
-func sky_shot(offset: float, rise: float, hold: float, descend: float) -> void:
-	_sky_offset = offset
+func sky_shot(sky_offset: float, rise: float, hold: float, descend: float) -> void:
+	_sky_offset = sky_offset
 	_sky_rise = rise
 	_sky_hold = hold
 	_sky_descend = descend

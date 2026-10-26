@@ -137,8 +137,8 @@ func _on_power_active(event: CombatEvent) -> void:
 
 
 func _on_hazard(event: CombatEvent, at: Vector2) -> void:
-	var owner: FighterState = sim.fighters[event.source]
-	var color: Color = tier_color(owner.flow_tier)
+	var caster: FighterState = sim.fighters[event.source]
+	var color: Color = tier_color(caster.flow_tier)
 	match int(event.amount):
 		Hazard.Kind.BOLT:
 			_burst(Burst.BOLT, at, 0.0, 0.16, SKY_HEIGHT, color)
@@ -342,7 +342,7 @@ func _draw_channel(fighter: FighterState, view: FighterView, color: Color) -> vo
 			draw_circle(hand, 6.0, Color(color, 0.5))
 
 
-func _draw_arsenal(fighter: FighterState, view: FighterView, color: Color) -> void:
+func _draw_arsenal(fighter: FighterState, view: FighterView, _color: Color) -> void:
 	var center: Vector2 = view.body_center()
 	for i in fighter.arsenal_count:
 		var angle: float = _time * 2.4 + i * TAU / fighter.arsenal_count
@@ -427,13 +427,13 @@ func _draw_cleave(projectile: Projectile, at: Vector2) -> void:
 	var direction: float = 1.0 if projectile.vx >= 0.0 else -1.0
 	var base_y: float = -(projectile.y - sim.config.flow.projectile_height)
 	var grow: float = clampf(projectile.travelled / CLEAVE_GROW, 0.35, 1.0)
-	var scale: float = projectile.size / projectile.move.projectile_size if projectile.move != null and projectile.move.projectile_size > 0.0 else 1.0
-	var height: float = vfx.cleave_height * grow * scale
+	var wave_scale: float = projectile.size / projectile.move.projectile_size if projectile.move != null and projectile.move.projectile_size > 0.0 else 1.0
+	var height: float = vfx.cleave_height * grow * wave_scale
 	var color: Color = blade_colors[projectile.owner]
 	for echo in 2:
 		var x: float = at.x - direction * echo * 26.0
 		for layer in CLEAVE_LAYERS:
-			_cleave_shape(x, base_y, height, direction, layer.x * (0.6 if echo == 1 else 1.0) * scale)
+			_cleave_shape(x, base_y, height, direction, layer.x * (0.6 if echo == 1 else 1.0) * wave_scale)
 			var tint: Color = color if layer.y < 1.0 else Color.WHITE
 			draw_colored_polygon(_cleave_points, Color(tint, layer.y * (0.35 if echo == 1 else 1.0) * (0.9 if layer.y < 1.0 else 0.85)))
 	for i in vfx.cleave_ground_sparks + 2:
@@ -478,8 +478,8 @@ func _draw_meteor(index: int) -> void:
 
 
 func _draw_hazard(hazard: Hazard) -> void:
-	var owner: FighterState = sim.fighters[hazard.owner]
-	var color: Color = tier_color(owner.flow_tier)
+	var caster: FighterState = sim.fighters[hazard.owner]
+	var color: Color = tier_color(caster.flow_tier)
 	var closing: float = 1.0 - float(hazard.delay_ticks) / maxf(hazard.total_delay, 1.0)
 	match hazard.kind:
 		Hazard.Kind.EXTRACTION:

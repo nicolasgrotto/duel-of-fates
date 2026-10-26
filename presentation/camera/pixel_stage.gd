@@ -55,9 +55,9 @@ func _process(_delta: float) -> void:
 	if viewport.size != grid:
 		viewport.size = grid
 	var center: Vector2 = rig.get_screen_center_position()
-	var snapped: Vector2 = (center / units_per_pixel).round() * units_per_pixel
-	_camera.position = snapped
-	var remainder: Vector2 = (center - snapped) / units_per_pixel * pixel_scale
+	var grid_center: Vector2 = (center / units_per_pixel).round() * units_per_pixel
+	_camera.position = grid_center
+	var remainder: Vector2 = (center - grid_center) / units_per_pixel * pixel_scale
 	var shown: Vector2 = Vector2(grid) * pixel_scale
 	_display.size = shown
 	_display.position = (screen - shown) * 0.5 - remainder
