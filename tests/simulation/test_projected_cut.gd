@@ -153,6 +153,6 @@ func test_wave_grows_with_the_flow_tier() -> void:
 			if wave.active and wave.kind == Projectile.Kind.CLEAVE:
 				sizes.append(wave.size)
 	assert_eq(sizes.size(), 4)
-	assert_almost(sizes[0], CUT.projectile_size)
+	assert_almost(sizes[0], CUT.projectile_size * 0.8, 0.01, "tier I is a fifth smaller than the reference wave")
 	for i in 3:
 		assert_gt(sizes[i + 1], sizes[i], "tier %d wave is larger" % (i + 2))

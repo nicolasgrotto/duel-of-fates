@@ -168,4 +168,4 @@ func _project_wave(sim: MatchSimulation, fighter: FighterState, move: MoveData) 
 	projectile.vx = fighter.facing * move.projectile_speed
 	projectile.max_distance = move.projectile_range
 	projectile.tier = fighter.flow_tier
-	projectile.size = move.projectile_size * (1.0 + move.projectile_growth * fighter.flow_tier)
+	projectile.size = move.projectile_size * move.projectile_scale(fighter.flow_tier)

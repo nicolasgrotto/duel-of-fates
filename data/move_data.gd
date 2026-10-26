@@ -49,7 +49,7 @@ enum TechniqueStyle { ARC, DASH, THROW, THRUST, RISING, FLURRY, LUNGE, PLUNGE, W
 @export var projectile_speed: float = 0.0
 @export var projectile_range: float = 0.0
 @export var projectile_size: float = 0.0
-@export var projectile_growth: float = 0.0
+@export var projectile_tier_scales: PackedFloat32Array = PackedFloat32Array([1.0])
 @export var follow_up: MoveData
 @export var bolt: BoltData
 @export var recovery_on_hit: float = -1.0
@@ -66,6 +66,12 @@ enum TechniqueStyle { ARC, DASH, THROW, THRUST, RISING, FLURRY, LUNGE, PLUNGE, W
 @export var blade_angle_strike: float = 30.0
 @export var technique_style: TechniqueStyle = TechniqueStyle.ARC
 @export var cut: Cut = Cut.ARC
+
+
+func projectile_scale(tier: int) -> float:
+	if projectile_tier_scales.is_empty():
+		return 1.0
+	return projectile_tier_scales[clampi(tier, 0, projectile_tier_scales.size() - 1)]
 
 
 func startup_ticks() -> int:
