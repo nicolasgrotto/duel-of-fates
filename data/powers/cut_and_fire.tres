@@ -143,3 +143,4 @@ cooldown = 10.0
 startup = 0.2
 recovery = 0.2
 sequence = SubResource("sequence_cut_1")
+required_sidearm = 2

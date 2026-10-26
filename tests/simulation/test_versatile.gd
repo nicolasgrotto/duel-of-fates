@@ -181,3 +181,22 @@ func test_blade_gunner_shoots_clearly_less_than_the_armed_duelist() -> void:
 	var lynx: int = _shots_in_ai_duel(&"lynx")
 	assert_gt(float(corsair), 0.0, "the corsair shoots")
 	assert_gt(float(corsair), float(lynx) * 2.0, "corsair %d vs lynx %d" % [corsair, lynx])
+
+
+func test_sidearm_ultimates_are_only_allowed_to_their_weapon() -> void:
+	var corsair: CharacterData = DuelFixture.character(&"corsair")
+	var lynx: CharacterData = DuelFixture.character(&"lynx")
+	var shadow: CharacterData = DuelFixture.character(&"shadow")
+	var guardian: CharacterData = DuelFixture.character(&"guardian")
+	assert_true(PowerCatalog.is_allowed(BARRAGE, corsair))
+	assert_false(PowerCatalog.is_allowed(BARRAGE, shadow), "no blaster, no barrage")
+	assert_true(PowerCatalog.is_allowed(SEQUENCE, lynx))
+	assert_false(PowerCatalog.is_allowed(SEQUENCE, guardian), "no hilt emitter, no sequence")
+
+
+func test_gallery_hands_sidearm_ultimates_to_a_wielder() -> void:
+	var guardian: CharacterData = DuelFixture.character(&"guardian")
+	assert_eq(GalleryPanel.wielder_for(BARRAGE, guardian), &"corsair")
+	assert_eq(GalleryPanel.wielder_for(SEQUENCE, guardian), &"lynx")
+	assert_eq(GalleryPanel.wielder_for(BARRAGE, DuelFixture.character(&"corsair")), &"")
+	assert_eq(GalleryPanel.wielder_for(load("res://data/powers/repulse.tres"), guardian), &"")

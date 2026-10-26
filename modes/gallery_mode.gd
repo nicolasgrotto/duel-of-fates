@@ -1,6 +1,9 @@
 class_name GalleryMode
 extends DuelMode
 
+var caster_id: StringName = &"guardian"
+var entry_index: int = 0
+
 
 func steps() -> Array[StringName]:
 	return []
@@ -8,7 +11,7 @@ func steps() -> Array[StringName]:
 
 func build_setup() -> DuelSetup:
 	var setup: DuelSetup = DuelSetup.new()
-	setup.characters = [GUARDIAN.duplicate(), SHADOW.duplicate()]
+	setup.characters = [DuelMode.character(caster_id).duplicate(), SHADOW.duplicate()]
 	setup.controllers = [DuelSetup.ControllerKind.GALLERY, DuelSetup.ControllerKind.GALLERY]
 	setup.rules = MatchRules.new()
 	setup.rules.endless = true

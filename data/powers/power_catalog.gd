@@ -14,6 +14,8 @@ static func technique_key(technique: MoveData) -> String:
 static func is_allowed(power: PowerData, character: CharacterData) -> bool:
 	if power.min_level > character.flow:
 		return false
+	if power.required_sidearm != WeaponData.Sidearm.NONE and character.weapon.sidearm != power.required_sidearm:
+		return false
 	match power.path:
 		PowerData.Path.AURORA:
 			return character.path == CharacterData.Path.AURORA

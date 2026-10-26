@@ -49,6 +49,7 @@ enum Kind {
 
 @export_group("Sequence")
 @export var sequence: MoveData
+@export var required_sidearm: WeaponData.Sidearm = WeaponData.Sidearm.NONE
 
 @export_group("Singularity")
 @export var suspension: float = 0.0

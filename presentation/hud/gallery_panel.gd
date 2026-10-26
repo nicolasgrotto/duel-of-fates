@@ -3,6 +3,7 @@ extends CanvasLayer
 
 signal caster_changed(index: int)
 signal entry_staged(index: int)
+signal caster_required(character_id: StringName, entry_index: int)
 
 const PALETTE: UiPalette = preload("res://ui/palette.tres")
 const CATALOG: PowerCatalog = preload("res://data/powers/catalog.tres")
@@ -157,7 +158,26 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _select(index: int) -> void:
 	_entry_index = posmod(index, _entries.size())
+	var wielder: StringName = wielder_for(_entries[_entry_index] as PowerData, runner.sim.fighters[caster_index].character)
+	if wielder != &"":
+		caster_required.emit(wielder, _entry_index)
+		return
 	_restart()
+
+
+func start_at(index: int) -> void:
+	_entry_index = posmod(index, _entries.size())
+	_restart()
+
+
+static func wielder_for(power: PowerData, current: CharacterData) -> StringName:
+	if power == null or power.required_sidearm == WeaponData.Sidearm.NONE or current.weapon.sidearm == power.required_sidearm:
+		return &""
+	for id in DuelMode.CAST:
+		var data: CharacterData = DuelMode.character(id)
+		if data.weapon.sidearm == power.required_sidearm:
+			return id
+	return &""
 
 
 func _restart() -> void:

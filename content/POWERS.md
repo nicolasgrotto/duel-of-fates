@@ -143,7 +143,7 @@ Usam Habilidade com direção ou no ar, gastam **Vigor** (não Fluxo), escalam c
 
 ### Supremas da família Versáteis
 
-Poderes do tipo **sequência de lâmina** (`PowerData.Kind.BLADE_SEQUENCE`): a invocação curta gasta o Fluxo e, ao sair, o lutador entra numa cadeia de golpes que se encadeiam sozinhos. Cada golpe é bloqueável e aparável como os outros; parar a cadeia com parry ou esquiva é a resposta. Ficam no quarto espaço do conjunto base de cada um, aparecem na Galeria e não entram nas árvores da História.
+Poderes do tipo **sequência de lâmina** (`PowerData.Kind.BLADE_SEQUENCE`): a invocação curta gasta o Fluxo e, ao sair, o lutador entra numa cadeia de golpes que se encadeiam sozinhos. Cada golpe é bloqueável e aparável como os outros; parar a cadeia com parry ou esquiva é a resposta. Ficam no quarto espaço do conjunto base de cada um, aparecem na Galeria e não entram nas árvores da História. **Exigem a arma da família** (`PowerData.required_sidearm`): a Rajada só para quem tem blaster, a Sequência só para quem tem emissor no cabo; o editor de conjunto não as oferece a mais ninguém (decisão do autor: o Guardião disparando pela mão não fazia sentido).
 
 | Poder (PT / EN) | Custo | Resumo |
 | --- | --- | --- |
