@@ -26,6 +26,7 @@ Os poderes são uma camada opcional do duelo (opção **Poderes**, ligada por pa
 | --- | --- | --- |
 | II | 4+ | Repulsão Suprema, Santuário, Fratura, Ira, Arsenal Telecinético |
 | III | 7+ | Telecinese em Massa, Tempestade, Instinto Superior, Singularidade Devastadora |
+| II | 4+ | (família Versáteis) Rajada Desestabilizadora, Sequência Corte e Disparo |
 
   Tiers mais altos mudam a **forma**: mais feixes no Raio, ondas maiores, mais pedras, Barreira maior, mais objetos no Arsenal. Nunca escondem o alcance real do poder.
 - **Medidor de Fluxo** (0–100): começa cada round em 20, enche devagar com o tempo e mais rápido ao acertar (+7), ser atingido (+9), bloquear (+4) e aparar (+10). Separado do Vigor.
@@ -139,6 +140,15 @@ Usam Habilidade com direção ou no ar, gastam **Vigor** (não Fluxo), escalam c
 | **Investida descendente** / Plunging strike | No ar: mergulho com a lâmina para baixo e para a frente, uma vez por pulo (conta como o golpe aéreo). Prep. 0,12 · ativo 0,36 · rec. 0,6 · dano 16 · Vigor 28. **No acerto, recuperação 0,27 s** (`recovery_on_hit`): quem acerta fica cerca de +4 quadros (antes ficava −15 e era punido mesmo acertando); na guarda continua −24. | sair do ponto de queda, punir a recovery |
 
 **Choque entre técnicas**: quando as lâminas de duas técnicas corpo a corpo ativas se cruzam, as duas são interrompidas num choque grande (GAME_DESIGN, seção 7).
+
+### Supremas da família Versáteis
+
+Poderes do tipo **sequência de lâmina** (`PowerData.Kind.BLADE_SEQUENCE`): a invocação curta gasta o Fluxo e, ao sair, o lutador entra numa cadeia de golpes que se encadeiam sozinhos. Cada golpe é bloqueável e aparável como os outros; parar a cadeia com parry ou esquiva é a resposta. Ficam no quarto espaço do conjunto base de cada um, aparecem na Galeria e não entram nas árvores da História.
+
+| Poder (PT / EN) | Custo | Resumo |
+| --- | --- | --- |
+| **Rajada Desestabilizadora** / Unsettling Barrage (Eclipse, Corsária) | 60 (Tier II, Fluxo 4+) | Invocação 0,25 s, recarga 10 s. Cinco disparos a 0,08 s (3 de dano cada, **desequilibram** por 0,25 s mesmo quem ataca; 8 de Vigor na guarda), e logo um avanço de 240 u com corte (18 de dano, conta como forte). No K.O. decisivo, finalização atravessando. |
+| **Sequência Corte e Disparo** / Cut-and-Fire Sequence (Aurora, Lince) | 55 (Tier II, Fluxo 4+) | Invocação 0,2 s, recarga 10 s. Corte (8) → disparo à queima-roupa (4, desequilibra 0,2 s) → corte (8) → disparo (4) → corte final (14, conta como forte). No K.O. decisivo, execução por cima. |
 
 ## 6. Conjuntos
 

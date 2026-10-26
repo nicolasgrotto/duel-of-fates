@@ -36,6 +36,8 @@ Todos os personagens são originais. A referência é sempre um **arquétipo** (
 | Garça / Heron | Aurora | acrobática, mobilidade | 3 | 5 · 6 · 5 · 3 · 6 · 5 |
 | Ceifador / Reaper | Eclipse | acrobata, lâmina dupla | 3 | 3 · 5 · 4 · 2 · 6 · 4 |
 | Eco / Echo | Eclipse | trapaceira, fintas | 2 | 6 · 6 · 5 · 3 · 6 · 6 |
+| Corsária / Corsair | Eclipse | versátil, duas armas | 3 | 4 · 5 · 4 · 4 · 5 · 4 |
+| Lince / Lynx | Aurora | versátil, surpresa | 3 | 4 · 4 · 6 · 4 · 5 · 4 |
 | **Chefe** Sombra Desperta / Awakened Shadow | Eclipse | chefe | 3 | 7 · 6 · 6 · 5 · 4 · 7 |
 | **Secreto** Soberano / Sovereign | Eclipse | senhor do Fluxo | 2 | 7 · 6 · 9 · 9 · 4 · 9 |
 | **Secreto** Ancião / Elder | Aurora | mestre da Aurora | 3 | 6 · 6 · 8 · 8 · 8 · 8 |
@@ -58,6 +60,8 @@ Direções relativas à frente do lutador. Técnicas usam Direção + Habilidade
 | Garça | Repulsão | Arremesso | Absorção | — | — | Avanço com corte | Investida descendente |
 | Ceifador | Repulsão | Puxão | Ira | — | Avanço com corte | Arremesso da lâmina | Investida descendente |
 | Eco | Raio | Puxão | Arremesso | — | Rajada | Avanço com corte | — |
+| Corsária | Raio | Puxão | Arremesso | Rajada Desestabilizadora | Disparo duplo | Recuo com disparo | — |
+| Lince | Repulsão | Arremesso | Barreira | Sequência Corte e Disparo | Tiro de guarda | Corte ascendente | — |
 | Sombra Desperta | Raio | Puxão | Estrangular | — | Avanço com corte | Corte ascendente | Investida descendente |
 | Soberano | Raio | Tempestade | Estrangular | — | Corte ascendente | Estocada | — |
 | Ancião | Repulsão | Cura | Barreira | — | Estocada | Corte ascendente | — |
@@ -83,6 +87,8 @@ Na seleção de Duelar, 2 Jogadores e Treino, o jogador pode trocar para um conj
 | Garça | Verde-menta `#5fffc0` | Azul-gelo `#a6e8ff` | Coral `#ff8a6b` | vencer acertando 4 ataques aéreos |
 | Ceifador | Vermelho-sangue `#ff2a2a` | Laranja-brasa `#ff7a2e` | Violeta `#c43bff` | vencer com uma sequência de 5 acertos |
 | Eco | Rosa-pálido `#ffa6e0` | Lilás `#c9a6ff` | Prata `#d6dbe6` | vencer fintando 5 vezes |
+| Corsária | Cobalto `#3f6bff` | Turquesa `#3fe0e0` | Ouro-rosa `#ffb08a` | vencer acertando 12 disparos |
+| Lince | Amarelo-lima `#e0ff3f` | Âmbar-claro `#ffe68a` | Azul-violeta `#8a7bff` | vencer acertando 4 disparos |
 | Soberano | Carmesim `#ff3040` | Ouro-velho | — | — |
 | Ancião | Verde-jade `#3fd07a` | — | — | — |
 | Predestinado | Azul-aurora `#6fb2ff` (variante Eclipse: Vermelho-ápice `#ff2b45`) | — | — | — |
@@ -243,20 +249,56 @@ O desafio vale em qualquer duelo vencido contra a IA (Duelar ou Arcade, qualquer
 
 ---
 
-## Família Versáteis (planejada)
+## Família Versáteis / Versatile
 
-Decisão do autor: lâmina numa mão e disparos de blaster. Mecânica da família: **Disparo Tático**, um disparo encaixado em certos recuos, reposicionamentos e passos da sequência. Os disparos são projéteis que a guarda bloqueia e o parry devolve; **nunca interrompem um ataque sozinhos** (no máximo um quadro de tranco em quem prepara), para a família não ficar forte demais.
+Decisão do autor (tasks 07 e 08): lâmina numa mão e disparos de blaster. Mecânica da família: **Disparo Tático**, um disparo encaixado em certos recuos, reposicionamentos e passos da sequência (regras e números em GAME_DESIGN, "Disparo Tático"). Os disparos são projéteis que a guarda bloqueia e o parry devolve; **nunca interrompem um ataque sozinhos** (só dão um tranco em quem está parado, andando ou na recovery), para a família não ficar forte demais. A única exceção é a suprema, que custa Fluxo alto e exige o Tier II.
 
-| | Duelista Armado | Atirador de Lâmina |
+| | Corsária (Duelista Armado) | Lince (Atirador de Lâmina) |
 | --- | --- | --- |
 | Arma | lâmina numa mão, blaster separado na outra | uma lâmina com emissor de disparo no cabo |
-| Disparos | frequentes, inclusive recuando | pontuais, para cortar aproximações |
+| Disparos | frequentes: passo da sequência, técnica de frente e recuo | pontuais: só o tiro de guarda |
 | Corpo a corpo | equilibrado | principal |
 | Distância | forte | moderada |
 | Identidade | alternância de armas, pressão | surpresa, interrupção, controle de distância |
 | Suprema | rajada de disparos que desequilibra, seguida de um avanço com corte | sequência de cortes alternada com disparos à queima-roupa |
 
-Nomes, aparência, cores e falas são originais; nenhuma referência a personagens da franquia.
+- **Família de movimento — Versáteis**: perfil de esgrimista, lâmina média à frente na altura do peito; a mão livre fica baixa, junto ao quadril (a Corsária com o blaster apontado para o chão à frente). Swing de uma mão, curto e de punho; o tiro estica o braço livre na altura do peito com um coice curto.
+- Nomes, aparência, cores e falas são originais; nenhuma referência a personagens da franquia.
+- **Liberação**: os dois já vêm liberados (como o elenco comum).
+
+## Corsária / Corsair
+
+- **Introdução**: Gira o blaster no dedo, guarda-o baixo junto ao quadril e só então acende a lâmina à frente.
+
+**A pressão de duas armas.** Corta de perto, atira de longe e atira recuando: quem foge da sequência leva um disparo.
+
+- **Atributos**: Vida 4 · Vigor 5 · Lâmina 4 · Defesa 4 · Agilidade 5 · Fluxo 4. Caminho Eclipse.
+- **Traço — Saque rápido**: recupera 3 de Vigor a cada golpe de lâmina que acerta.
+- **Habilidade — Recuo tático**: avanço para trás (200 u, invulnerável 0,18 s, 14 de Vigor); com direção para frente, avança.
+- **Sequência**: 3 rápidos (ascendente; **corte com disparo**: o passo 2 corta e dispara no mesmo tick ativo; estocada).
+- **Técnicas**: frente **Disparo duplo** (dois disparos com 0,12 s entre eles; prep. 0,16 · rec. 0,3 · Vigor 10); trás **Recuo com disparo** (salta 110 u para trás e dispara no início; prep. 0,1 · rec. 0,3 · Vigor 12).
+- **Poderes**: Raio, Puxão, Arremesso; quarto poder **Rajada Desestabilizadora** (suprema, Tier II).
+- **IA**: mantém meia distância, atira em quem recua ou está em recovery, recua atirando quando o rival encosta; usa a técnica bem mais que a média.
+- **Visual**: casaco curto de abas, colete justo e faixa cruzada no peito, cabelo preso; cinto com coldre. Corpo `#2c3440`, casaco `#6a4a2e` (couro), acabamento `#c9a46a`. **Blaster** compacto na mão livre, cano curto e grosso com aleta, desenhado pelo jogo na cor de metal do traje.
+- **Lâmina**: Cobalto `#3f6bff` · Arcade Turquesa `#3fe0e0` · Desafio Ouro-rosa `#ffb08a` (vencer acertando 12 disparos).
+- **Trajes**: Original; Viajante; Sentinela (regras do elenco comum).
+
+## Lince / Lynx
+
+- **Introdução**: Estende a lâmina apagada como quem mira, dispara um clarão do cabo para o chão e acende a lâmina na mesma linha.
+
+**A surpresa.** Luta de lâmina e guarda o tiro para cortar a aproximação no momento certo.
+
+- **Atributos**: Vida 4 · Vigor 4 · Lâmina 6 · Defesa 4 · Agilidade 5 · Fluxo 4. Caminho Aurora.
+- **Traço — Precisão**: +15% de dano contra quem está em recovery, desequilibrado ou atordoado.
+- **Habilidade — Contragolpe**: postura de resposta (0,4 s); a resposta é um corte rápido.
+- **Sequência**: 3 rápidos, todos de lâmina (horizontal; descendente; estocada).
+- **Técnicas**: frente **Tiro de guarda** (prep. 0,05 · rec. 0,25 · Vigor 8; disparo mais rápido e mais fraco, 3 de dano; **pode sair da guarda**); trás **Corte ascendente**.
+- **Poderes**: Repulsão, Arremesso, Barreira; quarto poder **Sequência Corte e Disparo** (suprema, Tier II).
+- **IA**: luta de perto; usa o tiro de guarda contra quem avança ou dá um avanço com corte de longe.
+- **Visual**: sobretudo longo e fechado até o pescoço, mangas justas, botas altas, cabelo curto raspado dos lados. Corpo `#1f2a2a`, sobretudo `#3e4f4a` (verde-ardósia), acabamento `#b7c4b0`. **Emissor no cabo**: um anel com lente na lateral do cabo, que acende na cor do disparo ao atirar.
+- **Lâmina**: Amarelo-lima `#e0ff3f` · Arcade Âmbar-claro `#ffe68a` · Desafio Azul-violeta `#8a7bff` (vencer acertando 4 disparos).
+- **Trajes**: Original; Viajante; Sentinela.
 
 ## Chefe: Sombra Desperta / Awakened Shadow
 

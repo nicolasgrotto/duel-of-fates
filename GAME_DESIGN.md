@@ -272,6 +272,22 @@ Base da família Versáteis e dos inimigos da Infiltração (decisão do autor, 
 - Disparos não geram Fluxo, para a distância não virar fonte de medidor.
 - **Rajada**: `BoltData.count` disparos com `interval` entre eles, a partir do primeiro tick ativo do golpe. Golpe que só dispara (`reach` 0) não tem hitbox de lâmina.
 
+### Disparo Tático (família Versáteis)
+
+Os disparos da família vêm de golpes comuns com `MoveData.bolt` e seguem todas as regras de "Disparos e desvio". O que muda por personagem é **onde** o disparo aparece:
+
+| | Corsária | Lince |
+| --- | --- | --- |
+| Disparo (`BoltData`) | 950 u/s · 4 de dano · 4 de Vigor na guarda · saída 104 u (braço esticado) | 1.100 u/s · 3 de dano · 3 de Vigor · saída 92 u (cabo) |
+| Na sequência | passo 2 corta **e** dispara no mesmo tick ativo | — |
+| Técnica de frente | Disparo duplo: 2 disparos a 0,12 s | Tiro de guarda: prep. 0,05 s, **sai da guarda** |
+| Técnica de trás | Recuo com disparo: recua 110 u e dispara no início | Corte ascendente (sem disparo) |
+
+- **Recuo com disparo**: o golpe tem impulso negativo (`lunge` −110), então o corpo recua durante o ativo enquanto o disparo sai para a frente. É o "recuo que atira" da família, sem gancho novo na esquiva.
+- **Tiro de guarda** (`MoveData.from_guard`): com a guarda segura, Direção para frente + Habilidade dispara sem soltar a guarda antes. Bom contra avanços: o disparo dá tranco em quem está andando, mas não para um avanço com corte já no ativo.
+- **Prioridade da regra**: nenhum disparo da família interrompe o startup ou o ativo de um golpe. A distância força o rival a fechar, e o fechar é que expõe.
+- **Supremas** (exceção, Fluxo alto e Tier II, ver content/POWERS.md): disparos com **desequilíbrio** (`BoltData.stagger`) que derrubam a postura mesmo de quem ataca, e golpes encadeados sozinhos (`MoveData.follow_up` com `follow_up_auto`).
+
 ### Ser atingido
 
 - Perde vida, recebe knockback na direção do golpe e entra em `HIT`. Se estava atacando, o ataque é cancelado.

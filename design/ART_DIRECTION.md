@@ -51,6 +51,10 @@ Uma cor por personagem, espaçada no círculo cromático. **Sem moral**: nenhuma
 
 A cor vem do tier de quem lança: Tênue `#9cc4ff`, Firme `#5d8dff`, Profundo `#b26bff`, Ápice `#ff2b45`. Nunca da lâmina. O lado de um poder (na interface) usa Aurora `#5aa2ff` e Eclipse `#ff4458`.
 
+### Armas de disparo (família Versáteis)
+
+Desenhadas pelo jogo, como os cabos, na cor de metal e de couro do traje. **Blaster da Corsária**: corpo compacto de 12 × 5 u, cano curto e grosso com uma aleta em cima e cabo inclinado; em repouso aponta para o chão à frente, no tiro fica na horizontal. **Emissor do Lince**: anel com lente na lateral do cabo, perto do emissor da lâmina; a lente brilha na cor do disparo por um instante a cada tiro. Nenhuma forma copia armas da franquia: sem cano longo com mira telescópica, sem anéis de refrigeração no cano.
+
 ### Disparos
 
 Branco quente de baixa saturação `#ffe2b0` (`UiPalette.bolt`) com núcleo branco, em traço curto e duro. Fica fora do círculo saturado das lâminas e das cores do Fluxo, para o disparo ler como "não é lâmina" pela forma e pela saturação. Ver [VFX.md](VFX.md#disparos).
@@ -69,6 +73,7 @@ Decisões do autor para a revisão de combate e animação (ver ROADMAP, fase 7.
 | Colosso (pesado) | base larga, lâmina alta sobre o ombro | duas mãos sempre | descendentes pesados, peso caindo na perna da frente |
 | Dançarina (acrobático) | base alta e leve, lâmina para trás | troca de mão nos giros | arcos com o corpo inteiro, giros e piruetas |
 | Vespa (duas lâminas) | uma lâmina alta à frente, a outra baixa e invertida atrás | uma lâmina em cada mão, com posição própria | as duas alternam: uma corta enquanto a outra guarda, nunca as duas paradas no mesmo ângulo |
+| Versáteis (lâmina e disparo) | perfil de esgrimista, lâmina média à frente na altura do peito; mão livre baixa junto ao quadril | uma mão; a outra segura o blaster (Corsária) ou fica livre (Lince) | cortes curtos de punho; no tiro, o braço livre (ou o cabo, no Lince) estica na altura do peito com coice curto |
 
 - Mão de trás presa ao cabo por IK nas empunhaduras de duas mãos; nas de uma mão, a mão livre tem pose própria (equilíbrio, palma aberta nos poderes).
 - **Revisão geral de braços e guardas (fase 8)**: as posições autoradas das mãos acompanham a rotação do tronco, no mesmo referencial anatômico dos ombros. O ângulo da lâmina continua no espaço do duelo para preservar a linha do corte e da defesa. Antes do IK, a empunhadura inteira cabe no alcance dos dois braços com folga; a mão de trás fica sobre o cabo, inclusive depois da mistura entre poses. Cotovelos têm preferência própria por braço, recolhidos na guarda e recuados na preparação. Só estocadas e a palma da Repulsão aproximam o braço da extensão completa. Guardas altas deixam espaço entre mão e rosto; guardas baixas conservam a dobra do cotovelo. As silhuetas aprovadas de cada personagem permanecem a referência.
