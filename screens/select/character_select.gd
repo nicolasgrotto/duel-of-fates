@@ -42,6 +42,7 @@ var _title: Label
 var _list: MenuList
 var _name: Label
 var _info: VBoxContainer
+var _description: Label
 var _style: Label
 var _path: Label
 var _trait: Label
@@ -94,6 +95,8 @@ func _build() -> void:
 	_info.custom_minimum_size = Vector2(INFO_WIDTH, 0.0)
 	_info.add_theme_constant_override(&"separation", 10)
 	add_child(_info)
+	_description = _info_line()
+	_description.add_theme_color_override(&"font_color", PALETTE.accent)
 	_style = _info_line()
 	_path = _info_line()
 	_trait = _info_line()
@@ -203,7 +206,7 @@ func _on_highlighted(id: StringName) -> void:
 		_thumbnail.show_arena(arena)
 		_name.text = tr(arena.name_key) if arena != null else tr("SELECT_RANDOM_ARENA")
 		_style.text = tr(arena.phrase_key) if arena != null else tr("ARENA_PHRASE_RANDOM")
-		for label in [_path, _trait, _ability]:
+		for label in [_description, _path, _trait, _ability]:
 			label.text = ""
 		_clear_power_lines()
 		return
@@ -231,7 +234,7 @@ func _refresh_character() -> void:
 	_bars.visible = data != null
 	if data == null:
 		_name.text = tr("SELECT_RANDOM")
-		for label in [_style, _path, _trait, _ability, _look, _blade, _variant, _requirement]:
+		for label in [_description, _style, _path, _trait, _ability, _look, _blade, _variant, _requirement]:
 			label.text = ""
 		_clear_power_lines()
 		_preview.show_fighter(null, null, Color.WHITE)
@@ -241,6 +244,7 @@ func _refresh_character() -> void:
 	var costume: CostumeData = costumes[_costume_index % costumes.size()]
 	var blade_color: Color = data.blade_colors[_blade_index % data.blade_colors.size()]
 	_name.text = tr(data.name_key)
+	_description.text = tr(description_key(data))
 	_style.text = "%s · %s" % [tr("SELECT_STYLE"), tr(data.style_key)]
 	var path_key: String = "PATH_ECLIPSE" if data.path == CharacterData.Path.ECLIPSE else "PATH_AURORA"
 	_path.text = "%s · %s" % [tr("SELECT_PATH"), tr(path_key)]
@@ -256,6 +260,10 @@ func _refresh_character() -> void:
 	_variant.text = tr("SELECT_VARIANT").format({"name": tr("VARIANT_ECLIPSE" if _use_variant else "VARIANT_AURORA")}) if Unlocks.is_variant_unlocked(base) else ""
 	var requirement: String = _next_requirement(base, data)
 	_requirement.text = tr("SELECT_REQUIREMENT").format({"requirement": tr(requirement)}) if requirement != "" else ""
+
+
+static func description_key(data: CharacterData) -> String:
+	return "DESCRIPTION_" + String(data.id).to_upper()
 
 
 func _clear_power_lines() -> void:

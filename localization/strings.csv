@@ -126,6 +126,23 @@ CHARACTER_SOVEREIGN,Soberano,Sovereign
 CHARACTER_ELDER,Ancião,Elder
 CHARACTER_FORETOLD,Predestinado,Foretold
 CHARACTER_FORETOLD_ECLIPSE,Predestinado,Foretold
+DESCRIPTION_GUARDIAN,"Mestre dos fundamentos: guarda firme, contraguarda e punições limpas.","Master of the basics: a firm guard, counterguard and clean punishes."
+DESCRIPTION_SHADOW,Pressão sem pausa: sequências longas e um avanço com armadura para não deixar respirar.,Relentless pressure: long chains and an armored dash that leaves no room to breathe.
+DESCRIPTION_BASTION,"Muralha viva: anda em guarda, não recua no bloqueio e esmaga com a marreta.","A living wall: walks in guard, never pushed back on block, and crushes with the hammer."
+DESCRIPTION_WASP,Duas lâminas e muita velocidade: cinco rápidos seguidos e um avanço que atravessa.,Two blades and pure speed: five quick strikes in a row and a dash that passes through.
+DESCRIPTION_MIRROR,Lê e devolve: janelas de parry maiores e uma postura que apara tudo.,Reads and returns: wider parry windows and a stance that parries everything.
+DESCRIPTION_LANCE,"Lâmina em haste: alcance enorme, ponta que fere mais e investidas longas.","A blade on a haft: huge reach, a tip that hurts more and long lunges."
+DESCRIPTION_EMBER,Espera e pune: empunhadura invertida e uma postura de resposta forte.,Waits and punishes: a reversed grip and a strong answering stance.
+DESCRIPTION_FORGE,"Golpes pesados que carregam até quebrar a guarda; lenta, mas cada acerto empurra longe.","Heavy blows that charge up to break guards; slow, but every hit sends you flying."
+DESCRIPTION_HERON,"Acrobata do ar: pulo na parede, saltos altos e golpes vindos de cima.","An aerial acrobat: wall jumps, high leaps and strikes from above."
+DESCRIPTION_REAPER,Bastão de duas lâminas em giros: acerta na frente e atrás.,A double-bladed staff in constant spins: hits in front and behind.
+DESCRIPTION_ECHO,"Trapaceira: fintas, passos invulneráveis e golpes que não vêm de onde parecem.","A trickster: feints, invulnerable steps and strikes that never come from where they seem."
+DESCRIPTION_CORSAIR,"Lâmina numa mão e blaster na outra: corta de perto, atira de longe e atira recuando.","A blade in one hand and a blaster in the other: cuts up close, shoots at range and shoots while retreating."
+DESCRIPTION_LYNX,"O cabo do sabre tem um blaster integrado: luta de lâmina e atira de surpresa, até de dentro da guarda.","The saber hilt has a built-in blaster: fights with the blade and shoots by surprise, even from guard."
+DESCRIPTION_SOVEREIGN,Senhor do Eclipse: corpo lento e Fluxo devastador; segura lâminas no ar com a mão.,Lord of the Eclipse: a slow body and devastating Flow; holds blades in midair with his hand.
+DESCRIPTION_ELDER,"Mestre da Aurora: calma total, pulo na parede e mergulho aéreo.","Master of the Aurora: total calm, wall jumps and an aerial dive."
+DESCRIPTION_FORETOLD,"O Predestinado: Fluxo no auge e domínio de tudo, com fintas e passos rápidos.","The Foretold: Flow at its peak and mastery of everything, with feints and quick steps."
+DESCRIPTION_FORETOLD_ECLIPSE,"O Predestinado tomado pelo Eclipse: o mesmo domínio, agora a serviço da fúria.","The Foretold taken by the Eclipse: the same mastery, now serving fury."
 STYLE_GUARDIAN,"Técnico, fundamentos","Technical, fundamentals"
 STYLE_SHADOW,"Agressiva, pressão","Aggressive, pressure"
 STYLE_BASTION,"Tanque, peso","Tank, weight"

@@ -49,7 +49,7 @@ Título centralizado, maiúsculas espaçadas, frase de apoio em destaque. Dois n
 Três colunas:
 
 - **Esquerda**: lista de lutadores, começando com **Aleatório**; rola com setas quando passa do espaço. Secretos liberados no fim.
-- **Centro**: estilo, caminho (na cor do lado), traço, habilidade, título **Poderes** com uma linha por espaço (`Poder · Repulsão`, `Frente + Poder · Cura`, `Trás + Poder · Barreira`, `Poder + Habilidade · …`), uma linha por técnica, `Conjunto: Base/Personalizado`, e as seis barras de atributo (segmentos cheios em destaque; segmentos de potencial dos secretos em dourado).
+- **Centro**: uma descrição curta do lutador logo abaixo do nome (uma ou duas linhas, cor de destaque; deixa claro o que não se vê de imediato, como o blaster no cabo do Lince), estilo, caminho (na cor do lado), traço, habilidade, título **Poderes** com uma linha por espaço (`Poder · Repulsão`, `Frente + Poder · Cura`, `Trás + Poder · Barreira`, `Poder + Habilidade · …`), uma linha por técnica, `Conjunto: Base/Personalizado`, e as seis barras de atributo (segmentos cheios em destaque; segmentos de potencial dos secretos em dourado).
 - **Direita**: o personagem em guarda com a lâmina acesa, numa pose de apresentação; abaixo, **Variante** (Predestinado), **Visual** e o requisito pendente, **Lâmina** (`Lâmina: Nome (n/3)`) e o próximo desafio bloqueado.
 - Esquerda/direita trocam a cor da lâmina; botões dedicados trocam o visual e a variante.
 - **Editor de poderes** (Duelar, 2 Jogadores, Treino): substitui a coluna central; uma linha por espaço, esquerda/direita percorrem o catálogo permitido, escolher um poder que já está em outro espaço troca os dois.

@@ -263,3 +263,11 @@ func test_only_the_sovereign_holds_locks_with_the_flow() -> void:
 	for id in DuelMode.CAST + [&"sovereign", &"elder", &"foretold", &"awakened_shadow"]:
 		var expected: CharacterData.LockStyle = CharacterData.LockStyle.FLOW_HOLD if id == &"sovereign" else CharacterData.LockStyle.BLADE
 		assert_eq(DuelFixture.character(id).lock_style, expected, String(id))
+
+
+func test_every_selectable_fighter_has_a_short_description() -> void:
+	var strings: String = FileAccess.get_file_as_string("res://localization/strings.csv")
+	var select: GDScript = load("res://screens/select/character_select.gd")
+	for id in select.ROSTER + [&"foretold_eclipse"]:
+		var key: String = select.description_key(DuelFixture.character(id))
+		assert_true(strings.contains("\n" + key + ","), "%s has %s" % [id, key])
