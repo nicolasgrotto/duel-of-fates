@@ -65,7 +65,7 @@ func open(params: Dictionary) -> void:
 			sim.fighters[i].equip_powers(custom)
 	sim.start_match()
 	if setup.two_players:
-		InputBindings.apply_two_player_keyboard()
+		InputBindings.begin_two_player()
 	_build_scene()
 	_runner.start(sim, _build_controllers())
 	_objective = mode.create_objective(_dummy)
@@ -271,12 +271,24 @@ func _unhandled_input(event: InputEvent) -> void:
 		mode.after_match()
 		return
 	if event.is_action_pressed(&"p1_pause") or event.is_action_pressed(&"p2_pause"):
-		SceneRouter.push(&"pause", {"mode": mode})
+		SceneRouter.push(&"pause", {"mode": mode, "move_lists": _move_lists()})
 		get_viewport().set_input_as_handled()
 
 
+func _move_lists() -> Array[Dictionary]:
+	var lists: Array[Dictionary] = []
+	for i in sim.fighters.size():
+		if setup.controllers[i] != DuelSetup.ControllerKind.PLAYER:
+			continue
+		var fighter: FighterState = sim.fighters[i]
+		var powers: Array[PowerData] = []
+		powers.assign(fighter.powers)
+		lists.append({"character": fighter.character, "powers": powers, "slot": setup.player_slots[i], "show_powers": sim.rules.powers, "player": i + 1})
+	return lists
+
+
 func _exit_tree() -> void:
-	if setup != null and setup.two_players:
+	if setup != null and setup.two_players and InputBindings.end_two_player():
 		Settings.apply()
 	AudioDirector.stop_music()
 	AudioDirector.stop_ambience()

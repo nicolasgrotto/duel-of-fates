@@ -156,6 +156,19 @@ static func apply_keyboard(keys: Dictionary) -> void:
 	_set_keys(0, keys)
 
 
+static var _two_player_screens: int = 0
+
+
+static func begin_two_player() -> void:
+	_two_player_screens += 1
+	apply_two_player_keyboard()
+
+
+static func end_two_player() -> bool:
+	_two_player_screens = maxi(_two_player_screens - 1, 0)
+	return _two_player_screens == 0
+
+
 static func apply_two_player_keyboard() -> void:
 	for slot in PLAYER_COUNT:
 		_set_keys(slot, TWO_PLAYER_KEYS[slot])
