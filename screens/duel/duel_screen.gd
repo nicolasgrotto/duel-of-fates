@@ -40,6 +40,7 @@ var _ai: Array[AiController] = []
 var _reflections: Array[FighterReflection] = []
 var _dummy: DummyController
 var _objective: DuelObjective
+var _objective_announcement: String = ""
 var _awakened: Array[bool] = [false, false]
 var _death_index: int = -1
 var _replaying: bool = false
@@ -69,8 +70,10 @@ func open(params: Dictionary) -> void:
 	_build_scene()
 	_runner.start(sim, _build_controllers())
 	_objective = mode.create_objective(_dummy)
+	_runner.objective = _objective
 	if _objective != null:
 		_objective.finished.connect(_on_objective_finished)
+		_objective.announced.connect(_on_objective_announced)
 	_bind_presentation(sim)
 	if setup.bout != null:
 		_start_exhibition()
@@ -198,7 +201,7 @@ func _build_controllers() -> Array[FighterController]:
 			DuelSetup.ControllerKind.PLAYER:
 				controllers.append(PlayerController.new(setup.player_slots[i]))
 			DuelSetup.ControllerKind.AI:
-				var ai: AiController = AiController.new(setup.difficulty, setup.characters[i].ai_profile, setup.match_seed + i)
+				var ai: AiController = mode.create_ai(setup.difficulty, setup.characters[i].ai_profile, setup.match_seed + i)
 				ai.awakening = setup.awakening[i]
 				controllers.append(ai)
 				_ai.append(ai)
@@ -305,9 +308,10 @@ func _on_ticked() -> void:
 	stats.on_tick(sim)
 	_check_awakening()
 	if _objective != null:
-		_objective.on_tick(sim)
 		_hud.set_banner(_objective.instruction())
 		_hud.set_progress(_objective.progress_line())
+	if _objective_announcement != "":
+		_show_objective_announcement()
 	var cinematic: bool = sim.phase == MatchSimulation.Phase.INTRO or sim.phase == MatchSimulation.Phase.KO
 	_screen.letterbox_target = 1.0 if (cinematic and not setup.training) or setup.bout != null else 0.0
 	if _training != null:
@@ -319,6 +323,20 @@ func _on_ticked() -> void:
 func _on_objective_finished() -> void:
 	if not _finished:
 		_show_result.call_deferred()
+
+
+func _on_objective_announced(text_key: String) -> void:
+	_objective_announcement = text_key
+
+
+func _show_objective_announcement() -> void:
+	_hud.announce(tr(_objective_announcement), MODES.boss_message_seconds)
+	_objective_announcement = ""
+	for i in sim.fighters.size():
+		_hud.refresh_flow_marks(i)
+	_audio.intensity_floor = MODES.boss_music_floor
+	if not Settings.reduced_effects:
+		_screen.pulse_letterbox(MODES.boss_letterbox)
 
 
 func _check_awakening() -> void:
@@ -341,8 +359,6 @@ func _on_combat_event(event: CombatEvent) -> void:
 		return
 	_hud.on_event(event)
 	stats.on_event(event)
-	if _objective != null:
-		_objective.on_event(event, sim)
 	if _training != null:
 		_training.on_event(event)
 	match event.type:
@@ -380,12 +396,14 @@ func _start_replay() -> void:
 	recording.data = _runner.recording.data.duplicate()
 	var replay_sim: MatchSimulation = MatchSimulation.new(CONFIG, setup.rules, setup.characters, setup.match_seed)
 	replay_sim.restore(_runner.round_snapshot)
+	var replay_objective: DuelObjective = mode.create_replay_objective()
 	var start: int = maxi(_death_index - Ticks.from_seconds(CONFIG.replay_length), 0)
 	var intents: Array[Intent] = [Intent.new(), Intent.new()]
 	for tick in start:
 		intents[0].unpack(recording.packed_at(tick, 0))
 		intents[1].unpack(recording.packed_at(tick, 1))
 		replay_sim.step(intents[0], intents[1])
+		TickRunner.advance_objective(replay_sim, replay_objective)
 		if tick % EFFECTS.replay_ticks_per_frame == EFFECTS.replay_ticks_per_frame - 1:
 			await get_tree().process_frame
 			if not is_inside_tree():
@@ -399,6 +417,7 @@ func _start_replay() -> void:
 	_runner.allows_slow_motion = false
 	_runner.time_scale = CONFIG.replay_speed
 	_runner.start(replay_sim, _replay_controllers)
+	_runner.objective = replay_objective
 	_bind_presentation(replay_sim)
 	_hud.visible = false
 	_screen.letterbox_target = 1.0

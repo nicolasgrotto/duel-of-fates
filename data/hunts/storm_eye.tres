@@ -1,0 +1,114 @@
+[gd_resource type="Resource" script_class="HuntData" format=3]
+
+[ext_resource type="Script" path="res://data/hunts/hunt_data.gd" id="hunt"]
+[ext_resource type="Script" path="res://data/hunts/hunt_phase.gd" id="phase"]
+[ext_resource type="Script" path="res://data/hunts/hunt_condition.gd" id="condition"]
+[ext_resource type="Script" path="res://data/balance/ai/ai_profile_data.gd" id="profile"]
+[ext_resource type="Script" path="res://data/story/dialogue_line.gd" id="line"]
+[ext_resource type="Resource" path="res://data/arenas/skyborne_deck.tres" id="arena"]
+[ext_resource type="Resource" path="res://data/balance/ai/difficulty_hard.tres" id="difficulty"]
+[ext_resource type="Resource" path="res://data/characters/guardian/guardian.tres" id="hero"]
+[ext_resource type="Resource" path="res://data/powers/barrier.tres" id="barrier"]
+[ext_resource type="Resource" path="res://data/powers/heal.tres" id="heal"]
+[ext_resource type="Resource" path="res://data/powers/lightning.tres" id="lightning"]
+[ext_resource type="Resource" path="res://data/powers/pull.tres" id="pull"]
+[ext_resource type="Resource" path="res://data/powers/repulse.tres" id="repulse"]
+[ext_resource type="Resource" path="res://data/powers/storm.tres" id="storm"]
+
+[sub_resource type="Resource" id="condition"]
+script = ExtResource("condition")
+goal = 1
+description_key = "HUNT_STORM_CONDITION"
+
+[sub_resource type="Resource" id="profile_0"]
+script = ExtResource("profile")
+id = &"storm_eye_0"
+aggression = 0.55
+defense = 0.6
+heavy_ratio = 0.4
+power_bias = 0.8
+ability_bias = 0.15
+technique_bias = 0.2
+preferred_gap = 160.0
+safe_gap = 280.0
+
+[sub_resource type="Resource" id="phase_0"]
+script = ExtResource("phase")
+title_key = "HUNT_PHASE_DISTANCE"
+health_threshold = 1.0
+profile = SubResource("profile_0")
+powers = [ExtResource("lightning"), ExtResource("pull"), ExtResource("repulse")]
+flow_level = 9
+starting_flow = 100.0
+opening_slot = -1
+
+[sub_resource type="Resource" id="profile_1"]
+script = ExtResource("profile")
+id = &"storm_eye_1"
+aggression = 0.6
+defense = 0.7
+heavy_ratio = 0.5
+power_bias = 0.9
+ability_bias = 0.15
+technique_bias = 0.2
+preferred_gap = 160.0
+safe_gap = 280.0
+
+[sub_resource type="Resource" id="phase_1"]
+script = ExtResource("phase")
+title_key = "HUNT_PHASE_TEMPEST"
+health_threshold = 0.65
+profile = SubResource("profile_1")
+powers = [ExtResource("storm"), ExtResource("lightning"), ExtResource("repulse")]
+flow_level = 9
+starting_flow = 100.0
+opening_slot = 0
+
+[sub_resource type="Resource" id="profile_2"]
+script = ExtResource("profile")
+id = &"storm_eye_2"
+aggression = 0.95
+defense = 0.45
+heavy_ratio = 0.7
+power_bias = 0.95
+ability_bias = 0.15
+technique_bias = 0.2
+preferred_gap = 160.0
+safe_gap = 280.0
+
+[sub_resource type="Resource" id="phase_2"]
+script = ExtResource("phase")
+title_key = "HUNT_PHASE_THUNDER"
+health_threshold = 0.3
+profile = SubResource("profile_2")
+powers = [ExtResource("storm"), ExtResource("lightning"), ExtResource("pull")]
+flow_level = 9
+starting_flow = 100.0
+opening_slot = 0
+
+[sub_resource type="Resource" id="before"]
+script = ExtResource("line")
+speaker = &"sovereign"
+text_key = "HUNT_STORM_BEFORE"
+
+[sub_resource type="Resource" id="after"]
+script = ExtResource("line")
+speaker = &"narrator"
+text_key = "HUNT_STORM_AFTER"
+
+[resource]
+script = ExtResource("hunt")
+id = &"storm_eye"
+title_key = "HUNT_STORM_TITLE"
+opponent = &"sovereign"
+arena = ExtResource("arena")
+difficulty = ExtResource("difficulty")
+player = ExtResource("hero")
+player_flow = 7
+player_powers = [ExtResource("repulse"), ExtResource("heal"), ExtResource("barrier")]
+phases = [SubResource("phase_0"), SubResource("phase_1"), SubResource("phase_2")]
+condition = SubResource("condition")
+before = [SubResource("before")]
+after = [SubResource("after")]
+unlocks = PackedStringArray("color:guardian:1")
+reward_key = "HUNT_STORM_REWARD"

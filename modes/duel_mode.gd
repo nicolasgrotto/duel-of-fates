@@ -55,6 +55,14 @@ func create_objective(_dummy: DummyController) -> DuelObjective:
 	return null
 
 
+func create_replay_objective() -> DuelObjective:
+	return null
+
+
+func create_ai(data: AiDifficultyData, profile: AiProfileData, ai_seed: int) -> AiController:
+	return AiController.new(data, profile, ai_seed)
+
+
 func unlock_messages() -> PackedStringArray:
 	return PackedStringArray()
 

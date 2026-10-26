@@ -1,0 +1,112 @@
+[gd_resource type="Resource" script_class="HuntData" format=3]
+
+[ext_resource type="Script" path="res://data/hunts/hunt_data.gd" id="hunt"]
+[ext_resource type="Script" path="res://data/hunts/hunt_phase.gd" id="phase"]
+[ext_resource type="Script" path="res://data/hunts/hunt_condition.gd" id="condition"]
+[ext_resource type="Script" path="res://data/balance/ai/ai_profile_data.gd" id="profile"]
+[ext_resource type="Script" path="res://data/story/dialogue_line.gd" id="line"]
+[ext_resource type="Resource" path="res://data/arenas/flooded_sanctuary.tres" id="arena"]
+[ext_resource type="Resource" path="res://data/balance/ai/difficulty_hard.tres" id="difficulty"]
+[ext_resource type="Resource" path="res://data/characters/guardian/guardian.tres" id="hero"]
+[ext_resource type="Resource" path="res://data/powers/barrier.tres" id="barrier"]
+[ext_resource type="Resource" path="res://data/powers/heal.tres" id="heal"]
+[ext_resource type="Resource" path="res://data/powers/higher_instinct.tres" id="higher_instinct"]
+[ext_resource type="Resource" path="res://data/powers/repulse.tres" id="repulse"]
+
+[sub_resource type="Resource" id="condition"]
+script = ExtResource("condition")
+goal = 0
+description_key = "HUNT_LESSON_CONDITION"
+
+[sub_resource type="Resource" id="profile_0"]
+script = ExtResource("profile")
+id = &"last_lesson_0"
+aggression = 0.6
+defense = 0.65
+heavy_ratio = 0.85
+power_bias = 0.2
+ability_bias = 0.15
+technique_bias = 0.2
+preferred_gap = 65.0
+safe_gap = 280.0
+
+[sub_resource type="Resource" id="phase_0"]
+script = ExtResource("phase")
+title_key = "HUNT_PHASE_MEASURE"
+health_threshold = 1.0
+profile = SubResource("profile_0")
+powers = [ExtResource("repulse"), ExtResource("barrier"), ExtResource("heal")]
+flow_level = 8
+starting_flow = 100.0
+opening_slot = -1
+
+[sub_resource type="Resource" id="profile_1"]
+script = ExtResource("profile")
+id = &"last_lesson_1"
+aggression = 0.3
+defense = 0.9
+heavy_ratio = 0.65
+power_bias = 0.6
+ability_bias = 0.15
+technique_bias = 0.2
+preferred_gap = 65.0
+safe_gap = 280.0
+
+[sub_resource type="Resource" id="phase_1"]
+script = ExtResource("phase")
+title_key = "HUNT_PHASE_STILLNESS"
+health_threshold = 0.65
+profile = SubResource("profile_1")
+powers = [ExtResource("barrier"), ExtResource("repulse"), ExtResource("heal")]
+flow_level = 8
+starting_flow = 100.0
+opening_slot = 0
+
+[sub_resource type="Resource" id="profile_2"]
+script = ExtResource("profile")
+id = &"last_lesson_2"
+aggression = 0.7
+defense = 0.8
+heavy_ratio = 0.8
+power_bias = 0.8
+ability_bias = 0.15
+technique_bias = 0.2
+preferred_gap = 65.0
+safe_gap = 280.0
+
+[sub_resource type="Resource" id="phase_2"]
+script = ExtResource("phase")
+title_key = "HUNT_PHASE_INSTINCT"
+health_threshold = 0.3
+profile = SubResource("profile_2")
+powers = [ExtResource("higher_instinct"), ExtResource("repulse"), ExtResource("barrier")]
+flow_level = 8
+starting_flow = 100.0
+opening_slot = 0
+
+[sub_resource type="Resource" id="before"]
+script = ExtResource("line")
+speaker = &"elder"
+text_key = "HUNT_LESSON_BEFORE"
+
+[sub_resource type="Resource" id="after"]
+script = ExtResource("line")
+speaker = &"narrator"
+text_key = "HUNT_LESSON_AFTER"
+
+[resource]
+script = ExtResource("hunt")
+id = &"last_lesson"
+title_key = "HUNT_LESSON_TITLE"
+opponent = &"elder"
+arena = ExtResource("arena")
+difficulty = ExtResource("difficulty")
+player = ExtResource("hero")
+player_flow = 7
+player_powers = [ExtResource("repulse"), ExtResource("heal"), ExtResource("barrier")]
+phases = [SubResource("phase_0"), SubResource("phase_1"), SubResource("phase_2")]
+condition = SubResource("condition")
+before = [SubResource("before")]
+after = [SubResource("after")]
+unlocks = PackedStringArray("costume:guardian:guardian_traveler")
+reward_key = "HUNT_LESSON_REWARD"

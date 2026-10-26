@@ -786,3 +786,48 @@ POWER_HIGHER_INSTINCT,Instinto Superior,Higher Instinct
 POWER_HIGHER_INSTINCT_TEXT,Esquiva de lâminas corpo a corpo e abre uma resposta curta. Poderes e áreas passam; dano de poder encerra.,Evades aimed melee blade attacks and opens a brief counter. Powers and areas get through; power damage ends it.
 POWER_SINGULARITY,Singularidade Devastadora,Devastating Singularity
 POWER_SINGULARITY_TEXT,Arranca o chão marcado e atrai quem está no ar. Corra entre as zonas e saia da trajetória da massa final.,Tears up marked ground and pulls airborne fighters. Run between zones and leave the final mass trajectory.
+MENU_HUNTS,Caçada a chefes,Boss Hunt
+HUNT_LESSON_TITLE,A última lição,The Last Lesson
+HUNT_STORM_TITLE,O olho da tempestade,Eye of the Storm
+HUNT_VOID_TITLE,O peso do vazio,Weight of the Void
+HUNT_LESSON_CONDITION,Apare perfeitamente três fortes e vença. Poderes encerram o Instinto Superior.,"Perfect-parry three heavy attacks, then win. Powers end Higher Instinct."
+HUNT_STORM_CONDITION,Vença em até 90 s. Saia das marcas da Tempestade: a guarda não protege.,Win within 90 s. Leave the Storm marks: guard offers no protection.
+HUNT_VOID_CONDITION,"Sobreviva a uma Singularidade completa, depois vença. Não mate o chefe antes da massa terminar.","Survive a full Singularity, then win. Keep the boss alive until the mass ends."
+HUNT_LESSON_REWARD,Visual Viajante do Guardião,Guardian Traveler costume
+HUNT_STORM_REWARD,Cor do Arcade do Guardião,Guardian Arcade blade color
+HUNT_VOID_REWARD,Cor do desafio da Sombra,Shadow challenge blade color
+HUNT_LESSON_BEFORE,Não procure a abertura na minha lâmina. Escute o intervalo entre os golpes.,Do not search my blade for an opening. Listen to the space between strikes.
+HUNT_LESSON_AFTER,A água volta ao silêncio. A lição segue nos passos de quem parte.,The water falls silent again. The lesson travels with the one who leaves.
+HUNT_STORM_BEFORE,O convés não vai esperar. Atravesse a tempestade antes que o céu se feche.,The deck will not wait. Cross the storm before the sky closes.
+HUNT_STORM_AFTER,"As nuvens se abrem atrás do cargueiro. Pela primeira vez, o horizonte está livre.","The clouds part behind the freighter. For the first time, the horizon is clear."
+HUNT_VOID_BEFORE,Tudo cai na mesma direção. Quero ver você escolher outro caminho.,Everything falls the same way. Show me you can choose another path.
+HUNT_VOID_AFTER,"A última pedra toca o chão. Sem a esfera, a cidadela parece imensa e vazia.","The last stone reaches the ground. Without the sphere, the citadel feels vast and empty."
+HUNT_PHASE_MEASURE,I · Medida,I · Measure
+HUNT_PHASE_STILLNESS,II · Quietude,II · Stillness
+HUNT_PHASE_INSTINCT,III · Instinto,III · Instinct
+HUNT_PHASE_DISTANCE,I · Distância,I · Distance
+HUNT_PHASE_TEMPEST,II · Tempestade,II · Tempest
+HUNT_PHASE_THUNDER,III · Trovão,III · Thunder
+HUNT_PHASE_PURSUIT,I · Perseguição,I · Pursuit
+HUNT_PHASE_EXTRACTION,II · Extração,II · Extraction
+HUNT_PHASE_COLLAPSE,III · Colapso,III · Collapse
+HUNT_BANNER,{name} · {phase},{name} · {phase}
+HUNT_PARRY_PROGRESS,Parries perfeitos: {done}/{count},Perfect parries: {done}/{count}
+HUNT_TIME_PROGRESS,Tempo restante: {time},Time remaining: {time}
+HUNT_SURVIVED,Singularidade: sobreviveu · agora vença,Singularity: survived · now win
+HUNT_SURVIVE_WAIT,Singularidade: sobreviva à massa final,Singularity: survive the final mass
+HUNT_PROGRESS,{condition} · {time},{condition} · {time}
+HUNT_COMPLETED,CAÇADA CONCLUÍDA,HUNT COMPLETED
+HUNT_FAILED,CONDIÇÃO NÃO CUMPRIDA,CONDITION NOT MET
+HUNT_PENDING,Pendente,Pending
+HUNT_BEST,Concluída · melhor tempo {time},Completed · best time {time}
+HUNT_OPPONENT,{boss} · {arena},{boss} · {arena}
+HUNT_KIT,"Guardião · Fluxo 7
+Repulsão · Cura · Barreira","Guardian · Flow 7
+Repulse · Heal · Barrier"
+HUNT_PHASE_LIST,{phase} · {health}% · {power},{phase} · {health}% · {power}
+HUNT_REWARD,Recompensa: {reward},Reward: {reward}
+HUNT_START,Iniciar caçada,Start hunt
+HUNT_EPILOGUE,Rever epílogo,Replay epilogue
+HUNT_ACTION,{action} · ← → alterar,{action} · ← → change
+HUNT_UNLOCKED,Recompensa liberada: {reward},Reward unlocked: {reward}

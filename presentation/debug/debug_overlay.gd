@@ -69,6 +69,8 @@ func _process(_delta: float) -> void:
 		MatchSimulation.Phase.keys()[sim.phase].to_lower(), sim.phase_ticks, sim.lock_cooldown_ticks, sim.cinematic_ticks,
 		sim.contact_streak, sim.contact_idle_ticks,
 	]
+	if runner != null and runner.objective != null:
+		_header.text += "\n" + "\n".join(runner.objective.debug_lines())
 	for i in 2:
 		_labels[i].text = "\n".join(_fighter_lines(i))
 

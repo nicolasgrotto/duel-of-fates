@@ -15,6 +15,7 @@ var records: bool = true
 var allows_slow_motion: bool = true
 var time_scale: float = 1.0
 var alpha: float = 0.0
+var objective: DuelObjective
 
 var _accumulator: float = 0.0
 var _slow_scale: float = 1.0
@@ -67,11 +68,20 @@ func step_once() -> void:
 	if records:
 		recording.append_tick(intents)
 	sim.step(intents[0], intents[1])
+	advance_objective(sim, objective)
 	for i in sim.event_count:
 		var event: CombatEvent = sim.events[i]
 		_react_to_rules(event)
 		combat_event.emit(event)
 	ticked.emit()
+
+
+static func advance_objective(simulation: MatchSimulation, observer: DuelObjective) -> void:
+	if observer == null:
+		return
+	for i in simulation.event_count:
+		observer.on_event(simulation.events[i], simulation)
+	observer.on_tick(simulation)
 
 
 func _react_to_rules(event: CombatEvent) -> void:

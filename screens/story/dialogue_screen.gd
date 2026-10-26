@@ -16,6 +16,7 @@ var campaign: StoryCampaign
 var encounter: EncounterData
 var part: StringName = &"before"
 var gallery: bool = false
+var hunt_mode: HuntMode
 
 var _lines: Array[DialogueLine] = []
 var _index: int = -1
@@ -26,6 +27,7 @@ var _fade: float = 1.0
 
 func open(params: Dictionary) -> void:
 	campaign = params.get("campaign")
+	hunt_mode = params.get("hunt_mode")
 	encounter = params["encounter"]
 	part = params.get("part", &"before")
 	gallery = params.get("gallery", false)
@@ -56,7 +58,7 @@ func _build() -> void:
 	var right: StandingFighter = StandingFighter.new()
 	right.position = Vector2(FIGHTER_GAP, 0.0)
 	backdrop.add_to_world(right)
-	var hero: CharacterData = campaign.protagonist() if campaign != null else DuelMode.GUARDIAN
+	var hero: CharacterData = hunt_mode.hunt.player if hunt_mode != null else (campaign.protagonist() if campaign != null else DuelMode.GUARDIAN)
 	left.show_fighter(hero, hero.costumes[0], hero.blade_colors[0], 1)
 	var opponent: CharacterData = load(CHARACTER_PATH % [encounter.opponent, encounter.opponent])
 	right.show_fighter(opponent, opponent.costumes[0], opponent.blade_colors[0], -1)
@@ -65,7 +67,7 @@ func _build() -> void:
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 	title.offset_top = TITLE_TOP
-	title.text = tr("STORY_BANNER").format({"chapter": encounter.chapter, "title": tr(encounter.title_key).to_upper()})
+	title.text = tr(encounter.title_key).to_upper() if hunt_mode != null else tr("STORY_BANNER").format({"chapter": encounter.chapter, "title": tr(encounter.title_key).to_upper()})
 	add_child(title)
 	var band: ColorRect = ColorRect.new()
 	band.color = Color(PALETTE.background, BAND_ALPHA)
@@ -138,7 +140,12 @@ func _done() -> void:
 	if _index > _lines.size() + 1:
 		return
 	_index = _lines.size() + 2
-	if gallery:
+	if hunt_mode != null:
+		if part == &"before":
+			hunt_mode.start()
+		else:
+			SceneRouter.change(&"hunts", {"hunt": hunt_mode.hunt.id})
+	elif gallery:
 		SceneRouter.change(&"story_gallery")
 	elif part == &"before":
 		StoryMode.new(campaign, encounter).start()

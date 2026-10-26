@@ -2,6 +2,7 @@ class_name DuelObjective
 extends RefCounted
 
 signal finished
+signal announced(text_key: String)
 
 var done: bool = false
 
@@ -28,6 +29,10 @@ func result_title() -> String:
 
 func result_note() -> String:
 	return ""
+
+
+func debug_lines() -> PackedStringArray:
+	return PackedStringArray()
 
 
 func _finish() -> void:

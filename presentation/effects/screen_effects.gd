@@ -27,9 +27,9 @@ func setup(effects_config: EffectsConfig) -> void:
 	additive.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
 	_flash.material = additive
 	_top = _rect(PALETTE.letterbox)
-	_top.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	_top.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 	_bottom = _rect(PALETTE.letterbox)
-	_bottom.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	_bottom.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
 	_replay_label = _label(tr("REPLAY_LABEL"), HORIZONTAL_ALIGNMENT_LEFT)
 	_skip_label = _label("", HORIZONTAL_ALIGNMENT_RIGHT)
 	show_replay(false)

@@ -9,6 +9,7 @@ var arcade_cleared: Dictionary = {}
 var survival_best: int = 0
 var parry_best: int = 0
 var challenge_best: Dictionary = {}
+var hunt_best: Dictionary = {}
 var unlocked: Dictionary = {}
 var campaign: Dictionary = {}
 
@@ -22,6 +23,7 @@ func reset() -> void:
 	survival_best = 0
 	parry_best = 0
 	challenge_best = {}
+	hunt_best = {}
 	unlocked = {}
 	campaign = {}
 
@@ -38,6 +40,7 @@ func load_progress() -> void:
 	survival_best = file.get_value(SECTION, "survival_best", 0)
 	parry_best = file.get_value(SECTION, "parry_best", 0)
 	challenge_best = file.get_value(SECTION, "challenge_best", {})
+	hunt_best = file.get_value(SECTION, "hunt_best", {})
 	unlocked = file.get_value(SECTION, "unlocked", {})
 	campaign = file.get_value(SECTION, "campaign", {})
 
@@ -49,6 +52,7 @@ func save_progress() -> void:
 	file.set_value(SECTION, "survival_best", survival_best)
 	file.set_value(SECTION, "parry_best", parry_best)
 	file.set_value(SECTION, "challenge_best", challenge_best)
+	file.set_value(SECTION, "hunt_best", hunt_best)
 	file.set_value(SECTION, "unlocked", unlocked)
 	file.set_value(SECTION, "campaign", campaign)
 	file.save(path)
@@ -92,6 +96,15 @@ func unlock(key: String) -> bool:
 	if unlocked.get(key, false):
 		return false
 	unlocked[key] = true
+	save_progress()
+	return true
+
+
+func record_hunt(id: StringName, seconds: float) -> bool:
+	var key: String = String(id)
+	if hunt_best.has(key) and seconds >= hunt_best[key]:
+		return false
+	hunt_best[key] = seconds
 	save_progress()
 	return true
 

@@ -304,6 +304,16 @@ Implementação provisória (fases 1 e 2, arte de formas simples, substituída n
 
 ## Telas e fluxo
 
+### Caçada a chefes (task 09)
+
+`data/hunts/` reúne `HuntData`, `HuntPhase` e `HuntCondition` e as três missões. Narrativa em `content/HUNTS.md`. `HuntMode` monta cópias do elenco com kit fixo e cria `HuntTracker` (`modes/objectives/`, lógica sem nós): lê eventos e vida por tick, aplica conjuntos por `equip_powers`, níveis por `set_flow_level` e medidor da fase limitado por `FlowConfig.maximum`. Perfis inteiros por fase são overrides locais, nunca alteram recursos de personagem. `HuntController` estende a IA e só produz intenções, lendo o índice de fase do tracker e priorizando o poder de abertura até seu evento ativo. O tracker não referencia controladores. A troca espera invocação/canal, chuva, marcas e massa da Singularidade terminarem. Não há ciclo de referências nem alocação por tick na progressão.
+
+`TickRunner.objective` alimenta o objetivo com todos os eventos e depois `on_tick`, no passo fixo, antes dos sinais de apresentação. Os objetivos de lição mantêm a mesma ordem. `DuelObjective.announced` comunica a transição ao HUD sem inserir regras na tela; o anúncio é apresentado no `ticked`, depois do evento `FIGHT_STARTED`, que encerra o título do round. `DuelMode.create_ai` permite o controlador especializado. `create_replay_objective` cria um tracker independente, reexecutado desde o snapshot inicial tanto no avanço rápido quanto no replay; o tracker original e o resultado ficam intactos. Não se alteram as regras do combate comum.
+
+Na conferência da transição foi corrigido o layout das barras existentes do `ScreenEffects`: `set_anchors_preset` preservava um retângulo de largura zero; `set_anchors_and_offsets_preset` faz as barras ocuparem o viewport. A correção também recupera o letterbox já previsto para intro, K.O., despertar e replay. Cores e durações permanecem nos recursos existentes.
+
+Rota `hunts` (`screens/hunts/`) apresenta lista, briefing, recordes e epílogos desbloqueados. Variações `HuntBodyLabel`, `HuntSubtitleLabel` e `HuntHintLabel` no tema central mantêm 28 px no cartão. A rota `dialogue` aceita um `HuntMode` e usa os mesmos `DialogueLine`, cenário e lutadores; o modo decide a continuação pelo roteador. `SaveService.hunt_best` registra conclusão e menor tempo; chaves de desbloqueio existentes concedem cosméticos uma única vez. Campos ausentes em saves da versão 1 começam vazios. O modo sela o resultado uma vez por tentativa e só salva após vitória com condição cumprida.
+
 - **`SceneRouter`** (autoload): troca de telas por id (`change`, `push`, `pop`), com transições (fade, letterbox). Telas não se importam entre si.
 - A pausa é uma tela empilhada sobre o duelo congelado.
 - Cada modo é um objeto de fluxo (`modes/`) que monta os parâmetros do duelo (lutadores, variantes, conjuntos, arena, dificuldade, capacidades, rounds, seed) e decide o que acontece no resultado.

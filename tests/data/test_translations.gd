@@ -79,3 +79,13 @@ func test_powers_and_techniques_have_names() -> void:
 		if file.ends_with(".tres"):
 			var technique: MoveData = load(TECHNIQUES_ROOT.path_join(file))
 			_assert_key(PowerCatalog.technique_key(technique), String(technique.id))
+
+
+func test_hunts_have_bilingual_briefings_phases_rewards_and_dialogue() -> void:
+	for hunt in HuntMode.HUNTS:
+		for key in [hunt.title_key, hunt.condition.description_key, hunt.reward_key]:
+			_assert_key(key, String(hunt.id))
+		for phase in hunt.phases:
+			_assert_key(phase.title_key, String(hunt.id))
+		for line in hunt.before + hunt.after:
+			_assert_key(line.text_key, String(hunt.id))

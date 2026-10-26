@@ -1,0 +1,114 @@
+[gd_resource type="Resource" script_class="HuntData" format=3]
+
+[ext_resource type="Script" path="res://data/hunts/hunt_data.gd" id="hunt"]
+[ext_resource type="Script" path="res://data/hunts/hunt_phase.gd" id="phase"]
+[ext_resource type="Script" path="res://data/hunts/hunt_condition.gd" id="condition"]
+[ext_resource type="Script" path="res://data/balance/ai/ai_profile_data.gd" id="profile"]
+[ext_resource type="Script" path="res://data/story/dialogue_line.gd" id="line"]
+[ext_resource type="Resource" path="res://data/arenas/eclipse_citadel.tres" id="arena"]
+[ext_resource type="Resource" path="res://data/balance/ai/difficulty_hard.tres" id="difficulty"]
+[ext_resource type="Resource" path="res://data/characters/guardian/guardian.tres" id="hero"]
+[ext_resource type="Resource" path="res://data/powers/barrier.tres" id="barrier"]
+[ext_resource type="Resource" path="res://data/powers/heal.tres" id="heal"]
+[ext_resource type="Resource" path="res://data/powers/lightning.tres" id="lightning"]
+[ext_resource type="Resource" path="res://data/powers/pull.tres" id="pull"]
+[ext_resource type="Resource" path="res://data/powers/repulse.tres" id="repulse"]
+[ext_resource type="Resource" path="res://data/powers/singularity.tres" id="singularity"]
+
+[sub_resource type="Resource" id="condition"]
+script = ExtResource("condition")
+goal = 2
+description_key = "HUNT_VOID_CONDITION"
+
+[sub_resource type="Resource" id="profile_0"]
+script = ExtResource("profile")
+id = &"weight_of_void_0"
+aggression = 0.85
+defense = 0.5
+heavy_ratio = 0.45
+power_bias = 0.4
+ability_bias = 0.15
+technique_bias = 0.2
+preferred_gap = 65.0
+safe_gap = 280.0
+
+[sub_resource type="Resource" id="phase_0"]
+script = ExtResource("phase")
+title_key = "HUNT_PHASE_PURSUIT"
+health_threshold = 1.0
+profile = SubResource("profile_0")
+powers = [ExtResource("pull"), ExtResource("repulse"), ExtResource("lightning")]
+flow_level = 7
+starting_flow = 100.0
+opening_slot = -1
+
+[sub_resource type="Resource" id="profile_1"]
+script = ExtResource("profile")
+id = &"weight_of_void_1"
+aggression = 0.4
+defense = 0.7
+heavy_ratio = 0.45
+power_bias = 0.95
+ability_bias = 0.15
+technique_bias = 0.2
+preferred_gap = 65.0
+safe_gap = 280.0
+
+[sub_resource type="Resource" id="phase_1"]
+script = ExtResource("phase")
+title_key = "HUNT_PHASE_EXTRACTION"
+health_threshold = 0.65
+profile = SubResource("profile_1")
+powers = [ExtResource("singularity"), ExtResource("pull"), ExtResource("repulse")]
+flow_level = 7
+starting_flow = 100.0
+opening_slot = 0
+
+[sub_resource type="Resource" id="profile_2"]
+script = ExtResource("profile")
+id = &"weight_of_void_2"
+aggression = 0.9
+defense = 0.4
+heavy_ratio = 0.7
+power_bias = 0.95
+ability_bias = 0.15
+technique_bias = 0.2
+preferred_gap = 65.0
+safe_gap = 280.0
+
+[sub_resource type="Resource" id="phase_2"]
+script = ExtResource("phase")
+title_key = "HUNT_PHASE_COLLAPSE"
+health_threshold = 0.3
+profile = SubResource("profile_2")
+powers = [ExtResource("singularity"), ExtResource("repulse"), ExtResource("lightning")]
+flow_level = 7
+starting_flow = 100.0
+opening_slot = 0
+
+[sub_resource type="Resource" id="before"]
+script = ExtResource("line")
+speaker = &"awakened_shadow"
+text_key = "HUNT_VOID_BEFORE"
+
+[sub_resource type="Resource" id="after"]
+script = ExtResource("line")
+speaker = &"narrator"
+text_key = "HUNT_VOID_AFTER"
+
+[resource]
+script = ExtResource("hunt")
+id = &"weight_of_void"
+title_key = "HUNT_VOID_TITLE"
+opponent = &"awakened_shadow"
+arena = ExtResource("arena")
+difficulty = ExtResource("difficulty")
+player = ExtResource("hero")
+player_flow = 7
+player_powers = [ExtResource("repulse"), ExtResource("heal"), ExtResource("barrier")]
+phases = [SubResource("phase_0"), SubResource("phase_1"), SubResource("phase_2")]
+condition = SubResource("condition")
+before = [SubResource("before")]
+after = [SubResource("after")]
+unlocks = PackedStringArray("color:shadow:2")
+reward_key = "HUNT_VOID_REWARD"
