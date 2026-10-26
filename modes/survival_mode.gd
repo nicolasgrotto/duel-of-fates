@@ -72,7 +72,7 @@ func result_options() -> Array[StringName]:
 
 
 func result_title() -> String:
-	return "" if won_last else TranslationServer.translate("SURVIVAL_OVER")
+	return "" if won_last else String(TranslationServer.translate("SURVIVAL_OVER"))
 
 
 func result_note() -> String:

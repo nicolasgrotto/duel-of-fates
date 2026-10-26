@@ -107,7 +107,7 @@ func _holds_charge(fighter: FighterState, move: MoveData, intent: Intent) -> boo
 	if not intent.is_held(Intent.Command.SPECIAL) or fighter.charge_ticks >= full:
 		return false
 	fighter.charge_ticks += 1
-	fighter.charge_level = mini(1 + fighter.charge_ticks / ability.charge_level_ticks(), ability.charge_levels)
+	fighter.charge_level = mini(1 + floori(float(fighter.charge_ticks) / ability.charge_level_ticks()), ability.charge_levels)
 	return true
 
 

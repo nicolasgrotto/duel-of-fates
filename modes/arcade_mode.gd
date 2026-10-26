@@ -59,11 +59,11 @@ func fight_difficulty() -> StringName:
 
 
 static func ladder(player_id: StringName, count: int) -> Array[CharacterData]:
-	var start: int = maxi(CAST.find(player_id), 0)
+	var first: int = maxi(CAST.find(player_id), 0)
 	var list: Array[CharacterData] = []
 	var offset: int = 1
 	while list.size() < count and offset <= CAST.size() * 2:
-		var id: StringName = CAST[(start + offset) % CAST.size()]
+		var id: StringName = CAST[(first + offset) % CAST.size()]
 		offset += 1
 		if id != player_id:
 			list.append(character(id))
@@ -89,7 +89,7 @@ func result_options() -> Array[StringName]:
 
 
 func result_title() -> String:
-	return TranslationServer.translate("ARCADE_CLEARED") if cleared else ""
+	return String(TranslationServer.translate("ARCADE_CLEARED")) if cleared else ""
 
 
 func choose(option: StringName) -> void:

@@ -272,7 +272,9 @@ func _show_powers(data: CharacterData) -> void:
 	for slot in _power_lines.size():
 		var power: PowerData = equipped[slot]
 		_power_lines[slot].text = tr(POWER_LINE_KEYS[slot]).format({"name": tr(power.name_key)}) if power != null else ""
-	var techniques: Array[MoveData] = _techniques if not _techniques.is_empty() else [data.technique_forward, data.technique_back, data.technique_air]
+	var techniques: Array[MoveData] = _techniques
+	if techniques.is_empty():
+		techniques = [data.technique_forward, data.technique_back, data.technique_air]
 	for i in techniques.size():
 		var technique: MoveData = techniques[i]
 		_technique_lines[i].text = tr(TECHNIQUE_LINE_KEYS[i]).format({"name": tr(PowerCatalog.technique_key(technique))}) if technique != null else ""

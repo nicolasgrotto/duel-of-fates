@@ -28,21 +28,21 @@ static func _move(sim: MatchSimulation, projectile: Projectile, owner: FighterSt
 		if projectile.delay_ticks <= 0:
 			_end(sim, projectile)
 			return
-	var step: float = projectile.vx * Ticks.DELTA
+	var distance: float = projectile.vx * Ticks.DELTA
 	if projectile.kind == Projectile.Kind.BLADE and projectile.returning:
 		var toward: float = signf(owner.x - projectile.x)
 		projectile.vx = toward * absf(projectile.vx)
 		projectile.y = move_toward(projectile.y, owner.y + sim.config.flow.projectile_height, 400.0 * Ticks.DELTA)
-		step = projectile.vx * Ticks.DELTA
+		distance = projectile.vx * Ticks.DELTA
 		if absf(owner.x - projectile.x) <= CATCH_DISTANCE:
 			_end(sim, projectile)
 			return
-	projectile.x += step
+	projectile.x += distance
 	if projectile.kind == Projectile.Kind.SINGULARITY or projectile.kind == Projectile.Kind.BOLT:
 		projectile.y += projectile.vy * Ticks.DELTA
-		projectile.travelled += Vector2(step, projectile.vy * Ticks.DELTA).length()
+		projectile.travelled += Vector2(distance, projectile.vy * Ticks.DELTA).length()
 	else:
-		projectile.travelled += absf(step)
+		projectile.travelled += absf(distance)
 	var limit: float = sim.config.half_width()
 	var reached: bool = projectile.travelled >= projectile.max_distance or absf(projectile.x) >= limit or ((projectile.kind == Projectile.Kind.SINGULARITY or projectile.kind == Projectile.Kind.BOLT) and projectile.y < -projectile.size)
 	if not reached:

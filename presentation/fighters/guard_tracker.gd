@@ -133,7 +133,7 @@ func integrate() -> void:
 	var previous: Vector2 = position
 	position = (f * position + delta * velocity + delta * delta * acceleration * target_position) * divisor
 	velocity = (velocity + delta * acceleration * (target_position - previous)) * divisor
-	var target_angle: float = angle + wrapf(target_angle - angle, -PI, PI)
+	var goal_angle: float = angle + wrapf(target_angle - angle, -PI, PI)
 	var previous_angle: float = angle
-	angle = (f * angle + delta * angular_velocity + delta * delta * acceleration * target_angle) * divisor
-	angular_velocity = (angular_velocity + delta * acceleration * (target_angle - previous_angle)) * divisor
+	angle = (f * angle + delta * angular_velocity + delta * delta * acceleration * goal_angle) * divisor
+	angular_velocity = (angular_velocity + delta * acceleration * (goal_angle - previous_angle)) * divisor

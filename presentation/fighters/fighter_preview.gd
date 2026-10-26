@@ -78,12 +78,12 @@ func _process(delta: float) -> void:
 	_rig.floor_y = 0.0
 	_rig.apply(_pose, 1, delta)
 	_geometry.compute(_character.weapon, _pose)
-	var to_global: Transform2D = _rig.get_global_transform()
-	_geometry.blade_base = to_global * _geometry.blade_base
-	_geometry.blade_direction = to_global.basis_xform(_geometry.blade_direction).normalized()
-	_geometry.second_base = to_global * _geometry.second_base
-	_geometry.second_direction = to_global.basis_xform(_geometry.second_direction).normalized()
-	var length_scale: float = to_global.get_scale().x
+	var rig_transform: Transform2D = _rig.get_global_transform()
+	_geometry.blade_base = rig_transform * _geometry.blade_base
+	_geometry.blade_direction = rig_transform.basis_xform(_geometry.blade_direction).normalized()
+	_geometry.second_base = rig_transform * _geometry.second_base
+	_geometry.second_direction = rig_transform.basis_xform(_geometry.second_direction).normalized()
+	var length_scale: float = rig_transform.get_scale().x
 	_geometry.blade_length *= length_scale
 	_geometry.second_length *= length_scale
 	_blade.width_scale = _character.weapon.blade_width * length_scale

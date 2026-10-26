@@ -151,7 +151,7 @@ func _draw() -> void:
 		draw_primitive(_polygon, _colors, _uvs, texture)
 
 
-func draw_into(canvas: CanvasItem, transform: Transform2D, tint: Color) -> void:
+func draw_into(canvas: CanvasItem, placement: Transform2D, tint: Color) -> void:
 	if not _initialized or texture == null:
 		return
 	for i in _mirror_colors.size():
@@ -161,10 +161,10 @@ func draw_into(canvas: CanvasItem, transform: Transform2D, tint: Color) -> void:
 		var t1: float = float(i + 1) / segments
 		var side_a: Vector2 = _side(i) * lerpf(top_width, bottom_width, t0) * 0.5
 		var side_b: Vector2 = _side(i + 1) * lerpf(top_width, bottom_width, t1) * 0.5
-		_mirror[0] = transform * (_points[i] - side_a)
-		_mirror[1] = transform * (_points[i] + side_a)
-		_mirror[2] = transform * (_points[i + 1] + side_b)
-		_mirror[3] = transform * (_points[i + 1] - side_b)
+		_mirror[0] = placement * (_points[i] - side_a)
+		_mirror[1] = placement * (_points[i] + side_a)
+		_mirror[2] = placement * (_points[i + 1] + side_b)
+		_mirror[3] = placement * (_points[i + 1] - side_b)
 		_uvs[0] = Vector2(0.0, t0)
 		_uvs[1] = Vector2(1.0, t0)
 		_uvs[2] = Vector2(1.0, t1)

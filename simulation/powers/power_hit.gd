@@ -110,7 +110,7 @@ static func _recoil(sim: MatchSimulation, fighter: FighterState, state: FighterS
 	fighter.stun_ticks = maxi(Ticks.from_seconds(seconds), 1)
 
 
-static func _event(sim: MatchSimulation, type: CombatEvent.Type, caster: FighterState, target: FighterState, power: PowerData, impact: PowerImpact) -> CombatEvent:
+static func _event(sim: MatchSimulation, type: CombatEvent.Type, caster: FighterState, target: FighterState, power: PowerData, _impact: PowerImpact) -> CombatEvent:
 	var event: CombatEvent = sim.emit(type, caster.index, target.index)
 	event.power = power
 	event.position = Vector2(target.x, target.y + sim.config.body_height * 0.6)

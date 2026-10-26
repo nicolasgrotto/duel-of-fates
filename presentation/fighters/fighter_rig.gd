@@ -448,19 +448,19 @@ func sever(limb: MoveData.Limb, front: bool) -> void:
 			severed = "leg_" + side
 	if not _cuts.has(severed):
 		_cuts.append(severed)
-	var hidden: Array[String] = []
+	var hidden_bones: Array[String] = []
 	for cut in _cuts:
 		match cut:
 			"arm_front", "arm_back":
 				var arm_side: String = cut.trim_prefix("arm_")
-				hidden.append_array(["forearm_" + arm_side, "hand_" + arm_side])
+				hidden_bones.append_array(["forearm_" + arm_side, "hand_" + arm_side])
 			"leg_front", "leg_back":
 				var leg_side: String = cut.trim_prefix("leg_")
-				hidden.append_array(["shin_" + leg_side, "boot_" + leg_side])
+				hidden_bones.append_array(["shin_" + leg_side, "boot_" + leg_side])
 			"head":
-				hidden.append("head")
+				hidden_bones.append("head")
 	for key in _sprites:
-		for bone_name in hidden:
+		for bone_name in hidden_bones:
 			if key.begins_with(bone_name + ":"):
 				_sprites[key].visible = false
 	_lost_main_hand = _cuts.has("arm_front")

@@ -50,12 +50,12 @@ func _exit_tree() -> void:
 
 
 func play(id: StringName, at: Vector2, volume_db: float = 0.0, pitch: float = 1.0, bus: StringName = &"Effects") -> void:
-	var stream: AudioStream = BANK.stream(id)
-	if stream == null:
+	var sound: AudioStream = BANK.stream(id)
+	if sound == null:
 		return
 	var voice: AudioStreamPlayer2D = _voices[_next_voice]
 	_next_voice = (_next_voice + 1) % VOICES
-	voice.stream = stream
+	voice.stream = sound
 	voice.global_position = at
 	voice.volume_db = volume_db
 	voice.pitch_scale = pitch
@@ -64,10 +64,10 @@ func play(id: StringName, at: Vector2, volume_db: float = 0.0, pitch: float = 1.
 
 
 func play_ui(id: StringName) -> void:
-	var stream: AudioStream = BANK.stream(id)
-	if stream == null:
+	var sound: AudioStream = BANK.stream(id)
+	if sound == null:
 		return
-	_ui.stream = stream
+	_ui.stream = sound
 	_ui.play()
 
 

@@ -113,7 +113,6 @@ func _blades() -> Array[PackedVector2Array]:
 
 
 func _draw_scene() -> void:
-	var center: Vector2 = _center()
 	var width: float = float(_viewport.size.x)
 	for ratio in HORIZON_RATIOS:
 		_canvas.draw_rect(Rect2(0.0, round(_viewport.size.y * ratio), width, 1.0), PALETTE.menu_horizon)

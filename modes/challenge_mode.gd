@@ -45,7 +45,7 @@ func result_options() -> Array[StringName]:
 
 
 func result_title() -> String:
-	return TranslationServer.translate("CHALLENGE_DONE") if won else ""
+	return String(TranslationServer.translate("CHALLENGE_DONE")) if won else ""
 
 
 func result_note() -> String:
@@ -57,4 +57,4 @@ func result_note() -> String:
 
 static func format_time(value: float) -> String:
 	var total: int = int(round(value))
-	return "%d:%02d" % [total / 60, total % 60]
+	return "%d:%02d" % [floori(total / 60.0), total % 60]

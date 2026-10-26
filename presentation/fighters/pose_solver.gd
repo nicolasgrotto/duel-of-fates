@@ -471,10 +471,10 @@ func _stage(track: PoseTrack, at: float, pose: RigPose, crouch: float, lean: flo
 func _stage_off_hand(pose: RigPose) -> void:
 	var from: PoseKey = _stage_from
 	var to: PoseKey = _stage_to
-	var guard: Vector2 = pose.off_hand - pose.pelvis
-	var start: Vector2 = from.off_hand if from.places_off_hand else guard
-	var end: Vector2 = to.off_hand if to.places_off_hand else guard
-	pose.off_hand = pose.pelvis + start.lerp(end, _stage_weight).lerp(guard, _stage_keep)
+	var kept_hand: Vector2 = pose.off_hand - pose.pelvis
+	var start: Vector2 = from.off_hand if from.places_off_hand else kept_hand
+	var end: Vector2 = to.off_hand if to.places_off_hand else kept_hand
+	pose.off_hand = pose.pelvis + start.lerp(end, _stage_weight).lerp(kept_hand, _stage_keep)
 	var placed: bool = from.places_off_hand or to.places_off_hand
 	if placed:
 		var free: float = lerpf(float(from.places_off_hand), float(to.places_off_hand), _stage_weight) * (1.0 - _stage_keep)
