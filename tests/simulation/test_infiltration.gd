@@ -300,6 +300,7 @@ func test_swept_bolts_hit_walls_before_the_player_and_respect_range() -> void:
 	var fraction: float = InfiltrationGeometry.wall_fraction(open, Vector2(100, 100), Vector2(1100, 100), 6.0)
 	assert_almost(fraction, (15.0 * 64.0 - 6.0 - 100.0) / 1000.0)
 	var ranged_map: InfiltrationMapData = MAP.duplicate(true) as InfiltrationMapData
+	ranged_map.targets[1].bolt = ranged_map.targets[1].bolt.duplicate() as BoltData
 	ranged_map.targets[1].bolt.max_range = 20.0
 	var ranged: InfiltrationSimulation = _sim(ranged_map)
 	var short_bolt: InfiltrationBolt = ranged.fire_bolt(1)
@@ -310,6 +311,7 @@ func test_swept_bolts_hit_walls_before_the_player_and_respect_range() -> void:
 
 func test_burst_count_and_interval_come_from_bolt_data() -> void:
 	var map: InfiltrationMapData = MAP.duplicate(true) as InfiltrationMapData
+	map.targets[1].bolt = map.targets[1].bolt.duplicate() as BoltData
 	map.targets[1].bolt.count = 3
 	map.targets[1].initial_delay = 0.0
 	var sim: InfiltrationSimulation = _sim(map, false)

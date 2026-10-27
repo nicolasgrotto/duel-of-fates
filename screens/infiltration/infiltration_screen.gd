@@ -1,7 +1,10 @@
 extends Node2D
 
 const CONFIG: InfiltrationConfig = preload("res://data/balance/infiltration_config.tres")
-const TRAINING_MAP: InfiltrationMapData = preload("res://data/infiltration/training_map.tres")
+const TRAINING_MAP: InfiltrationMapData = preload("res://data/infiltration/patrol_map.tres")
+const MUSIC: MusicData = preload("res://data/audio/duel_music.tres")
+const SUSPICION_SOUND: AudioStream = preload("res://assets/audio/infiltration/suspicion.wav")
+const ALARM_SOUND: AudioStream = preload("res://assets/audio/infiltration/alarm.wav")
 const PALETTE: UiPalette = preload("res://ui/palette.tres")
 const MAX_STEPS: int = 5
 const HUD_MARGIN: float = 56.0
@@ -18,6 +21,7 @@ const SOUNDS: Dictionary = {
 
 var sim: InfiltrationSimulation
 var controller: InfiltrationPlayerController
+var enemy_controller: InfiltrationEnemyController
 var intent: InfiltrationIntent = InfiltrationIntent.new()
 var paused: bool = false
 var _stage: PixelStage
@@ -31,6 +35,10 @@ var _pause_layer: CanvasLayer
 var _pause_title: Label
 var _pause_list: MenuList
 var _hum: AudioStreamPlayer
+var _alarm: AudioStreamPlayer
+var _notice: AudioStreamPlayer
+var _music: Array[AudioStreamPlayer] = []
+var _context: Label
 var _accumulator: float = 0.0
 
 
@@ -38,7 +46,9 @@ func open(params: Dictionary) -> void:
 	InfiltrationBindings.install()
 	controller = InfiltrationPlayerController.new()
 	sim = InfiltrationSimulation.new(CONFIG, params.get("map", TRAINING_MAP))
+	enemy_controller = InfiltrationEnemyController.new(sim.map, sim.targets.size())
 	_stage = PixelStage.new(CONFIG.units_per_pixel)
+	_stage.viewport.world_2d = World2D.new()
 	add_child(_stage)
 	var map_view: InfiltrationMapView = InfiltrationMapView.new()
 	_stage.viewport.add_child(map_view)
@@ -60,6 +70,7 @@ func open(params: Dictionary) -> void:
 	_hum.volume_db = CONFIG.hum_db
 	add_child(_hum)
 	_hum.play()
+	_build_audio()
 	_update_presentation(1.0)
 
 
@@ -86,6 +97,11 @@ func _build_hud() -> void:
 	objective.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	objective.offset_top = 128.0
 	hud.add_child(objective)
+	_context = _label("", &"InfiltrationLabel")
+	_context.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+	_context.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_context.offset_top = -154.0
+	hud.add_child(_context)
 	var footer: Label = _label(_hints(), &"InfiltrationLabel")
 	footer.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
 	footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -149,6 +165,10 @@ func _build_pause() -> void:
 	_pause_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(_pause_title)
 	var legend: Label = _label(tr("INFILTRATION_LEGEND"), &"InfiltrationLabel")
+	legend.text += "\n" + ControlHints.line(PackedStringArray([
+		ControlHints.hint(&"infiltration_takedown", "INFILTRATION_TAKEDOWN"),
+		ControlHints.hint(&"infiltration_interact", "INFILTRATION_DISABLE"),
+	]))
 	legend.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(legend)
 	var center: CenterContainer = CenterContainer.new()
@@ -179,10 +199,14 @@ func _process(delta: float) -> void:
 
 
 func step_once(command: InfiltrationIntent) -> void:
-	sim.step(command)
+	sim.step(command, enemy_controller.produce_all(sim))
 	for index in sim.event_count:
 		var event: InfiltrationEvent = sim.events[index]
 		_view.on_event(event)
+		if event.type == InfiltrationEvent.Type.AWARENESS_CHANGED and event.amount > 0.0:
+			_notice.play()
+		elif event.type == InfiltrationEvent.Type.TAKEDOWN_LANDED:
+			AudioDirector.play(&"hit_light", event.position, CONFIG.effects_db)
 		if SOUNDS.has(event.type):
 			var volume: float = CONFIG.effects_db
 			if event.type == InfiltrationEvent.Type.FOOTSTEP:
@@ -204,12 +228,18 @@ func _update_presentation(alpha: float) -> void:
 	_vigor.ratio = sim.player.vigor / CONFIG.vigor
 	_vigor.ghost_ratio = _vigor.ratio
 	_vigor.queue_redraw()
+	_update_security_hud()
+	_update_audio()
 	if _view.debug:
 		var player: InfiltrationActor = sim.player
 		_debug.text = "FPS %d  tick %d\npos %s  velocity %s\naim %s  guard %s  parry %d / lockout %d\nswing %d  health %.0f  vigor %.0f  dropped %d" % [
 			Engine.get_frames_per_second(), sim.tick, str(player.position), str(player.velocity), str(player.aim), player.guard,
 			player.parry_age, player.parry_cooldown, player.swing_tick, player.health, player.vigor, sim.dropped_events,
 		]
+		_debug.text += "\nalarm %s  reinforcements %d" % [sim.alarm_active(), sim.reinforcement_ticks]
+		for index in range(sim.map.targets.size(), sim.targets.size()):
+			var actor: InfiltrationActor = sim.targets[index]
+			_debug.text += "\n%d %s %.3f  %s  waypoint %d" % [index + 1, InfiltrationActor.Awareness.keys()[actor.awareness], actor.suspicion, InfiltrationActor.Decision.keys()[actor.decision], actor.waypoint]
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -238,6 +268,12 @@ func _set_paused(value: bool) -> void:
 	controller.discard_pending()
 	if is_instance_valid(_hum):
 		_hum.stream_paused = value
+	if is_instance_valid(_alarm):
+		if value:
+			_alarm.stop()
+		_notice.stream_paused = value
+	for music in _music:
+		music.stream_paused = value
 	if not value:
 		return
 	_pause_title.text = tr("PAUSE_TITLE" if sim.player.health > 0.0 else "INFILTRATION_DEFEATED")
@@ -254,6 +290,7 @@ func _on_pause_chosen(option: StringName) -> void:
 			_set_paused(false)
 		&"restart":
 			sim = InfiltrationSimulation.new(CONFIG, sim.map)
+			enemy_controller = InfiltrationEnemyController.new(sim.map, sim.targets.size())
 			_view.setup(sim)
 			_set_paused(false)
 		&"back":
@@ -264,3 +301,60 @@ func _exit_tree() -> void:
 	InfiltrationBindings.uninstall()
 	if is_instance_valid(_hum):
 		_hum.stop()
+	for music in _music:
+		music.stop()
+	if is_instance_valid(_alarm):
+		_alarm.stop()
+		_notice.stop()
+
+
+func _build_audio() -> void:
+	_alarm = AudioStreamPlayer.new()
+	_alarm.stream = ALARM_SOUND
+	_alarm.bus = &"Effects"
+	_alarm.volume_db = CONFIG.alarm_db
+	add_child(_alarm)
+	_notice = AudioStreamPlayer.new()
+	_notice.stream = SUSPICION_SOUND
+	_notice.bus = &"Effects"
+	_notice.volume_db = CONFIG.effects_db
+	add_child(_notice)
+	for stream in [MUSIC.base, MUSIC.percussion, MUSIC.tension]:
+		var music: AudioStreamPlayer = AudioStreamPlayer.new()
+		music.stream = stream
+		music.bus = &"Music"
+		music.volume_db = CONFIG.silent_db
+		add_child(music)
+		_music.append(music)
+	for music in _music:
+		music.play()
+
+
+func _update_audio() -> void:
+	if paused:
+		return
+	var alarm: bool = sim.alarm_active()
+	if alarm and not _alarm.playing:
+		_alarm.play()
+	elif not alarm:
+		_alarm.stop()
+	var alerted: bool = false
+	for actor in sim.targets:
+		if actor.health > 0.0 and actor.awareness == InfiltrationActor.Awareness.ALERTED:
+			alerted = true
+	for index in _music.size():
+		_music[index].volume_db = CONFIG.music_db if index == 0 else (CONFIG.music_db if alarm or (alerted and index == 1) else CONFIG.silent_db)
+
+
+func _update_security_hud() -> void:
+	var disabled: bool = not sim.panels.is_empty()
+	for panel in sim.panels:
+		disabled = disabled and panel.disabled
+	_status.text = tr("INFILTRATION_ALARM_ACTIVE" if sim.alarm_active() else "INFILTRATION_ALARM_DISABLED" if disabled else "INFILTRATION_STATUS")
+	_status.modulate = PALETTE.danger if sim.alarm_active() else PALETTE.text
+	var hints: PackedStringArray = []
+	if sim.takedown_target() >= 0:
+		hints.append(ControlHints.hint(&"infiltration_takedown", "INFILTRATION_TAKEDOWN"))
+	if sim.nearby_panel() >= 0:
+		hints.append(ControlHints.hint(&"infiltration_interact", "INFILTRATION_DISABLE"))
+	_context.text = ControlHints.line(hints)

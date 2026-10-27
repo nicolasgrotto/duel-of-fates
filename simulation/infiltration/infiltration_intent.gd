@@ -5,6 +5,7 @@ var movement: Vector2 = Vector2.ZERO
 var aim: Vector2 = Vector2.ZERO
 var held: int = 0
 var pressed: int = 0
+var panel: int = -1
 
 
 func clear() -> void:
@@ -12,3 +13,4 @@ func clear() -> void:
 	aim = Vector2.ZERO
 	held = 0
 	pressed = 0
+	panel = -1

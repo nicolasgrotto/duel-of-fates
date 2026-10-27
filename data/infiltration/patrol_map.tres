@@ -1,0 +1,83 @@
+[gd_resource type="Resource" script_class="InfiltrationMapData" format=3]
+
+[ext_resource type="Script" path="res://data/infiltration/infiltration_map_data.gd" id="map"]
+[ext_resource type="Script" path="res://data/infiltration/infiltration_target_data.gd" id="target"]
+[ext_resource type="Resource" path="res://data/bolts/standard_bolt.tres" id="bolt"]
+[ext_resource type="Texture2D" path="res://assets/infiltration/training_tiles.png" id="tiles"]
+[ext_resource type="Texture2D" path="res://assets/infiltration/training_sprites.png" id="sprites"]
+
+[ext_resource type="Script" path="res://data/infiltration/infiltration_enemy_placement.gd" id="placement"]
+[ext_resource type="Script" path="res://data/infiltration/infiltration_panel_data.gd" id="panel"]
+[ext_resource type="Resource" path="res://data/infiltration/enemies/patrol_trooper.tres" id="trooper"]
+[ext_resource type="Resource" path="res://data/infiltration/enemies/sentry.tres" id="sentry"]
+[ext_resource type="Resource" path="res://data/infiltration/enemies/heavy.tres" id="heavy"]
+[ext_resource type="Texture2D" path="res://assets/infiltration/enemy_sprites.png" id="enemy_sprites"]
+
+[sub_resource type="Resource" id="dummy"]
+script = ExtResource("target")
+id = &"training_dummy"
+position = Vector2(480, 480)
+health = 30.0
+
+[sub_resource type="Resource" id="emitter"]
+script = ExtResource("target")
+id = &"training_emitter"
+kind = 1
+position = Vector2(864, 352)
+direction = Vector2(-1, 0)
+health = 16.0
+bolt = ExtResource("bolt")
+
+[sub_resource type="Resource" id="patrol"]
+script = ExtResource("placement")
+enemy = ExtResource("trooper")
+position = Vector2(608, 992)
+direction = Vector2(1, 0)
+route = PackedVector2Array(928, 992, 928, 864, 608, 864, 608, 992)
+
+[sub_resource type="Resource" id="watcher"]
+script = ExtResource("placement")
+enemy = ExtResource("sentry")
+position = Vector2(864, 1120)
+direction = Vector2(0, -1)
+
+[sub_resource type="Resource" id="armored"]
+script = ExtResource("placement")
+enemy = ExtResource("heavy")
+position = Vector2(1376, 800)
+direction = Vector2(-1, 0)
+route = PackedVector2Array(1376, 992, 1696, 992, 1696, 800, 1376, 800)
+
+[sub_resource type="Resource" id="reserve_a"]
+script = ExtResource("placement")
+enemy = ExtResource("trooper")
+position = Vector2(1568, 1152)
+direction = Vector2(0, -1)
+route = PackedVector2Array(1184, 1152, 1184, 800, 1568, 800, 1568, 1152)
+reinforcement = true
+
+[sub_resource type="Resource" id="reserve_b"]
+script = ExtResource("placement")
+enemy = ExtResource("heavy")
+position = Vector2(1824, 1152)
+direction = Vector2(0, -1)
+route = PackedVector2Array(1824, 800, 1568, 800, 1568, 1152, 1824, 1152)
+reinforcement = true
+
+[sub_resource type="Resource" id="terminal"]
+script = ExtResource("panel")
+position = Vector2(960, 1056)
+
+[resource]
+script = ExtResource("map")
+id = &"patrol_sector"
+title_key = "INFILTRATION_TRAINING"
+player_spawn = Vector2(224, 352)
+rows = PackedStringArray("##############################", "#................#...........#", "#................#...........#", "#......CCC.......#...........#", "#................#...........#", "#..============..#...........#", "#............................#", "#............................#", "#.........CC.................#", "#................#...........#", "#................#...........#", "#######..#########...........#", "#...CC...........#...........#", "#................#...........#", "#......................CCC...#", "#................#...........#", "#................#...........#", "#............................#", "#............................#", "##############################")
+targets = [SubResource("dummy"), SubResource("emitter")]
+tiles = ExtResource("tiles")
+sprites = ExtResource("sprites")
+
+enemies = [SubResource("patrol"), SubResource("watcher"), SubResource("armored"), SubResource("reserve_a"), SubResource("reserve_b")]
+panels = [SubResource("terminal")]
+enemy_sprites = ExtResource("enemy_sprites")

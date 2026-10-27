@@ -106,6 +106,41 @@ def main():
     folder.mkdir(parents=True, exist_ok=True)
     tileset(colors).save(folder / "training_tiles.png", optimize=True)
     sprites(colors).save(folder / "training_sprites.png", optimize=True)
+    enemy_sprites(colors).save(folder / "enemy_sprites.png", optimize=True)
+
+
+def enemy_sprites(colors):
+    atlas = Image.new("RGBA", (SPRITE[0] * 3, SPRITE[1]))
+    dark = colors["infiltration_seam"]
+    metal = colors["infiltration_wall"]
+    edge = colors["infiltration_edge"]
+    for kind in range(3):
+        body = Image.new("RGBA", SPRITE)
+        draw = ImageDraw.Draw(body)
+        draw.ellipse((2, 20, 22, 27), fill=(*dark, 160))
+        if kind == 1:
+            draw.polygon(((4, 10), (19, 10), (22, 22), (17, 25), (5, 25), (1, 22)), fill=metal, outline=edge)
+            draw.rectangle((6, 12, 17, 20), fill=shade(metal, .7), outline=dark)
+            draw.rectangle((9, 2, 14, 16), fill=colors["menu_hilt"], outline=edge)
+            draw.rectangle((10, 1, 13, 3), fill=colors["bolt"])
+            draw.line((7, 21, 16, 21), fill=colors["potential"])
+        else:
+            shoulders = (1, 9, 22, 15) if kind == 2 else (4, 10, 19, 14)
+            draw.rectangle((6, 18, 10, 25), fill=shade(metal, .6), outline=dark)
+            draw.rectangle((14, 18, 18, 25), fill=shade(metal, .6), outline=dark)
+            draw.rectangle((5, 11, 18, 21), fill=metal, outline=dark)
+            draw.rectangle(shoulders, fill=shade(metal, 1.3), outline=edge)
+            draw.line((8, 15, 8, 19), fill=edge, width=2)
+            draw.rectangle((5, 20, 18, 21), fill=dark)
+            draw.rectangle((9, 4, 15, 11), fill=shade(metal, 1.5), outline=dark)
+            draw.rectangle((10, 5, 14, 6), fill=colors["potential"])
+            draw.rectangle((18, 3, 21, 16), fill=colors["menu_hilt"], outline=dark)
+            draw.line((19, 3, 20, 3), fill=colors["bolt"])
+            if kind == 2:
+                draw.rectangle((2, 10, 5, 14), fill=shade(metal, .7))
+                draw.rectangle((18, 10, 21, 14), fill=shade(metal, .7))
+        atlas.paste(body, (kind * SPRITE[0], 0))
+    return atlas
 
 
 if __name__ == "__main__":

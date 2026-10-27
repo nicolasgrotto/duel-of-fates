@@ -8,6 +8,9 @@ extends Resource
 @export var player_spawn: Vector2
 @export var player_direction: Vector2 = Vector2.RIGHT
 @export var targets: Array[InfiltrationTargetData] = []
+@export var enemies: Array[InfiltrationEnemyPlacement] = []
+@export var panels: Array[InfiltrationPanelData] = []
+@export var enemy_sprites: Texture2D
 @export var tiles: Texture2D
 @export var sprites: Texture2D
 

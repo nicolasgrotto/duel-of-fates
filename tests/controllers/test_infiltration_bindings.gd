@@ -45,6 +45,27 @@ func test_bindings_survive_overlapping_screen_transitions_without_duplicates() -
 	assert_false(InputMap.has_action(&"infiltration_attack"))
 
 
+func test_stealth_actions_copy_remaps_and_only_produce_intent_bits() -> void:
+	InputBindings.apply_defaults()
+	InfiltrationBindings.install()
+	assert_eq(_keys(&"infiltration_takedown"), _keys(&"p1_heavy_attack"))
+	assert_eq(_keys(&"infiltration_interact"), _keys(&"p1_power"))
+	var sim: InfiltrationSimulation = InfiltrationSimulation.new(load("res://data/balance/infiltration_config.tres"), load("res://data/infiltration/patrol_map.tres"))
+	var before: Dictionary = sim.capture()
+	var controller: InfiltrationPlayerController = InfiltrationPlayerController.new()
+	var intent: InfiltrationIntent = InfiltrationIntent.new()
+	Input.action_press(&"infiltration_takedown")
+	Input.action_press(&"infiltration_interact")
+	controller.produce(sim, intent)
+	assert_eq(intent.pressed, Intent.Command.HEAVY | Intent.Command.POWER)
+	assert_eq(sim.capture(), before)
+	Input.action_release(&"infiltration_takedown")
+	Input.action_release(&"infiltration_interact")
+	InfiltrationBindings.uninstall()
+	assert_false(InputMap.has_action(&"infiltration_takedown"))
+	assert_false(InputMap.has_action(&"infiltration_interact"))
+
+
 func test_controller_produces_independent_movement_aim_and_commands_without_mutating_simulation() -> void:
 	InputBindings.apply_defaults()
 	InfiltrationBindings.install()

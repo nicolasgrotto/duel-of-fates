@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="InfiltrationEnemyData" format=3]
+
+[ext_resource type="Script" path="res://data/infiltration/infiltration_enemy_data.gd" id="enemy"]
+[ext_resource type="Resource" path="res://data/bolts/standard_bolt.tres" id="bolt"]
+
+[resource]
+script = ExtResource("enemy")
+id = &"sentry"
+kind = 1
+health = 16.0
+bolt = ExtResource("bolt")
+respawn_seconds = 0.0
+archetype = 1
+speed = 0.0
+vision_range = 440.0
+vision_degrees = 100.0
+sprite = 1

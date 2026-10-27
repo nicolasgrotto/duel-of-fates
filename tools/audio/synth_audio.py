@@ -450,6 +450,13 @@ def magma_ambience():
     save_ambience("magma_forge", rumble + bubbles + crackles)
 
 
+def infiltration_sounds():
+    save("infiltration/suspicion.wav", partials([740, 1110], 0.22, [16, 20]) * envelope(0.22, 0.005, 1.0))
+    t = t_axis(1.0)
+    pulse = np.maximum(0, np.sin(2 * math.pi * 2 * t)) ** 2
+    save("infiltration/alarm.wav", (np.sin(2 * math.pi * 410 * t) + 0.35 * np.sin(2 * math.pi * 615 * t)) * pulse * 0.5)
+
+
 if __name__ == "__main__":
     blade_sounds()
     impact_sounds()
@@ -465,4 +472,5 @@ if __name__ == "__main__":
     magma_ambience()
     arena_ambiences()
     themes()
+    infiltration_sounds()
     print("audio written")

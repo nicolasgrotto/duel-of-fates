@@ -28,6 +28,29 @@ extends Resource
 @export var projectile_capacity: int = 32
 @export var event_capacity: int = 128
 
+@export_group("Stealth and alarms")
+@export var vision_gain: float = 1.0
+@export var suspicion_decay: float = 0.2
+@export var suspicious_threshold: float = 0.25
+@export var noise_suspicion: float = 0.45
+@export var sneak_visibility: float = 0.6
+@export var alert_memory: float = 5.0
+@export var walk_noise: float = 40.0
+@export var run_noise: float = 220.0
+@export var sneak_noise: float = 16.0
+@export var combat_noise: float = 300.0
+@export var reflected_wall_noise: float = 240.0
+@export var takedown_range: float = 72.0
+@export var takedown_rear_degrees: float = 100.0
+@export var interaction_range: float = 80.0
+@export var panel_activation_range: float = 56.0
+@export var panel_activation_seconds: float = 0.75
+@export var reinforcement_delay: float = 2.0
+@export var waypoint_radius: float = 10.0
+@export var alarm_db: float = -18.0
+@export var music_db: float = -14.0
+@export var silent_db: float = -60.0
+
 @export_group("Presentation")
 @export var camera_zoom: float = 2.0
 @export var units_per_pixel: float = 2.0

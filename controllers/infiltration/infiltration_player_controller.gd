@@ -6,6 +6,8 @@ const COMMANDS: Dictionary = {
 	Intent.Command.BLOCK: &"infiltration_guard",
 	Intent.Command.DODGE: &"infiltration_run",
 	Intent.Command.SPECIAL: &"infiltration_sneak",
+	Intent.Command.HEAVY: &"infiltration_takedown",
+	Intent.Command.POWER: &"infiltration_interact",
 }
 
 var _pending: int = 0

@@ -8,14 +8,15 @@ var velocity: Vector2 = Vector2.ZERO
 var travelled: float = 0.0
 var owner: int = 0
 var shooter: int = 0
+var origin: Vector2 = Vector2.ZERO
 var data: BoltData
 
 
 func capture() -> Dictionary:
-	return {"active": active, "position": position, "previous": previous, "velocity": velocity, "travelled": travelled, "owner": owner, "shooter": shooter}
+	return {"active": active, "position": position, "previous": previous, "velocity": velocity, "travelled": travelled, "owner": owner, "shooter": shooter, "origin": origin}
 
 
-func restore(state: Dictionary, map: InfiltrationMapData) -> void:
+func restore(state: Dictionary, sources: Array[InfiltrationTargetData]) -> void:
 	for key in state:
 		set(key, state[key])
-	data = map.targets[shooter].bolt if active else null
+	data = sources[shooter].bolt if active else null

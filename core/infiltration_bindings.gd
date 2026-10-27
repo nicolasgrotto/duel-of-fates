@@ -10,6 +10,8 @@ const COPIES: Dictionary = {
 	&"infiltration_sneak": &"p1_special",
 	&"infiltration_attack": &"p1_light_attack",
 	&"infiltration_guard": &"p1_block",
+	&"infiltration_takedown": &"p1_heavy_attack",
+	&"infiltration_interact": &"p1_power",
 }
 const AIM_AXES: Dictionary = {
 	&"infiltration_aim_left": [JOY_AXIS_RIGHT_X, -1.0],

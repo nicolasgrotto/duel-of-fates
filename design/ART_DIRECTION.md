@@ -29,11 +29,11 @@ Tiles de 32×32 px: chão de placas escuras com juntas, rebites discretos e quat
 
 Novo ponto de vista do pipeline: sprite simples e utilizável do Guardião visto de cima, 24×28 px, cabeça, ombros, túnica, cinto, mãos e botas legíveis, quatro tons dessaturados e contorno seletivo. Corpo orienta-se para a mira; passada curta alterna pés e torso sem deformar a silhueta; furtivo recolhe o corpo. Um boneco de treino e um emissor mecânico têm sprites próprios no mesmo atlas. A lâmina fica à frente da mão, ciano-gelo do tema, desenhada na grade com núcleo claro e halo curto; é a principal fonte de brilho. Não reutilizar o rig lateral visto de cima nem introduzir uma nova família estética. A arte inicial pode ser enriquecida depois sem alterar hitboxes.
 
-Disparos usam branco quente do `UiPalette.bolt`, traço curto com núcleo claro, faíscas de desvio na lâmina e devolução na cor dela. Preparação e arco do golpe são legíveis; guarda mostra a lâmina transversal à mira. Futuramente, cones de visão são malha de baixa opacidade com borda tracejada, nunca preenchimento opaco; ícones/forma distinguem suspeita de alerta além da cor. Colisão/mira/setor de guarda só aparecem no F3, sem cones de detecção fictícios na task 10.
-
-### Duelo
+Disparos usam branco quente do `UiPalette.bolt`, traço curto com núcleo claro, faíscas de desvio na lâmina e devolução na cor dela. Preparação e arco do golpe são legíveis; guarda mostra a lâmina transversal à mira. Na task 11, cones de visão são malha de baixa opacidade com borda tracejada, nunca preenchimento opaco; ícones/forma distinguem suspeita de alerta além da cor. Colisão/mira/setor de guarda só aparecem no F3, sem cones de detecção fictícios na task 10.
 
 Na task 11, o atlas superior ganha soldado de ombros estreitos e arma lateral, sentinela mecânica com base angular e pesado de ombreiras largas. O painel é um terminal pequeno com indicador partido; portas de reforço têm marca de acesso no piso. Cones usam malha discreta e contorno tracejado, recortados nas paredes/caixas. Suspeita usa arco e `?`, alerta usa `!`; as formas persistem com efeitos reduzidos. Indicador de painel usa destaque quando disponível, perigo quando ativo e secundário cortado quando inutilizado, sem clarão global.
+
+### Duelo
 
 - Em enquadramento neutro, um lutador ocupa cerca de 25–30% da altura da tela; a arena é grande diante deles.
 - A câmera acompanha o ponto médio dos lutadores, com zoom suave conforme a distância e margem para as lâminas. O chão é a âncora vertical.

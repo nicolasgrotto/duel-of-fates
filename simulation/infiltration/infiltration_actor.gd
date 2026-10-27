@@ -2,6 +2,17 @@ class_name InfiltrationActor
 extends RefCounted
 
 enum Locomotion { WALK, RUN, SNEAK }
+enum Awareness { UNAWARE, SUSPICIOUS, ALERTED }
+enum Decision { PATROL, INVESTIGATE, FIGHT, ALARM }
+
+var awareness: Awareness = Awareness.UNAWARE
+var decision: Decision = Decision.PATROL
+var suspicion: float = 0.0
+var last_known: Vector2 = Vector2.ZERO
+var memory_ticks: int = 0
+var visible_player: bool = false
+var waypoint: int = 0
+var spawned: bool = true
 
 var position: Vector2
 var previous: Vector2
