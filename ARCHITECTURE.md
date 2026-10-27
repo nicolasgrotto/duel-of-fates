@@ -93,6 +93,12 @@ Compartilhados com o duelo: `Ticks`, bits de comandos de `Intent`, InputMap/bind
 
 ### Duelo
 
+### Patrulhas, percepção e alarmes (task 11)
+
+Arquétipos `InfiltrationEnemyData` estendem os dados de alvo; `InfiltrationEnemyPlacement` separa posição/rota/reserva do arquétipo. A simulação mantém uma lista unificada de dados e corpos (alvos de treino seguidos dos inimigos), incluindo slots de reforços pré-alocados, inativos até entrada. IDs de projétil/evento continuam índice + 1; snapshots restauram o BoltData pela lista unificada.
+
+`InfiltrationPerception` resolve visão/memória/audição no tick; `InfiltrationEnemyController` lê esses estados e produz `InfiltrationIntent` reutilizada (movimento, mira, tiro e pedido de painel). Nunca modifica atores. `InfiltrationNavigation` faz busca em largura determinística com buffers de grade reutilizados; nenhuma física de nós. A simulação aplica movimento, avança rota e resolve pedidos, dano e temporizadores. Estado de consciência, último ponto, rota, decisão, painel e reforços faz parte do snapshot. Painéis têm dados no mapa e estado próprio. Eventos de ruído são resolvidos na simulação, não pelo áudio. A tela e a vista só apresentam esses estados/eventos; controles reutilizam forte para abate e Poder para interação sem alterar ações do duelo.
+
 - **`MatchSimulation`**: dono do tick. `step(intents)` avança 1/60 s: aplica intenções, máquina de estados dos lutadores, movimento, colisão de corpos, fases dos golpes, choques, acertos, poderes, projéteis, consequências, regeneração, fim de round. Acumula `CombatEvent` do tick.
 - **`FighterState`**: dados puros de um lutador (posição, velocidade, estado, golpe atual, fase, tempo na fase, vida, Vigor, Fluxo, status, ferimento, buffer, contadores). Nunca lê `Input` nem nós.
 - **Máquina de estados** com os estados de GAME_DESIGN, seção 5; cada estado é uma classe pequena com `enter`, `step`, `exit` e `debug_lines()`.

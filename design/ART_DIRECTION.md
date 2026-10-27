@@ -33,6 +33,8 @@ Disparos usam branco quente do `UiPalette.bolt`, traço curto com núcleo claro,
 
 ### Duelo
 
+Na task 11, o atlas superior ganha soldado de ombros estreitos e arma lateral, sentinela mecânica com base angular e pesado de ombreiras largas. O painel é um terminal pequeno com indicador partido; portas de reforço têm marca de acesso no piso. Cones usam malha discreta e contorno tracejado, recortados nas paredes/caixas. Suspeita usa arco e `?`, alerta usa `!`; as formas persistem com efeitos reduzidos. Indicador de painel usa destaque quando disponível, perigo quando ativo e secundário cortado quando inutilizado, sem clarão global.
+
 - Em enquadramento neutro, um lutador ocupa cerca de 25–30% da altura da tela; a arena é grande diante deles.
 - A câmera acompanha o ponto médio dos lutadores, com zoom suave conforme a distância e margem para as lâminas. O chão é a âncora vertical.
 - Punch-in curto no impacto forte, no parry perfeito e no K.O. (ver VFX).

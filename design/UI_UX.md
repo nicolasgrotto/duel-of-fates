@@ -34,6 +34,8 @@ Pausa local ao treino congela a amostragem e os ticks; sobreposição escura com
 
 ### Carregamento
 
+Task 11: estado do treino distingue alarme pronto/ativo/desativado em PT e EN. Perto de alvo válido, dica contextual mostra Abate silencioso ou Desativar painel com o binding atual; sem prometer interação através de cobertura. Pausa explica cones, `?`/`!`, abate e painel. F3 mostra cone, rota, última posição conhecida, suspeita numérica, decisão e temporizador de alarme/reforços. Objetivo do treino propõe evitar patrulhas ou enfrentar disparos devolvendo-os; não há resultado de missão.
+
 Toda troca de cena passa pelo fade do `SceneRouter`. Com a tela já escura, aparece **Carregando** (EN: **Loading**) em `HintLabel`, no canto inferior direito, com três pontos que acendem em sequência; some antes do fade de volta. Ele é desenhado antes do trabalho pesado (montar a cena, a simulação e os lutadores), então fica visível mesmo quando o jogo trava um instante para carregar personagens novos. Recursos que a cena seguinte já sabe que vai usar (personagens da Galeria e da seleção) carregam em segundo plano durante o fade.
 
 ### Abertura

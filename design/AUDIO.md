@@ -40,6 +40,8 @@ Na task 11, a detecção recebe eventos de ruído da simulação, e não o volum
 
 ### Duelo
 
+Task 11: passos dos inimigos reutilizam o metal existente. Aviso de suspeita curto e sirene pulsada de 1 s são sintetizados por `infiltration_sounds` em `synth_audio.py`, sem amostras; sirene local do modo repete somente com alarme ativo. Música usa as três camadas do tema original de duelo: baixa intensidade em furtividade, maior com inimigos alertados, máxima no alarme. Pausa suspende música/sirene/zumbido e sair encerra os players locais. A música não altera o duelo nem a simulação.
+
 Passos por superfície (metal, água, pedra, neve, sal, musgo), tecidos e capas, pulo e aterrissagem, esquiva (whoosh curto e agudo), esquiva de precisão (sopro curto subindo e toque agudo suave), empurrão (impacto surdo), exaustão (sopro grave descendente, baixo), ferimento (impacto forte com camada grave), ação recusada (som seco curto).
 
 ## Poderes
