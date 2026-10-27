@@ -10,7 +10,7 @@ Referências de **sensação** (nunca de assets): os duelos de sabre da trilogia
 
 ## Técnica de apresentação
 
-- O **combate acontece num plano 2D lateral**. A câmera é lateral; profundidade é cenário.
+- O **duelo acontece num plano 2D lateral**. A câmera do duelo é lateral; profundidade é cenário. Infiltração e naves têm a exceção top-down autorizada em DESIGN, "Além do duelo".
 - **Técnica decidida: pixel art sci-fi com esqueleto** (decisão da migração para pixel art; a versão em alta definição está na tag `phase-5-hd`). O mundo inteiro (arena, lutadores, lâminas, poderes e efeitos) é desenhado **nativamente numa grade de pixels baixa** e ampliado sem suavização. Não é um filtro sobre a arte em alta definição: cada peça é pintada direto na grade, com tons e contornos definidos.
 - **Grade**: 1 pixel do mundo = **2 u** (0,5 px/u). Um lutador tem ~75 px de altura; no enquadramento neutro a grade tem ~480×270 e cada pixel ocupa ~4 px de uma tela 1080p. O zoom da câmera muda o tamanho de **todos** os pixels por igual (entre ~2,5 e ~4,5 px de tela), nunca reamostra uma peça isolada. A câmera anda em pixels inteiros da grade; o deslize suave vem do deslocamento da imagem final.
 - **Peças**: o mesmo esqueleto (`Skeleton2D`, IK, tecidos com física, pose calculada da simulação por família de movimento). As peças são pintadas na grade sem antialias: borda dura, **4 tons por cor** (sombra, base, luz, brilho), **contorno seletivo** de 1 px (escuro no lado da sombra; no lado da luz, que vem da frente e de cima, a borda sobe um tom), para membros finos de 4–5 px não virarem só contorno, **luz de forma** pintada em cada peça (frente clara, costas escuras) e detalhe interno só onde ele lê em 1–2 px (olho, sobrancelha, nariz, brilho do cabelo, dobras de cotovelo e joelho, punho, biqueira e sola da bota, lapela da túnica, bolsa no cinto). A cabeça tem ~11 px de altura (proporção heroica, ~1/7 do corpo) e pescoço curto, para o rosto ler na grade. As peças de trás (perna, braço, capa) ficam acima do cenário na ordem de desenho, sempre visíveis. Os trajes trocam a paleta (8 slots), como num jogo de pixel art clássico. O mapa de normal é pintado na mesma grade: a luz das lâminas ilumina o corpo em degraus de pixel.
@@ -20,6 +20,18 @@ Referências de **sensação** (nunca de assets): os duelos de sabre da trilogia
 - O pipeline anterior (alta definição, 4 px/u, fase 3) fica registrado em ARCHITECTURE.md; o formato das peças (mapa de material + mapa de normal) é o mesmo.
 
 ## Escala e enquadramento
+
+### Infiltração — vista superior (task 10)
+
+Vista ortográfica de cima, sem perspectiva/isometria: chão em grade, paredes com borda de metal e tampa vista de cima. Mantém **1 px = 2 u**, mundo nativo em SubViewport ampliado pelo `PixelStage`, câmera com centro preso à grade e interface em alta resolução. Câmera segue o jogador e respeita as bordas do mapa; cerca de 960×540 u visíveis a 1080p. Zoom uniforme, sem girar a câmera.
+
+Tiles de 32×32 px: chão de placas escuras com juntas, rebites discretos e quatro tons; parede mais clara que o chão, topo e contorno seletivo; caixas com cantos reforçados; faixa de serviço discreta. Paleta de Infiltração no `UiPalette`, sem cores soltas nos scripts. Ferramenta original `tools/art/make_infiltration_tiles.py` gera atlas e sprites, sem imagens externas. Arte é pintada nessa grade, não reduzida a partir de imagens maiores.
+
+Novo ponto de vista do pipeline: sprite simples e utilizável do Guardião visto de cima, 24×28 px, cabeça, ombros, túnica, cinto, mãos e botas legíveis, quatro tons dessaturados e contorno seletivo. Corpo orienta-se para a mira; passada curta alterna pés e torso sem deformar a silhueta; furtivo recolhe o corpo. Um boneco de treino e um emissor mecânico têm sprites próprios no mesmo atlas. A lâmina fica à frente da mão, ciano-gelo do tema, desenhada na grade com núcleo claro e halo curto; é a principal fonte de brilho. Não reutilizar o rig lateral visto de cima nem introduzir uma nova família estética. A arte inicial pode ser enriquecida depois sem alterar hitboxes.
+
+Disparos usam branco quente do `UiPalette.bolt`, traço curto com núcleo claro, faíscas de desvio na lâmina e devolução na cor dela. Preparação e arco do golpe são legíveis; guarda mostra a lâmina transversal à mira. Futuramente, cones de visão são malha de baixa opacidade com borda tracejada, nunca preenchimento opaco; ícones/forma distinguem suspeita de alerta além da cor. Colisão/mira/setor de guarda só aparecem no F3, sem cones de detecção fictícios na task 10.
+
+### Duelo
 
 - Em enquadramento neutro, um lutador ocupa cerca de 25–30% da altura da tela; a arena é grande diante deles.
 - A câmera acompanha o ponto médio dos lutadores, com zoom suave conforme a distância e margem para as lâminas. O chão é a âncora vertical.

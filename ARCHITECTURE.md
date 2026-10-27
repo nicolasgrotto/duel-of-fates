@@ -77,6 +77,20 @@ Arquivos e pastas em `snake_case`; classes com `class_name` em `PascalCase`.
 
 ## Simulação
 
+### Núcleo de Infiltração (task 10)
+
+Módulo separado, sem adaptar `MatchSimulation` nem `FighterState` ao plano superior. `simulation/infiltration/` contém `InfiltrationSimulation`, estado de atores, projéteis/eventos em pools e geometria de grade/setor/percurso. `InfiltrationIntent` contém movimento e mira `Vector2` e bits de `Intent.Command`; somente o controlador os produz. Passo fixo usa `Ticks.DELTA`, sem física de nós nem `delta` real. `capture`/`restore` e hash de estado incluem vida, Vigor, janelas, golpe, temporizadores de alvos, tiros e tick. Nenhum objeto novo por tick.
+
+`data/infiltration/` contém mapa de linhas de tiles e `InfiltrationTargetData` (boneco ou emissor, posição, direção, vida, BoltData e cadência). `data/balance/infiltration_config.tres` centraliza movimento, alcance/setor, tempos, medidores, pools e apresentação. O Resource de mapa é fonte única de colisão/desenho; limites fora da grade são sólidos. Emissores não são IA de patrulha: disparam numa direção fixa para prática, e alvos destruídos reaparecem por dado. Inimigos e missões entram nas tasks 11/12, sem arquivos vazios agora.
+
+`controllers/infiltration/` tem o controlador de jogador; `core/infiltration_bindings.gd` instala ações no namespace `infiltration_*` copiando os bindings atuais do J1, acrescenta eixos verticais e de mira e os botões do mouse, e remove apenas essas ações ao sair. InputMap do duelo fica intacto. Mira da tela é só dado de entrada (posição do cursor projetada no mundo); regras continuam no núcleo. Intenções podem ser produzidas por testes sem Input.
+
+`presentation/infiltration/` desenha a grade pelo atlas, sprites superiores, lâmina, tiros, faíscas em pool e debug; só lê estado/eventos. Usa `PixelStage` e uma `Camera2D` própria seguindo o jogador, sem alterar o rig do duelo. `screens/infiltration/` monta o treino, executa acumulador fixo limitado, HUD e pausa local; navegação externa só pelo `SceneRouter` (rota `infiltration_training`). Não grava campanha, recordes ou desbloqueios. A pausa descarta comandos pendentes para não disparar ao voltar.
+
+Compartilhados com o duelo: `Ticks`, bits de comandos de `Intent`, InputMap/bindings do J1, números de parry do `CombatConfig` e `BoltData` padrão, tema/`UiPalette`, atlas na mesma grade, `AudioDirector`/banco original e `SceneRouter`. `SaveService` permanece disponível para capturas isoladas e futura progressão, sem escrita no treino. Resolvedores do duelo e seu `TickRunner` não são modificados. O gerador `tools/art/make_infiltration_tiles.py` lê a paleta central, produz atlas/sprites determinísticos e tem os outputs registrados em ASSETS.
+
+### Duelo
+
 - **`MatchSimulation`**: dono do tick. `step(intents)` avança 1/60 s: aplica intenções, máquina de estados dos lutadores, movimento, colisão de corpos, fases dos golpes, choques, acertos, poderes, projéteis, consequências, regeneração, fim de round. Acumula `CombatEvent` do tick.
 - **`FighterState`**: dados puros de um lutador (posição, velocidade, estado, golpe atual, fase, tempo na fase, vida, Vigor, Fluxo, status, ferimento, buffer, contadores). Nunca lê `Input` nem nós.
 - **Máquina de estados** com os estados de GAME_DESIGN, seção 5; cada estado é uma classe pequena com `enter`, `step`, `exit` e `debug_lines()`.

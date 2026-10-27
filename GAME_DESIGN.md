@@ -527,6 +527,29 @@ Progressão cosmética nos modos de duelo; nada muda os atributos do elenco.
 
 Idioma (Português/English), dificuldade, efeitos (Completos/Reduzidos), som, música, preset de teclado e remapeamento, replay do golpe final, finalizações, Poderes, segurar para disputar (por jogador), vibração do gamepad. Configurações de vídeo (resolução, tela cheia, V-Sync) e volumes separados.
 
+## Infiltração (tasks 10–12)
+
+Modo próprio de ação e furtividade em bases vistas de cima, autorizado em DESIGN, "Além do duelo". Usa simulação separada do duelo, em 60 Hz. A task 10 entrega apenas o **Treino de infiltração**, em Aprender: uma sala navegável com paredes, caixas, boneco e emissores de disparos, sem progressão ou recompensas. Não há patrulhas, alarmes funcionais ou missões nesta etapa.
+
+### Movimento, mira e combate
+
+- Movimento livre em dois eixos, diagonal normalizada: andar 240 u/s, correr 360 u/s, mover-se furtivamente 120 u/s. Furtivo significa passos curtos e corpo recolhido, sem agachar para esquivar de ataques nem defesa alta/baixa. Correr e furtivo não consomem Vigor; furtivo tem prioridade. Corpo com meia extensão de 18 u, colisão determinística por eixo contra grade e alvos sólidos, sem atravessar paredes/cantos.
+- Direções usam as teclas remapeadas de andar/pular/esquiva de precisão do J1 e o stick esquerdo/D-pad. Correr usa a ação Esquiva, furtivo usa Habilidade. O mouse mira sem exigir clique; stick direito mira independentemente do movimento. Sem mouse/stick direito, a última direção de movimento define a mira. Ataque e guarda usam as ações do J1 e também botões do mouse registrados no InputMap. Nenhuma regra lê teclas físicas. Não há pulo neste plano.
+- Um golpe curto cobre **120°**, alcance **88 u**, com preparação 0,10 s, ativo 0,10 s e recuperação 0,20 s; dano 10, custo 8 de Vigor. Direção travada ao iniciar, cada alvo recebe no máximo um acerto por golpe. Parede bloqueia o corte. Guarda não pode coexistir com golpe; novo ataque toma prioridade, sem cancelar a preparação/ativo ao receber um disparo. No ativo a lâmina percorre o arco; a simulação resolve o setor, a arte só o mostra.
+- Guarda cobre **140°** à frente da mira, movimento a 60% da caminhada e sem corrida. Tocar abre parry por 0,20 s; os primeiros 0,08 s são perfeitos; nova janela exige soltar e respeitar 0,40 s de recarga após falhar/expirar. Segurar além da janela mantém guarda. A janela não fecha ao devolver um disparo, permitindo aparar uma rajada, como no duelo.
+- Reutiliza `data/bolts/standard_bolt.tres`: 900 u/s, alcance 1.100 u, dano 4, tranco 0,12 s, custo 4 na guarda, saída 30 u à frente, perfeito a 125% da velocidade. A altura do disparo lateral não se aplica. Guarda frontal desfaz o disparo sem blockstun e drena Vigor, funcionando mesmo com medidor vazio; pelas costas, acerta. Parry devolve pela linha inversa; perfeito mira o centro de quem emitiu, preservando a velocidade base × 1,25. Disparo encontra parede/corpo por percurso varrido, sem saltar a colisão entre ticks. A devolução passa a pertencer ao jogador e pode destruir o emissor. Disparos não geram Fluxo.
+- Vida 100, Vigor 100 com regeneração 25/s após 0,6 s sem gastar; sem ferimentos, finalizações ou exaustão especial nesta etapa. Disparo causa tranco somente em repouso/movimento/recuperação, nunca cancela preparação ou ativo. Vida zero encerra o controle e oferece reiniciar ou voltar. Bonecos/emissores destruídos reaparecem após 3 s para repetir a prática; não dão recompensas.
+
+### Próximas etapas já delimitadas
+
+Task 11: soldados em patrulha seguem pontos, sentinelas observam um setor fixo, pesados se movem devagar e usam rajadas. Detecção por cone e linha de visão obstruída pela grade, com suspeita acumulada antes do alerta; correr, golpear e disparar geram ruído por evento, andar é discreto e furtivo reduz ainda mais o alcance. O mesmo estado visível é lido pelos controladores, que só produzem intenções. Sem detecção através de paredes e sem teleporte de reforços. Cones são informação de leitura, nunca luz que esconde disparos. Alcances/tempos entram em recursos de inimigo na task 11.
+
+Task 12: missões em recursos descrevem mapa, objetivos (desativar alarme, resgatar, obter informação), extração, falas e recompensa única. Vencer exige cumprir os objetivos obrigatórios e alcançar a extração; perder por morte ou falha explícita de objetivo, jamais por perigos visuais. Abordagem furtiva ou agressiva chega ao mesmo objetivo, sem moeda/grind. Alarme aumenta pressão e não encerra a missão sozinho. Poderes permanecem desligados no treino inicial; a task 12 decide um subconjunto pequeno de Repulsão/Puxão e seus custos, sem importar automaticamente todas as supremas do duelo. Menu definitivo e resultados pertencem à task 12.
+
+### Mapa do treino
+
+`InfiltrationMapData` guarda linhas de tiles de **64 u** (32 px nativos), spawn do jogador e recursos de alvo/emissor. Símbolos: chão `.`, parede `#`, caixa sólida `C`, faixa de piso `=`. Fora da grade é sólido. A mesma grade é a fonte de colisão e desenho; sem TileMap físico paralelo. O mapa original de teste é um setor industrial com corredor de tiro horizontal e uma área protegida para testar o arco. Coordenadas de spawn usam centros de células livres. Nenhum perigo de cenário causa dano.
+
 ## 19. Fora do escopo inicial
 
 Online, torneio, editor de personagens, perigos de arena que afetam o combate. A arquitetura deixa espaço para eles (simulação determinística, arena que reage a eventos).

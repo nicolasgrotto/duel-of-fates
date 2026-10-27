@@ -125,6 +125,8 @@ Usam o rastro, o som e o impacto dos golpes fortes. O **choque entre técnicas**
 
 ## Disparos
 
+Na Infiltração (task 10), o mesmo traço quente percorre o plano superior. Desvio na guarda emite uma faísca curta no ponto de contato; parry devolve na cor da lâmina e perfeito acrescenta anel breve. A pose e o rastro do arco leem fase/direção da simulação. Sem câmera lenta, flash global ou tremor novos; efeitos reduzidos diminuem faíscas e preservam o disparo e a leitura da guarda.
+
 O disparo precisa ler como **"não é lâmina"**. As lâminas ocupam quase todos os matizes saturados, então o disparo se separa pela **forma** e pela **saturação**: um traço curto e duro de 18 × 4 px, preso à grade, com núcleo branco e borda na cor `UiPalette.bolt` (`#ffe2b0`, branco quente de baixa saturação), sem halo largo nem rastro longo. Um ponto de luz na saída (2 quadros) marca o tiro.
 
 - **Desfeito na guarda**: 4 a 6 faíscas curtas na cor do disparo, espalhadas para trás, sem anel.

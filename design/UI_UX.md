@@ -24,6 +24,14 @@ Português (padrão) e inglês, escolhidos nas Opções e salvos. Todo texto de 
 
 ## Telas
 
+### Treino de infiltração (task 10)
+
+Entrada temporária **Aprender › Treino de infiltração**. Aprender usa o espaçamento compacto de Jogar para caber a sétima linha com Voltar. Tela própria com mundo pixel art visto de cima, vida e Vigor finos no canto superior esquerdo, título e estado **Treino · alarme inativo** no alto, uma linha de objetivo logo abaixo. Sem minimapa, relógio de missão ou recompensa nesta etapa.
+
+Rodapé em duas linhas geradas por bindings: mover, correr, furtivo, golpear, guarda/parry, mira mouse/stick e pausa. Textos de 28 px no tema central (18,7 px em 720p), PT e EN. Sem informação de implementação no fluxo de jogo. Legenda na pausa: traço claro = lâmina/jogador, círculo segmentado = boneco, emissor mecânico = disparos, placas reforçadas = cobertura sólida. Não se mostram alarmes/saídas que ainda não existem no treino.
+
+Pausa local ao treino congela a amostragem e os ticks; sobreposição escura com Continuar, Reiniciar treino e Voltar a Aprender. Não depende de `DuelMode`. Morte mostra Treino encerrado, reiniciar e voltar. Reinício repõe estado, alvos, tiros e posição sem gravar progresso. F3 acrescenta caixas sólidas, percurso de tiros, mira, arco, estado de guarda, ticks da janela de parry, vida/Vigor e FPS. O menu definitivo, objetivos de missão e resultado vêm na task 12.
+
 ### Carregamento
 
 Toda troca de cena passa pelo fade do `SceneRouter`. Com a tela já escura, aparece **Carregando** (EN: **Loading**) em `HintLabel`, no canto inferior direito, com três pontos que acendem em sequência; some antes do fade de volta. Ele é desenhado antes do trabalho pesado (montar a cena, a simulação e os lutadores), então fica visível mesmo quando o jogo trava um instante para carregar personagens novos. Recursos que a cena seguinte já sabe que vai usar (personagens da Galeria e da seleção) carregam em segundo plano durante o fade.

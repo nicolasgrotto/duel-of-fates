@@ -32,6 +32,12 @@ Atrito elétrico contínuo que cresce em volume e brilho com o tempo da disputa;
 
 ## Corpo e movimento
 
+### Infiltração (tasks 10–12)
+
+Passos metálicos por eventos de distância percorrida, com ritmo maior ao correr e volume menor em furtivo; nunca ruído sonoro que altera a simulação. Golpe, impacto, zumbido e disparos reutilizam os sons originais do banco (`swing_light`, `hit_light`, `blade_hum`, `bolt_shot`, `bolt_deflect`, `bolt_reflect`, `bolt_hit`), sem amostras novas na task 10. Som de deflexão claro, devolução com tom ascendente. Prioridade: disparo próximo/defesa > passos > ambiência. Pan segue a posição no quadro, sem mudar regras.
+
+Na task 11, a detecção recebe eventos de ruído da simulação, e não o volume ouvido. Suspeita usa um aviso curto e alerta um padrão pulsado original; alarmes contínuos pertencem à task 11 e serão sintetizados/registrados quando implementados. No treino o alarme fica inativo, sem sirene ou música nova. Pausa silencia o zumbido; sair libera o player do modo.
+
 Passos por superfície (metal, água, pedra, neve, sal, musgo), tecidos e capas, pulo e aterrissagem, esquiva (whoosh curto e agudo), esquiva de precisão (sopro curto subindo e toque agudo suave), empurrão (impacto surdo), exaustão (sopro grave descendente, baixo), ferimento (impacto forte com camada grave), ação recusada (som seco curto).
 
 ## Poderes
