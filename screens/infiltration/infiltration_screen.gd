@@ -20,6 +20,10 @@ const SOUNDS: Dictionary = {
 }
 
 var sim: InfiltrationSimulation
+var mode: InfiltrationMode
+var escort_controller: InfiltrationEscortController
+var _objective: Label
+var _finished: bool = false
 var controller: InfiltrationPlayerController
 var enemy_controller: InfiltrationEnemyController
 var intent: InfiltrationIntent = InfiltrationIntent.new()
@@ -45,8 +49,11 @@ var _accumulator: float = 0.0
 func open(params: Dictionary) -> void:
 	InfiltrationBindings.install()
 	controller = InfiltrationPlayerController.new()
-	sim = InfiltrationSimulation.new(CONFIG, params.get("map", TRAINING_MAP))
+	mode = params.get("mode")
+	var mission_data: InfiltrationMissionData = mode.data if mode != null else null
+	sim = InfiltrationSimulation.new(CONFIG, mission_data.map if mission_data != null else params.get("map", TRAINING_MAP), mission_data)
 	enemy_controller = InfiltrationEnemyController.new(sim.map, sim.targets.size())
+	escort_controller = InfiltrationEscortController.new(sim)
 	_stage = PixelStage.new(CONFIG.units_per_pixel)
 	_stage.viewport.world_2d = World2D.new()
 	add_child(_stage)
@@ -78,7 +85,7 @@ func _build_hud() -> void:
 	var hud: CanvasLayer = CanvasLayer.new()
 	hud.layer = 10
 	add_child(hud)
-	var title: Label = _label(tr("INFILTRATION_TRAINING").to_upper(), &"ScreenTitleLabel")
+	var title: Label = _label(tr(mode.data.title_key if mode != null else "INFILTRATION_TRAINING").to_upper(), &"ScreenTitleLabel")
 	title.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.offset_top = 30.0
@@ -97,6 +104,7 @@ func _build_hud() -> void:
 	objective.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	objective.offset_top = 128.0
 	hud.add_child(objective)
+	_objective = objective
 	_context = _label("", &"InfiltrationLabel")
 	_context.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
 	_context.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -167,7 +175,7 @@ func _build_pause() -> void:
 	var legend: Label = _label(tr("INFILTRATION_LEGEND"), &"InfiltrationLabel")
 	legend.text += "\n" + ControlHints.line(PackedStringArray([
 		ControlHints.hint(&"infiltration_takedown", "INFILTRATION_TAKEDOWN"),
-		ControlHints.hint(&"infiltration_interact", "INFILTRATION_DISABLE"),
+		ControlHints.hint(&"infiltration_interact", "INF_INTERACT"),
 	]))
 	legend.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(legend)
@@ -182,7 +190,7 @@ func _build_pause() -> void:
 func _process(delta: float) -> void:
 	if sim == null:
 		return
-	if not paused and sim.player.health > 0.0:
+	if not paused and not _finished and sim.player.health > 0.0:
 		_accumulator += delta
 		var steps: int = 0
 		while _accumulator >= Ticks.DELTA and steps < MAX_STEPS:
@@ -190,6 +198,8 @@ func _process(delta: float) -> void:
 			controller.produce(sim, intent)
 			step_once(intent)
 			steps += 1
+			if _finished:
+				break
 			if sim.player.health <= 0.0:
 				_set_paused(true)
 				break
@@ -199,7 +209,9 @@ func _process(delta: float) -> void:
 
 
 func step_once(command: InfiltrationIntent) -> void:
-	sim.step(command, enemy_controller.produce_all(sim))
+	if _finished:
+		return
+	sim.step(command, enemy_controller.produce_all(sim), escort_controller.produce_all(sim))
 	for index in sim.event_count:
 		var event: InfiltrationEvent = sim.events[index]
 		_view.on_event(event)
@@ -207,11 +219,18 @@ func step_once(command: InfiltrationIntent) -> void:
 			_notice.play()
 		elif event.type == InfiltrationEvent.Type.TAKEDOWN_LANDED:
 			AudioDirector.play(&"hit_light", event.position, CONFIG.effects_db)
+		elif event.type == InfiltrationEvent.Type.INFORMATION_COPIED or event.type == InfiltrationEvent.Type.PRISONER_RECRUITED:
+			AudioDirector.play_ui(&"ui_confirm")
 		if SOUNDS.has(event.type):
 			var volume: float = CONFIG.effects_db
 			if event.type == InfiltrationEvent.Type.FOOTSTEP:
 				volume = CONFIG.footstep_db - (8.0 if int(event.amount) == InfiltrationActor.Locomotion.SNEAK else 0.0)
 			AudioDirector.play(SOUNDS[event.type], event.position, volume)
+	if mode != null and sim.mission.outcome != InfiltrationMissionState.Outcome.ACTIVE:
+		_finished = true
+		mode.finish(sim)
+		_set_paused(true)
+		SceneRouter.change(&"infiltration_result", {"mode": mode, "result": true})
 
 
 func _update_presentation(alpha: float) -> void:
@@ -229,6 +248,8 @@ func _update_presentation(alpha: float) -> void:
 	_vigor.ghost_ratio = _vigor.ratio
 	_vigor.queue_redraw()
 	_update_security_hud()
+	if mode != null:
+		_objective.text = tr("INF_PROGRESS").format({"done": sim.mission.completed_objectives(sim), "total": mode.data.objective_count(), "time": ChallengeMode.format_time(sim.tick * Ticks.DELTA)})
 	_update_audio()
 	if _view.debug:
 		var player: InfiltrationActor = sim.player
@@ -237,6 +258,8 @@ func _update_presentation(alpha: float) -> void:
 			player.parry_age, player.parry_cooldown, player.swing_tick, player.health, player.vigor, sim.dropped_events,
 		]
 		_debug.text += "\nalarm %s  reinforcements %d" % [sim.alarm_active(), sim.reinforcement_ticks]
+		if sim.mission != null:
+			_debug.text += "\nmission %s  alarm history %s  takedowns %d  copied %s  recruited %s  extracted %s" % [InfiltrationMissionState.Outcome.keys()[sim.mission.outcome], sim.mission.alarm_raised, sim.mission.takedowns, sim.mission.copied, sim.mission.recruited, sim.mission.extracted]
 		for index in range(sim.map.targets.size(), sim.targets.size()):
 			var actor: InfiltrationActor = sim.targets[index]
 			_debug.text += "\n%d %s %.3f  %s  waypoint %d" % [index + 1, InfiltrationActor.Awareness.keys()[actor.awareness], actor.suspicion, InfiltrationActor.Decision.keys()[actor.decision], actor.waypoint]
@@ -280,8 +303,8 @@ func _set_paused(value: bool) -> void:
 	_pause_list.clear_items()
 	if sim.player.health > 0.0:
 		_pause_list.add_item(&"continue", tr("PAUSE_CONTINUE"))
-	_pause_list.add_item(&"restart", tr("INFILTRATION_RESTART"))
-	_pause_list.add_item(&"back", tr("INFILTRATION_BACK"))
+	_pause_list.add_item(&"restart", tr("RESULT_RETRY" if mode != null else "INFILTRATION_RESTART"))
+	_pause_list.add_item(&"back", tr("INF_MISSIONS" if mode != null else "INFILTRATION_BACK"))
 
 
 func _on_pause_chosen(option: StringName) -> void:
@@ -289,12 +312,16 @@ func _on_pause_chosen(option: StringName) -> void:
 		&"continue":
 			_set_paused(false)
 		&"restart":
-			sim = InfiltrationSimulation.new(CONFIG, sim.map)
+			sim = InfiltrationSimulation.new(CONFIG, sim.map, mode.data if mode != null else null)
 			enemy_controller = InfiltrationEnemyController.new(sim.map, sim.targets.size())
+			escort_controller = InfiltrationEscortController.new(sim)
 			_view.setup(sim)
 			_set_paused(false)
 		&"back":
-			SceneRouter.change(&"menu", {"group": &"learn", "focus": &"infiltration_training"})
+			if mode != null:
+				SceneRouter.change(&"infiltration", {"mission": mode.data.id})
+			else:
+				SceneRouter.change(&"menu", {"group": &"play", "focus": &"infiltration"})
 
 
 func _exit_tree() -> void:
@@ -350,11 +377,53 @@ func _update_security_hud() -> void:
 	var disabled: bool = not sim.panels.is_empty()
 	for panel in sim.panels:
 		disabled = disabled and panel.disabled
-	_status.text = tr("INFILTRATION_ALARM_ACTIVE" if sim.alarm_active() else "INFILTRATION_ALARM_DISABLED" if disabled else "INFILTRATION_STATUS")
+	if mode != null:
+		_status.text = tr("INF_SECURITY_ACTIVE" if sim.alarm_active() else "INF_SECURITY_DISABLED" if disabled else "INF_SECURITY_READY")
+	else:
+		_status.text = tr("INFILTRATION_ALARM_ACTIVE" if sim.alarm_active() else "INFILTRATION_ALARM_DISABLED" if disabled else "INFILTRATION_STATUS")
 	_status.modulate = PALETTE.danger if sim.alarm_active() else PALETTE.text
 	var hints: PackedStringArray = []
 	if sim.takedown_target() >= 0:
 		hints.append(ControlHints.hint(&"infiltration_takedown", "INFILTRATION_TAKEDOWN"))
 	if sim.nearby_panel() >= 0:
 		hints.append(ControlHints.hint(&"infiltration_interact", "INFILTRATION_DISABLE"))
+	elif sim.mission != null:
+		var object: int = sim.mission.nearby_object(sim)
+		if object >= 0:
+			hints.append(ControlHints.hint(&"infiltration_interact", "INF_COPY" if object < mode.data.terminals.size() else "INF_RECRUIT"))
+	if sim.mission != null and hints.is_empty():
+		hints.append(_mission_guide())
+	if not sim.prisoners.is_empty():
+		var state: String = "INF_ESCORT_SAFE" if sim.mission.extracted[0] != 0 else "INF_ESCORT_FOLLOW" if sim.mission.recruited[0] != 0 else "INF_ESCORT_WAIT"
+		hints.append(tr("INF_ESCORT_GUIDE").format({"state": tr(state), "health": roundi(sim.prisoners[0].health)}))
 	_context.text = ControlHints.line(hints)
+
+
+func _mission_guide() -> String:
+	var point: Vector2 = mode.data.extraction
+	var key: String = "INF_OBJECTIVE_EXIT"
+	var number: int = 1
+	if mode.data.disable_alarms:
+		for index in sim.panels.size():
+			if not sim.panels[index].disabled:
+				point = sim.map.panels[index].position
+				key = "INF_OBJECTIVE_PANEL"
+				number = index + 1
+				break
+	for index in sim.mission.copied.size():
+		if sim.mission.copied[index] == 0:
+			point = mode.data.terminals[index]
+			key = "INF_OBJECTIVE_TERMINAL"
+			number = index + 1
+			break
+	for index in sim.prisoners.size():
+		if sim.mission.recruited[index] == 0:
+			point = sim.prisoners[index].position
+			key = "INF_OBJECTIVE_PRISONER"
+			number = index + 1
+			break
+	var offset: Vector2 = point - sim.player.position
+	var direction: String = "←" if offset.x < 0.0 else "→"
+	if absf(offset.y) > absf(offset.x):
+		direction = "↑" if offset.y < 0.0 else "↓"
+	return tr("INF_TARGET_GUIDE").format({"objective": tr(key).format({"index": number}), "direction": direction, "distance": roundi(offset.length())})

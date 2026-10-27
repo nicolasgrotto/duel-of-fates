@@ -184,7 +184,7 @@ ABILITY_SHADOW,Ímpeto: avanço cortante com armadura,Onslaught: armored cutting
 ABILITY_BASTION,Marreta: golpe lento com armadura dupla,Maul: slow strike with double armor
 ABILITY_WASP,Zumbido: avanço invulnerável que atravessa,Buzz: invulnerable dash through
 ABILITY_MIRROR,Postura de Espera: apara tudo o que chegar,Waiting Stance: parries whatever comes
-ABILITY_LANCE,"Investida da Haste: lunge longo com a ponta","Lance Charge: a long lunge with the tip"
+ABILITY_LANCE,Investida da Haste: lunge longo com a ponta,Lance Charge: a long lunge with the tip
 ABILITY_EMBER,Brasa Viva: postura com resposta forte,Living Ember: stance with a strong answer
 ABILITY_CORSAIR,Recuo tático: avanço para trás invulnerável,Tactical retreat: an invulnerable backward dash
 ABILITY_LYNX,Contragolpe: postura com resposta rápida,Counterstrike: stance with a quick answer
@@ -531,7 +531,7 @@ GUIDE_GUARD_BREAK,Quebre a guarda do boneco,Break the dummy's guard
 GUIDE_WOUND,Fira o boneco exausto,Wound the exhausted dummy
 GUIDE_LOCK,Vença três disputas de lâminas,Win three blade locks
 GUIDE_DISENGAGE,"Numa disputa ou pressão, depois de meio segundo, aperte {heavy_attack}: solte a lâmina e corte por outro ângulo","In a blade lock or press, after half a second, press {heavy_attack}: slip your blade free and cut from another angle"
-GUIDE_PRESS,"Troque rápidos colados com o boneco: no 3º choque ou parry seguido vem a pressão de lâminas. Vença com {light_attack}","Trade light attacks up close: the 3rd clash or parry in a row starts a blade press. Win it with {light_attack}"
+GUIDE_PRESS,Troque rápidos colados com o boneco: no 3º choque ou parry seguido vem a pressão de lâminas. Vença com {light_attack},Trade light attacks up close: the 3rd clash or parry in a row starts a blade press. Win it with {light_attack}
 PARRY_CHALLENGE_BANNER,DESAFIO DE PARRY · RECORDE {best},PARRY CHALLENGE · BEST {best}
 PARRY_CHALLENGE_HINT,Apare os fortes com {block}: parry vale 1 · perfeito vale 2,Parry the heavies with {block}: parry is worth 1 · perfect is worth 2
 PARRY_CHALLENGE_LINE,{time} s · {points} pontos,{time} s · {points} points
@@ -848,3 +848,54 @@ INFILTRATION_ALARM_ACTIVE,Treino · ALARME ATIVO,Training · ALARM ACTIVE
 INFILTRATION_ALARM_DISABLED,Treino · alarme desativado,Training · alarm disabled
 INFILTRATION_TAKEDOWN,abate silencioso,silent takedown
 INFILTRATION_DISABLE,desativar painel,disable panel
+MENU_INFILTRATION,Infiltração,Infiltration
+INF_FIRST,Primeiro acesso,First access
+INF_NETWORK,Rede silenciosa,Silent network
+INF_ARCHIVE,Arquivo frio,Cold archive
+INF_RESCUE,Caminho de volta,The way back
+INF_FIRST_BRIEF,"Aprenda a entrar sem ser visto. Mova-se até o painel a leste, use Interagir e volte à saída marcada junto ao início. A cobertura ao sul protege da sentinela. Evitar ou enfrentar o guarda é sua escolha.","Learn to enter unseen. Reach the panel to the east, Interact, then return to the marked exit near your starting point. Cover to the south shields you from the sentry. Avoid or fight the guard as you choose."
+INF_NETWORK_BRIEF,"Interrompa a rede da base: inutilize os dois painéis no sul, um em cada ala. O corredor inferior liga os setores longe da vigilância central. Volte à saída a noroeste.","Break the base network: disable both southern panels, one in each wing. The lower service corridor connects the wings away from the central watch. Return to the northwestern exit."
+INF_ARCHIVE_BRIEF,Copie os dados no terminal a sudeste e alcance a saída a noroeste. As estantes cortam a visão; o corredor ao sul permite contornar a patrulha. Desativar o painel central é opcional.,Copy the data at the southeastern terminal and reach the northwestern exit. Shelves block sight; the southern corridor offers a route around the patrol. Disabling the central alarm panel is optional.
+INF_RESCUE_BRIEF,"Encontre o prisioneiro a sudeste, recrute-o e conduza-o vivo à saída a noroeste. Use o corredor sul; a escolta anda mais devagar e não luta. Disparos podem atingi-la. O painel central é opcional.","Find the prisoner to the southeast, recruit them and escort them alive to the northwestern exit. Use the southern corridor; your escort moves more slowly and cannot fight. Bolts can hit them. The central alarm panel is optional."
+INF_BRIEF_RULES,"Bônus: sem alarme · sem abates · até {time} s
+Poderes indisponíveis. A ação Poder interage.
+Forte: abate por trás · Guarda: desviar/aparar disparos.","Bonuses: no alarm · no takedowns · within {time} s
+Powers unavailable. The Power action interacts.
+Heavy: rear takedown · Guard: deflect/parry bolts."
+INF_NOT_COMPLETED,Ainda não concluída,Not completed yet
+INF_RECORD,Concluída · melhor tempo {time},Completed · best time {time}
+INF_START,Confirmar: iniciar missão,Confirm: start mission
+INF_SUCCESS,Missão concluída,Mission complete
+INF_PLAYER_DOWN,Missão falhou · você foi abatido,Mission failed · you were downed
+INF_PRISONER_DOWN,Missão falhou · prisioneiro abatido,Mission failed · prisoner downed
+INF_NEXT,Próxima missão,Next mission
+INF_MISSIONS,Missões,Missions
+INF_TIME,Tempo: {time},Time: {time}
+INF_APPROACH,Abordagem: {approach},Approach: {approach}
+INF_DIRECT,Direto,Direct
+INF_STEALTH,Furtivo,Stealthy
+INF_CHECK,{state}  {objective},{state}  {objective}
+INF_DONE,[✓],[✓]
+INF_PENDING,[–],[–]
+INF_OBJECTIVE_PANEL,Desativar painel {index},Disable panel {index}
+INF_OBJECTIVE_TERMINAL,Copiar terminal {index},Copy terminal {index}
+INF_OBJECTIVE_PRISONER,Extrair prisioneiro {index},Extract prisoner {index}
+INF_OBJECTIVE_EXIT,Alcançar a saída,Reach the exit
+INF_BONUSES,Bônus da tentativa,Attempt bonuses
+INF_BONUS_ALARM,Sem alarme,No alarm
+INF_BONUS_ABATES,Sem abates,No takedowns
+INF_BONUS_TIME,Dentro do tempo,Within the time limit
+INF_FAILURE_SAVE,Derrotas não registram conclusão ou bônus.,Defeats do not record completion or bonuses.
+INF_INTERACT,Interagir,Interact
+INF_COPY,Copiar informação,Copy information
+INF_RECRUIT,Recrutar prisioneiro,Recruit prisoner
+INF_PROGRESS,Objetivos {done}/{total} · {time},Objectives {done}/{total} · {time}
+INF_EXIT_DISTANCE,Saída a {distance} u,Exit {distance} u away
+INF_TARGET_GUIDE,{objective} · {direction} · {distance} u,{objective} · {direction} · {distance} u
+INF_ESCORT_GUIDE,Escolta: {state} · vida {health},Escort: {state} · health {health}
+INF_ESCORT_FOLLOW,seguindo,following
+INF_ESCORT_WAIT,aguardando resgate,awaiting rescue
+INF_ESCORT_SAFE,extraída,extracted
+INF_SECURITY_READY,Alarme pronto,Alarm ready
+INF_SECURITY_ACTIVE,ALARME ATIVO,ALARM ACTIVE
+INF_SECURITY_DISABLED,Alarmes desativados,Alarms disabled

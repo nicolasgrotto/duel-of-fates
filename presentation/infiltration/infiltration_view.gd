@@ -2,6 +2,7 @@ class_name InfiltrationView
 extends Node2D
 
 const PALETTE: UiPalette = preload("res://ui/palette.tres")
+const PRISONER: Texture2D = preload("res://assets/infiltration/prisoner.png")
 const SPRITE_PLAYER: int = 0
 const SPRITE_DUMMY: int = 1
 const SPRITE_EMITTER: int = 2
@@ -57,6 +58,8 @@ func _draw() -> void:
 	if sim == null:
 		return
 	_draw_security()
+	if sim.mission != null:
+		_draw_mission()
 	for index in sim.targets.size():
 		var actor: InfiltrationActor = sim.targets[index]
 		if actor.health <= 0.0:
@@ -98,6 +101,48 @@ func _draw_actor(actor: InfiltrationActor, sprite: int, enemy: bool = false) -> 
 	draw_set_transform(_snap(location), aim.angle() + PI * 0.5, scale)
 	draw_texture_rect_region(sim.map.enemy_sprites if enemy else sim.map.sprites, Rect2(-size * 0.5, size), Rect2(Vector2(sprite * sim.config.sprite_pixels.x, 0), Vector2(sim.config.sprite_pixels)))
 	draw_set_transform(Vector2.ZERO)
+
+
+func _draw_mission() -> void:
+	var data: InfiltrationMissionData = sim.mission.data
+	var exit: Vector2 = _snap(data.extraction)
+	var radius: float = data.extraction_radius
+	var color: Color = PALETTE.accent
+	draw_rect(Rect2(exit - Vector2.ONE * radius, Vector2.ONE * radius * 2.0), Color(color, 0.08))
+	for corner in [Vector2(-1, -1), Vector2(1, -1), Vector2(1, 1), Vector2(-1, 1)]:
+		var point: Vector2 = exit + corner * radius
+		draw_line(point, point - Vector2(corner.x * 24.0, 0), color, sim.config.units_per_pixel)
+		draw_line(point, point - Vector2(0, corner.y * 24.0), color, sim.config.units_per_pixel)
+	draw_line(exit - Vector2(20, 0), exit + Vector2(20, 0), color, 4.0)
+	draw_line(exit + Vector2(8, -12), exit + Vector2(20, 0), color, 4.0)
+	draw_line(exit + Vector2(8, 12), exit + Vector2(20, 0), color, 4.0)
+	for index in data.terminals.size():
+		var point: Vector2 = _snap(data.terminals[index])
+		color = PALETTE.secondary if sim.mission.copied[index] != 0 else PALETTE.accent
+		draw_rect(Rect2(point - Vector2(22, 18), Vector2(44, 36)), PALETTE.infiltration_wall)
+		draw_rect(Rect2(point - Vector2(22, 18), Vector2(44, 36)), color, false, 2.0)
+		draw_line(point + Vector2(-12, -6), point + Vector2(12, -6), color, 4.0)
+		draw_line(point + Vector2(-12, 6), point + Vector2(4, 6), color, 4.0)
+		if sim.mission.copied[index] != 0:
+			_draw_check(point + Vector2(0, -30), PALETTE.text)
+	for index in sim.prisoners.size():
+		var actor: InfiltrationActor = sim.prisoners[index]
+		var point: Vector2 = _snap(actor.previous.lerp(actor.position, alpha))
+		color = PALETTE.text if actor.health > 0.0 else PALETTE.danger
+		var size: Vector2 = Vector2(sim.config.sprite_pixels) * sim.config.units_per_pixel
+		draw_set_transform(point, actor.aim.angle() + PI * 0.5)
+		draw_texture_rect(PRISONER, Rect2(-size * 0.5, size), false, Color.WHITE if actor.health > 0.0 else PALETTE.danger)
+		draw_set_transform(Vector2.ZERO)
+		var marker: Vector2 = point - Vector2(0, 40)
+		draw_polyline(PackedVector2Array([marker + Vector2(0, -10), marker + Vector2(10, 0), marker + Vector2(0, 10), marker + Vector2(-10, 0), marker + Vector2(0, -10)]), PALETTE.accent, 2.0)
+		if sim.mission.recruited[index] != 0:
+			_draw_check(marker, PALETTE.text)
+		draw_line(point + Vector2(-18, 28), point + Vector2(-18 + 36.0 * actor.health / sim.config.prisoner_health, 28), color, 2.0)
+
+
+func _draw_check(point: Vector2, color: Color) -> void:
+	draw_line(point + Vector2(-6, 0), point + Vector2(-2, 4), color, 2.0)
+	draw_line(point + Vector2(-2, 4), point + Vector2(8, -6), color, 2.0)
 
 
 func _draw_blade() -> void:

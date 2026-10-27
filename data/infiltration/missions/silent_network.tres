@@ -1,0 +1,64 @@
+[gd_resource type="Resource" script_class="InfiltrationMissionData" format=3]
+
+[ext_resource type="Script" path="res://data/infiltration/infiltration_mission_data.gd" id="mission"]
+[ext_resource type="Script" path="res://data/infiltration/infiltration_map_data.gd" id="map"]
+[ext_resource type="Script" path="res://data/infiltration/infiltration_enemy_placement.gd" id="placement"]
+[ext_resource type="Script" path="res://data/infiltration/infiltration_panel_data.gd" id="panel"]
+[ext_resource type="Resource" path="res://data/infiltration/enemies/sentry.tres" id="sentry"]
+[ext_resource type="Resource" path="res://data/infiltration/enemies/patrol_trooper.tres" id="trooper"]
+[ext_resource type="Resource" path="res://data/infiltration/enemies/heavy.tres" id="heavy"]
+[ext_resource type="Texture2D" path="res://assets/infiltration/training_tiles.png" id="tiles"]
+[ext_resource type="Texture2D" path="res://assets/infiltration/training_sprites.png" id="sprites"]
+[ext_resource type="Texture2D" path="res://assets/infiltration/enemy_sprites.png" id="enemies"]
+
+[sub_resource type="Resource" id="panel_0"]
+script = ExtResource("panel")
+position = Vector2(352, 1056)
+
+[sub_resource type="Resource" id="panel_1"]
+script = ExtResource("panel")
+position = Vector2(1632, 1056)
+
+[sub_resource type="Resource" id="guard"]
+script = ExtResource("placement")
+enemy = ExtResource("sentry")
+position = Vector2(1056, 608)
+direction = Vector2(-1, 0)
+
+[sub_resource type="Resource" id="patrol"]
+script = ExtResource("placement")
+enemy = ExtResource("trooper")
+position = Vector2(1120, 416)
+direction = Vector2(1, 0)
+route = PackedVector2Array(1120, 416, 1248, 416, 1248, 608, 1120, 608)
+
+[sub_resource type="Resource" id="reserve"]
+script = ExtResource("placement")
+enemy = ExtResource("heavy")
+position = Vector2(1760, 224)
+direction = Vector2(0, 1)
+reinforcement = true
+
+[sub_resource type="Resource" id="layout"]
+script = ExtResource("map")
+id = &"silent_network"
+title_key = "INF_NETWORK"
+player_spawn = Vector2(224, 224)
+rows = PackedStringArray("##############################", "#............................#", "#............................#", "#...........#................#", "#...........#................#", "#...........#................#", "#...........#................#", "#...........#................#", "#...........#................#", "#...........#................#", "#...........#................#", "#...........#................#", "#...........#...CCCCCCCC.....#", "#...........#................#", "#...........#................#", "#............................#", "#............................#", "#............................#", "#............................#", "##############################")
+enemies = [SubResource("guard"), SubResource("patrol"), SubResource("reserve")]
+panels = [SubResource("panel_0"), SubResource("panel_1")]
+tiles = ExtResource("tiles")
+sprites = ExtResource("sprites")
+enemy_sprites = ExtResource("enemies")
+
+[resource]
+script = ExtResource("mission")
+id = &"silent_network"
+title_key = "INF_NETWORK"
+briefing_key = "INF_NETWORK_BRIEF"
+map = SubResource("layout")
+disable_alarms = true
+terminals = PackedVector2Array()
+prisoner_spawns = PackedVector2Array()
+extraction = Vector2(224, 352)
+bonus_seconds = 90.0

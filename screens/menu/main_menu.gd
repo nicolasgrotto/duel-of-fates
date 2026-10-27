@@ -6,7 +6,7 @@ const FOOTER_MARGIN: float = 36.0
 const WEB_FEATURE: String = "web"
 const EMBLEM_SPACE: float = 250.0
 const EMBLEM_LIFT: float = 178.0
-const PLAY_ROW_SEPARATION: int = 10
+const PLAY_ROW_SEPARATION: int = 4
 
 const GROUP_GAP: float = 18.0
 const COLUMN_TOP: float = 215.0
@@ -14,8 +14,8 @@ const ROOT: StringName = &"root"
 const LESSON_PATH: String = "res://data/lessons/%s.tres"
 const CHALLENGE_PATH: String = "res://data/challenges/%s.tres"
 const GROUPS: Dictionary = {
-	&"play": {"title": "MENU_PLAY", "items": [[&"story", "MENU_STORY"], [&"duel", "MENU_DUEL"], [&"arcade", "MENU_ARCADE"], [&"survival", "MENU_SURVIVAL"], [&"hunts", "MENU_HUNTS"], [&"two_players", "MENU_TWO_PLAYERS"]]},
-	&"learn": {"title": "MENU_LEARN", "items": [[&"tutorial", "MENU_TUTORIAL"], [&"guided", "MENU_GUIDED"], [&"training", "MENU_TRAINING"], [&"infiltration_training", "INFILTRATION_TRAINING"], [&"parry_challenge", "MENU_PARRY_CHALLENGE"], [&"controls", "MENU_CONTROLS"]]},
+	&"play": {"title": "MENU_PLAY", "items": [[&"story", "MENU_STORY"], [&"duel", "MENU_DUEL"], [&"arcade", "MENU_ARCADE"], [&"survival", "MENU_SURVIVAL"], [&"hunts", "MENU_HUNTS"], [&"infiltration", "MENU_INFILTRATION"], [&"two_players", "MENU_TWO_PLAYERS"]]},
+	&"learn": {"title": "MENU_LEARN", "items": [[&"tutorial", "MENU_TUTORIAL"], [&"guided", "MENU_GUIDED"], [&"training", "MENU_TRAINING"], [&"parry_challenge", "MENU_PARRY_CHALLENGE"], [&"controls", "MENU_CONTROLS"]]},
 	&"extras": {"title": "MENU_EXTRAS", "items": [[&"challenges", "MENU_CHALLENGES"], [&"gallery", "MENU_GALLERY"], [&"story_gallery", "MENU_STORY_GALLERY"], [&"exhibition", "MENU_EXHIBITION"]]},
 	&"guided": {"title": "MENU_GUIDED", "parent": &"learn", "items": [[&"guided_evade", "LESSON_GUIDED_EVADE"], [&"guided_exhaustion", "LESSON_GUIDED_EXHAUSTION"], [&"guided_lock", "LESSON_GUIDED_LOCK"]]},
 	&"challenges": {"title": "MENU_CHALLENGES", "parent": &"extras", "items": [[&"salt_flats_bladework", "CHALLENGE_SALT"], [&"storm_on_deck", "CHALLENGE_STORM"], [&"last_breath", "CHALLENGE_LAST_BREATH"], [&"under_the_eclipse", "CHALLENGE_ECLIPSE"]]},
@@ -84,7 +84,7 @@ func _show_group(group: StringName) -> void:
 	_group = group if group == ROOT or GROUPS.has(group) else ROOT
 	_last_group = _group
 	_list.clear_items()
-	_list.add_theme_constant_override(&"separation", PLAY_ROW_SEPARATION if _group == &"play" or _group == &"learn" else MenuList.ROW_SEPARATION)
+	_list.add_theme_constant_override(&"separation", PLAY_ROW_SEPARATION if _group == &"play" else MenuList.ROW_SEPARATION)
 	if _group == ROOT:
 		_group_label.text = ""
 		for id in GROUPS:
@@ -145,8 +145,8 @@ func _on_chosen(id: StringName) -> void:
 			SceneRouter.change(&"select", {"mode": SurvivalMode.new()})
 		&"hunts":
 			SceneRouter.change(&"hunts")
-		&"infiltration_training":
-			SceneRouter.change(&"infiltration_training")
+		&"infiltration":
+			SceneRouter.change(&"infiltration")
 		&"gallery":
 			GalleryMode.new().start()
 		&"exhibition":

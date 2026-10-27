@@ -12,15 +12,25 @@ var dropped_events: int = 0
 var tick: int = 0
 var target_data: Array[InfiltrationTargetData] = []
 var panels: Array[InfiltrationPanel] = []
+var prisoners: Array[InfiltrationActor] = []
+var mission: InfiltrationMissionState
 var reinforcement_ticks: int = -1
 var reinforcement_called: bool = false
 var _empty_enemy_intent: InfiltrationIntent = InfiltrationIntent.new()
 var _panel_requests: PackedByteArray = []
 
 
-func _init(configuration: InfiltrationConfig, map_data: InfiltrationMapData) -> void:
+func _init(configuration: InfiltrationConfig, map_data: InfiltrationMapData, mission_data: InfiltrationMissionData = null) -> void:
 	config = configuration
 	map = map_data
+	if mission_data != null:
+		mission = InfiltrationMissionState.new(mission_data)
+		for point in mission_data.prisoner_spawns:
+			var actor: InfiltrationActor = InfiltrationActor.new()
+			actor.position = point
+			actor.previous = point
+			actor.health = config.prisoner_health
+			prisoners.append(actor)
 	target_data.assign(map.targets)
 	player.position = map.player_spawn
 	player.previous = player.position
@@ -55,9 +65,9 @@ func _init(configuration: InfiltrationConfig, map_data: InfiltrationMapData) -> 
 		events.append(InfiltrationEvent.new())
 
 
-func step(intent: InfiltrationIntent, enemy_intents: Array[InfiltrationIntent] = []) -> void:
+func step(intent: InfiltrationIntent, enemy_intents: Array[InfiltrationIntent] = [], escort_intents: Array[InfiltrationIntent] = []) -> void:
 	event_count = 0
-	if player.health <= 0.0:
+	if (mission != null and mission.outcome != InfiltrationMissionState.Outcome.ACTIVE) or (mission == null and player.health <= 0.0):
 		return
 	tick += 1
 	player.previous = player.position
@@ -67,10 +77,14 @@ func step(intent: InfiltrationIntent, enemy_intents: Array[InfiltrationIntent] =
 	_resolve_swing()
 	_step_bolts()
 	if player.health <= 0.0:
+		if mission != null:
+			mission.advance(self, escort_intents)
 		return
 	InfiltrationPerception.step(self)
 	_step_enemies(enemy_intents)
 	_step_panels()
+	if mission != null:
+		mission.advance(self, escort_intents)
 
 
 func _advance_player_timers() -> void:
@@ -98,7 +112,10 @@ func _apply_intent(intent: InfiltrationIntent) -> void:
 		_close_parry()
 		return
 	if (intent.pressed & Intent.Command.POWER) != 0:
-		_disable_panel()
+		if nearby_panel() >= 0:
+			_disable_panel()
+		elif mission != null:
+			mission.interact(self)
 	if (intent.pressed & Intent.Command.HEAVY) != 0 and player.swing_tick < 0:
 		var victim: int = takedown_target()
 		if victim >= 0:
@@ -263,13 +280,24 @@ func _step_bolts() -> void:
 				if impact < fraction:
 					fraction = impact
 					victim = index + 1
+		for index in prisoners.size():
+			if prisoners[index].health <= 0.0:
+				continue
+			var impact: float = InfiltrationGeometry.segment_box_fraction(bolt.position, end, _body_box(prisoners[index], bolt.data.size))
+			if impact < fraction:
+				fraction = impact
+				victim = targets.size() + index + 1
 		if fraction != INF:
 			bolt.position = bolt.position.lerp(end, fraction)
 			if victim == 0:
 				_resolve_player_bolt(bolt)
 			else:
 				bolt.active = false
-				if victim > 0:
+				if victim > targets.size():
+					var prisoner: InfiltrationActor = prisoners[victim - targets.size() - 1]
+					prisoner.health = maxf(prisoner.health - bolt.data.damage, 0.0)
+					_emit(InfiltrationEvent.Type.BOLT_HIT, bolt.owner, victim, bolt.position, bolt.data.damage)
+				elif victim > 0:
 					_emit(InfiltrationEvent.Type.BOLT_HIT, bolt.owner, victim, bolt.position, bolt.data.damage)
 					_damage_target(victim - 1, bolt.data.damage, false, bolt.origin)
 				elif bolt.owner == 0:
@@ -323,6 +351,8 @@ func _damage_target(index: int, damage: float, silent: bool = false, source_posi
 	var target: InfiltrationActor = targets[index]
 	target.health = maxf(target.health - damage, 0.0)
 	if target.health == 0.0:
+		if mission != null:
+			mission.takedowns += 1
 		target.respawn_ticks = Ticks.from_seconds(target_data[index].respawn_seconds) if index < map.targets.size() else 0
 		target.burst_left = 0
 		target.velocity = Vector2.ZERO
@@ -348,13 +378,16 @@ func capture() -> Dictionary:
 	var actors: Array[Dictionary] = []
 	var projectiles: Array[Dictionary] = []
 	var terminals: Array[Dictionary] = []
+	var escorts: Array[Dictionary] = []
+	for actor in prisoners:
+		escorts.append(actor.capture())
 	for actor in targets:
 		actors.append(actor.capture())
 	for bolt in bolts:
 		projectiles.append(bolt.capture())
 	for panel in panels:
 		terminals.append(panel.capture())
-	return {"tick": tick, "player": player.capture(), "targets": actors, "bolts": projectiles, "dropped_events": dropped_events, "panels": terminals, "reinforcement_ticks": reinforcement_ticks, "reinforcement_called": reinforcement_called}
+	return {"tick": tick, "player": player.capture(), "targets": actors, "bolts": projectiles, "dropped_events": dropped_events, "panels": terminals, "reinforcement_ticks": reinforcement_ticks, "reinforcement_called": reinforcement_called, "prisoners": escorts, "mission": mission.capture() if mission != null else {}}
 
 
 func restore(state: Dictionary) -> void:
@@ -370,6 +403,14 @@ func restore(state: Dictionary) -> void:
 	reinforcement_called = state.reinforcement_called
 	dropped_events = state.dropped_events
 	event_count = 0
+	for index in prisoners.size():
+		prisoners[index].restore(state.prisoners[index])
+	if mission != null:
+		mission.restore(state.mission)
+
+
+func emit_mission_event(type: InfiltrationEvent.Type, target: int, position: Vector2) -> void:
+	_emit(type, 0, target, position)
 
 
 func state_hash() -> int:

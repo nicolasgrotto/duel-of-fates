@@ -51,6 +51,11 @@ extends Resource
 @export var music_db: float = -14.0
 @export var silent_db: float = -60.0
 
+@export_group("Missions")
+@export var prisoner_health: float = 40.0
+@export var escort_speed: float = 180.0
+@export var escort_follow_distance: float = 56.0
+
 @export_group("Presentation")
 @export var camera_zoom: float = 2.0
 @export var units_per_pixel: float = 2.0
