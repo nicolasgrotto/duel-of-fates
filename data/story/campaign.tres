@@ -270,3 +270,5 @@ skill_points_loss = 1
 skill_points_milestone = 1
 skill_points_secret = 3
 blade_tree = Array[ExtResource("tree_node")]([SubResource("blade_0"), SubResource("blade_1"), SubResource("blade_2"), SubResource("blade_3"), SubResource("blade_4")])
+
+milestone_points = Array[PackedInt32Array]([PackedInt32Array(3, 3), PackedInt32Array(3, 2), PackedInt32Array(2, 2)])
