@@ -16,9 +16,9 @@ Fases 0 a 7.5 concluídas, na branch `pixel-art`: duelo completo com o elenco in
 - **O Fluxo**: 21 poderes em três categorias (Fluxo comum, Aurora e Eclipse) e 7 técnicas de lâmina, com potência definida pelo nível de Fluxo de cada lutador.
 - **11 personagens**, um chefe e três secretos, cada um com estilo, habilidade, traço e IA próprios.
 - **10 arenas** com identidade visual forte, em que as lâminas são a principal fonte de luz.
-- **Modos**: História (protagonista criado pelo jogador, pontos de habilidade, árvores de Poderes e Lâmina, duas rotas e quatro finais), Duelar, Arcade, Sobrevivência, Caçada a chefes (três missões com fases e condições especiais), 2 Jogadores local, Tutorial, Treinos guiados, Desafio de parry, Treino, Desafios e Galerias.
+- **Modos**: História (protagonista criado pelo jogador, pontos de habilidade, árvores de Poderes e Lâmina, duas rotas e quatro finais), Duelar, Arcade, Sobrevivência, Caçada a chefes (três missões com fases e condições especiais), Infiltração (tutorial e três operações), 2 Jogadores local, Tutorial, Treinos guiados, Desafio de parry, Treino, Desafios e Galerias.
 - Português e inglês, teclado e gamepad.
-- **Treino de infiltração** em Aprender: núcleo independente de visão superior, com mapa em grade, movimento, golpe em arco e devolução de disparos. Inclui patrulhas, sentinelas, pesados, visão/ruído, abate silencioso e painéis de alarme com reforços. Missões e resultados são a próxima etapa desse modo.
+- **Infiltração** em Jogar: modo independente em visão superior, com tutorial e três missões de sabotagem, obtenção de informação e escolta. Patrulhas, furtividade, combate e alarmes determinísticos; briefing, extração, resultados e recordes/bônus salvos. Poderes desligados; sem moeda ou melhoria permanente. Ver [content/INFILTRATION.md](content/INFILTRATION.md).
 
 ## Abrir o projeto
 
@@ -59,6 +59,7 @@ Arte e áudio são gerados por ferramentas offline (Python 3 com numpy e Pillow)
 | [content/POWERS.md](content/POWERS.md) | O Fluxo: níveis, interações, poderes e técnicas de lâmina |
 | [content/STORY.md](content/STORY.md) | Mundo, campanha, rotas, diálogos (PT-BR e EN) e finais |
 | [content/ARENAS.md](content/ARENAS.md) | As arenas e suas assinaturas visuais |
+| [content/INFILTRATION.md](content/INFILTRATION.md) | Missões, escolta, extração e bônus da Infiltração |
 | [content/HUNTS.md](content/HUNTS.md) | As três caçadas, recompensas e falas nos dois idiomas |
 | [design/ART_DIRECTION.md](design/ART_DIRECTION.md) | Identidade visual, personagens, lâminas, luz e animação |
 | [design/VFX.md](design/VFX.md) | Efeitos, impacto, câmera lenta e efeitos dos poderes |

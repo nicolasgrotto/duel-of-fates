@@ -344,3 +344,18 @@ Suíte final das tasks 04–05: **353 testes passando, zero falhas** (`build/tas
 | A.3 | Disputa contra (ou com) o Soberano | Ele segura a lâmina do rival com a palma e anéis de Fluxo; vencendo, empurra com uma onda |
 | A.4 | Galeria: ir até a Rajada Desestabilizadora | "Carregando" no fade; a Corsária assume e lança |
 | A.5 | Seleção: editor de técnicas do Guardião | Técnicas de disparo não aparecem |
+
+## Task 12 — Missões de Infiltração
+
+| Caso | Ação | Resultado esperado | Validação local |
+| --- | --- | --- | --- |
+| 12.1 | Jogar › Infiltração; percorrer quatro briefings com teclado/gamepad/mouse | Tutorial, sabotagem, arquivo e resgate; objetivos, controles atuais, recordes e bônus legíveis em PT/EN; não há entrada temporária em Aprender | rotas pelo MCP e capturas 720p/1080p; avaliar controle físico |
+| 12.2 | Primeiro acesso: interagir com painel e voltar à saída | Objetivo marca 1/1; saída só conclui depois da interação | duas rotas automatizadas; resultado Furtivo mesmo após combate sem alarme |
+| 12.3 | Rede silenciosa: desligar os dois painéis, evitando ou enfrentando guardas | Ambos são obrigatórios; alarme chama reforços e não derrota sozinho | rotas furtiva/agressiva; abordagem Direto conserva histórico após sirene parar |
+| 12.4 | Arquivo frio: tentar sair antes de copiar; copiar e extrair | Sair cedo não encerra; terminal exige alcance e linha livre; painel opcional | testes de objetivo e parede; duas rotas completas |
+| 12.5 | Caminho de volta: recrutar, correr, voltar e aguardar escolta | Prisioneiro navega sem teleporte, para perto do jogador e precisa chegar vivo à saída; HUD mostra estado e vida | duas rotas; limites de deslocamento, paredes e snapshot; avaliar sensação humana |
+| 12.6 | Receber disparo letal ou deixar prisioneiro ser atingido; tentar de novo | Motivo correto de derrota; nenhuma gravação; retry restaura toda a tentativa | testes de dano, derrota simultânea à extração e capturas dos dois resultados |
+| 12.7 | Vencer sem alarme/abates/no tempo, repetir mais devagar com outro bônus e reabrir | Menor tempo preservado; bônus acumulados; sem moeda, grind ou atributos | testes de save novo/antigo, resultado selado e recarga gráfica |
+| 12.8 | Pausar, voltar, reiniciar, usar Próxima e sair da última missão | Relógio e mundo congelam na pausa; controle pendente é descartado; retorno conserva seleção; última volta à lista | 47 verificações por resolução, InputMap pelo MCP; julgar áudio ouvido |
+
+Evidências em `build/task12_renders/` (82 capturas e dez folhas), `build/task12_mcp_renders/`, `task12_tests_final.log`, `task12_mcp_compile_checks.json` e `task12_assets_check.log`. Capturas usam `capture_progress.cfg`; os testes diretos isolam APPDATA em `build/task12_userdata`. A aprovação humana de controle/áudio e a meta de 60 FPS estáveis permanecem pendentes.
