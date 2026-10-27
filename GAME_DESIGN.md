@@ -554,6 +554,10 @@ Todos os temporizadores e limites vêm de configuração; controladores só prod
 
 Task 12: missões em recursos descrevem mapa, objetivos (desativar alarme, resgatar, obter informação), extração, falas e recompensa única. Vencer exige cumprir os objetivos obrigatórios e alcançar a extração; perder por morte ou falha explícita de objetivo, jamais por perigos visuais. Abordagem furtiva ou agressiva chega ao mesmo objetivo, sem moeda/grind. Alarme aumenta pressão e não encerra a missão sozinho. Poderes permanecem desligados no treino inicial; a task 12 decide um subconjunto pequeno de Repulsão/Puxão e seus custos, sem importar automaticamente todas as supremas do duelo. Menu definitivo e resultados pertencem à task 12.
 
+### Missões e extração (task 12)
+
+Jogar › Infiltração substitui a entrada temporária de Aprender. Quatro missões e regras completas em [content/INFILTRATION.md](content/INFILTRATION.md): tutorial curto, sabotagem de dois painéis, cópia de informação e escolta de prisioneiro. Dados definem mapa, spawn, guardas, painéis, terminais, prisioneiros, saída e briefing. Poderes permanecem desligados; Poder interage. Objetivos e relógio avançam apenas no tick fixo. Derrota por jogador/prisioneiro abatido precede extração. Bônus: nenhum alarme na tentativa, nenhum inimigo abatido e tempo inclusivo. Abordagem Furtivo/Direto depende do histórico de alarme. Conclusão, menor tempo e união dos bônus são salvos apenas nas vitórias; sem recompensa adicional ou grind.
+
 ### Mapa do treino
 
 `InfiltrationMapData` guarda linhas de tiles de **64 u** (32 px nativos), spawn do jogador e recursos de alvo/emissor. Símbolos: chão `.`, parede `#`, caixa sólida `C`, faixa de piso `=`. Fora da grade é sólido. A mesma grade é a fonte de colisão e desenho; sem TileMap físico paralelo. O mapa original de teste é um setor industrial com corredor de tiro horizontal e uma área protegida para testar o arco. Coordenadas de spawn usam centros de células livres. Nenhum perigo de cenário causa dano.

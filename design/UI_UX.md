@@ -34,6 +34,14 @@ Pausa local ao treino congela a amostragem e os ticks; sobreposição escura com
 
 Task 11: estado do treino distingue alarme pronto/ativo/desativado em PT e EN. Perto de alvo válido, dica contextual mostra Abate silencioso ou Desativar painel com o binding atual; sem prometer interação através de cobertura. Pausa explica cones, `?`/`!`, abate e painel. F3 mostra cone, rota, última posição conhecida, suspeita numérica, decisão e temporizador de alarme/reforços. Objetivo do treino propõe evitar patrulhas ou enfrentar disparos devolvendo-os; não há resultado de missão.
 
+### Infiltração — missões (task 12)
+
+Entrada definitiva **Jogar › Infiltração**, sem a entrada temporária em Aprender. Jogar mantém oito linhas incluindo Voltar com espaçamento reduzido para conservar o rodapé. Lista de quatro missões à esquerda, briefing à direita com objetivo, bônus, controles, conclusão e recorde; confirmar abre a missão. O tutorial é a primeira missão e pode ser repetido. Textos em PT/EN, corpo de 28 px no tema existente, quebra de linhas e espaço negativo.
+
+Durante a missão, título e progresso/tempo ocupam o topo; dicas contextuais distinguem painel, copiar terminal e recrutar prisioneiro. Saída marcada por quadrado aberto com seta, terminal por monitor com duas barras, prisioneiro pela figura humana sem arma e marcador losangular. Estados copiado/recrutado/extraído usam marcas e texto, além da cor. A pausa mostra os controles atuais e permite continuar, reiniciar ou voltar às missões.
+
+Resultado é uma tela própria pelo roteador: nome, sucesso ou motivo de derrota, cada objetivo com estado, bônus da tentativa, tempo e abordagem Furtivo/Direto. Oferece Tentar de novo, Próxima missão só no sucesso e Missões; na última, termina na lista. Histórico de bônus e melhor tempo aparecem no briefing. Sem tabela de dano, moeda ou novo estilo. Capturas usam save isolado.
+
 ### Carregamento
 
 Toda troca de cena passa pelo fade do `SceneRouter`. Com a tela já escura, aparece **Carregando** (EN: **Loading**) em `HintLabel`, no canto inferior direito, com três pontos que acendem em sequência; some antes do fade de volta. Ele é desenhado antes do trabalho pesado (montar a cena, a simulação e os lutadores), então fica visível mesmo quando o jogo trava um instante para carregar personagens novos. Recursos que a cena seguinte já sabe que vai usar (personagens da Galeria e da seleção) carregam em segundo plano durante o fade.

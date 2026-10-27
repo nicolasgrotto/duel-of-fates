@@ -33,6 +33,8 @@ Disparos usam branco quente do `UiPalette.bolt`, traço curto com núcleo claro,
 
 Na task 11, o atlas superior ganha soldado de ombros estreitos e arma lateral, sentinela mecânica com base angular e pesado de ombreiras largas. O painel é um terminal pequeno com indicador partido; portas de reforço têm marca de acesso no piso. Cones usam malha discreta e contorno tracejado, recortados nas paredes/caixas. Suspeita usa arco e `?`, alerta usa `!`; as formas persistem com efeitos reduzidos. Indicador de painel usa destaque quando disponível, perigo quando ativo e secundário cortado quando inutilizado, sem clarão global.
 
+Task 12: os mapas de missão reutilizam o atlas industrial e a ferramenta de tiles. Terminal de informação é um monitor angular com duas barras; saída é contorno quadrado aberto e seta no piso; prisioneiro usa silhueta superior sem arma, túnica clara e losango acima da cabeça, sem imitar personagem de outra obra. Geometria na mesma grade e cores do UiPalette; sem novos efeitos luminosos. Estados concluídos usam marca de confirmação além da cor. A apresentação só lê o estado da missão.
+
 ### Duelo
 
 - Em enquadramento neutro, um lutador ocupa cerca de 25–30% da altura da tela; a arena é grande diante deles.
