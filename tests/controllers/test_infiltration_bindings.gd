@@ -1,0 +1,71 @@
+extends TestCase
+
+
+func test_training_bindings_copy_remapped_keys_and_never_change_duel_actions() -> void:
+	InputBindings.apply_defaults()
+	var keys: Dictionary = InputBindings.rebind(InputBindings.preset_keys(&"default"), "light_attack", KEY_Q)
+	InputBindings.apply_keyboard(keys)
+	var before: PackedStringArray = []
+	for event in InputMap.action_get_events(&"p1_light_attack"):
+		before.append(event.as_text())
+	InfiltrationBindings.install()
+	assert_eq(_keys(&"infiltration_attack"), _keys(&"p1_light_attack"))
+	assert_true(InputMap.has_action(&"infiltration_aim_up"))
+	var mouse_found: bool = false
+	for event in InputMap.action_get_events(&"infiltration_attack"):
+		if event is InputEventMouseButton:
+			mouse_found = true
+	assert_true(mouse_found)
+	InfiltrationBindings.uninstall()
+	assert_false(InputMap.has_action(&"infiltration_up"))
+	var after: PackedStringArray = []
+	for event in InputMap.action_get_events(&"p1_light_attack"):
+		after.append(event.as_text())
+	assert_eq(after, before)
+	InputBindings.apply_keyboard(InputBindings.preset_keys(&"default"))
+
+
+func _keys(action: StringName) -> PackedInt32Array:
+	var codes: PackedInt32Array = []
+	for event in InputMap.action_get_events(action):
+		if event is InputEventKey:
+			codes.append(event.physical_keycode)
+	return codes
+
+
+func test_bindings_survive_overlapping_screen_transitions_without_duplicates() -> void:
+	InputBindings.apply_defaults()
+	InfiltrationBindings.install()
+	var count: int = InputMap.action_get_events(&"infiltration_attack").size()
+	InfiltrationBindings.install()
+	assert_eq(InputMap.action_get_events(&"infiltration_attack").size(), count)
+	InfiltrationBindings.uninstall()
+	assert_true(InputMap.has_action(&"infiltration_attack"))
+	InfiltrationBindings.uninstall()
+	assert_false(InputMap.has_action(&"infiltration_attack"))
+
+
+func test_controller_produces_independent_movement_aim_and_commands_without_mutating_simulation() -> void:
+	InputBindings.apply_defaults()
+	InfiltrationBindings.install()
+	var sim: InfiltrationSimulation = InfiltrationSimulation.new(load("res://data/balance/infiltration_config.tres"), load("res://data/infiltration/training_map.tres"))
+	var controller: InfiltrationPlayerController = InfiltrationPlayerController.new()
+	var intent: InfiltrationIntent = InfiltrationIntent.new()
+	var snapshot: Dictionary = sim.capture()
+	Input.action_press(&"infiltration_right")
+	Input.action_press(&"infiltration_down")
+	Input.action_press(&"infiltration_run")
+	controller.point_at(sim.player.position + Vector2.LEFT * 300.0)
+	controller.produce(sim, intent)
+	assert_almost(intent.movement.length(), 1.0)
+	assert_eq(intent.aim, Vector2.LEFT)
+	assert_eq(intent.pressed, Intent.Command.DODGE)
+	assert_eq(sim.capture(), snapshot)
+	Input.action_press(&"infiltration_aim_up")
+	controller.produce(sim, intent)
+	assert_eq(intent.aim, Vector2.UP)
+	assert_eq(intent.pressed, 0)
+	assert_eq(sim.capture(), snapshot)
+	for action in [&"infiltration_right", &"infiltration_down", &"infiltration_run", &"infiltration_aim_up"]:
+		Input.action_release(action)
+	InfiltrationBindings.uninstall()

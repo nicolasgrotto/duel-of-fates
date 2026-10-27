@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="InfiltrationMapData" format=3]
+
+[ext_resource type="Script" path="res://data/infiltration/infiltration_map_data.gd" id="map"]
+[ext_resource type="Script" path="res://data/infiltration/infiltration_target_data.gd" id="target"]
+[ext_resource type="Resource" path="res://data/bolts/standard_bolt.tres" id="bolt"]
+[ext_resource type="Texture2D" path="res://assets/infiltration/training_tiles.png" id="tiles"]
+[ext_resource type="Texture2D" path="res://assets/infiltration/training_sprites.png" id="sprites"]
+
+[sub_resource type="Resource" id="dummy"]
+script = ExtResource("target")
+id = &"training_dummy"
+position = Vector2(480, 480)
+health = 30.0
+
+[sub_resource type="Resource" id="emitter"]
+script = ExtResource("target")
+id = &"training_emitter"
+kind = 1
+position = Vector2(864, 352)
+direction = Vector2(-1, 0)
+health = 16.0
+bolt = ExtResource("bolt")
+
+[resource]
+script = ExtResource("map")
+id = &"training_sector"
+title_key = "INFILTRATION_TRAINING"
+player_spawn = Vector2(224, 352)
+rows = PackedStringArray("##############################", "#................#...........#", "#................#...........#", "#......CCC.......#...........#", "#................#...........#", "#..============..#...........#", "#............................#", "#............................#", "#.........CC.................#", "#................#...........#", "#................#...........#", "#######..#########...........#", "#...CC...........#...........#", "#................#...........#", "#......................CCC...#", "#................#...........#", "#................#...........#", "#............................#", "#............................#", "##############################")
+targets = [SubResource("dummy"), SubResource("emitter")]
+tiles = ExtResource("tiles")
+sprites = ExtResource("sprites")

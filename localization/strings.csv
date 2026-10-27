@@ -831,3 +831,16 @@ HUNT_START,Iniciar caçada,Start hunt
 HUNT_EPILOGUE,Rever epílogo,Replay epilogue
 HUNT_ACTION,{action} · ← → alterar,{action} · ← → change
 HUNT_UNLOCKED,Recompensa liberada: {reward},Reward unlocked: {reward}
+INFILTRATION_TRAINING,Treino de infiltração,Infiltration Training
+INFILTRATION_STATUS,Treino · alarme inativo,Training · alarm inactive
+INFILTRATION_OBJECTIVE,Explore a sala · acerte o boneco · apare e devolva disparos,Explore the room · strike the dummy · parry and return bolts
+INFILTRATION_MOVE,{up} {left} {down} {right} mover,{up} {left} {down} {right} move
+INFILTRATION_RUN,correr,run
+INFILTRATION_SNEAK,furtivo,sneak
+INFILTRATION_SWING,golpear,swing
+INFILTRATION_GUARD,guarda / parry,guard / parry
+INFILTRATION_AIM,Mouse / stick direito mirar,Mouse / right stick aim
+INFILTRATION_LEGEND,Placas reforçadas: cobertura · alvo circular: boneco · emissor: disparos,Reinforced plates: cover · round target: dummy · emitter: bolts
+INFILTRATION_DEFEATED,TREINO ENCERRADO,TRAINING ENDED
+INFILTRATION_RESTART,Reiniciar treino,Restart training
+INFILTRATION_BACK,Voltar a Aprender,Back to Learn

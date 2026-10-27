@@ -19,6 +19,7 @@ const SCREENS: Dictionary = {
 	&"dialogue": "res://screens/story/dialogue_screen.tscn",
 	&"ending": "res://screens/story/ending_screen.tscn",
 	&"hunts": "res://screens/hunts/hunt_screen.tscn",
+	&"infiltration_training": "res://screens/infiltration/infiltration_screen.tscn",
 }
 const FADE_SECONDS: float = 0.18
 const SETTLE_FRAMES: int = 2

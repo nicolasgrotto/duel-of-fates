@@ -44,3 +44,12 @@ extends Resource
 @export var menu_blade_b: Color = Color("#ffb34a")
 @export var menu_hilt: Color = Color("#6b6f78")
 @export var menu_horizon: Color = Color("#121826")
+
+@export_group("Infiltration")
+@export var infiltration_floor: Color = Color("#111925")
+@export var infiltration_seam: Color = Color("#080e18")
+@export var infiltration_wall: Color = Color("#28364a")
+@export var infiltration_edge: Color = Color("#4b6075")
+@export var infiltration_crate: Color = Color("#454647")
+@export var infiltration_cloth: Color = Color("#4c5965")
+@export var infiltration_skin: Color = Color("#c2a58c")

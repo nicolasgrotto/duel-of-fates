@@ -18,6 +18,7 @@ Fases 0 a 7.5 concluídas, na branch `pixel-art`: duelo completo com o elenco in
 - **10 arenas** com identidade visual forte, em que as lâminas são a principal fonte de luz.
 - **Modos**: História (protagonista criado pelo jogador, pontos de habilidade, árvores de Poderes e Lâmina, duas rotas e quatro finais), Duelar, Arcade, Sobrevivência, Caçada a chefes (três missões com fases e condições especiais), 2 Jogadores local, Tutorial, Treinos guiados, Desafio de parry, Treino, Desafios e Galerias.
 - Português e inglês, teclado e gamepad.
+- **Treino de infiltração** em Aprender: núcleo independente de visão superior, com mapa em grade, movimento, golpe em arco e devolução de disparos. Patrulhas, detecção e missões são as próximas etapas desse modo.
 
 ## Abrir o projeto
 
