@@ -4,6 +4,19 @@ Roteiro para o autor validar, jogando, o que entrou na fase 7.5 (revisão de com
 
 Legenda: ✅ ficou bom · ⚠️ funciona mas a sensação ou o número precisa de ajuste · ❌ não funciona.
 
+## Caçada a chefes — task 09
+
+| # | Como testar | Esperado | Onde ajustar |
+| --- | --- | --- | --- |
+| 09.1 | Jogar → Caçada a chefes; percorra os três itens em PT e EN, a 720p e 1080p; confirme e pule a fala | cartão com condição, três fases/poder principal, kit, recompensa e recorde; Voltar não encosta no rodapé; diálogo inicia o duelo | `screens/hunts/`, tema `Hunt*Label`, `strings.csv` |
+| 09.2 | A última lição: aparar três fortes perfeitamente e vencer; repetir matando com só dois parries; use Repulsão no Instinto | sucesso só no primeiro caso; Viajante liberado uma vez; fases em 65% e 30%, sem retroceder nem curar; poderes encerram o Instinto | `last_lesson.tres`, `HuntTracker`, perfis das fases |
+| 09.3 | O olho da tempestade: observe Raio, marcas da Tempestade e encerramento; vença antes e depois de 90 s | guarda não protege a Tempestade; corrida, esquiva e Barreira dão respostas; tempo inclui tick letal, exclui pausa/intro/K.O./replay; cor do Guardião só no sucesso | `storm_eye.tres`, `HuntCondition.seconds` |
+| 09.4 | O peso do vazio: deixe uma Singularidade lançar e terminar a massa com os dois vivos, depois vença; repita matando durante o campo | primeiro caso libera a cor da Sombra; segundo mostra condição não cumprida; estado da condição visível; troca de fase espera campo/massa terminar | `weight_of_void.tres`, `HuntTracker._singularity_pending` |
+| 09.5 | Reinicie pela pausa; perca; tente de novo; vença com replay ligado; Continue; reveja o epílogo na lista; reabra o jogo | tentativa nova sem progresso anterior; derrota sem recompensa; replay reproduz fases sem duplicar prêmio; epílogo retorna ao mesmo item; conclusão e melhor tempo persistem | `HuntMode`, `TickRunner.objective`, `SaveService.hunt_best` |
+| 09.6 | Compare anúncios com efeitos completos/reduzidos e F3; confira intro/K.O./replay de um duelo comum | fase e condição no F3; pulso de letterbox visível só com efeitos completos; barras existentes agora ocupam a largura da tela, sem mudar combate | `DuelScreen`, `ScreenEffects`, `ModesConfig.boss_*` |
+
+Validação automatizada da task 09: 401 testes sem falhas, incluindo seis duelos coreografados com vitória e condição cumprida/perdida; limiares, recargas, sobrevivência, replay, recompensas idempotentes e migração/persistência. `build/task09_flow_smoke.log` registra 17 verificações do fluxo completo com replay e recarga do save. `build/task09_transition_check.log` mede largura/altura real das barras e a ausência do pulso com efeitos reduzidos; capturas `transition_normal_1280.png` e `transition_reduced_1280.png`. Folhas `phases_1280_sheet.png`, `phases_1920_sheet.png`, `ui_*_sheet.png` e `results_*_sheet.png` em `build/task09_renders/` foram inspecionadas. 1080p renderizado diretamente em SubViewport de 1920×1080, pois a janela física é limitada pelo desktop; sem ampliar imagens de 720p. Capturas usam `capture_progress.cfg`, todos os processos de validação usam APPDATA isolado em `build/task09_userdata`. Ponte MCP sem editor autenticado; cenas executadas diretamente na Godot 4.7.2 com renderização. Controle físico, dificuldade e sensação com jogador humano ainda precisam da avaliação do autor.
+
 ## 0. Preparação
 
 1. Feche o editor e rode, na pasta do projeto:
