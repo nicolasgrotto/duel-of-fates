@@ -116,7 +116,7 @@ func _leave() -> void:
 	if _result:
 		SceneRouter.change(&"infiltration", {"mission": _mode.data.id})
 	else:
-		SceneRouter.change(&"menu", {"group": &"play", "focus": &"infiltration"})
+		SceneRouter.change(&"menu", {"group": &"special", "focus": &"infiltration"})
 
 
 func _unhandled_input(event: InputEvent) -> void:

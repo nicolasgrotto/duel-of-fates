@@ -150,4 +150,4 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _leave() -> void:
-	SceneRouter.change(&"menu", {"group": &"play", "focus": &"hunts"})
+	SceneRouter.change(&"menu", {"group": &"battles", "focus": &"hunts"})

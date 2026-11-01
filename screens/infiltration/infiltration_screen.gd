@@ -321,7 +321,7 @@ func _on_pause_chosen(option: StringName) -> void:
 			if mode != null:
 				SceneRouter.change(&"infiltration", {"mission": mode.data.id})
 			else:
-				SceneRouter.change(&"menu", {"group": &"play", "focus": &"infiltration"})
+				SceneRouter.change(&"menu", {"group": &"special", "focus": &"infiltration"})
 
 
 func _exit_tree() -> void:
