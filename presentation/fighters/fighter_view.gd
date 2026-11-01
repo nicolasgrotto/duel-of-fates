@@ -22,6 +22,8 @@ const MIN_TURN_WIDTH: float = 0.2
 const HILT_DROP_TOSS: Vector2 = Vector2(70.0, -260.0)
 const TRAVEL_DEPTH: int = -1
 const PALETTE: UiPalette = preload("res://ui/palette.tres")
+const POWER_VFX: PowerVfxConfig = preload("res://data/balance/power_vfx_config.tres")
+const TREMOR_PATTERN: PackedFloat32Array = [1.0, -1.0, 0.0, 1.0, -1.0, -1.0, 1.0, 0.0, -1.0, 1.0, 1.0, -1.0]
 
 var fighter: FighterState
 var opponent: FighterState
@@ -55,6 +57,7 @@ var _severed: Array[SeveredPiece] = []
 var _fall_limb: MoveData.Limb = MoveData.Limb.NONE
 var _lost_blade: bool = false
 var _finisher: FinisherPlayer
+var _freeze_time: float = 0.0
 var _cutter: FinisherMotion
 var _cutter_time: float = -1.0
 var _borrowing: bool = false
@@ -427,8 +430,12 @@ func _process(delta: float) -> void:
 	_emitter_left = maxf(_emitter_left - delta, 0.0)
 	var alpha: float = runner.alpha if runner != null else 1.0
 	var shake: float = 0.0
+	var frozen: bool = fighter.state == FighterState.State.HELD and not fighter.held_by_choke
 	if fighter.freeze_ticks > 0 and fighter.state == FighterState.State.HIT:
 		shake = randf_range(-HIT_SHAKE, HIT_SHAKE)
+	_freeze_time = _freeze_time + delta if frozen else 0.0
+	if frozen:
+		shake += freeze_tremor(_freeze_time, POWER_VFX.freeze_tremor, POWER_VFX.freeze_tremor_rate)
 	position = _previous.lerp(_current, alpha) + Vector2(shake + _travel_shift(), 0.0)
 	_advance_solver(delta)
 	_check_vault()
@@ -436,7 +443,6 @@ func _process(delta: float) -> void:
 	if _turned:
 		scale.x = -scale.x
 	_update_intro()
-	var frozen: bool = fighter.state == FighterState.State.HELD and not fighter.held_by_choke
 	if not frozen:
 		_observe_guard()
 		_solver.solve(fighter, opponent, _target)
@@ -661,6 +667,10 @@ func hand_position(front: bool) -> Vector2:
 
 func chest_position() -> Vector2:
 	return rig.to_global(rig.chest)
+
+
+static func freeze_tremor(time: float, amplitude: float, rate: float) -> float:
+	return amplitude * TREMOR_PATTERN[int(floorf(time * rate)) % TREMOR_PATTERN.size()]
 
 
 func head_position() -> Vector2:

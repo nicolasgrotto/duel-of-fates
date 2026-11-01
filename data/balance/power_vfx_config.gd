@@ -150,3 +150,20 @@ extends Resource
 @export var singularity_mark_alpha: float = 0.8
 @export var singularity_cup_hand: Vector2 = Vector2(28.0, -30.0)
 @export var singularity_cup_grip: Vector2 = Vector2(8.0, -24.0)
+
+@export_group("Freeze")
+@export var freeze_tremor: float = 2.0
+@export var freeze_tremor_rate: float = 28.0
+@export var freeze_strands: int = 5
+@export var freeze_strand_height: float = 58.0
+@export var freeze_strand_sway: float = 4.0
+@export var freeze_strand_rise: float = 0.35
+@export var freeze_strand_alpha: float = 0.6
+@export var freeze_motes: int = 14
+@export var freeze_mote_spread: Vector2 = Vector2(64.0, 128.0)
+@export var freeze_mote_vibration: float = 1.5
+@export var freeze_crackle_rate: float = 8.0
+@export var freeze_crackle_length: float = 12.0
+@export var freeze_ripple_time: float = 0.18
+@export var freeze_release_time: float = 0.25
+@export var freeze_release_spread: float = 46.0

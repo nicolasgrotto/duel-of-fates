@@ -19,8 +19,13 @@ const CLEAVE_GROW: float = 70.0
 const CLEAVE_LAYERS: Array[Vector2] = [Vector2(2.4, 0.28), Vector2(1.2, 0.8), Vector2(0.4, 1.0)]
 const METEOR_CRACKS: int = 5
 const SHOCKWAVE_SEGMENTS: int = 16
+const GRID_CELL: Vector2 = Vector2(GRID, GRID)
+const STRAND_POINTS: int = 7
+const RIPPLE_STRANDS: int = 3
+const CRACKLE_CHANCE: float = 0.6
+const FREEZE_LIGHTEN: float = 0.35
 
-enum Burst { WAVE, RING_IN, RING_OUT, BOLT, FLASH, SHOCKWAVE, PULL_ORB }
+enum Burst { WAVE, RING_IN, RING_OUT, BOLT, FLASH, SHOCKWAVE, PULL_ORB, FREEZE_RIPPLE, FREEZE_RELEASE }
 
 var sim: MatchSimulation
 var views: Array[FighterView] = []
@@ -36,6 +41,8 @@ var _sky_flash: float = 0.0
 var _meteor_seen: PackedFloat32Array = PackedFloat32Array([-1.0, -1.0])
 var _cleave_points: PackedVector2Array = []
 var _beam_rng: RandomNumberGenerator = RandomNumberGenerator.new()
+var _crackle_rng: RandomNumberGenerator = RandomNumberGenerator.new()
+var _was_frozen: Array[bool] = [false, false]
 
 var _kinds: PackedInt32Array = []
 var _positions: PackedVector2Array = []
@@ -96,7 +103,7 @@ func on_event(event: CombatEvent) -> void:
 			if event.target >= 0:
 				_burst(Burst.RING_OUT, at, 0.0, 0.25, 60.0, tier_color(sim.fighters[event.target].flow_tier))
 		CombatEvent.Type.POWER_HIT:
-			if event.source < 0:
+			if event.source < 0 or (event.power != null and event.power.kind == PowerData.Kind.FREEZE):
 				return
 			_burst(Burst.FLASH, at, 0.0, 0.12, 34.0, tier_color(sim.fighters[event.source].flow_tier))
 		CombatEvent.Type.HAZARD_TRIGGERED:
@@ -132,6 +139,9 @@ func _on_power_active(event: CombatEvent) -> void:
 			_burst(Burst.PULL_ORB, hand, caster.index, vfx.pull_orb_time, vfx.pull_orb_radius * (1.0 + caster.flow_tier * vfx.pull_orb_tier_growth), color)
 		PowerData.Kind.FRACTURE:
 			_burst(Burst.FLASH, Vector2(hand.x, 0.0), 0.0, 0.2, 60.0, color)
+		PowerData.Kind.FREEZE:
+			var reach: float = absf(views[1 - caster.index].body_center().x - hand.x)
+			_burst(Burst.FREEZE_RIPPLE, hand, caster.facing, vfx.freeze_ripple_time, reach, color)
 		PowerData.Kind.HEAL, PowerData.Kind.FOCUS, PowerData.Kind.WRATH, PowerData.Kind.SANCTUARY:
 			_burst(Burst.RING_OUT, views[caster.index].body_center(), 0.0, 0.3, 80.0, color)
 
@@ -191,7 +201,26 @@ func _process(delta: float) -> void:
 				_lives[i] = 0.0
 	_update_storm(delta)
 	_update_meteors()
+	_update_freeze_release()
 	queue_redraw()
+
+
+func _update_freeze_release() -> void:
+	if sim == null or views.size() < 2:
+		return
+	for fighter in sim.fighters:
+		var frozen: bool = is_frozen(fighter)
+		if _was_frozen[fighter.index] and not frozen and not reduced:
+			_burst(Burst.FREEZE_RELEASE, views[fighter.index].body_center(), 0.0, vfx.freeze_release_time, vfx.freeze_release_spread, _freeze_color(fighter))
+		_was_frozen[fighter.index] = frozen
+
+
+static func is_frozen(fighter: FighterState) -> bool:
+	return fighter.is_alive() and fighter.state == FighterState.State.HELD and not fighter.held_by_choke
+
+
+func _freeze_color(fighter: FighterState) -> Color:
+	return tier_color(sim.opponent_of(fighter).flow_tier)
 
 
 func _update_meteors() -> void:
@@ -294,11 +323,8 @@ func _draw_fighter(fighter: FighterState) -> void:
 		for i in 3:
 			var wobble: float = sin(_time * 6.0 + i) * 3.0
 			_draw_ellipse(head + Vector2(0.0, -i * 6.0), Vector2(16.0 + i * 5.0 + wobble, 4.0 + i), Color(color, 0.6 - i * 0.15), 1.5)
-	if fighter.state == FighterState.State.HELD and not fighter.held_by_choke:
-		_draw_ellipse(center, Vector2(30.0, 84.0), Color(color, 0.45), 3.0)
-		for i in 2:
-			var offset: Vector2 = Vector2(randf_range(-3.0, 3.0), 0.0) * (i + 1)
-			_draw_ellipse(center + offset, Vector2(26.0, 80.0), Color(color, 0.15), 1.5)
+	if is_frozen(fighter):
+		_draw_freeze(fighter, view, center)
 	if fighter.state == FighterState.State.HELD and fighter.held_by_choke:
 		var neck: Vector2 = view.head_position() + Vector2(0.0, 16.0)
 		draw_circle(neck, 7.0 + 2.0 * sin(_time * 12.0), Color(color, 0.5))
@@ -535,6 +561,10 @@ func _draw_bursts() -> void:
 				_draw_pull_orb(int(_directions[i]), _sizes[i], _colors[i], progress)
 			Burst.SHOCKWAVE:
 				_draw_shockwave(i, progress)
+			Burst.FREEZE_RIPPLE:
+				_draw_freeze_ripple(i, progress)
+			Burst.FREEZE_RELEASE:
+				_draw_freeze_release(i, progress)
 
 
 func shockwave_tip(index: int, progress: float) -> Vector2:
@@ -679,6 +709,74 @@ func _draw_beam(from: Vector2, to: Vector2, color: Color, seed_value: int, width
 	points.append(to)
 	draw_polyline(points, Color(color, color.a * 0.45), width * 3.0)
 	draw_polyline(points, Color(Color.WHITE, color.a * 0.9), width)
+
+
+func _draw_freeze(fighter: FighterState, view: FighterView, center: Vector2) -> void:
+	var color: Color = _freeze_color(fighter)
+	var strands: int = vfx.freeze_strands
+	for i in strands:
+		var lift: float = fmod(_time * vfx.freeze_strand_rise + i * 0.37, 1.0)
+		var x: float = lerpf(-0.6, 0.6, (i + 0.5) / strands) * vfx.freeze_mote_spread.x
+		var strength: float = ceilf(sin(lift * PI) * FADE_STEPS) / FADE_STEPS
+		_draw_strand(center + Vector2(x, 24.0 - lift * 56.0), vfx.freeze_strand_height, Color(color.lightened(FREEZE_LIGHTEN), vfx.freeze_strand_alpha * strength), i)
+	if reduced:
+		return
+	for i in vfx.freeze_motes:
+		var vibration: Vector2 = Vector2(sin(_time * 31.0 + i * 2.1), cos(_time * 27.0 + i * 1.7)) * vfx.freeze_mote_vibration
+		var tint: Color = PALETTE.text if i % 3 == 0 else color
+		_draw_mote(center + freeze_mote_offset(i, vfx.freeze_mote_spread) + vibration, Color(tint.lightened(FREEZE_LIGHTEN), 1.0), 1 + i % 2)
+	var anchors: Array[Vector2] = [view.hand_position(true), view.hand_position(false), view.head_position()]
+	var step: int = int(floorf(_time * vfx.freeze_crackle_rate))
+	for j in anchors.size():
+		_crackle_rng.seed = step * 97 + j * 13 + fighter.index * 7
+		if _crackle_rng.randf() < CRACKLE_CHANCE:
+			_draw_crackle(anchors[j], color)
+
+
+static func freeze_mote_offset(index: int, spread: Vector2) -> Vector2:
+	var u: float = fposmod(sin(index * 12.9898) * 43758.5453, 1.0)
+	var v: float = fposmod(sin(index * 78.233) * 12543.1, 1.0)
+	return Vector2((u * 2.0 - 1.0) * spread.x * 0.5, (v * 2.0 - 1.0) * spread.y * 0.5)
+
+
+func _draw_mote(at: Vector2, color: Color, cells: int = 1) -> void:
+	var size: Vector2 = GRID_CELL * cells
+	draw_rect(Rect2(at.snapped(GRID_CELL) - size * 0.5, size), color)
+
+
+func _draw_strand(at: Vector2, height: float, color: Color, phase: int) -> void:
+	var points: PackedVector2Array = []
+	for j in STRAND_POINTS:
+		var t: float = float(j) / (STRAND_POINTS - 1)
+		var sway: float = sin(_time * 5.0 + phase * 1.9 + t * 4.0) * vfx.freeze_strand_sway
+		points.append((at + Vector2(sway, (t - 0.5) * height)).snapped(GRID_CELL))
+	draw_polyline(points, color, GRID)
+
+
+func _draw_crackle(anchor: Vector2, color: Color) -> void:
+	var angle: float = _crackle_rng.randf() * TAU
+	var length: float = vfx.freeze_crackle_length
+	var bend: Vector2 = anchor + Vector2(cos(angle), sin(angle)) * length * 0.5 + Vector2(_crackle_rng.randf_range(-3.0, 3.0), _crackle_rng.randf_range(-3.0, 3.0))
+	var tip: Vector2 = anchor + Vector2(cos(angle), sin(angle)) * length
+	draw_polyline(PackedVector2Array([anchor.snapped(GRID_CELL), bend.snapped(GRID_CELL), tip.snapped(GRID_CELL)]), Color(color.lightened(0.4), 0.85), GRID)
+
+
+func _draw_freeze_ripple(index: int, progress: float) -> void:
+	var fade: float = ceilf((1.0 - progress) * FADE_STEPS) / FADE_STEPS
+	for k in RIPPLE_STRANDS:
+		var travel: float = clampf(progress * 1.3 - k * 0.15, 0.0, 1.0)
+		if travel <= 0.0:
+			continue
+		var at: Vector2 = _positions[index] + Vector2(_directions[index] * _sizes[index] * travel, 0.0)
+		_draw_strand(at, vfx.freeze_strand_height * (0.6 + 0.4 * travel), Color(_colors[index], 0.5 * fade), k)
+
+
+func _draw_freeze_release(index: int, progress: float) -> void:
+	var fade: float = ceilf((1.0 - progress) * FADE_STEPS) / FADE_STEPS
+	for m in vfx.freeze_motes:
+		var offset: Vector2 = freeze_mote_offset(m, vfx.freeze_mote_spread)
+		var outward: Vector2 = offset.normalized() if offset != Vector2.ZERO else Vector2.UP
+		_draw_mote(_positions[index] + offset + outward * _sizes[index] * ease(progress, 0.4), Color(_colors[index], 0.8 * fade))
 
 
 func _draw_ellipse(center: Vector2, radii: Vector2, color: Color, width: float) -> void:
