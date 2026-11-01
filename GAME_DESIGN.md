@@ -467,7 +467,12 @@ Menu em dois níveis: **Jogar**, **Aprender**, **Extras**, **Opções**.
 
 ### Jogar
 
-- **Duelar**: submenu com **1 Jogador**, **2 Jogadores** e **CPU vs CPU**, para a lista de Jogar não crescer a cada modo.
+Jogar tem só História, Duelar, Batalhas e Modos especiais; os modos ficam em submenus para a lista não crescer a cada modo novo:
+
+- **Duelar**: 1 Jogador, 2 Jogadores, CPU vs CPU.
+- **Batalhas**: Arcade, Sobrevivência, Caçada a chefes.
+- **Modos especiais**: Infiltração e o futuro Combate de naves (modos fora do duelo de lâminas).
+
 - **1 Jogador**: escolha do lutador, do adversário (pode ser o mesmo) e da arena; dificuldade nas Opções. Conjunto de poderes **Base** ou **Personalizado** na seleção.
 - **História**: campanha com protagonista criado pelo jogador. Ver [content/STORY.md](content/STORY.md).
 - **Arcade**: escolha do lutador e até 6 adversários em rodízio pelo elenco, mais o **chefe**. Dificuldade crescente (2 no Fácil, 2 no Normal, o resto no Difícil). Arenas em rodízio. Perder permite tentar a mesma luta. **Chefe: Sombra Desperta**, no Difícil; abaixo de metade da vida **desperta**: mensagem "A SOMBRA DESPERTA", letterbox pulsando e a IA passa à dificuldade de chefe. Vencer mostra "ARCADE CONCLUÍDO" e registra o feito para aquele personagem.
@@ -485,7 +490,7 @@ Menu em dois níveis: **Jogar**, **Aprender**, **Extras**, **Opções**.
 
 ### Caçada a chefes (task 09)
 
-Jogar › Caçada a chefes oferece três missões independentes, disponíveis desde o início. Cada uma usa o Guardião com Fluxo 7, Repulsão, Cura e Barreira, um round, Poderes sempre ligados e dificuldade-base Difícil. O conjunto é fixo e não altera o elenco. Não há moeda, atributos permanentes ou repetição obrigatória.
+Jogar › Batalhas › Caçada a chefes oferece três missões independentes, disponíveis desde o início. Cada uma usa o Guardião com Fluxo 7, Repulsão, Cura e Barreira, um round, Poderes sempre ligados e dificuldade-base Difícil. O conjunto é fixo e não altera o elenco. Não há moeda, atributos permanentes ou repetição obrigatória.
 
 | Caçada | Chefe / arena | Fases (vida restante) e padrão | Condição especial | Recompensa única |
 | --- | --- | --- | --- | --- |
@@ -558,7 +563,7 @@ Task 12: missões em recursos descrevem mapa, objetivos (desativar alarme, resga
 
 ### Missões e extração (task 12)
 
-Jogar › Infiltração substitui a entrada temporária de Aprender. Quatro missões e regras completas em [content/INFILTRATION.md](content/INFILTRATION.md): tutorial curto, sabotagem de dois painéis, cópia de informação e escolta de prisioneiro. Dados definem mapa, spawn, guardas, painéis, terminais, prisioneiros, saída e briefing. Poderes permanecem desligados; Poder interage. Objetivos e relógio avançam apenas no tick fixo. Derrota por jogador/prisioneiro abatido precede extração. Bônus: nenhum alarme na tentativa, nenhum inimigo abatido e tempo inclusivo. Abordagem Furtivo/Direto depende do histórico de alarme. Conclusão, menor tempo e união dos bônus são salvos apenas nas vitórias; sem recompensa adicional ou grind.
+Jogar › Modos especiais › Infiltração substitui a entrada temporária de Aprender. Quatro missões e regras completas em [content/INFILTRATION.md](content/INFILTRATION.md): tutorial curto, sabotagem de dois painéis, cópia de informação e escolta de prisioneiro. Dados definem mapa, spawn, guardas, painéis, terminais, prisioneiros, saída e briefing. Poderes permanecem desligados; Poder interage. Objetivos e relógio avançam apenas no tick fixo. Derrota por jogador/prisioneiro abatido precede extração. Bônus: nenhum alarme na tentativa, nenhum inimigo abatido e tempo inclusivo. Abordagem Furtivo/Direto depende do histórico de alarme. Conclusão, menor tempo e união dos bônus são salvos apenas nas vitórias; sem recompensa adicional ou grind.
 
 ### Mapa do treino
 
