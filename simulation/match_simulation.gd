@@ -250,6 +250,7 @@ func spawn_projectile(kind: Projectile.Kind, owner: FighterState, power: PowerDa
 		projectile.travelled = 0.0
 		projectile.returning = false
 		projectile.hit_done = false
+		projectile.evaded = false
 		projectile.flow_level = owner.flow_level
 		projectile.tier = owner.flow_tier
 		projectile.delay_ticks = 0

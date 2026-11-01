@@ -180,3 +180,71 @@ func test_shooting_dummy_fires_at_its_interval() -> void:
 		dummy.produce(duel.sim, 0, duel.intents[0])
 		duel.step()
 	assert_eq(duel.count_events(CombatEvent.Type.PROJECTILE_SPAWNED), 2)
+
+
+func _evade_before(duel: DuelFixture, arrival: int, lead: int) -> void:
+	duel.step_until(func() -> bool: return duel.sim.tick >= arrival - lead - 1, 200)
+	duel.press(1, Intent.Command.EVADE)
+	duel.step()
+
+
+func test_precision_evade_slips_a_bolt_and_frees_the_defender() -> void:
+	var arrival: int = _arrival_tick()
+	var duel: DuelFixture = _duel()
+	var health: float = duel.fighter(1).health
+	_shoot(duel)
+	_evade_before(duel, arrival, 2)
+	duel.step(3)
+	assert_eq(duel.count_events(CombatEvent.Type.EVADE_SUCCESS), 1)
+	assert_eq(duel.fighter(1).evade_streak, 1)
+	assert_true(duel.fighter(1).is_free(), "free right after the slip")
+	assert_true(_bolt(duel) != null and _bolt(duel).evaded, "the bolt keeps flying past")
+	duel.step(60)
+	assert_eq(duel.count_events(CombatEvent.Type.BOLT_HIT), 0)
+	assert_almost(duel.fighter(1).health, health)
+
+
+func test_evade_chain_continues_through_a_burst() -> void:
+	var burst: BoltData = BOLT.duplicate() as BoltData
+	burst.count = 3
+	burst.interval = 0.3
+	var shot: MoveData = SHOT.duplicate() as MoveData
+	shot.bolt = burst
+	shot.recovery = 1.0
+	var duel: DuelFixture = _duel(shot)
+	_shoot(duel)
+	for i in burst.count:
+		assert_true(duel.step_until(func() -> bool: return _ticks_to_reach(duel) <= 2, 120), "bolt %d approaches" % i)
+		duel.press(1, Intent.Command.EVADE)
+		duel.step(4)
+	assert_eq(duel.count_events(CombatEvent.Type.EVADE_SUCCESS), 3)
+	assert_eq(duel.fighter(1).evade_streak, 3)
+	assert_eq(duel.count_events(CombatEvent.Type.BOLT_HIT), 0)
+
+
+func _ticks_to_reach(duel: DuelFixture) -> int:
+	var target: FighterState = duel.fighter(1)
+	var nearest: int = 999
+	for projectile in duel.sim.projectiles:
+		if not projectile.active or projectile.kind != Projectile.Kind.BOLT or projectile.evaded:
+			continue
+		var gap: float = absf(projectile.x - target.x) - DuelFixture.CONFIG.body_width * 0.5 - projectile.size
+		nearest = mini(nearest, ceili(gap / (absf(projectile.vx) * Ticks.DELTA)))
+	return nearest
+
+
+func test_late_evade_still_takes_the_bolt() -> void:
+	var arrival: int = _arrival_tick()
+	var duel: DuelFixture = _duel()
+	_shoot(duel)
+	_evade_before(duel, arrival, -2)
+	duel.step(10)
+	assert_eq(duel.count_events(CombatEvent.Type.EVADE_SUCCESS), 0)
+	assert_eq(duel.count_events(CombatEvent.Type.BOLT_HIT), 1)
+
+
+func test_chained_evades_lean_differently_from_the_first() -> void:
+	var first: Vector3 = PoseSolver.evade_pose_for(0)
+	for streak in range(1, 7):
+		assert_true(PoseSolver.evade_pose_for(streak) != first, "chain pose %d differs from the first" % streak)
+		assert_true(PoseSolver.evade_pose_for(streak) != PoseSolver.evade_pose_for(streak + 1), "consecutive chain poses alternate")

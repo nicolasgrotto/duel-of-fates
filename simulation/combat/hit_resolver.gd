@@ -107,13 +107,17 @@ static func _event(sim: MatchSimulation, type: CombatEvent.Type, attacker: Fight
 
 
 static func _evade(sim: MatchSimulation, attacker: FighterState, defender: FighterState, move: MoveData, preserve_airborne: bool = false) -> CombatEvent:
+	var event: CombatEvent = _event(sim, CombatEvent.Type.EVADE_SUCCESS, attacker, defender, move)
+	event.frame_advantage = -attacker.ticks_left_in_move()
+	complete_evade(sim, defender, event, preserve_airborne)
+	return event
+
+
+static func complete_evade(sim: MatchSimulation, defender: FighterState, event: CombatEvent, preserve_airborne: bool = false) -> void:
 	defender.evade_succeeded = true
 	defender.evade_streak += 1
-	var event: CombatEvent = _event(sim, CombatEvent.Type.EVADE_SUCCESS, attacker, defender, move)
 	event.amount = defender.evade_streak
-	event.frame_advantage = -attacker.ticks_left_in_move()
 	sim.change_state(defender, FighterState.State.JUMPING if preserve_airborne and not defender.on_ground else FighterState.State.IDLE)
-	return event
 
 
 static func _instinct_evade(sim: MatchSimulation, attacker: FighterState, defender: FighterState, move: MoveData) -> void:

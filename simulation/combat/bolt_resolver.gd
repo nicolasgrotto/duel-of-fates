@@ -16,7 +16,12 @@ static func fire(sim: MatchSimulation, fighter: FighterState, bolt: BoltData) ->
 
 
 static func resolve(sim: MatchSimulation, projectile: Projectile, owner: FighterState, target: FighterState) -> void:
-	if not target.is_alive() or target.is_invulnerable() or target.evade_window_ticks > 0:
+	if not target.is_alive():
+		return
+	if target.state == FighterState.State.DODGING and target.evade_window_ticks > 0:
+		_evade(sim, projectile, owner, target)
+		return
+	if target.is_invulnerable():
 		return
 	if target.power_kind_active(PowerData.Kind.BARRIER):
 		_fizzle(sim, projectile, owner, target).power = target.power
@@ -40,6 +45,14 @@ static func flinches(fighter: FighterState) -> bool:
 	return fighter.is_attacking() and fighter.move_phase == FighterState.Phase.RECOVERY
 
 
+static func _evade(sim: MatchSimulation, projectile: Projectile, owner: FighterState, target: FighterState) -> void:
+	projectile.evaded = true
+	var event: CombatEvent = sim.emit(CombatEvent.Type.EVADE_SUCCESS, owner.index, target.index)
+	event.position = Vector2(projectile.x, projectile.y)
+	event.from_front = projectile.x == target.x or signf(projectile.x - target.x) == target.facing
+	HitResolver.complete_evade(sim, target, event)
+
+
 static func _fizzle(sim: MatchSimulation, projectile: Projectile, owner: FighterState, target: FighterState) -> CombatEvent:
 	projectile.hit_done = true
 	var event: CombatEvent = sim.emit(CombatEvent.Type.BOLT_BLOCKED, owner.index, target.index)
@@ -49,6 +62,7 @@ static func _fizzle(sim: MatchSimulation, projectile: Projectile, owner: Fighter
 
 static func _reflect(sim: MatchSimulation, projectile: Projectile, owner: FighterState, target: FighterState, perfect: bool) -> void:
 	projectile.owner = target.index
+	projectile.evaded = false
 	projectile.travelled = 0.0
 	projectile.flow_level = target.flow_level
 	if perfect:

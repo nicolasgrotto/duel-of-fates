@@ -12,7 +12,7 @@ static func step(sim: MatchSimulation) -> void:
 		if not projectile.active:
 			continue
 		var target: FighterState = sim.opponent_of(owner)
-		if not projectile.hit_done and _touches(sim, projectile, target):
+		if not projectile.hit_done and not projectile.evaded and _touches(sim, projectile, target):
 			_collide(sim, projectile, owner, target)
 
 

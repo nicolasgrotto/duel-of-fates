@@ -150,6 +150,7 @@ const FINISH_HOLD_ANGLE: float = 4.0
 const FINISH_HOLD_BLEND: float = 0.2
 const SPIN_DODGE_GRIP: Vector2 = Vector2(-2.0, -18.0)
 const SPIN_DODGE_ANGLE: float = 110.0
+const EVADE_POSES: Array[Vector3] = [Vector3(12.0, -24.0, -8.0), Vector3(30.0, 6.0, -4.0), Vector3(4.0, -36.0, -14.0), Vector3(22.0, -12.0, 6.0)]
 const SKID_CROUCH: float = 22.0
 const SKID_LEAN: float = -20.0
 const SKID_HAND: Vector2 = Vector2(-22.0, -2.0)
@@ -1170,8 +1171,9 @@ func _dodge(fighter: FighterState, pose: RigPose) -> Vector2:
 		FighterState.DodgeKind.DASH:
 			return Vector2(14.0, 26.0 if toward else -18.0)
 		FighterState.DodgeKind.EVADE:
-			pose.back_foot.x -= 8.0
-			return Vector2(12.0, -24.0 if fighter.evade_streak % 2 == 0 else -16.0)
+			var evade_pose: Vector3 = evade_pose_for(fighter.evade_streak)
+			pose.back_foot.x += evade_pose.z
+			return Vector2(evade_pose.x, evade_pose.y)
 		FighterState.DodgeKind.SPIN:
 			var travel: float = clampf(float(fighter.state_ticks) / maxf(DodgeState.spin_travel_ticks(COMBAT), 1.0), 0.0, 1.0)
 			var low: float = 1.0 if travel < 1.0 else 1.0 - clampf(float(fighter.state_ticks - DodgeState.spin_travel_ticks(COMBAT)) / maxf(Ticks.from_seconds(COMBAT.spin_dodge_recovery), 1.0), 0.0, 1.0)
@@ -1182,6 +1184,12 @@ func _dodge(fighter: FighterState, pose: RigPose) -> Vector2:
 			afterimage = travel < 1.0
 			return Vector2(20.0 * low, 18.0 * low)
 	return Vector2.ZERO
+
+
+static func evade_pose_for(streak: int) -> Vector3:
+	if streak <= 0:
+		return EVADE_POSES[0]
+	return EVADE_POSES[1 + (streak - 1) % (EVADE_POSES.size() - 1)]
 
 
 func _place_off_hand(fighter: FighterState, pose: RigPose) -> void:

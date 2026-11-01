@@ -16,6 +16,7 @@ var travelled: float = 0.0
 var max_distance: float = 700.0
 var returning: bool = false
 var hit_done: bool = false
+var evaded: bool = false
 var flow_level: int = 4
 var tier: int = 1
 var delay_ticks: int = 0
@@ -28,7 +29,7 @@ var shooter: int = 0
 func capture() -> Dictionary:
 	return {
 		"active": active, "kind": kind, "owner": owner, "x": x, "y": y, "vx": vx, "vy": vy, "damage": damage, "size": size,
-		"travelled": travelled, "max_distance": max_distance, "returning": returning, "hit_done": hit_done,
+		"travelled": travelled, "max_distance": max_distance, "returning": returning, "hit_done": hit_done, "evaded": evaded,
 		"flow_level": flow_level, "tier": tier, "delay_ticks": delay_ticks, "power": power, "move": move, "bolt": bolt, "shooter": shooter,
 	}
 
