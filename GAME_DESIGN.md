@@ -467,11 +467,13 @@ Menu em dois níveis: **Jogar**, **Aprender**, **Extras**, **Opções**.
 
 ### Jogar
 
-- **Duelar**: escolha do lutador, do adversário (pode ser o mesmo) e da arena; dificuldade nas Opções. Conjunto de poderes **Base** ou **Personalizado** na seleção.
+- **Duelar**: submenu com **1 Jogador**, **2 Jogadores** e **CPU vs CPU**, para a lista de Jogar não crescer a cada modo.
+- **1 Jogador**: escolha do lutador, do adversário (pode ser o mesmo) e da arena; dificuldade nas Opções. Conjunto de poderes **Base** ou **Personalizado** na seleção.
 - **História**: campanha com protagonista criado pelo jogador. Ver [content/STORY.md](content/STORY.md).
 - **Arcade**: escolha do lutador e até 6 adversários em rodízio pelo elenco, mais o **chefe**. Dificuldade crescente (2 no Fácil, 2 no Normal, o resto no Difícil). Arenas em rodízio. Perder permite tentar a mesma luta. **Chefe: Sombra Desperta**, no Difícil; abaixo de metade da vida **desperta**: mensagem "A SOMBRA DESPERTA", letterbox pulsando e a IA passa à dificuldade de chefe. Vencer mostra "ARCADE CONCLUÍDO" e registra o feito para aquele personagem.
 - **Sobrevivência**: adversários em sequência até perder, um round cada. A vida não volta cheia: cada vitória devolve 30% da vida máxima. Dificuldade sobe (2 no Fácil, 3 no Normal, depois Difícil). A cada 5 vitórias, o chefe. Recorde salvo.
 - **2 Jogadores** (local): cada jogador escolhe o lutador com os próprios controles; J1 escolhe a arena. Melhor de 3. Os dois podem pausar.
+- **CPU vs CPU**: o jogador escolhe os dois lutadores e a arena e assiste à IA, na dificuldade das Opções, lutar dos dois lados. Melhor de 3, pausa disponível, resultado **FIM DO DUELO** com o vencedor. Não desbloqueia nada nem grava progresso.
 
 ### Aprender
 
