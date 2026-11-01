@@ -345,7 +345,18 @@ Suíte final das tasks 04–05: **353 testes passando, zero falhas** (`build/tas
 | A.4 | Galeria: ir até a Rajada Desestabilizadora | "Carregando" no fade; a Corsária assume e lança |
 | A.5 | Seleção: editor de técnicas do Guardião | Técnicas de disparo não aparecem |
 
+## Ajuste — Esquiva de precisão contra disparos e novo Congelar
+
+| Caso | Ação | Resultado esperado | Validação local |
+| --- | --- | --- | --- |
+| E.1 | Treino contra o boneco atirador (ou Corsária/Lince): baixo no instante em que o disparo chega | Esquiva bem-sucedida, livre na hora, disparo segue reto sem acertar | `test_precision_evade_slips_a_bolt_and_frees_the_defender` |
+| E.2 | Contra uma rajada, esquivar cada disparo | Sequência sobe a cada sucesso; cada esquiva seguinte inclina diferente da primeira; errar o tempo leva o disparo | testes de rajada e de esquiva atrasada; capturas `build/freeze_evade/evade_*.png` |
+| E.3 | Lançar Congelar (Galeria ou Ancião) e quebrar com um golpe | Sem casca ou círculo em volta do alvo; ondulação da palma ao alvo, corpo travado tremendo, fios de ar, partículas paradas, faíscas nas mãos/cabeça; partículas se espalham na quebra | capturas `build/freeze_evade/freeze_*.png` |
+| E.4 | Repetir E.3 com efeitos reduzidos | Só tremor e fios | — |
+
 ## Ajuste — Tempestade Tier III e menu Duelar
+
+Validado pelo autor em 2026-11-01: D.1–D.4 ✅.
 
 | Caso | Ação | Resultado esperado | Validação local |
 | --- | --- | --- | --- |
