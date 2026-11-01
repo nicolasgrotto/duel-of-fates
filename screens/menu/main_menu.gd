@@ -14,7 +14,8 @@ const ROOT: StringName = &"root"
 const LESSON_PATH: String = "res://data/lessons/%s.tres"
 const CHALLENGE_PATH: String = "res://data/challenges/%s.tres"
 const GROUPS: Dictionary = {
-	&"play": {"title": "MENU_PLAY", "items": [[&"story", "MENU_STORY"], [&"duel", "MENU_DUEL"], [&"arcade", "MENU_ARCADE"], [&"survival", "MENU_SURVIVAL"], [&"hunts", "MENU_HUNTS"], [&"infiltration", "MENU_INFILTRATION"], [&"two_players", "MENU_TWO_PLAYERS"]]},
+	&"play": {"title": "MENU_PLAY", "items": [[&"story", "MENU_STORY"], [&"duel", "MENU_DUEL"], [&"arcade", "MENU_ARCADE"], [&"survival", "MENU_SURVIVAL"], [&"hunts", "MENU_HUNTS"], [&"infiltration", "MENU_INFILTRATION"]]},
+	&"duel": {"title": "MENU_DUEL", "parent": &"play", "items": [[&"versus", "MENU_ONE_PLAYER"], [&"two_players", "MENU_TWO_PLAYERS"], [&"spectate", "MENU_CPU_VS_CPU"]]},
 	&"learn": {"title": "MENU_LEARN", "items": [[&"tutorial", "MENU_TUTORIAL"], [&"guided", "MENU_GUIDED"], [&"training", "MENU_TRAINING"], [&"parry_challenge", "MENU_PARRY_CHALLENGE"], [&"controls", "MENU_CONTROLS"]]},
 	&"extras": {"title": "MENU_EXTRAS", "items": [[&"challenges", "MENU_CHALLENGES"], [&"gallery", "MENU_GALLERY"], [&"story_gallery", "MENU_STORY_GALLERY"], [&"exhibition", "MENU_EXHIBITION"]]},
 	&"guided": {"title": "MENU_GUIDED", "parent": &"learn", "items": [[&"guided_evade", "LESSON_GUIDED_EVADE"], [&"guided_exhaustion", "LESSON_GUIDED_EXHAUSTION"], [&"guided_lock", "LESSON_GUIDED_LOCK"]]},
@@ -133,12 +134,14 @@ func _on_chosen(id: StringName) -> void:
 			ChallengeMode.new(load(CHALLENGE_PATH % id)).start()
 		&"options":
 			SceneRouter.change(&"options", {"focus": &"options"})
-		&"duel":
+		&"versus":
 			SceneRouter.change(&"select", {"mode": VersusMode.new()})
 		&"training":
 			SceneRouter.change(&"select", {"mode": TrainingMode.new()})
 		&"two_players":
 			SceneRouter.change(&"select", {"mode": TwoPlayerMode.new()})
+		&"spectate":
+			SceneRouter.change(&"select", {"mode": SpectateMode.new()})
 		&"arcade":
 			SceneRouter.change(&"select", {"mode": ArcadeMode.new()})
 		&"survival":

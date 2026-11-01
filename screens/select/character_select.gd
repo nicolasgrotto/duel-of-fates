@@ -12,9 +12,11 @@ const ROSTER: Array[StringName] = [
 	&"sovereign", &"elder", &"foretold",
 ]
 const RANDOM: StringName = &"random"
+const FIRST_SLOT_STEPS: Array[StringName] = [&"player", &"player_one", &"fighter_one"]
 const STEP_TITLES: Dictionary = {
 	&"player": "SELECT_PLAYER", &"opponent": "SELECT_OPPONENT", &"dummy": "SELECT_DUMMY", &"arena": "SELECT_ARENA",
 	&"player_one": "SELECT_PLAYER_ONE", &"player_two": "SELECT_PLAYER_TWO",
+	&"fighter_one": "SELECT_FIGHTER_ONE", &"fighter_two": "SELECT_FIGHTER_TWO",
 }
 const LEFT: float = 120.0
 const CENTER: float = 620.0
@@ -160,7 +162,7 @@ func _step() -> StringName:
 
 
 func _slot() -> int:
-	return 0 if _step() == &"player" or _step() == &"player_one" else 1
+	return 0 if _step() in FIRST_SLOT_STEPS else 1
 
 
 func _show_step() -> void:
