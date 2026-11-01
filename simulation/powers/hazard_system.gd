@@ -1,6 +1,5 @@
 class_name HazardSystem
 
-const APEX_TIER: int = 3
 const ROCK_STAGGER: float = 0.3
 const FRACTURE_STAGGER: float = 0.45
 const BOLT_HOLD: float = 0.25
@@ -28,8 +27,8 @@ static func _trigger(sim: MatchSimulation, hazard: Hazard) -> void:
 	event.amount = hazard.kind
 	if hazard.kind == Hazard.Kind.EXTRACTION:
 		owner.singularity_mass += 1
-	if hazard.kind == Hazard.Kind.BOLT and owner.flow_tier >= APEX_TIER:
-		PowerEffects.apex_fissures(sim, owner, hazard.x, hazard.power)
+	if hazard.kind == Hazard.Kind.BOLT and hazard.power.opens_fissures(hazard.flow_level):
+		PowerEffects.bolt_fissures(sim, owner, hazard.x, hazard.power)
 	if absf(target.x - hazard.x) > hazard.half_width + sim.config.body_width * 0.5:
 		return
 	if sim.hazard_group_hit(hazard.group, target.index):

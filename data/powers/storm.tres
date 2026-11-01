@@ -24,5 +24,6 @@ pulse_interval = 0.9
 tier_values = PackedFloat32Array(2.0, 2.0, 3.0, 4.0)
 damage = 5.0
 barrier_drain = 30.0
+fissure_min_level = 7
 guard_blocks = false
 interaction = ExtResource("2_table")

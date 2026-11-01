@@ -355,6 +355,20 @@ func test_storm_shields_the_caster_and_strikes() -> void:
 	assert_gt(duel.count_events(CombatEvent.Type.HAZARD_TRIGGERED), 4.0)
 
 
+func test_storm_bolts_open_fissures_from_tier_three() -> void:
+	var duel: DuelFixture = _duel(&"shadow", &"guardian")
+	duel.place(200.0)
+	duel.give_power(0, &"storm")
+	duel.set_level(0, 7)
+	duel.cast(0)
+	duel.step(200)
+	var fissures: int = 0
+	for entry in duel.events_log:
+		if entry["type"] == CombatEvent.Type.HAZARD_TRIGGERED and int(entry["amount"]) == Hazard.Kind.FRACTURE:
+			fissures += 1
+	assert_gt(fissures, 0.0, "tier III bolts crack the floor")
+
+
 func test_wrath_raises_damage_and_soaks_blades() -> void:
 	var duel: DuelFixture = _duel(&"shadow", &"guardian")
 	duel.give_power(0, &"wrath")

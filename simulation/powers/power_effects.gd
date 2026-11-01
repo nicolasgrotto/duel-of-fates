@@ -342,7 +342,7 @@ static func _storm_wave(sim: MatchSimulation, caster: FighterState, target: Figh
 		sim.spawn_hazard(Hazard.Kind.BOLT, caster, x, 26.0, STORM_MARK, group, power.damage, power)
 
 
-static func apex_fissures(sim: MatchSimulation, caster: FighterState, from_x: float, power: PowerData) -> void:
+static func bolt_fissures(sim: MatchSimulation, caster: FighterState, from_x: float, power: PowerData) -> void:
 	var group: int = sim.next_hazard_group()
 	for side in [-1.0, 1.0]:
 		var x: float = from_x + side * FISSURE_REACH * 0.5

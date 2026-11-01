@@ -46,6 +46,7 @@ enum Kind {
 @export var interaction: InteractionTable
 @export var guard_vigor: float = 10.0
 @export var barrier_drain: float = 0.0
+@export var fissure_min_level: int = 0
 
 @export_group("Singularity")
 @export var suspension: float = 0.0
@@ -119,6 +120,10 @@ func _by_level(values: PackedFloat32Array, level: int, fallback: float) -> float
 	if values.is_empty():
 		return fallback
 	return values[clampi(level, 1, values.size()) - 1]
+
+
+func opens_fissures(level: int) -> bool:
+	return fissure_min_level > 0 and level >= fissure_min_level
 
 
 func min_tier(flow: FlowConfig) -> int:
