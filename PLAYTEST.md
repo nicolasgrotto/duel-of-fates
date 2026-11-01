@@ -345,6 +345,14 @@ Suíte final das tasks 04–05: **353 testes passando, zero falhas** (`build/tas
 | A.4 | Galeria: ir até a Rajada Desestabilizadora | "Carregando" no fade; a Corsária assume e lança |
 | A.5 | Seleção: editor de técnicas do Guardião | Técnicas de disparo não aparecem |
 
+## Ajuste — Tempestade Tier III e menu Duelar
+
+| Caso | Ação | Resultado esperado | Validação local |
+| --- | --- | --- | --- |
+| D.1 | Galeria ou História com Fluxo 7–9: lançar a Tempestade | Cada raio abre fissuras para os dois lados; pular evita; força parece justa para o Tier III | teste `test_storm_bolts_open_fissures_from_tier_three` |
+| D.2 | Jogar › Duelar; percorrer 1 Jogador, 2 Jogadores, CPU vs CPU e Voltar | Submenu com nome DUELAR; Voltar retorna a Jogar com Duelar em foco; seleção volta ao submenu | smoke gráfico 720p |
+| D.3 | CPU vs CPU: escolher dois lutadores e arena, assistir, pausar, Revanche | IA luta dos dois lados; pausa sem lista de golpes; FIM DO DUELO com vencedor; nada desbloqueia | smoke até o resultado; avaliar ritmo assistindo |
+
 ## Task 12 — Missões de Infiltração
 
 | Caso | Ação | Resultado esperado | Validação local |
