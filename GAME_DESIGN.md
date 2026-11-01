@@ -175,7 +175,8 @@ Implementada na fase 7.5 (`DodgeKind.SPIN`, números em `CombatConfig`, grupo Do
 
 - Baixo (separada da esquiva). No chão, **não custa Vigor**, recua muito pouco, fica invulnerável por apenas ~0,066 s e tem recovery de até 0,4 s.
 - Se um golpe cruza a hurtbox nessa janela: **sucesso**, o golpe é consumido e o defensor fica livre na hora para punir. Sem contato, a recovery fica vulnerável.
-- Cada uso exige um toque novo. Sucessos seguidos formam uma sequência visível (luz curta, pose alternada).
+- Cada uso exige um toque novo. Sucessos seguidos formam uma sequência visível: a primeira esquiva recua o tronco; as seguintes alternam inclinações diferentes (agachada baixa, recuo profundo, meio-corpo), nunca repetindo a pose da anterior.
+- **Contra disparos** (decisão do autor): um disparo que chega na janela também é um **sucesso**: o defensor fica livre na hora, a sequência continua e o disparo segue reto sem acertar. Contra uma rajada, cada disparo pede um novo toque no momento certo; errar o tempo leva o disparo normalmente.
 
 ### Choque de lâminas (clash)
 
@@ -268,7 +269,7 @@ Base da família Versáteis e dos inimigos da Infiltração (decisão do autor, 
 - **Parry** (janela do toque, 0,08 a 0,20 s): o disparo volta **pela mesma linha**, agora do defensor. A janela não fecha ao desviar, então um toque bem colocado devolve uma rajada inteira.
 - **Parry perfeito** (0 a 0,08 s): o disparo volta **mirado no peito de quem atirou**, 25% mais rápido.
 - Devolvido, o disparo acerta quem atirou com as mesmas regras (dano, tranco, guarda, parry): dá para devolver de volta.
-- **Outras defesas**: a esquiva invulnerável e a de precisão atravessam; a Barreira segura sem custo extra; o Arsenal intercepta como qualquer projétil; o Santuário absorve o dano normalmente. O Instinto Superior não evita disparos. Disparos não se chocam entre si nem com lâminas em ataque.
+- **Outras defesas**: a esquiva invulnerável atravessa; a de precisão na janela conta como sucesso e soma à sequência (seção Esquiva de precisão); a Barreira segura sem custo extra; o Arsenal intercepta como qualquer projétil; o Santuário absorve o dano normalmente. O Instinto Superior não evita disparos. Disparos não se chocam entre si nem com lâminas em ataque.
 - Disparos não geram Fluxo, para a distância não virar fonte de medidor.
 - **Rajada**: `BoltData.count` disparos com `interval` entre eles, a partir do primeiro tick ativo do golpe. Golpe que só dispara (`reach` 0) não tem hitbox de lâmina.
 
@@ -471,7 +472,9 @@ Jogar tem só História, Duelar, Batalhas e Modos especiais; os modos ficam em s
 
 - **Duelar**: 1 Jogador, 2 Jogadores, CPU vs CPU.
 - **Batalhas**: Arcade, Sobrevivência, Caçada a chefes.
-- **Modos especiais**: Infiltração e o futuro Combate de naves (modos fora do duelo de lâminas).
+- **Modos especiais**: Infiltração e o futuro Combate de naves (modos fora do duelo de lâminas). Planejado: **Operações de blaster** (tiro em visão de cima, várias missões: arena, assalto, defesa, resistir até a extração, escolta, duelo de blasters e chefe), reaproveitando o núcleo da Infiltração e as regras de disparo.
+
+Avaliação das sugestões de modos (autor e Claude): entram Operações de blaster e, depois de jogadas, uma camada opcional de **operações em sequência** (rotas de salas montadas a partir dos mapas, melhorias só na partida, semente determinística). A defesa de base vira um tipo de missão das Operações. Ficam fora por ora, por exigirem um sistema novo de movimento ou de IA com pouco reaproveitamento: combate de veículos terrestres (repete o de naves), comando tático de equipe, corrida de speeder e aventura de plataforma. Também planejados: um quarto estilo da História, **lâmina com as duas mãos e blaster no coldre** (saca só nas técnicas de disparo, blasters como dados para variar no futuro), e a **Saga**, campanha maior que mistura os modos; nela, o estilo com blaster leva às Operações de blaster e o estilo só de lâmina às Infiltrações.
 
 - **1 Jogador**: escolha do lutador, do adversário (pode ser o mesmo) e da arena; dificuldade nas Opções. Conjunto de poderes **Base** ou **Personalizado** na seleção.
 - **História**: campanha com protagonista criado pelo jogador. Ver [content/STORY.md](content/STORY.md).
