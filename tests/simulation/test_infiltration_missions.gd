@@ -4,7 +4,7 @@ const CONFIG: InfiltrationConfig = preload("res://data/balance/infiltration_conf
 const MAX_TICKS: int = 72000
 const MINIMUM_EXIT_DISTANCE: float = 500.0
 const ESCORT_LEAD: Vector2 = Vector2(-640, 0)
-const MINIMUM_WALK_SECONDS: Dictionary = {&"first_access": 35, &"silent_network": 90, &"cold_archive": 75, &"way_back": 120, &"core_breach": 120}
+const MINIMUM_WALK_SECONDS: Dictionary = {&"first_access": 35, &"silent_network": 90, &"cold_archive": 75, &"way_back": 120, &"cell_block": 75, &"core_breach": 120}
 
 
 func _sim(index: int = 0) -> InfiltrationSimulation:
@@ -94,6 +94,44 @@ func test_missions_are_long_and_every_objective_is_reachable() -> void:
 		assert_gt(seconds, float(MINIMUM_WALK_SECONDS[mission.id]), String(mission.id))
 		assert_gt(float(mission.bonus_seconds), seconds, String(mission.id))
 		assert_gt(mission.map.player_spawn.distance_to(mission.extraction), MINIMUM_EXIT_DISTANCE, String(mission.id))
+
+
+func test_rescue_is_the_focus_of_every_mission() -> void:
+	for mission in InfiltrationMode.MISSIONS:
+		assert_gt(float(mission.prisoner_spawns.size()), 0.0, String(mission.id))
+
+
+func test_locked_cell_opens_only_after_every_panel_is_disabled() -> void:
+	var sim: InfiltrationSimulation = _sim(1)
+	var data: InfiltrationMissionData = sim.mission.data
+	assert_true(data.panels_unlock_prisoners)
+	sim.player.position = sim.prisoners[0].position + Vector2(40, 0)
+	var press: InfiltrationIntent = InfiltrationIntent.new()
+	press.pressed = Intent.Command.POWER
+	sim.step(press)
+	assert_eq(sim.mission.recruited[0], 0)
+	assert_true(sim.mission.locked_prisoner_nearby(sim))
+	for panel in sim.panels:
+		panel.disabled = true
+	assert_false(sim.mission.locked_prisoner_nearby(sim))
+	sim.step(press)
+	assert_eq(sim.mission.recruited[0], 1)
+
+
+func test_recruited_prisoners_follow_in_a_line() -> void:
+	var sim: InfiltrationSimulation = _sim(3)
+	sim.prisoners[1].position = sim.prisoners[0].position + Vector2(-120, 0)
+	sim.player.position = sim.prisoners[0].position + ESCORT_LEAD
+	sim.mission.recruited[0] = 1
+	sim.mission.recruited[1] = 1
+	var escorts: InfiltrationEscortController = InfiltrationEscortController.new(sim)
+	var commands: Array[InfiltrationIntent] = escorts.produce_all(sim)
+	assert_true(commands[0].movement.length_squared() > 0.0)
+	assert_true(commands[1].movement.length_squared() > 0.0)
+	var start: Vector2 = sim.prisoners[0].position
+	sim.prisoners[1].position = start + Vector2(-30, 0)
+	commands = escorts.produce_all(sim)
+	assert_almost(commands[1].movement.length(), 0.0)
 
 
 func test_missions_have_more_guards_as_they_progress() -> void:
@@ -302,8 +340,9 @@ func test_mission_rules_work_when_presentation_event_pool_is_exhausted() -> void
 	var sim: InfiltrationSimulation = InfiltrationSimulation.new(config, data.map, data)
 	var route: InfiltrationRoute = InfiltrationRoute.new(sim, true)
 	var enemies: InfiltrationEnemyController = InfiltrationEnemyController.new(sim.map, sim.targets.size())
-	for tick in 6000:
-		sim.step(route.produce(sim), enemies.produce_all(sim))
+	var escorts: InfiltrationEscortController = InfiltrationEscortController.new(sim)
+	for tick in 9000:
+		sim.step(route.produce(sim), enemies.produce_all(sim), escorts.produce_all(sim))
 		if sim.mission.outcome != InfiltrationMissionState.Outcome.ACTIVE:
 			break
 	assert_eq(sim.mission.outcome, InfiltrationMissionState.Outcome.COMPLETED)

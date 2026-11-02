@@ -14,7 +14,7 @@
 
 [sub_resource type="Resource" id="panel_0"]
 script = ExtResource("panel")
-position = Vector2(3936, 1440)
+position = Vector2(2976, 1440)
 
 [sub_resource type="Resource" id="enemy_0"]
 script = ExtResource("placement")
@@ -73,7 +73,9 @@ id = &"first_access"
 title_key = "INF_FIRST"
 briefing_key = "INF_FIRST_BRIEF"
 map = SubResource("layout")
-disable_alarms = true
+disable_alarms = false
+panels_unlock_prisoners = false
+prisoner_spawns = PackedVector2Array(3936, 1440)
 extraction = Vector2(352, 1952)
-bonus_seconds = 150.0
+bonus_seconds = 180.0
 preview = ExtResource("preview")

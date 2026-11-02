@@ -4,6 +4,9 @@ Ordem de construção do jogo. Cada fase termina jogável e testada. Marque `[x]
 
 ## Ponto de continuidade
 
+- [x] **Resgate como foco da Infiltração e encerramento de missão** (pedido do autor): todas as missões têm prisioneiros, incluindo a nova Bloco de celas (quatro resgates); painéis como objetivo agora destravam as celas (`panels_unlock_prisoners`); escolta em fila; agachar em `Ctrl`, com `C` como alternativa; `MissionEndBanner` mostra Missão concluída ou Missão falhou nos dois modos antes do resultado. Validação do autor: PLAYTEST 16.
+
+
 - [x] **Revisão de Infiltração e Combate de naves** (pedido do autor): corrigida a quebra da Infiltração, cuja causa foi comprovada por reprodução: salvar um recurso no editor apagava `@export` de `Packed*Array` com default em literal. Regra e teste em ARCHITECTURE e `test_resource_integrity`; os 46 recursos regravados foram restaurados do HEAD depois de comparados por valor, e salvar pelo editor agora mantém os dados. Infiltração: teclado perto do WASD (E, F, C, Q, Espaço), guarda com o cabo na mão e lâmina cruzando à frente, linha Personagem com sprite por personagem, traje, lâmina e arma, cinco mapas de 66×36 a 96×64 com a nova Coração da base, dica de objetivo pelo caminho real. Naves: quatro naves no Hangar, escudo base 28 e regeneração 8/s, colisão custando escudo, caças agora atiram de perto, seis missões longas com a nova Cemitério de ferro. Menus dos dois modos com imagem por fase. Medido com pilotos automáticos: furtivo na Infiltração 1:21 a 6:36; naves com mira perfeita 1:31 a 5:23; ficar parado perde todas as missões de naves. Validação do autor: PLAYTEST 15.
 
 

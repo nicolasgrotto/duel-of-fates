@@ -61,7 +61,8 @@ func test_mode_never_records_active_or_failed_attempt_and_seals_success() -> voi
 	assert_true(SaveService.infiltration_best.is_empty())
 	mode = InfiltrationMode.new(data)
 	sim = InfiltrationSimulation.new(CONFIG, data.map, data)
-	sim.panels[0].disabled = true
+	sim.mission.recruited[0] = 1
+	sim.prisoners[0].position = data.extraction
 	sim.player.position = data.extraction
 	sim.step(InfiltrationIntent.new())
 	mode.finish(sim)

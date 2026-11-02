@@ -6,6 +6,7 @@ const MISSIONS: Array[InfiltrationMissionData] = [
 	preload("res://data/infiltration/missions/silent_network.tres"),
 	preload("res://data/infiltration/missions/cold_archive.tres"),
 	preload("res://data/infiltration/missions/way_back.tres"),
+	preload("res://data/infiltration/missions/cell_block.tres"),
 	preload("res://data/infiltration/missions/core_breach.tres"),
 ]
 

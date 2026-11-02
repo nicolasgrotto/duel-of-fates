@@ -142,7 +142,11 @@ func _draw_mission() -> void:
 		draw_texture_rect(PRISONER, Rect2(-size * 0.5, size), false, Color.WHITE if actor.health > 0.0 else PALETTE.danger)
 		draw_set_transform(Vector2.ZERO)
 		var marker: Vector2 = point - Vector2(0, 40)
-		draw_polyline(PackedVector2Array([marker + Vector2(0, -10), marker + Vector2(10, 0), marker + Vector2(0, 10), marker + Vector2(-10, 0), marker + Vector2(0, -10)]), PALETTE.accent, 2.0)
+		var locked: bool = sim.mission.prisoners_locked(sim)
+		draw_polyline(PackedVector2Array([marker + Vector2(0, -10), marker + Vector2(10, 0), marker + Vector2(0, 10), marker + Vector2(-10, 0), marker + Vector2(0, -10)]), PALETTE.danger if locked else PALETTE.accent, 2.0)
+		if locked:
+			draw_line(marker + Vector2(-5, -5), marker + Vector2(5, 5), PALETTE.danger, 2.0)
+			draw_line(marker + Vector2(5, -5), marker + Vector2(-5, 5), PALETTE.danger, 2.0)
 		if sim.mission.recruited[index] != 0:
 			_draw_check(marker, PALETTE.text)
 		draw_line(point + Vector2(-18, 28), point + Vector2(-18 + 36.0 * actor.health / sim.config.prisoner_health, 28), color, 2.0)

@@ -13,7 +13,7 @@ func test_keyboard_layout_stays_near_movement_keys_and_never_changes_duel_action
 	InfiltrationBindings.install()
 	assert_eq(_keys(&"infiltration_attack"), PackedInt32Array([KEY_SPACE]))
 	assert_eq(_keys(&"infiltration_guard"), PackedInt32Array([KEY_Q]))
-	assert_eq(_keys(&"infiltration_sneak"), PackedInt32Array([KEY_C]))
+	assert_eq(_keys(&"infiltration_sneak"), PackedInt32Array([KEY_CTRL, KEY_C]))
 	assert_eq(_keys(&"infiltration_takedown"), PackedInt32Array([KEY_F]))
 	assert_eq(_keys(&"infiltration_interact"), PackedInt32Array([KEY_E]))
 	assert_eq(_keys(&"infiltration_up"), PackedInt32Array([KEY_W, KEY_UP]))

@@ -25,10 +25,30 @@ func nearby_object(sim: InfiltrationSimulation) -> int:
 	for index in data.terminals.size():
 		if copied[index] == 0 and _reachable(sim, data.terminals[index]):
 			return index
+	if prisoners_locked(sim):
+		return -1
 	for index in sim.prisoners.size():
 		if recruited[index] == 0 and sim.prisoners[index].health > 0.0 and _reachable(sim, sim.prisoners[index].position):
 			return data.terminals.size() + index
 	return -1
+
+
+func prisoners_locked(sim: InfiltrationSimulation) -> bool:
+	if not data.panels_unlock_prisoners:
+		return false
+	for panel in sim.panels:
+		if not panel.disabled:
+			return true
+	return false
+
+
+func locked_prisoner_nearby(sim: InfiltrationSimulation) -> bool:
+	if not prisoners_locked(sim):
+		return false
+	for actor in sim.prisoners:
+		if actor.health > 0.0 and _reachable(sim, actor.position):
+			return true
+	return false
 
 
 func _reachable(sim: InfiltrationSimulation, point: Vector2) -> bool:

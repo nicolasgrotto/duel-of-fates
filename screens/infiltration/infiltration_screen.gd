@@ -242,8 +242,37 @@ func step_once(command: InfiltrationIntent) -> void:
 	if mode != null and sim.mission.outcome != InfiltrationMissionState.Outcome.ACTIVE:
 		_finished = true
 		mode.finish(sim)
-		_set_paused(true)
-		SceneRouter.change(&"infiltration_result", {"mode": mode, "result": true})
+		_begin_closure()
+
+
+func _begin_closure() -> void:
+	_view.animate = false
+	controller.discard_pending()
+	if is_instance_valid(_hum):
+		_hum.stream_paused = true
+	if is_instance_valid(_alarm):
+		_alarm.stop()
+	for music in _music:
+		music.stream_paused = true
+	AudioDirector.play_ui(&"ui_confirm")
+	var banner: MissionEndBanner = MissionEndBanner.new()
+	add_child(banner)
+	banner.closed.connect(_show_result)
+	var won: bool = sim.mission.outcome == InfiltrationMissionState.Outcome.COMPLETED
+	banner.present(won, _closure_detail(won))
+
+
+func _closure_detail(won: bool) -> String:
+	if not won:
+		return tr("INF_END_PRISONER" if sim.mission.outcome == InfiltrationMissionState.Outcome.PRISONER_DOWN else "INF_END_PLAYER")
+	var time: String = tr("INF_TIME").format({"time": ChallengeMode.format_time(sim.mission.finished_tick * Ticks.DELTA)})
+	if sim.prisoners.is_empty():
+		return time
+	return tr("INF_END_RESCUED").format({"count": sim.prisoners.size()}) + ControlHints.SEPARATOR + time
+
+
+func _show_result() -> void:
+	SceneRouter.change(&"infiltration_result", {"mode": mode, "result": true})
 
 
 func _update_presentation(alpha: float) -> void:
@@ -402,14 +431,28 @@ func _update_security_hud() -> void:
 		hints.append(ControlHints.hint(&"infiltration_interact", "INFILTRATION_DISABLE"))
 	elif sim.mission != null:
 		var object: int = sim.mission.nearby_object(sim)
-		if object >= 0:
+		if sim.mission.locked_prisoner_nearby(sim):
+			hints.append(tr("INF_LOCKED"))
+		elif object >= 0:
 			hints.append(ControlHints.hint(&"infiltration_interact", "INF_COPY" if object < mode.data.terminals.size() else "INF_RECRUIT"))
 	if sim.mission != null and hints.is_empty():
 		hints.append(_mission_guide())
 	if not sim.prisoners.is_empty():
-		var state: String = "INF_ESCORT_SAFE" if sim.mission.extracted[0] != 0 else "INF_ESCORT_FOLLOW" if sim.mission.recruited[0] != 0 else "INF_ESCORT_WAIT"
-		hints.append(tr("INF_ESCORT_GUIDE").format({"state": tr(state), "health": roundi(sim.prisoners[0].health)}))
+		hints.append(_escort_guide())
 	_context.text = ControlHints.line(hints)
+
+
+func _escort_guide() -> String:
+	var following: int = 0
+	var lowest: float = CONFIG.prisoner_health
+	for index in sim.prisoners.size():
+		following += int(sim.mission.recruited[index] != 0 and sim.mission.extracted[index] == 0)
+		if sim.mission.recruited[index] != 0:
+			lowest = minf(lowest, sim.prisoners[index].health)
+	var safe: int = 0
+	for value in sim.mission.extracted:
+		safe += value
+	return tr("INF_ESCORT_GUIDE").format({"safe": safe, "total": sim.prisoners.size(), "following": following, "health": roundi(lowest)})
 
 
 func _mission_guide() -> String:
@@ -427,9 +470,10 @@ func _mission_guide() -> String:
 	for index in sim.mission.copied.size():
 		if sim.mission.copied[index] == 0:
 			_consider_objective(mode.data.terminals[index], "INF_OBJECTIVE_TERMINAL", index + 1)
-	for index in sim.prisoners.size():
-		if sim.mission.recruited[index] == 0:
-			_consider_objective(sim.prisoners[index].position, "INF_OBJECTIVE_PRISONER", index + 1)
+	if not sim.mission.prisoners_locked(sim):
+		for index in sim.prisoners.size():
+			if sim.mission.recruited[index] == 0:
+				_consider_objective(sim.prisoners[index].position, "INF_OBJECTIVE_PRISONER", index + 1)
 	if _guide_target == Vector2.INF:
 		_consider_objective(mode.data.extraction, "INF_OBJECTIVE_EXIT", 1)
 	var offset: Vector2 = _guide_navigation.direction(sim.player.position, _guide_target, CONFIG.body_radius)

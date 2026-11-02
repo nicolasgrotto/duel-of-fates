@@ -6,6 +6,7 @@ extends Resource
 @export var briefing_key: String
 @export var map: InfiltrationMapData
 @export var disable_alarms: bool = false
+@export var panels_unlock_prisoners: bool = false
 @export var terminals: PackedVector2Array
 @export var prisoner_spawns: PackedVector2Array
 @export var extraction: Vector2

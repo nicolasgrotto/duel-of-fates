@@ -45,6 +45,7 @@ class Layout:
         self.exit = (0, 0)
         self.bonus = 0
         self.disable_alarms = False
+        self.panels_unlock_prisoners = False
         self.route_order = []
         self.minimum_seconds = 0
         self.preview_center = (0, 0)
@@ -137,10 +138,10 @@ def first_access():
     m.sentry((17, 22), (-1, 0))
     m.reserve((61, 31), (-1, 0))
     m.spawn = (5, 6)
-    m.panels = [(61, 22)]
+    m.panels = [(46, 22)]
+    m.prisoners = [(61, 22)]
     m.exit = (5, 30)
-    m.disable_alarms = True
-    m.bonus = 150
+    m.bonus = 180
     m.route_order = [(61, 22)]
     m.minimum_seconds = 36
     m.preview_center = (55, 23)
@@ -195,13 +196,15 @@ def silent_network():
     m.spawn = (5, 6)
     m.panels = [(78, 7), (4, 25), (78, 48)]
     m.exit = (5, 50)
+    m.prisoners = [(41, 44)]
     m.disable_alarms = True
-    m.bonus = 300
-    m.route_order = [(78, 7), (4, 25), (78, 48)]
+    m.panels_unlock_prisoners = True
+    m.bonus = 360
+    m.route_order = [(78, 7), (4, 25), (78, 48), (41, 44)]
     m.minimum_seconds = 90
-    m.preview_center = (73, 9)
-    m.preview_hero = ((69, 10), (1, 0))
-    m.preview_guards = [("trooper", (76, 11), (-1, -0.3))]
+    m.preview_center = (41, 45)
+    m.preview_hero = ((34, 43), (1, 0.2))
+    m.preview_guards = [("sentry", (41, 47), (0, -1))]
     return m
 
 
@@ -242,13 +245,14 @@ def cold_archive():
     m.spawn = (4, 5)
     m.panels = [(55, 28), (9, 40)]
     m.terminals = [(29, 50), (78, 6)]
+    m.prisoners = [(72, 40)]
     m.exit = (64, 51)
-    m.bonus = 330
-    m.route_order = [(29, 50), (78, 6)]
+    m.bonus = 390
+    m.route_order = [(29, 50), (78, 6), (72, 40)]
     m.minimum_seconds = 75
-    m.preview_center = (73, 7)
-    m.preview_hero = ((67, 7), (1, 0))
-    m.preview_guards = [("heavy", (76, 8), (-1, -0.2))]
+    m.preview_center = (72, 39)
+    m.preview_hero = ((66, 39), (1, 0))
+    m.preview_guards = [("heavy", (77, 38), (-1, 0.2))]
     return m
 
 
@@ -299,14 +303,54 @@ def way_back():
     m.reserve((48, 52), (0, -1))
     m.spawn = (5, 5)
     m.panels = [(51, 23), (22, 51)]
-    m.prisoners = [(79, 47)]
+    m.prisoners = [(79, 47), (20, 33)]
     m.exit = (22, 5)
-    m.bonus = 420
-    m.route_order = [(79, 47)]
+    m.bonus = 480
+    m.route_order = [(79, 47), (20, 33)]
     m.minimum_seconds = 120
     m.preview_center = (73, 47)
     m.preview_hero = ((67, 47), (1, 0))
     m.preview_guards = [("sentry", (72, 47), (-1, 0)), ("trooper", (76, 45), (1, 0.6))]
+    return m
+
+
+def cell_block():
+    m = Layout("cell_block", "INF_CELLS", 84, 56)
+    m.carve(2, 26, 81, 29)
+    for x in (13, 33, 53, 73):
+        m.carve(x - 7, 6, x + 7, 22)
+        m.carve(x - 7, 33, x + 7, 52)
+        m.strip(x - 1, 23, x + 1, 25)
+        m.strip(x - 1, 30, x + 1, 32)
+        m.crates(x - 4, 13, x + 4, 13)
+        m.crates(x - 4, 42, x + 4, 42)
+    m.crates(23, 26, 23, 27)
+    m.crates(43, 28, 43, 29)
+    m.crates(63, 26, 63, 27)
+    m.patrol("trooper", [(4, 26), (79, 26), (79, 29), (4, 29)])
+    m.sentry((13, 17), (0, 1))
+    m.patrol("trooper", [(28, 8), (38, 8), (38, 20), (28, 20)])
+    m.sentry((53, 17), (1, 0))
+    m.patrol("trooper", [(48, 8), (58, 8), (58, 20), (48, 20)])
+    m.patrol("heavy", [(68, 8), (78, 8), (78, 20), (68, 20)])
+    m.patrol("trooper", [(8, 35), (18, 35), (18, 40), (8, 40)])
+    m.sentry((33, 38), (0, -1))
+    m.patrol("trooper", [(28, 35), (38, 35), (38, 40), (28, 40)])
+    m.patrol("trooper", [(48, 35), (58, 35), (58, 50), (48, 50)])
+    m.sentry((73, 38), (0, 1))
+    m.patrol("trooper", [(68, 35), (78, 35), (78, 50), (68, 50)])
+    m.reserve((27, 21), (0, 1))
+    m.reserve((67, 34), (0, 1))
+    m.spawn = (4, 27)
+    m.panels = [(13, 8), (33, 50)]
+    m.prisoners = [(33, 8), (53, 50), (73, 8), (73, 50)]
+    m.exit = (13, 50)
+    m.bonus = 480
+    m.route_order = [(33, 8), (53, 50), (73, 8), (73, 50)]
+    m.minimum_seconds = 75
+    m.preview_center = (33, 9)
+    m.preview_hero = ((27, 9), (1, 0))
+    m.preview_guards = [("trooper", (38, 11), (-1, -0.4))]
     return m
 
 
@@ -368,19 +412,20 @@ def core_breach():
     m.spawn = (5, 6)
     m.panels = [(91, 7), (4, 39), (64, 39)]
     m.terminals = [(91, 39)]
-    m.prisoners = [(91, 53)]
+    m.prisoners = [(91, 53), (60, 53), (25, 53)]
     m.exit = (5, 53)
     m.disable_alarms = True
-    m.bonus = 480
-    m.route_order = [(91, 7), (91, 39), (64, 39), (4, 39), (91, 53)]
+    m.panels_unlock_prisoners = True
+    m.bonus = 660
+    m.route_order = [(91, 7), (4, 39), (64, 39), (91, 39), (91, 53), (60, 53), (25, 53)]
     m.minimum_seconds = 120
-    m.preview_center = (85, 38)
-    m.preview_hero = ((80, 38), (1, 0))
-    m.preview_guards = [("heavy", (88, 37), (-1, 0.3)), ("sentry", (82, 32), (0, 1))]
+    m.preview_center = (88, 53)
+    m.preview_hero = ((82, 52), (1, 0.1))
+    m.preview_guards = [("trooper", (90, 51), (-1, 0.4))]
     return m
 
 
-MISSIONS = [first_access, silent_network, cold_archive, way_back, core_breach]
+MISSIONS = [first_access, silent_network, cold_archive, way_back, cell_block, core_breach]
 EXTERNALS = [
     ("Script", "data/infiltration/infiltration_mission_data.gd", "mission"),
     ("Script", "data/infiltration/infiltration_map_data.gd", "map"),
@@ -413,7 +458,7 @@ def resource_text(m):
     rows = ", ".join(f'"{row}"' for row in m.rows())
     panels = ", ".join(f'SubResource("panel_{index}")' for index in range(len(m.panels)))
     text += f'\n[sub_resource type="Resource" id="layout"]\nscript = ExtResource("map")\nid = &"{m.id}"\ntitle_key = "{m.title_key}"\nplayer_spawn = {vector(m.spawn)}\nrows = PackedStringArray({rows})\nenemies = Array[ExtResource("placement")]([{", ".join(enemy_refs)}])\npanels = Array[ExtResource("panel")]([{panels}])\nenemy_sprites = ExtResource("enemies")\ntiles = ExtResource("tiles")\nsprites = ExtResource("sprites")\n'
-    text += f'\n[resource]\nscript = ExtResource("mission")\nid = &"{m.id}"\ntitle_key = "{m.title_key}"\nbriefing_key = "{m.title_key}_BRIEF"\nmap = SubResource("layout")\ndisable_alarms = {str(m.disable_alarms).lower()}\n'
+    text += f'\n[resource]\nscript = ExtResource("mission")\nid = &"{m.id}"\ntitle_key = "{m.title_key}"\nbriefing_key = "{m.title_key}_BRIEF"\nmap = SubResource("layout")\ndisable_alarms = {str(m.disable_alarms).lower()}\npanels_unlock_prisoners = {str(m.panels_unlock_prisoners).lower()}\n'
     if m.terminals:
         text += f"terminals = {packed(m.terminals)}\n"
     if m.prisoners:

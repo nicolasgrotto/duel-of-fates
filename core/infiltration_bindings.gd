@@ -19,7 +19,7 @@ const KEYS: Dictionary = {
 	&"infiltration_up": [KEY_W, KEY_UP],
 	&"infiltration_down": [KEY_S, KEY_DOWN],
 	&"infiltration_run": [KEY_SHIFT],
-	&"infiltration_sneak": [KEY_C],
+	&"infiltration_sneak": [KEY_CTRL, KEY_C],
 	&"infiltration_attack": [KEY_SPACE],
 	&"infiltration_guard": [KEY_Q],
 	&"infiltration_takedown": [KEY_F],

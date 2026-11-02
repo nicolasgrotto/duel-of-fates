@@ -4,7 +4,7 @@ const CONFIG: InfiltrationConfig = preload("res://data/balance/infiltration_conf
 
 
 func test_all_mission_layouts_have_valid_points_routes_and_text_in_both_languages() -> void:
-	assert_eq(InfiltrationMode.MISSIONS.size(), 5)
+	assert_eq(InfiltrationMode.MISSIONS.size(), 6)
 	var ids: Dictionary = {}
 	var layouts: Dictionary = {}
 	var saved_locale: String = TranslationServer.get_locale()
@@ -29,5 +29,5 @@ func test_all_mission_layouts_have_valid_points_routes_and_text_in_both_language
 			assert_eq(row.length(), map.width())
 		for point in points:
 			assert_eq(InfiltrationGeometry.wall_fraction(map, point, point, CONFIG.body_radius), INF)
-	assert_eq(layouts.size(), 5)
+	assert_eq(layouts.size(), 6)
 	TranslationServer.set_locale(saved_locale)

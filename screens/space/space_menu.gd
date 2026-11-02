@@ -207,7 +207,7 @@ func _highlight_ship(id: StringName) -> void:
 
 func _show_result() -> void:
 	var result: SpaceMissionResult = _mode.result
-	var keys: PackedStringArray = ["", "SPACE_SUCCESS", "SPACE_DEFEATED", "SPACE_ALLY_DOWN", "SPACE_TIMEOUT"]
+	var keys: PackedStringArray = ["", "SPACE_SUCCESS", "SPACE_END_PLAYER", "SPACE_ALLY_DOWN", "SPACE_TIMEOUT"]
 	_heading.text = tr(keys[result.outcome]).to_upper()
 	_list.add_item(&"retry", tr("RESULT_RETRY"))
 	_list.add_item(&"upgrades", tr("SPACE_WORKSHOP"))

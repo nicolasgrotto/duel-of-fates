@@ -12,6 +12,6 @@ Painel como objetivo tem função: onde a missão marca `panels_unlock_prisoners
 | Rede silenciosa | Três níveis; painéis destravam a cela | Desativar três painéis, libertar o informante e sair | 11 + 2 reforços | 360 s |
 | Arquivo frio | Quatro arquivos com estantes; informação leva ao preso | Copiar dois terminais, libertar o arquivista e sair | 12 + 2 reforços | 390 s |
 | Caminho de volta | Três níveis, ida e volta com escolta | Libertar dois prisioneiros e sair | 12 + 2 reforços | 480 s |
-| Bloco de celas | Corredor central e oito blocos; só resgate | Libertar quatro prisioneiros e sair | 11 + 2 reforços | 480 s |
+| Bloco de celas | Corredor central e oito blocos; só resgate | Libertar quatro prisioneiros e sair | 12 + 2 reforços | 480 s |
 | Coração da base | Complexo de três níveis; todos os verbos | Desativar três painéis, copiar o terminal, libertar três prisioneiros e sair | 16 + 3 reforços | 660 s |
 

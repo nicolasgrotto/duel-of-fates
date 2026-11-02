@@ -416,6 +416,14 @@ Automação concluída; avaliação humana de controle, dificuldade e áudio pen
 
 Suíte: 536 testes, zero falhas; 42 novos, incluindo reutilização dos mesmos objetos de nave/evento/projétil/intenção e contagem de objetos estável por 3.000 ticks após aquecimento. Evidências em `build/task13_tests_final.log`, `task13_bindings_final.log`, `task13_mcp_compile_checks.json`, `task13_assets_check.log`, `task13_flow_smoke.log` e `task13_profile.log`. Nenhuma gravação no save do autor; capturas usam `capture_progress.cfg` e processos diretos isolam APPDATA em `build/task13_userdata`.
 
+## 16. Resgate e encerramento
+
+- 16.1 Segurar `Ctrl` (ou `C`) em missão: o personagem fica furtivo, e movimento e golpes continuam respondendo.
+- 16.2 Rede silenciosa: tentar soltar o prisioneiro antes dos painéis. O marcador fica com X e a dica pede os painéis; depois de desativar os três, a cela abre.
+- 16.3 Bloco de celas: libertar os quatro e conferir a fila atrás do jogador, nos corredores e nas passagens estreitas. A dica mostra quantos estão a salvo e a menor vida.
+- 16.4 Jogar as seis missões: o resgate deve parecer o motivo de cada fase, e a dificuldade da escolta deve ser justa.
+- 16.5 Concluir e perder nos dois modos: Missão concluída ou Missão falhou aparece sobre a cena congelada por cerca de 2,5 s, Enter ou clique adianta, e depois vem o resultado.
+
 ## 15. Revisão de Infiltração e Combate de naves
 
 Infiltração:

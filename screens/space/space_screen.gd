@@ -1,5 +1,6 @@
 extends Node2D
 
+const END_REASONS: Dictionary = {SpaceMissionState.Outcome.PLAYER_DOWN: "SPACE_END_PLAYER", SpaceMissionState.Outcome.ALLY_DOWN: "SPACE_ALLY_DOWN", SpaceMissionState.Outcome.TIMEOUT: "SPACE_TIMEOUT"}
 const CONFIG: SpaceConfig = preload("res://data/balance/space_config.tres")
 const PALETTE: UiPalette = preload("res://ui/palette.tres")
 const MAX_STEPS: int = 5
@@ -185,7 +186,20 @@ func step_once(command: SpaceIntent) -> void:
 		_audio.set_paused(true)
 		mode.finish(sim)
 		if not mode.external:
-			SceneRouter.change(&"space_result", {"mode": mode, "panel": &"result"})
+			_begin_closure()
+
+
+func _begin_closure() -> void:
+	AudioDirector.play_ui(&"ui_confirm")
+	var banner: MissionEndBanner = MissionEndBanner.new()
+	add_child(banner)
+	banner.closed.connect(_show_result)
+	var won: bool = sim.mission.outcome == SpaceMissionState.Outcome.COMPLETED
+	banner.present(won, tr("SPACE_RESULT_TIME").format({"time": ChallengeMode.format_time(sim.mission.finished_tick * Ticks.DELTA)}) if won else tr(END_REASONS[sim.mission.outcome]))
+
+
+func _show_result() -> void:
+	SceneRouter.change(&"space_result", {"mode": mode, "panel": &"result"})
 
 
 func _update_presentation(alpha: float) -> void:
