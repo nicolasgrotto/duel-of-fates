@@ -37,6 +37,7 @@ func _ready() -> void:
 		_list.add_item(&"ending", tr("STORY_SEE_ENDING"))
 	_list.add_item(&"attributes", tr("STORY_RAISE").format({"points": campaign.free_points}) if campaign.free_points > 0 else tr("STORY_VIEW_ATTRIBUTES"))
 	_list.add_item(&"powers", tr("STORY_SKILLS").format({"points": campaign.skill_points}))
+	_list.add_item(&"arsenal", tr("STORY_ARSENAL").format({"credits": campaign.credits}))
 	_list.add_item(&"appearance", tr("STORY_APPEARANCE"))
 	_list.add_item(&"new", tr("STORY_RESTART"))
 	_list.add_item(&"back", tr("MENU_BACK"))
@@ -111,6 +112,8 @@ func _on_chosen(id: StringName) -> void:
 			SceneRouter.change(&"story_attributes")
 		&"powers":
 			SceneRouter.change(&"story_powers")
+		&"arsenal":
+			SceneRouter.change(&"story_arsenal")
 		&"appearance":
 			SceneRouter.change(&"story_new", {"edit": true})
 		&"new":

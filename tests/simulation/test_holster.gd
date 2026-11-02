@@ -71,9 +71,10 @@ func test_holster_moves_fire_the_configured_count_and_interval() -> void:
 			var shots: int = 0
 			for event in duel.events_log:
 				if event["type"] == CombatEvent.Type.PROJECTILE_SPAWNED:
-					assert_eq(event["tick"], expected_tick + shots * Ticks.from_seconds(move.shot_interval))
+					var interval: float = blaster.shot_interval if blaster.shot_interval > 0.0 else move.shot_interval
+					assert_eq(event["tick"], expected_tick + shots * Ticks.from_seconds(interval))
 					shots += 1
-			assert_eq(shots, move.shot_count)
+			assert_eq(shots, blaster.shot_count if blaster.shot_count > 0 else move.shot_count)
 
 
 func test_holster_equipment_changes_projectiles_without_mutating_shared_data() -> void:

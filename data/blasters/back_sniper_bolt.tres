@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="BoltData" format=3]
+
+[ext_resource type="Script" path="res://data/bolt_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"back_sniper_bolt"
+speed = 1500.0
+max_range = 2200.0
+damage = 22.0
+size = 12.0
+flinch = 0.5
+guard_vigor = 18.0
+pitch = 0.6

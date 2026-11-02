@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="BlasterData" format=3]
+
+[ext_resource type="Script" path="res://data/blasters/blaster_data.gd" id="1"]
+[ext_resource type="Resource" path="res://data/blasters/thigh_revolver_bolt.tres" id="2"]
+[ext_resource type="Texture2D" path="res://assets/blasters/revolver.png" id="3"]
+[ext_resource type="Texture2D" path="res://assets/blasters/revolver_n.png" id="4"]
+[ext_resource type="Texture2D" path="res://assets/blasters/holster.png" id="5"]
+[ext_resource type="Texture2D" path="res://assets/blasters/holster_n.png" id="6"]
+
+[resource]
+script = ExtResource("1")
+id = &"thigh_revolver"
+name_key = "BLASTER_THIGH_REVOLVER"
+description_key = "BLASTER_THIGH_REVOLVER_DESC"
+price = 150
+shot_count = 1
+shot_interval = 0.0
+vigor_multiplier = 1.2
+bolt = ExtResource("2")
+draw_time = 0.22
+holster_time = 0.2
+carry = 1
+carry_anchor = Vector2(10, 20)
+carry_angle = 85.0
+size_class = 0
+muzzle = Vector2(24, -5)
+art_part = &"revolver"
+texture = ExtResource("3")
+normal = ExtResource("4")
+pivot = Vector2(10, 6)
+support_texture = ExtResource("5")
+support_normal = ExtResource("6")
+support_pivot = Vector2(6, 6)

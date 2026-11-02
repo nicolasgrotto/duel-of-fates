@@ -114,6 +114,7 @@ const DEFAULT_STORM_SHELL_ALPHA: PackedFloat32Array = [0.5, 0.26, 0.12]
 @export_group("Bolts")
 @export var bolt_length: float = 18.0
 @export var bolt_width: float = 4.0
+@export var bolt_reference_size: float = 6.0
 @export var bolt_muzzle_distance: float = 40.0
 
 @export_group("Higher instinct")

@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="BlasterData" format=3]
+
+[ext_resource type="Script" path="res://data/blasters/blaster_data.gd" id="1"]
+[ext_resource type="Resource" path="res://data/blasters/back_sniper_bolt.tres" id="2"]
+[ext_resource type="Texture2D" path="res://assets/blasters/sniper.png" id="3"]
+[ext_resource type="Texture2D" path="res://assets/blasters/sniper_n.png" id="4"]
+[ext_resource type="Texture2D" path="res://assets/blasters/sling.png" id="5"]
+[ext_resource type="Texture2D" path="res://assets/blasters/sling_n.png" id="6"]
+
+[resource]
+script = ExtResource("1")
+id = &"back_sniper"
+name_key = "BLASTER_BACK_SNIPER"
+description_key = "BLASTER_BACK_SNIPER_DESC"
+price = 450
+shot_count = 1
+shot_interval = 0.0
+vigor_multiplier = 1.6
+bolt = ExtResource("2")
+draw_time = 0.6
+holster_time = 0.4
+carry = 2
+carry_anchor = Vector2(-10, -32)
+carry_angle = -65.0
+size_class = 2
+muzzle = Vector2(58, -4)
+art_part = &"sniper"
+texture = ExtResource("3")
+normal = ExtResource("4")
+pivot = Vector2(10, 7)
+support_texture = ExtResource("5")
+support_normal = ExtResource("6")
+support_pivot = Vector2(6, 6)

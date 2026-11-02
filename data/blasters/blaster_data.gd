@@ -6,6 +6,11 @@ enum SizeClass { PISTOL, CARBINE, LONG }
 
 @export var id: StringName
 @export var name_key: String
+@export var description_key: String
+@export var price: int = 0
+@export var shot_count: int = 0
+@export var shot_interval: float = 0.0
+@export var vigor_multiplier: float = 1.0
 @export var bolt: BoltData
 @export var draw_time: float = 0.15
 @export var holster_time: float = 0.15

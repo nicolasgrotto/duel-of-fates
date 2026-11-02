@@ -279,6 +279,16 @@ func move_recovery_ticks() -> int:
 	return move.recovery_ticks() + (carried_blaster().holster_ticks() if draws_sidearm() else 0)
 
 
+func move_shot_count() -> int:
+	var blaster: BlasterData = carried_blaster()
+	return blaster.shot_count if blaster != null and blaster.shot_count > 0 else move.shot_count
+
+
+func vigor_cost_of(attack: MoveData) -> float:
+	var blaster: BlasterData = carried_blaster()
+	return attack.vigor_cost * blaster.vigor_multiplier if attack.draws_sidearm and blaster != null else attack.vigor_cost
+
+
 func move_bolt() -> BoltData:
 	if draws_sidearm():
 		return carried_blaster().bolt

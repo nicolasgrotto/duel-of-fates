@@ -26,7 +26,14 @@ const TreeNodeData = preload("res://data/story/story_tree_node.gd")
 @export var eclipse_secret_ending: EndingData
 @export var names: PackedStringArray = DEFAULT_NAMES
 @export var styles: Array[StringName] = [&"guardian", &"shadow", &"heron", &"holster"]
-@export var blasters: Array[BlasterData] = [preload("res://data/blasters/holster_pistol.tres"), preload("res://data/blasters/back_rifle.tres")]
+@export var blasters: Array[BlasterData] = [
+	preload("res://data/blasters/holster_pistol.tres"), preload("res://data/blasters/thigh_revolver.tres"),
+	preload("res://data/blasters/lumbar_carbine.tres"), preload("res://data/blasters/back_rifle.tres"),
+	preload("res://data/blasters/back_sniper.tres"),
+]
+@export var draw_techniques: Array[MoveData] = [preload("res://data/techniques/double_draw.tres"), preload("res://data/techniques/retreat_draw.tres")]
+@export var credits_win: int = 100
+@export var credits_milestone: int = 50
 @export var style_keys: PackedStringArray = DEFAULT_STYLE_KEYS
 @export var outfits: Array[CostumeData] = [
 	preload("res://data/story/outfits/wanderer.tres"), preload("res://data/story/outfits/watcher.tres"),

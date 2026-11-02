@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="BlasterData" format=3]
+
+[ext_resource type="Script" path="res://data/blasters/blaster_data.gd" id="1"]
+[ext_resource type="Resource" path="res://data/blasters/lumbar_carbine_bolt.tres" id="2"]
+[ext_resource type="Texture2D" path="res://assets/blasters/carbine.png" id="3"]
+[ext_resource type="Texture2D" path="res://assets/blasters/carbine_n.png" id="4"]
+[ext_resource type="Texture2D" path="res://assets/blasters/sling.png" id="5"]
+[ext_resource type="Texture2D" path="res://assets/blasters/sling_n.png" id="6"]
+
+[resource]
+script = ExtResource("1")
+id = &"lumbar_carbine"
+name_key = "BLASTER_LUMBAR_CARBINE"
+description_key = "BLASTER_LUMBAR_CARBINE_DESC"
+price = 200
+shot_count = 2
+shot_interval = 0.14
+vigor_multiplier = 1.1
+bolt = ExtResource("2")
+draw_time = 0.28
+holster_time = 0.22
+carry = 3
+carry_anchor = Vector2(-12, -4)
+carry_angle = 100.0
+size_class = 1
+muzzle = Vector2(32, -4)
+art_part = &"carbine"
+texture = ExtResource("3")
+normal = ExtResource("4")
+pivot = Vector2(10, 6)
+support_texture = ExtResource("5")
+support_normal = ExtResource("6")
+support_pivot = Vector2(6, 6)

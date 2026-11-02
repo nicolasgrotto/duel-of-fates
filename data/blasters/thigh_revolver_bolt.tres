@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="BoltData" format=3]
+
+[ext_resource type="Script" path="res://data/bolt_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"thigh_revolver_bolt"
+speed = 1000.0
+max_range = 1200.0
+damage = 12.0
+size = 8.0
+flinch = 0.4
+guard_vigor = 10.0
+pitch = 0.75

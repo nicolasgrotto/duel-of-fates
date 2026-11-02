@@ -1,6 +1,6 @@
 import os
 
-from fighter_parts import blaster_parts
+from fighter_parts import arsenal_parts, blaster_parts
 
 
 def paint():
@@ -11,6 +11,9 @@ def paint():
         for part in blaster_parts(long):
             part.save(folder)
             print(part.name, part.pivot_pixels())
+    for part in arsenal_parts():
+        part.save(folder)
+        print(part.name, part.pivot_pixels())
 
 
 if __name__ == "__main__":

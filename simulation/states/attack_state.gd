@@ -92,7 +92,7 @@ func _start_burst(sim: MatchSimulation, fighter: FighterState, move: MoveData) -
 		fighter.move_hit_done = true
 	var bolt: BoltData = fighter.move_bolt()
 	BoltResolver.fire(sim, fighter, bolt)
-	fighter.bolts_left = (move.shot_count if fighter.draws_sidearm() else bolt.count) - 1
+	fighter.bolts_left = (fighter.move_shot_count() if fighter.draws_sidearm() else bolt.count) - 1
 	fighter.bolt_ticks = _bolt_interval(fighter, move)
 
 
@@ -108,7 +108,10 @@ func _continue_burst(sim: MatchSimulation, fighter: FighterState, move: MoveData
 
 
 func _bolt_interval(fighter: FighterState, move: MoveData) -> int:
-	return maxi(Ticks.from_seconds(move.shot_interval), 1) if fighter.draws_sidearm() else move.bolt.interval_ticks()
+	if not fighter.draws_sidearm():
+		return move.bolt.interval_ticks()
+	var interval: float = fighter.carried_blaster().shot_interval
+	return maxi(Ticks.from_seconds(interval if interval > 0.0 else move.shot_interval), 1)
 
 
 func _try_burst_cancel(sim: MatchSimulation, fighter: FighterState, intent: Intent) -> bool:

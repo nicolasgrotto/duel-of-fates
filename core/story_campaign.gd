@@ -14,6 +14,9 @@ var name: String = ""
 var path: int = 0
 var style: int = 0
 var blaster_id: StringName = &"holster_pistol"
+var credits: int = 0
+var owned_blasters: Array[StringName] = []
+var blaster_slot: int = -1
 var look: int = 0
 var hair: int = CAMPAIGN.default_hair
 var beard: int = 0
@@ -112,6 +115,8 @@ func equip_blade(node: TreeNodeData, slot: int) -> bool:
 		if not blade_bought.has(style_node.node_id()):
 			return false
 		projected_cut_slot = slot
+		if blaster_slot == slot:
+			blaster_slot = -1
 		return true
 	if slot != node.style_slot() or slot < 0:
 		return false
@@ -201,6 +206,9 @@ func complete(encounter: EncounterData, health_ratio: float) -> PackedStringArra
 	if cleared.has(encounter.id):
 		return notes
 	cleared.append(encounter.id)
+	var earned: int = credits_for(encounter)
+	credits += earned
+	notes.append(TranslationServer.translate("STORY_NOTE_CREDITS").format({"credits": earned}))
 	var points: int = points_for(encounter)
 	if points > 0:
 		free_points += points
@@ -294,6 +302,47 @@ func uses_blaster_style() -> bool:
 	return CAMPAIGN.styles[style] == &"holster"
 
 
+func blaster_equipped() -> bool:
+	return uses_blaster_style() or blaster_slot >= 0
+
+
+func credits_for(encounter: EncounterData) -> int:
+	return CAMPAIGN.credits_win + (CAMPAIGN.credits_milestone if encounter.milestone else 0)
+
+
+func owns_blaster(blaster: BlasterData) -> bool:
+	return blaster.price == 0 or owned_blasters.has(blaster.id)
+
+
+func can_buy_blaster(blaster: BlasterData) -> bool:
+	return not owns_blaster(blaster) and credits >= blaster.price
+
+
+func buy_blaster(blaster: BlasterData) -> bool:
+	if not CAMPAIGN.blasters.has(blaster) or not can_buy_blaster(blaster):
+		return false
+	credits -= blaster.price
+	owned_blasters.append(blaster.id)
+	return true
+
+
+func equip_blaster(blaster: BlasterData, slot: int) -> bool:
+	if not CAMPAIGN.blasters.has(blaster) or not owns_blaster(blaster):
+		return false
+	if not uses_blaster_style():
+		if slot < 0 or slot >= CAMPAIGN.draw_techniques.size():
+			return false
+		blaster_slot = slot
+		if projected_cut_slot == slot:
+			projected_cut_slot = -1
+	blaster_id = blaster.id
+	return true
+
+
+func unequip_blaster() -> void:
+	blaster_slot = -1
+
+
 func blaster_data() -> BlasterData:
 	for blaster in CAMPAIGN.blasters:
 		if blaster.id == blaster_id:
@@ -309,8 +358,9 @@ func blade_color() -> Color:
 func protagonist() -> CharacterData:
 	var base: CharacterData = style_character()
 	var data: CharacterData = base.duplicate()
-	if uses_blaster_style():
+	if blaster_equipped():
 		data.weapon = base.weapon.duplicate() as WeaponData
+		data.weapon.sidearm = WeaponData.Sidearm.HOLSTER
 		data.weapon.blaster = blaster_data()
 	data.directional_ability_fallback = false
 	if not blade_kind_owned(TreeNodeData.Kind.STYLE_FORWARD):
@@ -325,6 +375,8 @@ func protagonist() -> CharacterData:
 		for node in CAMPAIGN.blade_tree:
 			if node.kind == TreeNodeData.Kind.TECHNIQUE and blade_bought.has(node.node_id()):
 				data.set([&"technique_forward", &"technique_back", &"technique_air"][projected_cut_slot], node.technique)
+	if blaster_slot >= 0 and not uses_blaster_style():
+		data.set([&"technique_forward", &"technique_back"][blaster_slot], CAMPAIGN.draw_techniques[blaster_slot])
 	data.id = &"protagonist"
 	data.name_key = name
 	data.path = CharacterData.Path.AURORA if path == 0 else CharacterData.Path.ECLIPSE
@@ -381,10 +433,19 @@ static func load_power(id: StringName) -> PowerData:
 	return load(POWER_PATH % id) as PowerData if ResourceLoader.exists(POWER_PATH % id) else null
 
 
+func _credits_from_cleared() -> int:
+	var total: int = 0
+	for encounter in route() + [secret_encounter()]:
+		if cleared.has(encounter.id):
+			total += credits_for(encounter)
+	return total
+
+
 func to_dict() -> Dictionary:
 	return {
 		"name": name, "path": path, "style": style, "look": look, "color": color, "difficulty": difficulty,
 		"hair": hair, "beard": beard, "hair_color": hair_color, "skin": skin, "blaster_id": blaster_data().id,
+		"credits": credits, "owned_blasters": owned_blasters.duplicate(), "blaster_slot": blaster_slot,
 		"blade_bought": blade_bought.duplicate(), "projected_cut_slot": projected_cut_slot,
 		"attributes": attributes.duplicate(), "free_points": free_points, "skill_points": skill_points, "cleared": cleared.duplicate(), "learned": learned.duplicate(),
 		"equipped": equipped.duplicate(), "slots_open": slots_open, "secret_pending": secret_pending, "ending": ending,
@@ -398,6 +459,10 @@ static func from_dict(data: Dictionary) -> StoryCampaign:
 	campaign.style = clampi(data.get("style", 0), 0, CAMPAIGN.styles.size() - 1)
 	campaign.blaster_id = StringName(data.get("blaster_id", "holster_pistol"))
 	campaign.blaster_id = campaign.blaster_data().id
+	campaign.owned_blasters.assign(data.get("owned_blasters", []))
+	if campaign.blaster_data().price > 0 and not campaign.owned_blasters.has(campaign.blaster_id):
+		campaign.owned_blasters.append(campaign.blaster_id)
+	campaign.blaster_slot = clampi(data.get("blaster_slot", -1), -1, CAMPAIGN.draw_techniques.size() - 1)
 	campaign.look = data.get("look", 0)
 	campaign.hair = data.get("hair", CAMPAIGN.default_hair)
 	campaign.beard = data.get("beard", 0)
@@ -412,6 +477,7 @@ static func from_dict(data: Dictionary) -> StoryCampaign:
 	campaign.free_points = data.get("free_points", 0)
 	campaign.skill_points = maxi(data.get("skill_points", 0), 0)
 	campaign.cleared.assign(data.get("cleared", []))
+	campaign.credits = maxi(data.get("credits", campaign._credits_from_cleared()), 0)
 	for value in data.get("learned", []):
 		var id: StringName = StringName(value)
 		if CATALOG.find(id) != null and not campaign.learned.has(id):

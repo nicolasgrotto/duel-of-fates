@@ -168,7 +168,7 @@ static func start_attack(sim: MatchSimulation, fighter: FighterState, move: Move
 		return Result.NOT_POSSIBLE
 	if move.draws_sidearm and (fighter.carried_blaster() == null or fighter.is_airborne()):
 		return Result.NOT_POSSIBLE
-	if not sim.spend_vigor(fighter, move.vigor_cost):
+	if not sim.spend_vigor(fighter, fighter.vigor_cost_of(move)):
 		return Result.REJECTED
 	var state: FighterState.State = FighterState.State.HEAVY_ATTACK if move.is_heavy() else FighterState.State.ATTACKING
 	sim.change_state(fighter, state)

@@ -17,6 +17,7 @@ const SCREENS: Dictionary = {
 	&"story_new": "res://screens/story/story_new.tscn",
 	&"story_attributes": "res://screens/story/story_attributes.tscn",
 	&"story_powers": "res://screens/story/story_powers.tscn",
+	&"story_arsenal": "res://screens/story/story_arsenal.tscn",
 	&"story_gallery": "res://screens/story/story_gallery.tscn",
 	&"dialogue": "res://screens/story/dialogue_screen.tscn",
 	&"ending": "res://screens/story/ending_screen.tscn",

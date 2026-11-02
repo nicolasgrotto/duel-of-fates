@@ -738,6 +738,7 @@ STORY_COST,Custo,Cost
 STORY_BANNER,CAPÍTULO {chapter} · {title},CHAPTER {chapter} · {title}
 STORY_CHAPTER_WON,CAPÍTULO VENCIDO,CHAPTER WON
 STORY_NOTE_POINTS,+{points} pontos de atributo,+{points} attribute points
+STORY_NOTE_CREDITS,+{credits} créditos,+{credits} credits
 STORY_NOTE_SLOT,Novo espaço de poder,New power slot
 STORY_GALLERY_TITLE,GALERIA DA HISTÓRIA,STORY GALLERY
 STORY_GALLERY_HINT,Vença encontros e conclua finais na História para revê-los aqui,Win encounters and reach endings in Story to see them again here
@@ -1055,6 +1056,32 @@ TECHNIQUE_RETREAT_DRAW,Saque de recuo,Retreat Draw
 TECHNIQUE_COVERING_FIRE,Fogo de cobertura,Covering Fire
 BLASTER_HOLSTER_PISTOL,Pistola de coldre,Holster Pistol
 BLASTER_BACK_RIFLE,Rifle de dorso,Back Rifle
+BLASTER_THIGH_REVOLVER,Revólver pesado,Heavy Revolver
+BLASTER_LUMBAR_CARBINE,Carabina lombar,Lumbar Carbine
+BLASTER_BACK_SNIPER,Rifle de precisão,Precision Rifle
+BLASTER_HOLSTER_PISTOL_DESC,Saque rápido e leve. Cada técnica dispara a sua conta de tiros.,"Quick, light draw. Each technique fires its own shot count."
+BLASTER_THIGH_REVOLVER_DESC,"Um tiro só, forte, com tranco longo. Uma mão.",A single strong shot with a long flinch. One hand.
+BLASTER_LUMBAR_CARBINE_DESC,"Dois tiros equilibrados, com alcance maior que o da pistola.",Two balanced shots with more range than the pistol.
+BLASTER_BACK_RIFLE_DESC,Rajada de três tiros. Saque lento e custo alto de Vigor.,A three-shot burst. Slow draw and high Vigor cost.
+BLASTER_BACK_SNIPER_DESC,"Um disparo enorme, veloz e devastador. Saque muito lento, e quem apara devolve tudo.","One huge, fast, devastating shot. Very slow draw, and a parry sends it all back."
+ARSENAL_TITLE,Arsenal,Arsenal
+ARSENAL_CREDITS,Créditos: {credits},Credits: {credits}
+ARSENAL_RULES,Créditos vêm da primeira vitória em cada encontro.,Credits come from the first win in each encounter.
+ARSENAL_STATS,Tiros: {shots} · Dano: {damage} · Saque: {draw} s · Tranco: {flinch} s,Shots: {shots} · Damage: {damage} · Draw: {draw} s · Flinch: {flinch} s
+ARSENAL_SHOTS_TECHNIQUE,conforme a técnica,by technique
+ARSENAL_PRICE,{price} créditos,{price} credits
+ARSENAL_OWNED,Sua,Owned
+ARSENAL_EQUIPPED,Equipada,Equipped
+ARSENAL_BUY,Confirmar: comprar,Confirm: buy
+ARSENAL_NOT_ENOUGH,Créditos insuficientes,Not enough credits
+ARSENAL_EQUIP,Confirmar: equipar,Confirm: equip
+ARSENAL_UNEQUIP,Confirmar: guardar o blaster,Confirm: put the blaster away
+ARSENAL_SLOT,Espaço da técnica: {slot},Technique slot: {slot}
+ARSENAL_REPLACES,Substitui: {technique},Replaces: {technique}
+ARSENAL_REPLACES_NONE,O espaço está vazio,The slot is empty
+ARSENAL_SLOT_FORWARD,Frente,Forward
+ARSENAL_SLOT_BACK,Trás,Back
+ARSENAL_HINT_SLOT,← → espaço,← → slot
 BOPS_TITLE,Operações de blaster,Blaster Operations
 BOPS_TRAINING,Pátio de calibração,Calibration Yard
 BOPS_KEYS_TITLE,CONTROLES · OPERAÇÕES DE BLASTER,CONTROLS · BLASTER OPERATIONS

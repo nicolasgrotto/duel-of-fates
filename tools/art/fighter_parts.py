@@ -19,6 +19,28 @@ def blaster_parts(long=False):
     return body, support
 
 
+def arsenal_parts():
+    revolver = Part("revolver", -20, -12, 28, 16)
+    revolver.paint(revolver.polygon_mask([(-8, -9), (10, -9), (24, -6), (24, -1), (-8, 0)]), "metal", tone=0.45, bevel=1)
+    revolver.paint(revolver.ellipse_mask((3, -4), 5, 5), "metal", tone=0.66, bevel=1)
+    revolver.paint(revolver.polygon_mask([(-6, 0), (2, 0), (-3, 12), (-11, 11)]), "leather", tone=0.45, bevel=1)
+    revolver.paint(revolver.line_mask([(22, -7), (22, -1)], 2), "trim", tone=0.68, bevel=1)
+    carbine = Part("carbine", -20, -12, 36, 16)
+    carbine.paint(carbine.polygon_mask([(-8, -8), (24, -8), (32, -5), (32, -1), (-8, 0)]), "metal", tone=0.53, bevel=1)
+    carbine.paint(carbine.polygon_mask([(-6, 0), (2, 0), (-2, 11), (-10, 11)]), "leather", tone=0.53, bevel=1)
+    carbine.paint(carbine.polygon_mask([(-18, -5), (-6, -5), (-6, 1), (-16, 3)]), "leather", tone=0.45, bevel=1)
+    carbine.paint(carbine.polygon_mask([(8, 0), (20, 0), (19, 3), (9, 3)]), "body", tone=0.53, bevel=1)
+    carbine.paint(carbine.line_mask([(2, -4), (14, -4)], 2), "eyes", tone=0.42, emission=0.2, bevel=1)
+    sniper = Part("sniper", -20, -14, 62, 18)
+    sniper.paint(sniper.polygon_mask([(-8, -7), (30, -7), (58, -5), (58, -3), (30, -1), (-8, 0)]), "metal", tone=0.45, bevel=1)
+    sniper.paint(sniper.polygon_mask([(-6, 0), (2, 0), (-2, 12), (-10, 12)]), "leather", tone=0.45, bevel=1)
+    sniper.paint(sniper.polygon_mask([(-18, -6), (-6, -6), (-6, 2), (-18, 6)]), "leather", tone=0.53, bevel=1)
+    sniper.paint(sniper.line_mask([(4, -11), (24, -11)], 4), "metal", tone=0.66, bevel=1)
+    sniper.paint(sniper.line_mask([(22, -11), (25, -11)], 3), "eyes", tone=0.42, emission=0.35, bevel=1)
+    sniper.paint(sniper.line_mask([(56, -6), (56, -2)], 2), "trim", tone=0.68, bevel=1)
+    return revolver, carbine, sniper
+
+
 def build_dims(spec):
     build = {
         "shoulder_half": 12.0, "waist_half": 9.0, "hip_half": 8.0, "torso_length": 44.0, "neck": 5.0,

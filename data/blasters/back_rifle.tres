@@ -11,6 +11,11 @@
 script = ExtResource("1")
 id = &"back_rifle"
 name_key = "BLASTER_BACK_RIFLE"
+description_key = "BLASTER_BACK_RIFLE_DESC"
+price = 300
+shot_count = 3
+shot_interval = 0.12
+vigor_multiplier = 1.25
 bolt = ExtResource("2")
 draw_time = 0.4
 holster_time = 0.3

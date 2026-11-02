@@ -435,16 +435,22 @@ func _draw_dual_throw(projectile: Projectile, at: Vector2, weapon: WeaponData, t
 	_draw_spinning_blade(trailing + Vector2(0.0, lift), -spin, (weapon.second_blade_length + weapon.hilt_length) * 0.5, tint)
 
 
+static func scale_for_bolt(size: float, reference: float) -> float:
+	return maxf(size / reference, 1.0)
+
+
 func _draw_bolt(projectile: Projectile, at: Vector2) -> void:
 	var heading: Vector2 = Vector2(projectile.vx, -projectile.vy).normalized()
 	if heading == Vector2.ZERO:
 		heading = Vector2.RIGHT
 	var edge: Color = PALETTE.bolt if projectile.owner == projectile.shooter else blade_colors[projectile.owner]
-	var tail: Vector2 = at - heading * vfx.bolt_length
+	var bolt_scale: float = scale_for_bolt(projectile.size, vfx.bolt_reference_size)
+	var width: float = vfx.bolt_width * bolt_scale
+	var tail: Vector2 = at - heading * vfx.bolt_length * bolt_scale
 	var snapped_at: Vector2 = at.snapped(Vector2.ONE * GRID)
 	var snapped_tail: Vector2 = tail.snapped(Vector2.ONE * GRID)
-	draw_line(snapped_tail, snapped_at, edge, vfx.bolt_width)
-	draw_line(snapped_tail.lerp(snapped_at, 0.35), snapped_at, Color.WHITE, vfx.bolt_width * 0.5)
+	draw_line(snapped_tail, snapped_at, edge, width)
+	draw_line(snapped_tail.lerp(snapped_at, 0.35), snapped_at, Color.WHITE, width * 0.5)
 	if projectile.travelled < vfx.bolt_muzzle_distance and projectile.owner == projectile.shooter:
 		draw_rect(Rect2(snapped_tail - Vector2.ONE * GRID * 1.5, Vector2.ONE * GRID * 3.0), Color(edge, 0.8))
 
