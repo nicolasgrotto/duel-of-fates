@@ -567,7 +567,7 @@ Task 12: missões em recursos descrevem mapa, objetivos (desativar alarme, resga
 
 ### Missões e extração (task 12)
 
-Jogar › Modos especiais › Infiltração substitui a entrada temporária de Aprender. Seis missões longas (3 a 6 minutos), todas com resgate de prisioneiros como foco, e regras completas em [content/INFILTRATION.md](content/INFILTRATION.md): tutorial curto, sabotagem de dois painéis, cópia de informação e escolta de prisioneiro. Dados definem mapa, spawn, guardas, painéis, terminais, prisioneiros, saída e briefing. Poderes permanecem desligados; Poder interage. Objetivos e relógio avançam apenas no tick fixo. Derrota por jogador/prisioneiro abatido precede extração. Bônus: nenhum alarme na tentativa, nenhum inimigo abatido e tempo inclusivo. Abordagem Furtivo/Direto depende do histórico de alarme. Conclusão, menor tempo e união dos bônus são salvos apenas nas vitórias; sem recompensa adicional ou grind.
+Jogar › Modos especiais › Infiltração substitui a entrada temporária de Aprender. Seis missões longas (3 a 6 minutos), todas com resgate de prisioneiros como foco, sete tipos de inimigo que também atacam os prisioneiros e mínimo de resgates por missão, e regras completas em [content/INFILTRATION.md](content/INFILTRATION.md): tutorial curto, sabotagem de dois painéis, cópia de informação e escolta de prisioneiro. Dados definem mapa, spawn, guardas, painéis, terminais, prisioneiros, saída e briefing. Poderes permanecem desligados; Poder interage. Objetivos e relógio avançam apenas no tick fixo. Derrota por jogador/prisioneiro abatido precede extração. Bônus: nenhum alarme na tentativa, nenhum inimigo abatido e tempo inclusivo. Abordagem Furtivo/Direto depende do histórico de alarme. Conclusão, menor tempo e união dos bônus são salvos apenas nas vitórias; sem recompensa adicional ou grind.
 
 ### Mapa do treino
 
@@ -600,6 +600,10 @@ Economia fechada no modo: um ponto por primeira conclusão de cada missão, sem 
 Revisão do autor: fases de 3 a 5 minutos, sexta missão, quatro naves no Hangar, escudo menor, colisão com outra nave custando escudo e caças que atacam de perto. Valores em [content/SPACE.md](content/SPACE.md).
 
 Modo completo em Jogar › Modos especiais › Combate de naves; a rota técnica temporária deixa o roteador. [content/SPACE.md](content/SPACE.md) define as cinco operações, formações, inimigos, mísseis interceptáveis, detritos, capitais por seções, chefe de três fases, avaliação e melhorias. A secundária passa a ser um míssil por toque. Regras de propulsão, escudo e impulso da task 13 permanecem. Slots de ondas e projéteis são pools; nenhum controlador resolve dano, fase ou objetivo. Resultados e progresso são selados, separados do núcleo; conjunto e resultado explícitos permitem fluxo externo sem salvar ou navegar automaticamente.
+
+## Saga: premissa decidida pelo autor
+
+A campanha completa parte de dois pressupostos opostos. No **Eclipse**, o mestre do protagonista é o Soberano, ou a Sombra Desperta como subordinada dele, e o envia para destruir a ordem dos cavaleiros da Aurora. Na **Aurora**, o Ancião envia o protagonista, cavaleiro da ordem, para derrubar o império do Soberano. Detalhes ficam para a task 19 do Codex.
 
 ## 19. Fora do escopo inicial
 
