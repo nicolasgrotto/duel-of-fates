@@ -20,7 +20,9 @@ var awakening: Array = [null, null]
 var banner: String = ""
 var objective: bool = false
 var power_sets: Array = [[], []]
+var flow_levels: Array[int] = [0, 0]
 var bout: ExhibitionBout
+var bout_skip_key: String = "HINT_NEXT_BOUT"
 
 
 func fill_default_looks() -> void:
@@ -29,3 +31,13 @@ func fill_default_looks() -> void:
 			costumes.append(characters[i].costumes[0])
 		if blade_colors.size() <= i:
 			blade_colors.append(characters[i].blade_colors[0])
+
+
+func equip(sim: MatchSimulation) -> void:
+	for i in sim.fighters.size():
+		var custom: Array[PowerData] = []
+		custom.assign(power_sets[i])
+		if not custom.is_empty():
+			sim.fighters[i].equip_powers(custom)
+		if flow_levels[i] > 0:
+			sim.fighters[i].set_flow_level(flow_levels[i], sim.config)

@@ -754,11 +754,13 @@ LOOK_ASH,Cinzas,Ash
 LOOK_DUELIST,Duelista,Duelist
 LOOK_DESERT,Andarilho do deserto,Desert walker
 LOOK_SENTRY,Sentinela azul,Blue sentry
-MENU_EXHIBITION,Exibição,Exhibition
+MENU_EXHIBITION_SEQUENCE,Sequência de exibição,Exhibition sequence
+MENU_EXHIBITION_DUEL,Duelo de exibição,Exhibition duel
 HINT_NEXT_BOUT,próximo,next
 EXHIBITION_BLADES,LÂMINAS,BLADES
 EXHIBITION_FLOW,FLUXO,FLOW
 EXHIBITION_DANCE,DANÇA,DANCE
+EXHIBITION_REFLEX,REFLEXO,REFLEX
 POWER_TIER_REQUIRED,Só a partir do Tier {tier} (Fluxo {level}),Tier {tier} and up only (Flow {level})
 TECHNIQUE_PROJECTED_CUT,Corte Projetado,Projected Cut
 TECHNIQUE_PROJECTED_CUT_FOLLOW,Corte Projetado · segundo,Projected Cut · second

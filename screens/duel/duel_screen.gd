@@ -60,10 +60,7 @@ func open(params: Dictionary) -> void:
 	sim = MatchSimulation.new(CONFIG, setup.rules, setup.characters, setup.match_seed)
 	for i in sim.fighters.size():
 		sim.fighters[i].hold_to_lock = setup.hold_to_lock[i]
-		var custom: Array[PowerData] = []
-		custom.assign(setup.power_sets[i])
-		if not custom.is_empty():
-			sim.fighters[i].equip_powers(custom)
+	setup.equip(sim)
 	sim.start_match()
 	if setup.two_players:
 		InputBindings.begin_two_player()
@@ -84,7 +81,7 @@ func _start_exhibition() -> void:
 	var card: ExhibitionCard = ExhibitionCard.new()
 	add_child(card)
 	var names: String = "%s  ·  %s" % [tr(setup.characters[0].name_key), tr(setup.characters[1].name_key)]
-	var footer: String = ControlHints.line(PackedStringArray([ControlHints.hint(&"ui_accept", "HINT_NEXT_BOUT"), ControlHints.hint(&"p1_pause", "HINT_PAUSE")]))
+	var footer: String = ControlHints.line(PackedStringArray([ControlHints.hint(&"ui_accept", setup.bout_skip_key), ControlHints.hint(&"p1_pause", "HINT_PAUSE")]))
 	card.play(tr(setup.bout.title_key), names, footer, setup.bout.card_fade, setup.bout.card_hold)
 
 
