@@ -13,6 +13,7 @@ var event_count: int = 0
 var dropped_events: int = 0
 var destroyed_targets: int = 0
 var mission: SpaceMissionState
+var aftermath: bool = false
 var weapon_catalog: Array[SpaceWeaponData] = []
 var _ends: PackedVector2Array = []
 var _distances: PackedFloat32Array = []
@@ -68,6 +69,27 @@ func step(intents: Array[SpaceIntent]) -> void:
 	_step_projectiles()
 	if mission != null:
 		mission.advance(self)
+
+
+func step_aftermath(intents: Array[SpaceIntent]) -> void:
+	event_count = 0
+	aftermath = true
+	tick += 1
+	for index in ships.size():
+		var ship: SpaceShipState = ships[index]
+		ship.previous = ship.position
+		ship.previous_angle = ship.angle
+		if ship.hull <= 0.0:
+			continue
+		_advance_timers(ship, index)
+		_move(index, intents[index] if index < intents.size() else _empty)
+	_resolve_bodies()
+	for index in ships.size():
+		if ships[index].hull > 0.0:
+			var intent: SpaceIntent = intents[index] if index < intents.size() else _empty
+			_step_weapon(index, 0, intent)
+			_step_weapon(index, 1, intent)
+	_step_projectiles()
 
 
 func _advance_timers(ship: SpaceShipState, index: int) -> void:
@@ -157,7 +179,7 @@ func _resolve_bodies() -> void:
 
 func _apply_contact(other: int, point: Vector2) -> void:
 	var ship: SpaceShipState = ships[PLAYER_INDEX]
-	if ship.contact_cooldown > 0 or ship.invulnerable(config):
+	if aftermath or ship.contact_cooldown > 0 or ship.invulnerable(config):
 		return
 	ship.contact_cooldown = Ticks.from_seconds(config.contact_cooldown)
 	ship.shield_delay = Ticks.from_seconds(ship.data.shield_delay)
@@ -328,6 +350,8 @@ func _resolve_projectile(index: int) -> void:
 
 func _damage(target: int, source: int, amount: float, point: Vector2) -> void:
 	var ship: SpaceShipState = ships[target]
+	if aftermath and target == PLAYER_INDEX:
+		return
 	if mission != null and not mission.can_damage(self, target):
 		_emit(SpaceEvent.Type.SHIELD_HIT, source, target, point)
 		return

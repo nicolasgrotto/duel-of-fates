@@ -44,7 +44,7 @@ Resultado é uma tela própria pelo roteador: nome, sucesso ou motivo de derrota
 
 ### Encerramento de missão (Infiltração e naves)
 
-Ao fim de uma tentativa a cena congela, escurece sem sumir e mostra no centro **Missão concluída** ou **Missão falhou**, com uma linha fina que se abre sob o título e uma linha de detalhe (tempo e prisioneiros a salvo, ou o motivo da derrota). Sucesso usa a cor de destaque e derrota a de perigo, e o texto diz o resultado sem depender da cor. Dura cerca de 2,5 s, confirmar ou clicar adianta, e depois abre a tela de resultado. Fluxo externo de naves não mostra o encerramento: quem chamou decide. Widget único `MissionEndBanner`.
+Ao fim de uma tentativa o resultado é selado, mas o mundo segue vivo atrás do texto: tiros terminam o voo, explosões acabam e inimigos seguem agindo, sem afetar o resultado nem ferir o jogador. A cena escurece um pouco e mostra no centro **Missão concluída** ou **Missão falhou**, com uma linha fina que se abre sob o título e uma linha de detalhe (tempo e prisioneiros a salvo, ou o motivo da derrota). Sucesso usa a cor de destaque e derrota a de perigo, e o texto diz o resultado sem depender da cor. Dura cerca de 2,5 s, confirmar ou clicar adianta, e depois abre a tela de resultado. Fluxo externo de naves não mostra o encerramento: quem chamou decide. Widget único `MissionEndBanner`.
 
 ### Menus de missão com imagem (Infiltração e naves)
 

@@ -1,6 +1,7 @@
 class_name InfiltrationSimulation
 extends RefCounted
 
+var aftermath: bool = false
 var config: InfiltrationConfig
 var map: InfiltrationMapData
 var player: InfiltrationActor = InfiltrationActor.new()
@@ -86,6 +87,21 @@ func step(intent: InfiltrationIntent, enemy_intents: Array[InfiltrationIntent] =
 	_step_panels()
 	if mission != null:
 		mission.advance(self, escort_intents)
+
+
+func step_aftermath(enemy_intents: Array[InfiltrationIntent]) -> void:
+	event_count = 0
+	aftermath = true
+	tick += 1
+	player.previous = player.position
+	player.velocity = Vector2.ZERO
+	for actor in prisoners:
+		actor.previous = actor.position
+		actor.velocity = Vector2.ZERO
+	_advance_player_timers()
+	_step_bolts()
+	InfiltrationPerception.step(self)
+	_step_enemies(enemy_intents)
 
 
 func _advance_player_timers() -> void:
@@ -259,7 +275,7 @@ func fire_bolt(shooter: int) -> InfiltrationBolt:
 
 func _step_bolts() -> void:
 	for bolt in bolts:
-		if player.health <= 0.0:
+		if player.health <= 0.0 and not aftermath:
 			return
 		if not bolt.active:
 			continue
@@ -283,7 +299,7 @@ func _step_bolts() -> void:
 					fraction = impact
 					victim = index + 1
 		for index in prisoners.size():
-			if prisoners[index].health <= 0.0 or (mission != null and mission.extracted[index] != 0):
+			if aftermath or prisoners[index].health <= 0.0 or (mission != null and mission.extracted[index] != 0):
 				continue
 			var impact: float = InfiltrationGeometry.segment_box_fraction(bolt.position, end, _body_box(prisoners[index], bolt.data.size))
 			if impact < fraction:
@@ -317,6 +333,9 @@ func _body_box(actor: InfiltrationActor, padding: float) -> Rect2:
 
 
 func _resolve_player_bolt(bolt: InfiltrationBolt) -> void:
+	if aftermath:
+		bolt.active = false
+		return
 	var front: bool = InfiltrationGeometry.in_sector(Vector2.ZERO, player.aim, -bolt.velocity, INF, config.guard_degrees)
 	if player.guard and front:
 		if player.parry_age >= 0:

@@ -218,6 +218,8 @@ func _process(delta: float) -> void:
 				break
 		if steps == MAX_STEPS:
 			_accumulator = 0.0
+	elif _finished:
+		_step_aftermath(delta)
 	_update_presentation(_accumulator / Ticks.DELTA)
 
 
@@ -225,6 +227,26 @@ func step_once(command: InfiltrationIntent) -> void:
 	if _finished:
 		return
 	sim.step(command, enemy_controller.produce_all(sim), escort_controller.produce_all(sim))
+	_present_events()
+	if mode != null and sim.mission.outcome != InfiltrationMissionState.Outcome.ACTIVE:
+		_finished = true
+		mode.finish(sim)
+		_begin_closure()
+
+
+func _step_aftermath(delta: float) -> void:
+	_accumulator += delta
+	var steps: int = 0
+	while _accumulator >= Ticks.DELTA and steps < MAX_STEPS:
+		_accumulator -= Ticks.DELTA
+		sim.step_aftermath(enemy_controller.produce_all(sim))
+		_present_events()
+		steps += 1
+	if steps == MAX_STEPS:
+		_accumulator = 0.0
+
+
+func _present_events() -> void:
 	for index in sim.event_count:
 		var event: InfiltrationEvent = sim.events[index]
 		_view.on_event(event)
@@ -239,21 +261,12 @@ func step_once(command: InfiltrationIntent) -> void:
 			if event.type == InfiltrationEvent.Type.FOOTSTEP:
 				volume = CONFIG.footstep_db - (8.0 if int(event.amount) == InfiltrationActor.Locomotion.SNEAK else 0.0)
 			AudioDirector.play(SOUNDS[event.type], event.position, volume)
-	if mode != null and sim.mission.outcome != InfiltrationMissionState.Outcome.ACTIVE:
-		_finished = true
-		mode.finish(sim)
-		_begin_closure()
 
 
 func _begin_closure() -> void:
-	_view.animate = false
 	controller.discard_pending()
-	if is_instance_valid(_hum):
-		_hum.stream_paused = true
 	if is_instance_valid(_alarm):
 		_alarm.stop()
-	for music in _music:
-		music.stream_paused = true
 	AudioDirector.play_ui(&"ui_confirm")
 	var banner: MissionEndBanner = MissionEndBanner.new()
 	add_child(banner)
@@ -308,7 +321,7 @@ func _update_presentation(alpha: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if sim == null:
+	if sim == null or _finished:
 		return
 	if event.is_action_pressed(&"debug_overlay"):
 		_view.debug = not _view.debug

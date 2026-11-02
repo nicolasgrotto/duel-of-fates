@@ -12,6 +12,7 @@ var controller: SpacePlayerController
 var mode: SpaceMode
 var enemy_controller: SpaceEnemyController
 var finished: bool = false
+var _idle_intent: SpaceIntent = SpaceIntent.new()
 var intent: SpaceIntent = SpaceIntent.new()
 var paused: bool = false
 var _stage: PixelStage
@@ -166,13 +167,39 @@ func _process(delta: float) -> void:
 				break
 		if steps == MAX_STEPS:
 			_accumulator = 0.0
+	elif finished and not mode.external:
+		_step_aftermath(delta)
 	_update_presentation(_accumulator / Ticks.DELTA)
+
+
+func _step_aftermath(delta: float) -> void:
+	_accumulator += delta
+	var steps: int = 0
+	while _accumulator >= Ticks.DELTA and steps < MAX_STEPS:
+		_accumulator -= Ticks.DELTA
+		sim.step_aftermath(enemy_controller.produce_all(sim, _idle_intent))
+		_present_events()
+		steps += 1
+	if steps == MAX_STEPS:
+		_accumulator = 0.0
 
 
 func step_once(command: SpaceIntent) -> void:
 	if paused or finished:
 		return
 	sim.step(enemy_controller.produce_all(sim, command))
+	_present_events()
+	if sim.mission.outcome != SpaceMissionState.Outcome.ACTIVE:
+		finished = true
+		if mode.external:
+			_view.animate = false
+			_audio.set_paused(true)
+		mode.finish(sim)
+		if not mode.external:
+			_begin_closure()
+
+
+func _present_events() -> void:
 	for index in sim.event_count:
 		var event: SpaceEvent = sim.events[index]
 		_view.on_event(event)
@@ -180,13 +207,6 @@ func step_once(command: SpaceIntent) -> void:
 		if event.source == 0 and event.type == SpaceEvent.Type.ACTION_REFUSED:
 			_refusal_key = "SPACE_NO_SECONDARY" if int(event.amount) == SpaceEvent.Refusal.NO_SECONDARY else "SPACE_POOL_FULL"
 			_refusal_left = CONFIG.refusal_seconds
-	if sim.mission.outcome != SpaceMissionState.Outcome.ACTIVE:
-		finished = true
-		_view.animate = false
-		_audio.set_paused(true)
-		mode.finish(sim)
-		if not mode.external:
-			_begin_closure()
 
 
 func _begin_closure() -> void:
