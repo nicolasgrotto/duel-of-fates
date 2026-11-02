@@ -45,8 +45,8 @@ hitbox_top = 150.0
 blade_reach = 60.0
 finisher_limb = 1
 cut = 2
-blade_angle_windup = 120.0
-blade_angle_strike = -40.0
+blade_angle_windup = 165.0
+blade_angle_strike = -65.0
 
 [sub_resource type="Resource" id="corsair_light_2"]
 script = ExtResource("2_move")
@@ -69,8 +69,8 @@ hitbox_top = 150.0
 blade_reach = 60.0
 finisher_limb = 1
 cut = 3
-blade_angle_windup = 160.0
-blade_angle_strike = -10.0
+blade_angle_windup = -150.0
+blade_angle_strike = 15.0
 bolt = ExtResource("b_corsair")
 
 [sub_resource type="Resource" id="corsair_light_3"]
@@ -94,8 +94,8 @@ hitbox_top = 150.0
 blade_reach = 60.0
 finisher_limb = 2
 cut = 4
-blade_angle_windup = -10.0
-blade_angle_strike = 0.0
+blade_angle_windup = -14.0
+blade_angle_strike = 2.0
 
 [sub_resource type="Resource" id="corsair_heavy"]
 script = ExtResource("2_move")
