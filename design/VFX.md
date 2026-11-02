@@ -151,6 +151,10 @@ Descrição em ART_DIRECTION ("Finalizações"). Números no grupo Finishers do 
 
 
 **Execução Cruzada e Sentença Precisa** (Versáteis): os cortes usam os rastros das outras execuções. O disparo final é um traço curto e grosso do blaster ou do emissor até o peito, na cor do disparo (`UiPalette.bolt`), 0,12 s; no mesmo instante abre o furo em brasa da estocada no peito da vítima. A lâmina de quem finaliza apaga no fim com o som de desligar. Na Sentença Precisa, a vítima se vira para o Lince (o corpo espelha) antes do disparo. Efeitos reduzidos mantêm o traço e o furo.
+## Combate de naves (task 13)
+
+Propulsão: chama curta em 3 degraus na cor de menu_blade_b e rastro de pontos da mesma grade, mantido em pool; comprimento acompanha propulsão e velocidade, sem decidir aceleração. Primária: brilho mínimo na saída e traço varrido; drone avisa com linha descontínua e anel progressivo por 0,45 s, sem revelar informação oculta. Escudo atingido: arco local de 0,18 s, casco: faíscas breves. Destruição: clarão local e fragmentos originais por até 0,45 s, sem flash de tela, tremor ou câmera lenta. Impulso: silhueta comprimida, dois ecos e contorno segmentado apenas na janela invulnerável; animação lê o tick. Efeitos reduzidos removem ecos, reduzem rastro e fragmentos, preservam aviso de tiro, nave e janela do impulso. Nada altera colisões, dano ou pools da simulação.
+
 ## Efeitos reduzidos
 
 Opção de acessibilidade: tremor e punch-in a 25%, flash e hit flash desligados, menos partículas. Hit stop, câmera lenta e dessaturação continuam (não piscam nem tremem).

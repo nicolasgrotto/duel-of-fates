@@ -46,6 +46,10 @@ Task 12: briefings e resultados reutilizam os sons de navegação; copiar inform
 
 Passos por superfície (metal, água, pedra, neve, sal, musgo), tecidos e capas, pulo e aterrissagem, esquiva (whoosh curto e agudo), esquiva de precisão (sopro curto subindo e toque agudo suave), empurrão (impacto surdo), exaustão (sopro grave descendente, baixo), ferimento (impacto forte com camada grave), ação recusada (som seco curto).
 
+## Combate de naves (task 13)
+
+Sete sons originais por `synth_audio.py::space_sounds`, com semente local e sem amostras: motor em laço discreto de 1 s (grave estável com ar filtrado), tiro seco de 0,10 s, preparação ascendente de 0,30 s, impulso de 0,28 s, escudo vítreo curto de 0,18 s, impacto metálico de 0,16 s e explosão grave de 0,42 s. Sem sons reconhecíveis de naves de outra obra. Volume: dano/aviso acima do motor, tiros abaixo das lâminas do duelo. Banco local com vozes pré-alocadas, barramentos Effects/Ambience já existentes; posição estéreo segue o quadro. Motor sobe apenas com propulsão/impulso. Pausa suspende motor e encerra efeitos pendentes; sair libera tudo. Sem música nova nesta etapa. Som e VFX só consomem estados/eventos, nunca controlam o voo.
+
 ## Poderes
 
 Cada poder tem uma identidade sonora reconhecível e curta:

@@ -103,6 +103,16 @@ Arquétipos `InfiltrationEnemyData` estendem os dados de alvo; `InfiltrationEnem
 
 `InfiltrationMode` reúne o catálogo e sela a gravação após sucesso. `SaveService.infiltration_best` guarda ticks mínimos e máscara acumulada de bônus, com migração por ausência. Rotas `infiltration` (lista/briefing), `infiltration_mission` (tela superior compartilhada) e `infiltration_result` (objetivos e continuação) passam somente dados/modo pelo SceneRouter. Retry cria simulação e controladores novos. Resultado não avança ticks e não regrava. A rota técnica do treino continua disponível para verificações, sem entrada no menu. O gerador de tiles também produz os quatro layouts e o sprite de prisioneiro; ASSETS registra ambos.
 
+### Núcleo de voo (task 13)
+
+`simulation/space/` contém `SpaceSimulation`, `SpaceShipState`, `SpaceProjectile`, `SpaceIntent`, `SpaceEvent` e geometria de círculos/percurso. Lógica RefCounted em 60 Hz, sem nós, Input ou física do motor. `step(intents)` recebe uma intenção por nave, integra movimento/limites/corpos, armas, projéteis e dano; pools fixos de projéteis/eventos, sem objetos novos por tick. Snapshot/restauração inclui naves, preparo de arma, recargas, impulso, atraso de escudo, reaparecimento, tiros e tick; hash permite comparar reexecuções. Estado do treino não conhece SaveService nem modo/menu.
+
+Dados em `data/space/`: nave, arma, posição/equipe/reaparecimento e arena de treino; balanço e apresentação em `data/balance/space_config.tres`. `controllers/space/` contém jogador e drone, que só produzem intenções a partir do estado anterior; o controlador do drone não resolve tiro/dano. `core/space_bindings.gd` instala aliases próprios com contagem de usuários e remove só seus aliases, preservando remapeamentos e ações dos outros modos. Secundária é dado opcional; no treino ausente, produz recusa, sem arquivo vazio para míssil futuro.
+
+`screens/space/space_training.tscn` tem abertura direta por F6 e rota técnica `space_training` no SceneRouter. Tela monta simulação, controladores, PixelStage com World2D exclusivo, câmera/HUD/pausa, som local e acumulador fixo. `presentation/space/` desenha naves, cenário em paralaxe, tiros e efeitos em pools, lendo estados/eventos; áudio usa vozes locais e barramentos globais. Compartilhados: `Ticks`, InputMap/bindings do J1, Settings, SceneRouter, UiPalette/Theme, PixelStage, HudBar/MenuList/ControlHints e ferramentas offline de PNG/WAV. Não reutiliza resolvedores do duelo nem exige alterações em InfiltrationSimulation, SaveService ou rigs. Geradores e outputs registrados em ASSETS.
+
+Task 14 adicionará recursos de missão, esquadrões/chefes, fluxo de resultado/melhorias e SaveService; a montagem aceitará arena/conjunto explícitos para entrada externa da futura Saga. Não há telas ou módulos vazios para esse conteúdo na task 13.
+
 ### Duelo
 
 - **`MatchSimulation`**: dono do tick. `step(intents)` avança 1/60 s: aplica intenções, máquina de estados dos lutadores, movimento, colisão de corpos, fases dos golpes, choques, acertos, poderes, projéteis, consequências, regeneração, fim de round. Acumula `CombatEvent` do tick.

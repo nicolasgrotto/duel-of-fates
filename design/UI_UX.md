@@ -42,6 +42,14 @@ Durante a missão, título e progresso/tempo ocupam o topo; dicas contextuais di
 
 Resultado é uma tela própria pelo roteador: nome, sucesso ou motivo de derrota, cada objetivo com estado, bônus da tentativa, tempo e abordagem Furtivo/Direto. Oferece Tentar de novo, Próxima missão só no sucesso e Missões; na última, termina na lista. Histórico de bônus e melhor tempo aparecem no briefing. Sem tabela de dano, moeda ou novo estilo. Capturas usam save isolado.
 
+### Combate de naves (task 13)
+
+Treino de voo em tela própria, aberto pela cena do editor/rota técnica; sem entrada temporária em Jogar ou Aprender. HUD mínima: casco e escudo finos no canto superior esquerdo, título no alto, objetivo de prática e contador de drones abatidos; estado de recarga do impulso em texto. Rodapé de duas linhas com bindings atuais para propulsão/ré, rotação, primária, impulso e pausa. Forte mostra aviso de secundária indisponível no treino, sem prometer míssil utilizável. Usa Oxanium e `InfiltrationLabel` de 28 px do tema existente, legível em 720p/1080p. Cores vêm exclusivamente do UiPalette. Sem números de dano.
+
+Drone tem marca de alvo por forma e pequena barra de casco; preparação do tiro usa linha descontínua e indicador progressivo, desaparecendo ao interromper. Impulso distingue pronto/recarga por texto; invulnerabilidade tem contorno segmentado, além da cor. Morte mostra Treino encerrado com Reiniciar e Voltar a Modos especiais. Pausa congela ticks, áudio e animação, oferece Continuar/Reiniciar/Voltar e explica secundária e janela vulnerável do impulso. F3: círculos físicos, velocidade, posição, orientação, impulso/janela, recargas, casco/escudo, FPS, ocupação dos pools e eventos descartados.
+
+Task 14: seleção de cinco missões com briefing à direita, no padrão da Infiltração; entrada definitiva Jogar › Modos especiais › Combate de naves. Resultado mostrará objetivo, tempo e avaliação. Oficina entre missões terá três linhas (Arma, Escudo, Velocidade), nível, efeito e pontos disponíveis, mais redistribuir e continuar; nenhum custo universal ou estatística de outro modo. Telas navegam apenas pelo roteador.
+
 ### Carregamento
 
 Toda troca de cena passa pelo fade do `SceneRouter`. Com a tela já escura, aparece **Carregando** (EN: **Loading**) em `HintLabel`, no canto inferior direito, com três pontos que acendem em sequência; some antes do fade de volta. Ele é desenhado antes do trabalho pesado (montar a cena, a simulação e os lutadores), então fica visível mesmo quando o jogo trava um instante para carregar personagens novos. Recursos que a cena seguinte já sabe que vai usar (personagens da Galeria e da seleção) carregam em segundo plano durante o fade.

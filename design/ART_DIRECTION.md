@@ -35,6 +35,14 @@ Na task 11, o atlas superior ganha soldado de ombros estreitos e arma lateral, s
 
 Task 12: os mapas de missão reutilizam o atlas industrial e a ferramenta de tiles. Terminal de informação é um monitor angular com duas barras; saída é contorno quadrado aberto e seta no piso; prisioneiro usa sprite superior sem arma de 24×28 px, gerado pela ferramenta existente com túnica clara da paleta e losango acima da cabeça, sem imitar personagem de outra obra. Geometria na mesma grade e cores do UiPalette; sem novos efeitos luminosos. Estados concluídos usam marca de confirmação além da cor. A apresentação só lê o estado da missão.
 
+### Combate de naves — vista superior (task 13)
+
+Mesma grade de 1 px = 2 u e filtro nearest, mundo no PixelStage e UI em alta resolução. Trama: sprite nativo de 40×40 px, casco hexagonal curto, proa chanfrada, espinha transversal e duas caixas de motor de comprimentos diferentes; cockpit pequeno, sem asas em X/H, esfera central ou silhuetas de franquias. Drone-alvo: 32×32 px, corpo octogonal achatado e emissor lateral curto, sem aparência de lutador. `tools/art/make_ships.py` gera ambos com quatro tons, contorno seletivo, rebites e placas; slots metálicos de prosthetic_metal/infiltration_wall, bordas de accent, cockpit de menu_blade_a, propulsão de menu_blade_b, tudo do UiPalette.
+
+Espaço escuro: fundo background, estrelas em três planos discretos com paralaxe pela câmera, nebulosa em manchas de pixels grandes de storm_cloud e accent com opacidade baixa. Sem imagens externas, ruído por frame ou brilho que concorra com tiros. Estrelas e manchas são geometria original determinística de apresentação, sem colisão. Borda da área de treino marcada por traços e cantos discretos, sem parede futurista nova. Câmera segue a nave sem girar; mesma escala e centro preso à grade da Infiltração.
+
+Tiro do jogador é um traço curto quente (`bolt`); drone usa ponta partida e borda de danger para separar por forma e cor. Futuro míssil terá corpo sólido e rastro descontínuo legível, diferente dos tiros. Impulso comprime a nave transversalmente e deixa dois ecos curtos, sem imitar avião real nem adicionar rolagem 3D. Escudo é contorno local em degraus, sem bolha permanente que esconda o casco.
+
 ### Duelo
 
 - Em enquadramento neutro, um lutador ocupa cerca de 25–30% da altura da tela; a arena é grande diante deles.
