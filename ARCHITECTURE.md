@@ -113,6 +113,14 @@ Dados em `data/space/`: nave, arma, posição/equipe/reaparecimento e arena de t
 
 Task 14 adicionará recursos de missão, esquadrões/chefes, fluxo de resultado/melhorias e SaveService; a montagem aceitará arena/conjunto explícitos para entrada externa da futura Saga. Não há telas ou módulos vazios para esse conteúdo na task 13.
 
+### Operações de naves (task 14)
+
+`SpaceMissionData`, ondas/formações, fases de chefe, obstáculos e conjunto explícito vivem em `data/space/`; cinco missões originais em `missions/`. A montagem expande todos os slots antes da simulação. `SpaceMissionState` é lógica sem nós de ondas, seções, proteção e fases, com snapshot/hash junto do núcleo; consulta dados e estado, independente do pool visual. `SpaceSimulation` aceita missão opcional, preservando a fundação e os testes da task 13. Projétil fixa índice de arma no catálogo da tentativa; fases não alteram tiros já em voo. Colisão varrida inclui mísseis e obstáculos, e os arrays não crescem no tick.
+
+`SpaceEnemyController` produz intenções para esquadrões, perseguição, leques, torres e capitais; formação e alvo são dados de posição. `SpaceMissionResult` entrega resultado selado; `SpaceMode` monta uma tentativa com `SpaceLoadout`, emite `finished` e só salva/navega no fluxo próprio. Em modo externo, inclusive headless, dados e resultado não dependem de menu ou SaveService. `SpaceProgress` calcula pontos e compras por configuração, e `SaveService.space_progress` migra por ausência sem alterar outros modos.
+
+Rotas `space` (seleção/briefing), `space_mission`, `space_result` e `space_upgrades` usam telas em `screens/space/`; `space_training` sai do roteador. A tela superior compartilhada passa a `space_screen.tscn`. A oficina e o resultado usam a mesma composição de lista/detalhe da seleção. Recursos de treino da task 13 continuam como fixtures de fundação; nenhum menu temporário permanece. Arte e áudio novos são extensões das ferramentas e entram em ASSETS no commit da implementação.
+
 ### Duelo
 
 - **`MatchSimulation`**: dono do tick. `step(intents)` avança 1/60 s: aplica intenções, máquina de estados dos lutadores, movimento, colisão de corpos, fases dos golpes, choques, acertos, poderes, projéteis, consequências, regeneração, fim de round. Acumula `CombatEvent` do tick.

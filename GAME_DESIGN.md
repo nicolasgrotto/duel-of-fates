@@ -594,6 +594,10 @@ Cinco missões vão de esquadrões a ataque/proteção de capital e terminam em 
 
 Economia fechada no modo: um ponto por primeira conclusão de cada missão, sem recompensa por repetir; cinco pontos no total. Arma, escudo e velocidade têm dois níveis opcionais de um ponto cada, efeitos em configuração e compra entre missões; escolhas podem ser redistribuídas sem custo na oficina. Não há moeda universal, loja, XP, bônus por abates ou repetição obrigatória. Nenhuma melhoria afeta duelo, História ou Infiltração. Save próprio dentro do SaveService guardará missões, pontos e escolhas na task 14; o treino não lê nem grava esse progresso.
 
+### Missões e melhorias implementadas (task 14)
+
+Modo completo em Jogar › Modos especiais › Combate de naves; a rota técnica temporária deixa o roteador. [content/SPACE.md](content/SPACE.md) define as cinco operações, formações, inimigos, mísseis interceptáveis, detritos, capitais por seções, chefe de três fases, avaliação e melhorias. A secundária passa a ser um míssil por toque. Regras de propulsão, escudo e impulso da task 13 permanecem. Slots de ondas e projéteis são pools; nenhum controlador resolve dano, fase ou objetivo. Resultados e progresso são selados, separados do núcleo; conjunto e resultado explícitos permitem fluxo externo sem salvar ou navegar automaticamente.
+
 ## 19. Fora do escopo inicial
 
 Online, torneio, editor de personagens, perigos de arena que afetam o combate. A arquitetura deixa espaço para eles (simulação determinística, arena que reage a eventos).

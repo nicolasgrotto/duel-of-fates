@@ -155,6 +155,8 @@ Descrição em ART_DIRECTION ("Finalizações"). Números no grupo Finishers do 
 
 Propulsão: chama curta em 3 degraus na cor de menu_blade_b e rastro de pontos da mesma grade, mantido em pool; comprimento acompanha propulsão e velocidade, sem decidir aceleração. Primária: brilho mínimo na saída e traço varrido; drone avisa com linha descontínua e anel progressivo por 0,45 s, sem revelar informação oculta. Escudo atingido: arco local de 0,18 s, casco: faíscas breves. Destruição: clarão local e fragmentos originais por até 0,45 s, sem flash de tela, tremor ou câmera lenta. Impulso: silhueta comprimida, dois ecos e contorno segmentado apenas na janela invulnerável; animação lê o tick. Efeitos reduzidos removem ecos, reduzem rastro e fragmentos, preservam aviso de tiro, nave e janela do impulso. Nada altera colisões, dano ou pools da simulação.
 
+Task 14: leque de linhas tracejadas acompanha os dados da arma durante a preparação; míssil mantém corpo, rastro e alvo no F3. Interceptação usa faísca curta do casco. Gerador/torre/motor destruído usa a explosão existente; a espinha do casco permanece enquanto outras seções vivem. Troca de fase anuncia texto e muda o contorno do núcleo, sem câmera lenta, tremor ou flash global. Efeitos reduzidos preservam avisos, míssil e estado aberto/fechado. HUD e VFX leem regras, nunca abrem o ponto fraco.
+
 ## Efeitos reduzidos
 
 Opção de acessibilidade: tremor e punch-in a 25%, flash e hit flash desligados, menos partículas. Hit stop, câmera lenta e dessaturação continuam (não piscam nem tremem).

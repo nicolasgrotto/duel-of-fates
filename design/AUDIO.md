@@ -50,6 +50,8 @@ Passos por superfície (metal, água, pedra, neve, sal, musgo), tecidos e capas,
 
 Sete sons originais por `synth_audio.py::space_sounds`, com semente local e sem amostras: motor em laço discreto de 1 s (grave estável com ar filtrado), tiro seco de 0,10 s, preparação ascendente de 0,30 s, impulso de 0,28 s, escudo vítreo curto de 0,18 s, impacto metálico de 0,16 s e explosão grave de 0,42 s. Sem sons reconhecíveis de naves de outra obra. Volume: dano/aviso acima do motor, tiros abaixo das lâminas do duelo. Banco local com vozes pré-alocadas, barramentos Effects/Ambience já existentes; posição estéreo segue o quadro. Motor sobe apenas com propulsão/impulso. Pausa suspende motor e encerra efeitos pendentes; sair libera tudo. Sem música nova nesta etapa. Som e VFX só consomem estados/eventos, nunca controlam o voo.
 
+Task 14 reutiliza o banco de voo e acrescenta apenas `space/missile.wav`, sopro grave curto de 0,24 s com semente local e envelope, sintetizado sem amostras. Tiros de leque mantêm o timbre existente; interceptação reutiliza impacto de casco. A preparação avisa antes de míssil ou leque. Sem trilha nova ou imitação de som de franquia. Resultado/sair encerra vozes locais; pausa silencia motor e efeitos, e opções globais de volume continuam valendo.
+
 ## Poderes
 
 Cada poder tem uma identidade sonora reconhecível e curta:

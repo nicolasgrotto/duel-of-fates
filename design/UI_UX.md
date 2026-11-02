@@ -50,6 +50,14 @@ Drone tem marca de alvo por forma e pequena barra de casco; preparação do tiro
 
 Task 14: seleção de cinco missões com briefing à direita, no padrão da Infiltração; entrada definitiva Jogar › Modos especiais › Combate de naves. Resultado mostrará objetivo, tempo e avaliação. Oficina entre missões terá três linhas (Arma, Escudo, Velocidade), nível, efeito e pontos disponíveis, mais redistribuir e continuar; nenhum custo universal ou estatística de outro modo. Telas navegam apenas pelo roteador.
 
+### Combate de naves — operações e oficina (task 14)
+
+Entrada definitiva Jogar › Modos especiais › Combate de naves, junto da Infiltração. Lista de cinco missões à esquerda, briefing à direita com objetivo, ameaça, tempo de referência, avaliação/recorde e conjunto atual; Oficina e Voltar completam a lista. Todas disponíveis desde o início. Oficina mostra Arma/Escudo/Velocidade, nível 0–2, efeito, custo 1 e pontos livres; confirmar compra, Redistribuir devolve pontos e Continuar retorna à seleção. Dicas com bindings atuais, corpo de 28 px do tema e rolagem do detalhe para PT/EN.
+
+Missão mantém as barras existentes, acrescenta onda/objetivo/relógio no topo e indicação de direção/distância até alvo obrigatório no rodapé. Proteção mostra casco da capital aliada; chefe mostra fase e núcleo aberto/fechado. Contornos de núcleo e texto distinguem proteção além da cor. Pausa explica a secundária utilizável e oferece Reiniciar missão e Missões. F3 inclui onda, fase, alvo dos mísseis, vida dos projéteis e estado das seções.
+
+Resultado próprio pelo roteador: sucesso ou motivo, objetivo, tempo, avaliação, casco e ponto de primeira conclusão. Opções Tentar de novo, Oficina, Próxima no sucesso e Missões; a última retorna à lista. Derrota não concede ponto. Tela de missão e resultado aceitam modo externo; o fluxo externo recebe o resultado e decide a navegação. Sem texto de implementação no produto, nova paleta ou fonte.
+
 ### Carregamento
 
 Toda troca de cena passa pelo fade do `SceneRouter`. Com a tela já escura, aparece **Carregando** (EN: **Loading**) em `HintLabel`, no canto inferior direito, com três pontos que acendem em sequência; some antes do fade de volta. Ele é desenhado antes do trabalho pesado (montar a cena, a simulação e os lutadores), então fica visível mesmo quando o jogo trava um instante para carregar personagens novos. Recursos que a cena seguinte já sabe que vai usar (personagens da Galeria e da seleção) carregam em segundo plano durante o fade.
