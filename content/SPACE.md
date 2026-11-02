@@ -4,12 +4,12 @@ Seis operações independentes e repetíveis em Jogar › Modos especiais › Co
 
 | Missão | Objetivo | Composição | Referência / limite |
 | --- | --- | --- | --- |
-| Corredor aberto | Eliminar seis ondas | Caças em cunha e interceptadores em número crescente; detritos laterais | 150 / 360 s |
-| Rastro de cinza | Eliminar sete ondas | Lançadores de mísseis, canhoneiras de leque e caças; passagem entre detritos | 180 / 420 s |
-| Última escolta | Eliminar oito ondas mantendo a capital aliada viva | Capital com gerador, motor e duas torres; caças e canhoneiras miram o casco aliado | 240 / 480 s |
-| Cortar a rede | Destruir gerador, motor e casco da capital inimiga | Capital modular de casco 360, duas torres opcionais e cinco ondas de proteção | 240 / 480 s |
-| Cemitério de ferro | Sobreviver a sete emboscadas | Campo denso de detritos, inimigos surgindo por trás da cobertura | 210 / 480 s |
-| Ferro de maré | Destruir o chefe | Três fases e três núcleos em sequência; mísseis, leques e escolta opcional a cada 30 s | 240 / 540 s |
+| Corredor aberto | Eliminar oito ondas (35 naves) | Caças em cunha, interceptadores e canhoneiras em número crescente; detritos laterais | 180 / 420 s |
+| Rastro de cinza | Eliminar nove ondas (32 naves) | Lançadores de mísseis, canhoneiras de leque e caças; passagem entre detritos | 210 / 480 s |
+| Última escolta | Eliminar dez ondas mantendo a capital aliada viva | Capital de casco 420 e escudo 40, com gerador, motor e duas torres; caças e canhoneiras miram o casco aliado, e sem ajuda ela cai | 270 / 540 s |
+| Cortar a rede | Destruir gerador, motor e casco da capital inimiga | Capital modular de casco 600, duas torres opcionais e sete ondas de proteção | 270 / 540 s |
+| Cemitério de ferro | Sobreviver a nove emboscadas (41 naves) | Campo denso de detritos, inimigos surgindo por trás da cobertura | 240 / 540 s |
+| Ferro de maré | Destruir o chefe | Três fases e três núcleos em sequência; mísseis, leques e escolta opcional a cada 25 a 30 s | 270 / 600 s |
 
 ## Naves do jogador
 
@@ -30,7 +30,7 @@ Encostar em outra nave, inimiga, aliada ou seção de capital, custa **8 de escu
 
 O limite de cada missão aparece na tabela e conta tempo de simulação; briefing, pausa e resultado não contam. Uma onda entra após o atraso fixo do dado e só avança quando seus membros obrigatórios foram abatidos. Slots e formações são pré-alocados. Acesso ocupado adia a entrada; ninguém surge sobre outra nave ou detrito. Não há sorteio de inimigo nem recompensa por abate. Posições, offsets e ordem de entrada vêm de recursos.
 
-Caças mantêm formação até a aproximação e depois circulam o alvo; interceptadores perseguem; canhoneiras mantêm distância e abrem três disparos; lançadores e torres são fixos e giram antes de preparar o tiro. Toda IA só produz intenção. Capitais aliadas e inimigas usam as mesmas regras. Torres deixam de disparar quando destruídas; destruir gerador remove o escudo do casco e sua regeneração; destruir motor reduz o giro do casco para 45%. Seções têm vida e colisão próprias; dano numa seção não destrói automaticamente as demais. Detritos são sólidos e bloqueiam tiros, sem dano de contato ou morte instantânea.
+Caças mantêm formação até a aproximação e depois alternam 2,4 s circulando o alvo com 2,2 s voltando o nariz para ele e atirando, porque só disparam alinhados; os ciclos são defasados por nave; interceptadores perseguem; canhoneiras mantêm distância e abrem três disparos; lançadores e torres são fixos e giram antes de preparar o tiro. Toda IA só produz intenção. Capitais aliadas e inimigas usam as mesmas regras. Torres deixam de disparar quando destruídas; destruir gerador remove o escudo do casco e sua regeneração; destruir motor reduz o giro do casco para 45%. Seções têm vida e colisão próprias; dano numa seção não destrói automaticamente as demais. Detritos são sólidos e bloqueiam tiros, sem dano de contato ou morte instantânea.
 
 Mísseis têm corpo sólido, raio 6 u, vida 2, velocidade inicial de 300 u/s e giro de até 65°/s; alvo fixado no disparo. Não readquirem outro alvo ao perdê-lo. Primárias hostis podem interceptá-los pelo percurso varrido; alvo dentro da janela invulnerável do impulso consome o míssil sem dano. A secundária da Trama dispara um míssil por toque, com 20 de dano, 500 u/s, giro de 100°/s e recarga de 3,5 s; não exige munição. Armas de leque reservam o grupo inteiro de projéteis antes de disparar; pool cheio não apaga tiros nem cobra recarga. Cada projétil conserva os dados da arma que o criou, mesmo após troca de fase.
 
@@ -38,7 +38,7 @@ Quando a intenção não informa alvo, a secundária do jogador fixa o objetivo 
 
 ## Ferro de maré
 
-Casco agregado 720. Na fase 1, abre o núcleo lateral superior de 240 de vida e usa leque lento de três tiros. A 67% de casco agregado, entra uma única vez na fase 2: núcleo inferior de 240 e lançamentos de mísseis. A 34%, fase 3: o núcleo central restante fica exposto e o leque passa a cinco tiros. Dano real nos núcleos laterais também reduz o casco agregado, sem duplicar dano; o núcleo central só aceita dano na fase 3. Não há cura ou ressurreição na transição. Limiar cruzado por um acerto é processado em ordem, uma vez por fase.
+Casco agregado 1500. Na fase 1, abre o núcleo lateral superior de 500 de vida e usa leque lento de três tiros. A 67% de casco agregado, entra uma única vez na fase 2: núcleo inferior de 500 e lançamentos de mísseis. A 34%, fase 3: o núcleo central restante fica exposto e o leque passa a cinco tiros. A escolta é opcional e destruir o chefe encerra a missão na hora. Dano real nos núcleos laterais também reduz o casco agregado, sem duplicar dano; o núcleo central só aceita dano na fase 3. Não há cura ou ressurreição na transição. Limiar cruzado por um acerto é processado em ordem, uma vez por fase.
 
 Cada fase tem ciclo fixo de abertura: preparação de 0,6 s, janela de 2 s e fechamento até completar 3,2 s. Contorno partido e texto mostram fechado/aberto; linha/leque progressivo antecede disparos perigosos. Disparar contra proteção consome o tiro sem dano. O chefe nunca fica vulnerável por animação ou efeito sonoro. Os números, armas, limiares e índices de núcleo são recursos.
 

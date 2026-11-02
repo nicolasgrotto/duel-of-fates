@@ -415,3 +415,28 @@ Automação concluída; avaliação humana de controle, dificuldade e áudio pen
 | 14.10 | Rodar por vários minutos na máquina de referência e ouvir os avisos | Controle confortável, sons distinguíveis, 60 FPS sustentados | amostra com editor aberto: 59,9 FPS, pior quadro 18,18 ms, 24 draw calls; simulação 466,76 µs/tick; ainda requer avaliação humana e medição sustentada |
 
 Suíte: 536 testes, zero falhas; 42 novos, incluindo reutilização dos mesmos objetos de nave/evento/projétil/intenção e contagem de objetos estável por 3.000 ticks após aquecimento. Evidências em `build/task13_tests_final.log`, `task13_bindings_final.log`, `task13_mcp_compile_checks.json`, `task13_assets_check.log`, `task13_flow_smoke.log` e `task13_profile.log`. Nenhuma gravação no save do autor; capturas usam `capture_progress.cfg` e processos diretos isolam APPDATA em `build/task13_userdata`.
+
+## 15. Revisão de Infiltração e Combate de naves
+
+Infiltração:
+
+- 15.1 Abrir qualquer missão: o mapa aparece, WASD move e o personagem não fica preso.
+- 15.2 Com a mão direita no mouse, usar E (interagir), F (abate), C (furtivo), Shift (correr), Q (guarda) e Espaço (golpe) sem tirar a mão esquerda do lugar.
+- 15.3 Segurar a guarda e girar o mouse: o cabo fica na mão direita, a lâmina cruza à frente do corpo e nada gira pelo centro. A transição é rápida, sem salto.
+- 15.4 Em Personagem, trocar personagem, traje (← →) e cor da lâmina (V), confirmar e conferir em missão. Vespa com duas lâminas, Ceifador com lâmina dupla, Haste com cabo longo.
+- 15.5 Jogar as cinco missões: a primeira deve ser curta e as demais levar de 3 a 6 minutos. A dica de objetivo deve levar pelo caminho certo, não através de paredes.
+- 15.6 Conferir se dá para concluir sem alarme e sem abates: o teste automático só comprova a conclusão sem alarme em duas missões, e abatendo guardas que o notam.
+
+Naves:
+
+- 15.7 Encostar em caças, na capital aliada e em seções: o escudo cai, o casco não, e o impulso na janela certa evita o custo. Encostar em detritos não custa nada.
+- 15.8 Perder o escudo jogando normalmente deve ser comum, e perder a missão, possível. Se ficar difícil ou fácil demais, ajustar valores em `tools/space/make_missions.py`.
+- 15.9 No Hangar, voar com Trama, Agulha, Bigorna e Lança: cada uma deve ter sensação própria, e os pontos fracos devem pesar.
+- 15.10 Na Última escolta, parar de ajudar deve fazer a capital aliada cair.
+- 15.11 Jogar as seis missões: 3 a 5 minutos cada, e o chefe deve morrer sem esperar mais escoltas.
+
+Menus:
+
+- 15.12 Em 720p e 1080p, em PT e EN: imagem e texto sem sobrepor, nos menus e nos resultados dos dois modos.
+- 15.13 Duelo e História: abrir Guardião, Sombra, Garça, Vespa, Ancião e Sombra Desperta com trajes e cores, que tinham sido afetados pela perda de dados.
+

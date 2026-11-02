@@ -36,7 +36,7 @@ Task 11: estado do treino distingue alarme pronto/ativo/desativado em PT e EN. P
 
 ### Infiltração — missões (task 12)
 
-Entrada definitiva **Jogar › Modos especiais › Infiltração**, sem a entrada temporária em Aprender. Com os submenus, Jogar voltou ao espaçamento padrão. Lista de quatro missões à esquerda, briefing à direita com objetivo, bônus, controles, conclusão e recorde; confirmar abre a missão. O tutorial é a primeira missão e pode ser repetido. Textos em PT/EN, corpo de 28 px no tema existente, quebra de linhas e espaço negativo.
+Entrada definitiva **Jogar › Modos especiais › Infiltração**, sem a entrada temporária em Aprender. Com os submenus, Jogar voltou ao espaçamento padrão. Lista de cinco missões à esquerda, briefing à direita com objetivo, bônus, controles, conclusão e recorde; confirmar abre a missão. O tutorial é a primeira missão e pode ser repetido. Textos em PT/EN, corpo de 28 px no tema existente, quebra de linhas e espaço negativo.
 
 Durante a missão, título e progresso/tempo ocupam o topo; dicas contextuais distinguem painel, copiar terminal e recrutar prisioneiro. Saída marcada por quadrado aberto com seta, terminal por monitor com duas barras, prisioneiro pela figura humana sem arma e marcador losangular. Estados copiado/recrutado/extraído usam marcas e texto, além da cor. Quando não há interação próxima, a dica aponta a direção e distância do próximo objetivo; escolta mostra aguardando/seguindo/extraída e vida. A pausa mostra os controles atuais e permite continuar, reiniciar ou voltar às missões.
 
@@ -58,7 +58,7 @@ Task 14: seleção de cinco missões com briefing à direita, no padrão da Infi
 
 ### Combate de naves — operações e oficina (task 14)
 
-Entrada definitiva Jogar › Modos especiais › Combate de naves, junto da Infiltração. Lista de cinco missões à esquerda, briefing à direita com objetivo, ameaça, tempo de referência, avaliação/recorde e conjunto atual; Oficina e Voltar completam a lista. Todas disponíveis desde o início. Oficina mostra Arma/Escudo/Velocidade, nível 0–2, efeito, custo 1 e pontos livres; confirmar compra, Redistribuir devolve pontos e Continuar retorna à seleção. Dicas com bindings atuais, corpo de 28 px do tema e rolagem do detalhe para PT/EN.
+Entrada definitiva Jogar › Modos especiais › Combate de naves, junto da Infiltração. Lista de seis missões à esquerda, briefing à direita com objetivo, ameaça, tempo de referência, avaliação/recorde e conjunto atual; Oficina e Voltar completam a lista. Todas disponíveis desde o início. Oficina mostra Arma/Escudo/Velocidade, nível 0–2, efeito, custo 1 e pontos livres; confirmar compra, Redistribuir devolve pontos e Continuar retorna à seleção. Dicas com bindings atuais, corpo de 28 px do tema e rolagem do detalhe para PT/EN.
 
 Missão mantém as barras existentes, acrescenta onda/objetivo/relógio no topo e indicação de direção/distância até alvo obrigatório no rodapé. Proteção mostra casco da capital aliada; chefe mostra fase e núcleo aberto/fechado. Contornos de núcleo e texto distinguem proteção além da cor. Pausa explica a secundária utilizável e oferece Reiniciar missão e Missões. F3 inclui onda, fase, alvo dos mísseis, vida dos projéteis e estado das seções.
 

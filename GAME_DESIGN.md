@@ -591,13 +591,13 @@ Modo próprio top-down de arenas espaciais em **Jogar › Modos especiais › Co
 
 Arquétipos por recursos e controladores: caça em esquadrilha/formação; interceptador perseguidor rápido e frágil; canhoneira lenta de rajadas abertas; torre fixa com aviso; seções de nave capital (torres, gerador e motores independentes); chefe de fases por limiar e pontos fracos. Mísseis telegrafados poderão perseguir e ser destruídos ou evitados pelo impulso. Detritos terão formas originais e colisão explícita, sem morte instantânea. Nada disso é implementado pela task 13.
 
-Cinco missões vão de esquadrões a ataque/proteção de capital e terminam em chefe. Recursos descrevem ondas, objetivos, aliado, limite e briefing. Fluxo: seleção → briefing → missão → resultado → melhorias/próxima. Casco do aliado em zero falha a missão de proteção. Cada missão aceitará conjunto explícito de nave/armas/melhorias e devolverá resultado para um fluxo externo, preparando a futura Saga.
+Seis missões vão de esquadrões a ataque/proteção de capital e campo de destroços, e terminam em chefe. Recursos descrevem ondas, objetivos, aliado, limite e briefing. Fluxo: seleção → briefing → missão → resultado → melhorias/próxima. Casco do aliado em zero falha a missão de proteção. Cada missão aceitará conjunto explícito de nave/armas/melhorias e devolverá resultado para um fluxo externo, preparando a futura Saga.
 
 Economia fechada no modo: um ponto por primeira conclusão de cada missão, sem recompensa por repetir; cinco pontos no total. Arma, escudo e velocidade têm dois níveis opcionais de um ponto cada, efeitos em configuração e compra entre missões; escolhas podem ser redistribuídas sem custo na oficina. Não há moeda universal, loja, XP, bônus por abates ou repetição obrigatória. Nenhuma melhoria afeta duelo, História ou Infiltração. Save próprio dentro do SaveService guardará missões, pontos e escolhas na task 14; o treino não lê nem grava esse progresso.
 
 ### Missões e melhorias implementadas (task 14)
 
-Revisão do autor: fases de 3 a 5 minutos, sexta missão, quatro naves no Hangar, escudo menor e colisão com outra nave custando escudo. Valores em [content/SPACE.md](content/SPACE.md).
+Revisão do autor: fases de 3 a 5 minutos, sexta missão, quatro naves no Hangar, escudo menor, colisão com outra nave custando escudo e caças que atacam de perto. Valores em [content/SPACE.md](content/SPACE.md).
 
 Modo completo em Jogar › Modos especiais › Combate de naves; a rota técnica temporária deixa o roteador. [content/SPACE.md](content/SPACE.md) define as cinco operações, formações, inimigos, mísseis interceptáveis, detritos, capitais por seções, chefe de três fases, avaliação e melhorias. A secundária passa a ser um míssil por toque. Regras de propulsão, escudo e impulso da task 13 permanecem. Slots de ondas e projéteis são pools; nenhum controlador resolve dano, fase ou objetivo. Resultados e progresso são selados, separados do núcleo; conjunto e resultado explícitos permitem fluxo externo sem salvar ou navegar automaticamente.
 
