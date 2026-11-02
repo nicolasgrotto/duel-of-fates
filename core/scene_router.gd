@@ -23,6 +23,7 @@ const SCREENS: Dictionary = {
 	&"infiltration": "res://screens/infiltration/infiltration_menu.tscn",
 	&"infiltration_mission": "res://screens/infiltration/infiltration_screen.tscn",
 	&"infiltration_result": "res://screens/infiltration/infiltration_menu.tscn",
+	&"infiltration_characters": "res://screens/infiltration/infiltration_menu.tscn",
 	&"space": "res://screens/space/space_menu.tscn",
 	&"space_mission": "res://screens/space/space_screen.tscn",
 	&"space_result": "res://screens/space/space_menu.tscn",

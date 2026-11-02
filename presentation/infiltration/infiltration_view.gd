@@ -21,10 +21,14 @@ var _spark_kinds: PackedByteArray = []
 var _next_spark: int = 0
 const CONE_SAMPLES: int = 24
 var _cone_points: PackedVector2Array = []
+var _look: InfiltrationLook
+var _blade: InfiltrationBlade = InfiltrationBlade.new()
+var _guard_blend: float = 0.0
 
 
-func setup(simulation: InfiltrationSimulation) -> void:
+func setup(simulation: InfiltrationSimulation, look: InfiltrationLook) -> void:
 	sim = simulation
+	_look = look
 	_cone_points.resize(CONE_SAMPLES + 2)
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_spark_positions.resize(sim.config.spark_capacity)
@@ -49,6 +53,7 @@ func _process(delta: float) -> void:
 		return
 	if animate:
 		_time += delta
+		_guard_blend = move_toward(_guard_blend, 1.0 if sim.player.guard else 0.0, delta / sim.config.guard_blend_seconds)
 		for index in _spark_left.size():
 			_spark_left[index] = maxf(_spark_left[index] - delta, 0.0)
 	queue_redraw()
@@ -78,7 +83,7 @@ func _draw() -> void:
 			continue
 		var point: Vector2 = _snap(bolt.previous.lerp(bolt.position, alpha))
 		var tail: Vector2 = _snap(point - bolt.velocity.normalized() * sim.config.bolt_length)
-		var color: Color = PALETTE.menu_blade_a if bolt.owner == 0 else PALETTE.bolt
+		var color: Color = _look.blade_color if bolt.owner == 0 else PALETTE.bolt
 		draw_line(tail, point, Color(color, 0.15), bolt.data.size * 2.0)
 		draw_line(tail, point, color, sim.config.blade_width)
 		draw_line(tail, point, PALETTE.text, sim.config.units_per_pixel)
@@ -99,7 +104,10 @@ func _draw_actor(actor: InfiltrationActor, sprite: int, enemy: bool = false) -> 
 	if not enemy and sprite == SPRITE_PLAYER and actor.locomotion == InfiltrationActor.Locomotion.SNEAK:
 		scale.y = 0.9
 	draw_set_transform(_snap(location), aim.angle() + PI * 0.5, scale)
-	draw_texture_rect_region(sim.map.enemy_sprites if enemy else sim.map.sprites, Rect2(-size * 0.5, size), Rect2(Vector2(sprite * sim.config.sprite_pixels.x, 0), Vector2(sim.config.sprite_pixels)))
+	if not enemy and sprite == SPRITE_PLAYER:
+		draw_texture_rect(_look.texture, Rect2(-size * 0.5, size), false)
+	else:
+		draw_texture_rect_region(sim.map.enemy_sprites if enemy else sim.map.sprites, Rect2(-size * 0.5, size), Rect2(Vector2(sprite * sim.config.sprite_pixels.x, 0), Vector2(sim.config.sprite_pixels)))
 	draw_set_transform(Vector2.ZERO)
 
 
@@ -149,25 +157,25 @@ func _draw_blade() -> void:
 	var player: InfiltrationActor = sim.player
 	var location: Vector2 = _snap(player.previous.lerp(player.position, alpha))
 	var facing: Vector2 = player.swing_aim if player.swing_tick >= 0 else player.aim
-	var angle: float = facing.angle()
+	var half: float = sim.config.swing_degrees * 0.5
+	var swing_blend: float = 0.0
+	var swing_angle: float = -half
 	if player.swing_tick >= 0:
-		var progress: float = clampf(float(player.swing_tick - sim.config.startup_ticks() + 1) / sim.config.active_ticks(), 0.0, 1.0)
-		angle = player.swing_aim.angle() + deg_to_rad(lerpf(-sim.config.swing_degrees * 0.5, sim.config.swing_degrees * 0.5, progress))
-	elif player.guard:
-		angle += PI * 0.5
-	var direction: Vector2 = Vector2.from_angle(angle)
-	var grip: Vector2 = _snap(location + facing * sim.config.blade_grip)
-	var tip: Vector2 = _snap(grip + direction * sim.config.blade_length)
-	if player.guard:
-		grip = _snap(location + facing * sim.config.blade_grip - direction * sim.config.blade_length * 0.5)
-		tip = _snap(grip + direction * sim.config.blade_length)
-	draw_line(grip, tip, Color(PALETTE.menu_blade_a, 0.08), sim.config.blade_width * 4.0)
-	draw_line(grip, tip, Color(PALETTE.menu_blade_a, 0.25), sim.config.blade_width * 2.0)
-	draw_line(grip, tip, PALETTE.menu_blade_a, sim.config.blade_width)
-	draw_line(grip, tip, PALETTE.text, sim.config.units_per_pixel)
-	draw_line(grip - direction * sim.config.blade_grip * 0.5, grip, PALETTE.menu_hilt, sim.config.blade_width)
+		var startup: int = sim.config.startup_ticks()
+		var active: int = sim.config.active_ticks()
+		var recovery: int = maxi(sim.config.swing_ticks() - startup - active, 1)
+		if player.swing_tick < startup:
+			swing_blend = float(player.swing_tick + 1) / startup
+		elif player.swing_tick < startup + active:
+			swing_blend = 1.0
+			swing_angle = lerpf(-half, half, float(player.swing_tick - startup + 1) / active)
+		else:
+			swing_blend = 1.0 - float(player.swing_tick - startup - active + 1) / recovery
+			swing_angle = half
+	_blade.compose(sim.config, facing, _guard_blend, swing_blend, swing_angle)
+	_blade.draw(self, location, _look, sim.config)
 	if sim.swing_active():
-		draw_arc(location, sim.config.swing_reach, player.swing_aim.angle() - deg_to_rad(sim.config.swing_degrees * 0.5), angle, 12, Color(PALETTE.menu_blade_a, 0.3), sim.config.units_per_pixel)
+		draw_arc(location, sim.config.swing_reach, facing.angle() - deg_to_rad(half), facing.angle() + deg_to_rad(swing_angle), 12, Color(_look.blade_color, 0.3), sim.config.units_per_pixel)
 
 
 func _draw_sparks() -> void:
@@ -175,7 +183,7 @@ func _draw_sparks() -> void:
 		if _spark_left[index] <= 0.0:
 			continue
 		var progress: float = 1.0 - _spark_left[index] / sim.config.spark_seconds
-		var color: Color = PALETTE.menu_blade_a if _spark_kinds[index] != SparkKind.IMPACT else PALETTE.spark_warm
+		var color: Color = _look.blade_color if _spark_kinds[index] != SparkKind.IMPACT else PALETTE.spark_warm
 		color.a = 1.0 - progress
 		if _spark_kinds[index] == SparkKind.PERFECT:
 			draw_arc(_snap(_spark_positions[index]), sim.config.blade_grip * (0.5 + progress), 0.0, TAU, 12, color, sim.config.units_per_pixel)
@@ -218,6 +226,8 @@ func _draw_security() -> void:
 		if actor.health <= 0.0:
 			continue
 		var data: InfiltrationEnemyData = sim.target_data[index] as InfiltrationEnemyData
+		if not debug and _is_cone_hidden(actor, data):
+			continue
 		var origin: Vector2 = _snap(actor.previous.lerp(actor.position, alpha))
 		var color: Color = _awareness_color(actor)
 		_cone_points[0] = origin
@@ -253,6 +263,12 @@ func _draw_security() -> void:
 		draw_line(point + Vector2(2, 10), point + Vector2(12, 10), color, sim.config.units_per_pixel)
 		if panel.disabled:
 			draw_line(point + Vector2(-14, 12), point + Vector2(14, -12), PALETTE.secondary, sim.config.units_per_pixel)
+
+
+func _is_cone_hidden(actor: InfiltrationActor, data: InfiltrationEnemyData) -> bool:
+	var half: Vector2 = get_viewport_rect().size * 0.5 / sim.config.camera_zoom + Vector2.ONE * data.vision_range
+	var offset: Vector2 = actor.position - sim.player.position
+	return absf(offset.x) > half.x or absf(offset.y) > half.y
 
 
 func _awareness_color(actor: InfiltrationActor) -> Color:

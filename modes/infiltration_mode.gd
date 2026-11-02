@@ -6,10 +6,38 @@ const MISSIONS: Array[InfiltrationMissionData] = [
 	preload("res://data/infiltration/missions/silent_network.tres"),
 	preload("res://data/infiltration/missions/cold_archive.tres"),
 	preload("res://data/infiltration/missions/way_back.tres"),
+	preload("res://data/infiltration/missions/core_breach.tres"),
 ]
 
 var data: InfiltrationMissionData
 var result: Dictionary = {}
+
+
+static func look_character() -> CharacterData:
+	var id: StringName = StringName(SaveService.infiltration_look.get("character", ""))
+	if not id in CharacterRoster.IDS:
+		return CharacterRoster.character(CharacterRoster.IDS[0])
+	var chosen: CharacterData = CharacterRoster.character(id)
+	return chosen if Unlocks.is_character_unlocked(chosen) else CharacterRoster.character(CharacterRoster.IDS[0])
+
+
+static func look_costume(character: CharacterData) -> int:
+	var index: int = int(SaveService.infiltration_look.get("costume", 0))
+	if index < 0 or index >= character.costumes.size():
+		return 0
+	return index if Unlocks.is_costume_unlocked(character, character.costumes[index]) else 0
+
+
+static func look_blade(character: CharacterData) -> int:
+	var index: int = int(SaveService.infiltration_look.get("blade", 0))
+	if index < 0 or index >= character.blade_colors.size():
+		return 0
+	return index if Unlocks.is_color_unlocked(character, index) else 0
+
+
+static func current_look() -> InfiltrationLook:
+	var character: CharacterData = look_character()
+	return InfiltrationLook.create(character, look_costume(character), look_blade(character))
 
 
 func _init(mission: InfiltrationMissionData) -> void:

@@ -100,6 +100,78 @@ def sprites(colors):
     return atlas
 
 
+ROSTER_SOURCE = "data/character_roster.gd"
+BROAD_BUILDS = ("bastion", "forge")
+SLIM_BUILDS = ("wasp", "heron", "reaper", "echo", "ember")
+SLOT_CLOAK, SLOT_BODY, SLOT_TRIM, SLOT_SKIN, SLOT_HAIR, SLOT_METAL, SLOT_LEATHER, SLOT_EYES = range(8)
+
+
+def encoded(slot, light=.5, glow=0.0, alpha=255):
+    return (round(light * 255), round(slot * 255 / 7), round(glow * 255), alpha)
+
+
+def default_parts(character):
+    source = (ROOT / f"assets/characters/{character}/art.tres").read_text(encoding="utf-8")
+    match = re.search(r'default_parts = PackedStringArray\(([^)]*)\)', source)
+    return re.findall(r'"(\w+)"', match.group(1)) if match else []
+
+
+def hero_sprite(character):
+    parts = default_parts(character)
+    inset = -1 if character in BROAD_BUILDS else 1 if character in SLIM_BUILDS else 0
+    image = Image.new("RGBA", SPRITE)
+    draw = ImageDraw.Draw(image)
+    dark = encoded(SLOT_BODY, .12)
+    draw.ellipse((4, 20, 20, 26), fill=encoded(SLOT_BODY, .08, 0.0, 160))
+    if "cape" in parts:
+        draw.polygon(((6, 11), (18, 11), (21, 25), (12, 27), (3, 25)), fill=encoded(SLOT_CLOAK), outline=encoded(SLOT_CLOAK, .26))
+        draw.line((12, 14, 12, 26), fill=encoded(SLOT_CLOAK, .38))
+    else:
+        draw.rectangle((6, 18, 10, 25), fill=encoded(SLOT_LEATHER), outline=dark)
+        draw.rectangle((14, 18, 18, 25), fill=encoded(SLOT_LEATHER), outline=dark)
+    if "skirt" in parts:
+        draw.polygon(((6, 18), (17, 18), (19, 23), (5, 23)), fill=encoded(SLOT_BODY, .42), outline=dark)
+    draw.polygon(((7, 10), (16, 10), (19 - inset, 21), (14, 23), (5 + inset, 21)), fill=encoded(SLOT_BODY), outline=dark)
+    draw.line((9, 13, 8, 21), fill=encoded(SLOT_BODY, .68))
+    draw.line((15, 14, 16, 21), fill=encoded(SLOT_BODY, .34))
+    left, right = 5 + inset, 18 - inset
+    draw.rectangle((left, 9, right, 13), fill=encoded(SLOT_CLOAK, .62), outline=dark)
+    if "pad" in parts:
+        draw.rectangle((left - 1, 8, left + 3, 13), fill=encoded(SLOT_METAL), outline=dark)
+        draw.rectangle((right - 3, 8, right + 1, 13), fill=encoded(SLOT_METAL), outline=dark)
+    draw.rectangle((left, 14, right, 15), fill=encoded(SLOT_TRIM))
+    if "sash" in parts:
+        draw.line((left + 2, 10, right - 2, 18), fill=encoded(SLOT_TRIM, .68), width=2)
+    draw.rectangle((left - 2, 10, left + 1, 17), fill=encoded(SLOT_BODY, .46), outline=dark)
+    draw.rectangle((right - 1, 10, right + 2, 17), fill=encoded(SLOT_BODY, .46), outline=dark)
+    draw.rectangle((left - 2, 8, left, 10), fill=encoded(SLOT_SKIN))
+    draw.rectangle((right, 7, right + 2, 10), fill=encoded(SLOT_SKIN))
+    if "scarf" in parts:
+        draw.rectangle((8, 10, 15, 12), fill=encoded(SLOT_TRIM, .62))
+        draw.line((15, 12, 18, 20), fill=encoded(SLOT_TRIM, .5), width=2)
+    if "hood" in parts:
+        draw.ellipse((7, 3, 16, 12), fill=encoded(SLOT_CLOAK, .52), outline=dark)
+        draw.arc((7, 3, 16, 12), 180, 360, fill=encoded(SLOT_CLOAK, .72))
+        draw.rectangle((10, 3, 13, 5), fill=encoded(SLOT_METAL, .5) if "mask" in parts else encoded(SLOT_SKIN, .3))
+    else:
+        draw.ellipse((8, 3, 15, 11), fill=encoded(SLOT_SKIN, .42), outline=dark)
+        draw.arc((8, 3, 15, 11), 170, 350, fill=encoded(SLOT_SKIN, .56))
+        if "hair" in parts:
+            draw.ellipse((8, 4, 15, 11), fill=encoded(SLOT_HAIR), outline=dark)
+            draw.line((10, 6, 13, 6), fill=encoded(SLOT_HAIR, .68))
+        if "beard" in parts:
+            draw.line((10, 3, 13, 3), fill=encoded(SLOT_HAIR, .62))
+    return image
+
+
+def heroes():
+    folder = ROOT / "assets/infiltration/heroes"
+    folder.mkdir(parents=True, exist_ok=True)
+    roster = re.search(r"const IDS.*?= \[(.*?)\]", (ROOT / ROSTER_SOURCE).read_text(encoding="utf-8"), re.S).group(1)
+    for character in re.findall(r'&"(\w+)"', roster):
+        hero_sprite(character).save(folder / f"{character}.png", optimize=True)
+
+
 def main():
     colors = palette()
     folder = ROOT / "assets/infiltration"
@@ -110,6 +182,7 @@ def main():
     prisoner_colors = dict(colors)
     prisoner_colors["infiltration_cloth"] = colors["secondary"]
     sprites(prisoner_colors).crop((0, 0, *SPRITE)).save(folder / "prisoner.png", optimize=True)
+    heroes()
 
 
 def enemy_sprites(colors):
@@ -146,71 +219,5 @@ def enemy_sprites(colors):
     return atlas
 
 
-def mission_maps():
-    specs = [
-        ("first_access", "INF_FIRST", [(8, 5)], [], [], (3, 5), 45),
-        ("silent_network", "INF_NETWORK", [(5, 16), (25, 16)], [], [], (3, 5), 90),
-        ("cold_archive", "INF_ARCHIVE", [(16, 8)], [(25, 16)], [], (3, 5), 90),
-        ("way_back", "INF_RESCUE", [(16, 8)], [], [(25, 16)], (3, 5), 120),
-    ]
-    folder = ROOT / "data/infiltration/missions"
-    folder.mkdir(parents=True, exist_ok=True)
-    def point(cell):
-        return f"Vector2({cell[0] * 64 + 32}, {cell[1] * 64 + 32})"
-    for number, (name, key, panels, terminals, prisoners, exit_cell, seconds) in enumerate(specs):
-        grid = [["#" if x in (0, 29) or y in (0, 19) else "." for x in range(30)] for y in range(20)]
-        if number == 0:
-            for x in range(6, 12):
-                grid[8][x] = "C"
-        elif number == 1:
-            for y in range(3, 15):
-                grid[y][12] = "#"
-            for x in range(16, 24):
-                grid[12][x] = "C"
-        elif number == 2:
-            for x in (9, 13, 21):
-                for y in range(4, 14):
-                    grid[y][x] = "C"
-        else:
-            for x in range(8, 26):
-                grid[12][x] = "#"
-            for y in range(4, 10):
-                grid[y][20] = "#"
-            for x in range(22, 28):
-                grid[14][x] = "C"
-        guard = (16, 6) if number == 0 else (16, 9)
-        text = '[gd_resource type="Resource" script_class="InfiltrationMissionData" format=3]\n\n'
-        for kind, path, rid in [
-            ("Script", "data/infiltration/infiltration_mission_data.gd", "mission"),
-            ("Script", "data/infiltration/infiltration_map_data.gd", "map"),
-            ("Script", "data/infiltration/infiltration_enemy_placement.gd", "placement"),
-            ("Script", "data/infiltration/infiltration_panel_data.gd", "panel"),
-            ("Resource", "data/infiltration/enemies/sentry.tres", "sentry"),
-            ("Resource", "data/infiltration/enemies/patrol_trooper.tres", "trooper"),
-            ("Resource", "data/infiltration/enemies/heavy.tres", "heavy"),
-            ("Texture2D", "assets/infiltration/training_tiles.png", "tiles"),
-            ("Texture2D", "assets/infiltration/training_sprites.png", "sprites"),
-            ("Texture2D", "assets/infiltration/enemy_sprites.png", "enemies"),
-        ]:
-            text += f'[ext_resource type="{kind}" path="res://{path}" id="{rid}"]\n'
-        for i, cell in enumerate(panels):
-            text += f'\n[sub_resource type="Resource" id="panel_{i}"]\nscript = ExtResource("panel")\nposition = {point(cell)}\n'
-        text += f'\n[sub_resource type="Resource" id="guard"]\nscript = ExtResource("placement")\nenemy = ExtResource("sentry")\nposition = {point(guard)}\ndirection = Vector2(-1, 0)\n'
-        if number != 0:
-            text += f'\n[sub_resource type="Resource" id="patrol"]\nscript = ExtResource("placement")\nenemy = ExtResource("trooper")\nposition = {point((17, 6))}\ndirection = Vector2(1, 0)\nroute = PackedVector2Array(1120, 416, 1248, 416, 1248, 608, 1120, 608)\n'
-        text += f'\n[sub_resource type="Resource" id="reserve"]\nscript = ExtResource("placement")\nenemy = ExtResource("heavy")\nposition = {point((27, 3))}\ndirection = Vector2(0, 1)\nreinforcement = true\n'
-        rows = ", ".join('"' + "".join(row) + '"' for row in grid)
-        panel_refs = ", ".join(f'SubResource("panel_{i}")' for i in range(len(panels)))
-        enemies = 'SubResource("guard"), ' + ('SubResource("patrol"), ' if number else '') + 'SubResource("reserve")'
-        text += f'\n[sub_resource type="Resource" id="layout"]\nscript = ExtResource("map")\nid = &"{name}"\ntitle_key = "{key}"\nplayer_spawn = {point((3, 3))}\nrows = PackedStringArray({rows})\nenemies = [{enemies}]\npanels = [{panel_refs}]\ntiles = ExtResource("tiles")\nsprites = ExtResource("sprites")\nenemy_sprites = ExtResource("enemies")\n'
-        def packed(points):
-            return "PackedVector2Array(" + ", ".join(str(v * 64 + 32) for p in points for v in p) + ")"
-        text += f'\n[resource]\nscript = ExtResource("mission")\nid = &"{name}"\ntitle_key = "{key}"\nbriefing_key = "{key}_BRIEF"\nmap = SubResource("layout")\ndisable_alarms = {str(number < 2).lower()}\nterminals = {packed(terminals)}\nprisoner_spawns = {packed(prisoners)}\nextraction = {point(exit_cell)}\nbonus_seconds = {seconds}.0\n'
-        output = folder / (name + ".tres")
-        if not output.exists() or output.read_text(encoding="utf-8") != text:
-            output.write_text(text, encoding="utf-8")
-
-
 if __name__ == "__main__":
     main()
-    mission_maps()

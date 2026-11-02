@@ -862,10 +862,12 @@ INF_FIRST,Primeiro acesso,First access
 INF_NETWORK,Rede silenciosa,Silent network
 INF_ARCHIVE,Arquivo frio,Cold archive
 INF_RESCUE,Caminho de volta,The way back
-INF_FIRST_BRIEF,"Aprenda a entrar sem ser visto. Mova-se até o painel a leste, use Interagir e volte à saída marcada junto ao início. A cobertura ao sul protege da sentinela. Evitar ou enfrentar o guarda é sua escolha.","Learn to enter unseen. Reach the panel to the east, Interact, then return to the marked exit near your starting point. Cover to the south shields you from the sentry. Avoid or fight the guard as you choose."
-INF_NETWORK_BRIEF,"Interrompa a rede da base: inutilize os dois painéis no sul, um em cada ala. O corredor inferior liga os setores longe da vigilância central. Volte à saída a noroeste.","Break the base network: disable both southern panels, one in each wing. The lower service corridor connects the wings away from the central watch. Return to the northwestern exit."
-INF_ARCHIVE_BRIEF,Copie os dados no terminal a sudeste e alcance a saída a noroeste. As estantes cortam a visão; o corredor ao sul permite contornar a patrulha. Desativar o painel central é opcional.,Copy the data at the southeastern terminal and reach the northwestern exit. Shelves block sight; the southern corridor offers a route around the patrol. Disabling the central alarm panel is optional.
-INF_RESCUE_BRIEF,"Encontre o prisioneiro a sudeste, recrute-o e conduza-o vivo à saída a noroeste. Use o corredor sul; a escolta anda mais devagar e não luta. Disparos podem atingi-la. O painel central é opcional.","Find the prisoner to the southeast, recruit them and escort them alive to the northwestern exit. Use the southern corridor; your escort moves more slowly and cannot fight. Bolts can hit them. The central alarm panel is optional."
+INF_CORE,Coração da base,Heart of the base
+INF_FIRST_BRIEF,"Aprenda a entrar sem ser visto. Atravesse os galpões a leste, desça pela passagem de serviço, use Interagir no painel e siga pela ala sul até a saída a oeste. Caixas e janelas de patrulha são sua cobertura. Evitar ou enfrentar os guardas é sua escolha.","Learn to enter unseen. Cross the eastern warehouses, take the service passage down, use Interact on the panel and follow the southern wing to the exit in the west. Crates and patrol gaps are your cover. Avoiding or fighting the guards is your choice."
+INF_NETWORK_BRIEF,"Interrompa a rede da base: inutilize três painéis, um em cada nível, ligados por passagens estreitas. Cada ala tem suas patrulhas; o pátio central é o caminho mais vigiado. Termine na saída a sudoeste.","Break the base network: disable three panels, one on each level, joined by narrow passages. Each wing has its own patrols; the central yard is the most watched way through. Finish at the southwestern exit."
+INF_ARCHIVE_BRIEF,"Copie os dados de dois terminais: um no fim do segundo arquivo, outro no canto nordeste. As estantes cortam a visão, e cada arquivo tem uma única passagem. Saia a sudeste. Desativar os painéis de alarme é opcional.","Copy the data from two terminals: one at the end of the second archive, another in the northeastern corner. The shelves cut sight lines and each archive has a single passage. Leave in the southeast. Disabling the alarm panels is optional."
+INF_RESCUE_BRIEF,"Encontre o prisioneiro na ala sudeste, recrute-o e conduza-o vivo pelos três níveis até a saída perto de onde você entrou. A escolta anda mais devagar e não luta, e disparos podem atingi-la. Os painéis de alarme são opcionais.","Find the prisoner in the southeastern wing, recruit them and lead them alive across all three levels to the exit near where you came in. The escort walks slower and does not fight, and bolts can hit them. The alarm panels are optional."
+INF_CORE_BRIEF,"Tudo o que você aprendeu, em uma só operação: inutilize três painéis, copie o terminal central, liberte o prisioneiro na ala sudeste e leve-o até a saída a sudoeste. É a base mais vigiada, com reforços nas três alas.","Everything you have learned in a single operation: disable three panels, copy the central terminal, free the prisoner in the southeastern wing and lead them to the southwestern exit. This is the most heavily watched base, with reinforcements in all three wings."
 INF_BRIEF_RULES,"Bônus: sem alarme · sem abates · até {time} s
 Poderes indisponíveis. Guarda: desviar/aparar disparos.","Bonuses: no alarm · no takedowns · within {time} s
 Powers unavailable. Guard: deflect/parry bolts."
@@ -894,6 +896,13 @@ INF_BONUS_ABATES,Sem abates,No takedowns
 INF_BONUS_TIME,Dentro do tempo,Within the time limit
 INF_FAILURE_SAVE,Derrotas não registram conclusão ou bônus.,Defeats do not record completion or bonuses.
 INF_INTERACT,Interagir,Interact
+INF_CHARACTER,Personagem: {name},Character: {name}
+INF_CHARACTER_TITLE,Personagem,Character
+INF_CHARACTER_INFO,Muda só a aparência: atributos e regras são iguais para todos.,Changes appearance only: attributes and rules are the same for everyone.
+INF_CHARACTER_COSTUME,Traje: {name},Outfit: {name}
+INF_CHARACTER_BLADE,Lâmina: {name},Blade: {name}
+INF_CHARACTER_HINT,← → traje,← → outfit
+INF_CHARACTER_BLADE_HINT,lâmina,blade
 INF_COPY,Copiar informação,Copy information
 INF_RECRUIT,Recrutar prisioneiro,Recruit prisoner
 INF_PROGRESS,Objetivos {done}/{total} · {time},Objectives {done}/{total} · {time}

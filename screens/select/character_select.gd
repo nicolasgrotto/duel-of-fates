@@ -6,11 +6,8 @@ const POWER_LINE_KEYS: Array[String] = ["SELECT_POWER_NEUTRAL", "SELECT_POWER_FO
 const TECHNIQUE_LINE_KEYS: Array[String] = ["SELECT_TECHNIQUE_FORWARD", "SELECT_TECHNIQUE_BACK", "SELECT_TECHNIQUE_AIR"]
 const EDIT_RESET: StringName = &"reset"
 const EDIT_DONE: StringName = &"done"
-const CHARACTER_PATH: String = "res://data/characters/%s/%s.tres"
-const ROSTER: Array[StringName] = [
-	&"guardian", &"shadow", &"bastion", &"wasp", &"mirror", &"lance", &"ember", &"forge", &"heron", &"reaper", &"echo", &"corsair", &"lynx",
-	&"sovereign", &"elder", &"foretold",
-]
+const CHARACTER_PATH: String = CharacterRoster.PATH
+const ROSTER: Array[StringName] = CharacterRoster.IDS
 const RANDOM: StringName = &"random"
 const FIRST_SLOT_STEPS: Array[StringName] = [&"player", &"player_one", &"fighter_one"]
 const STEP_TITLES: Dictionary = {

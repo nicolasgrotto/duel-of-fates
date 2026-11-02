@@ -11,6 +11,7 @@ var parry_best: int = 0
 var challenge_best: Dictionary = {}
 var hunt_best: Dictionary = {}
 var infiltration_best: Dictionary = {}
+var infiltration_look: Dictionary = {}
 var unlocked: Dictionary = {}
 var campaign: Dictionary = {}
 var space: SpaceProgress = SpaceProgress.new()
@@ -27,6 +28,7 @@ func reset() -> void:
 	challenge_best = {}
 	hunt_best = {}
 	infiltration_best = {}
+	infiltration_look = {}
 	unlocked = {}
 	campaign = {}
 	space = SpaceProgress.new()
@@ -46,6 +48,7 @@ func load_progress() -> void:
 	challenge_best = file.get_value(SECTION, "challenge_best", {})
 	hunt_best = file.get_value(SECTION, "hunt_best", {})
 	infiltration_best = file.get_value(SECTION, "infiltration_best", {})
+	infiltration_look = file.get_value(SECTION, "infiltration_look", {})
 	unlocked = file.get_value(SECTION, "unlocked", {})
 	campaign = file.get_value(SECTION, "campaign", {})
 	space.restore(file.get_value(SECTION, "space", {}))
@@ -60,6 +63,7 @@ func save_progress() -> void:
 	file.set_value(SECTION, "challenge_best", challenge_best)
 	file.set_value(SECTION, "hunt_best", hunt_best)
 	file.set_value(SECTION, "infiltration_best", infiltration_best)
+	file.set_value(SECTION, "infiltration_look", infiltration_look)
 	file.set_value(SECTION, "unlocked", unlocked)
 	file.set_value(SECTION, "campaign", campaign)
 	file.set_value(SECTION, "space", space.capture())
@@ -119,6 +123,11 @@ func record_hunt(id: StringName, seconds: float) -> bool:
 
 func is_unlocked(key: String) -> bool:
 	return unlocked.get(key, false)
+
+
+func set_infiltration_look(character: StringName, costume: int, blade: int) -> void:
+	infiltration_look = {"character": String(character), "costume": costume, "blade": blade}
+	save_progress()
 
 
 func record_infiltration(id: StringName, ticks: int, bonuses: int) -> bool:

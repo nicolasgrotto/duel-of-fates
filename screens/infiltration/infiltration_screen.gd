@@ -9,6 +9,7 @@ const PALETTE: UiPalette = preload("res://ui/palette.tres")
 const MAX_STEPS: int = 5
 const HUD_MARGIN: float = 56.0
 const HUD_WIDTH: float = 320.0
+const GUIDE_REFRESH_FRAMES: int = 15
 const SOUNDS: Dictionary = {
 	InfiltrationEvent.Type.SWING_STARTED: &"swing_light",
 	InfiltrationEvent.Type.SWING_HIT: &"hit_light",
@@ -44,6 +45,17 @@ var _notice: AudioStreamPlayer
 var _music: Array[AudioStreamPlayer] = []
 var _context: Label
 var _accumulator: float = 0.0
+var _guide_navigation: InfiltrationNavigation
+var _guide_age: int = 0
+var _guide_text: String = ""
+var _guide_target: Vector2 = Vector2.INF
+var _guide_tiles: int = -1
+var _guide_key: String = ""
+var _guide_number: int = 1
+
+
+func required_resources(_params: Dictionary) -> PackedStringArray:
+	return PackedStringArray([CharacterRoster.path(InfiltrationMode.look_character().id)])
 
 
 func open(params: Dictionary) -> void:
@@ -54,6 +66,7 @@ func open(params: Dictionary) -> void:
 	sim = InfiltrationSimulation.new(CONFIG, mission_data.map if mission_data != null else params.get("map", TRAINING_MAP), mission_data)
 	enemy_controller = InfiltrationEnemyController.new(sim.map, sim.targets.size())
 	escort_controller = InfiltrationEscortController.new(sim)
+	_guide_navigation = InfiltrationNavigation.new(sim.map)
 	_stage = PixelStage.new(CONFIG.units_per_pixel)
 	_stage.viewport.world_2d = World2D.new()
 	add_child(_stage)
@@ -62,7 +75,7 @@ func open(params: Dictionary) -> void:
 	map_view.setup(sim.map, CONFIG)
 	_view = InfiltrationView.new()
 	_stage.viewport.add_child(_view)
-	_view.setup(sim)
+	_view.setup(sim, InfiltrationMode.current_look())
 	_view.reduced = Settings.reduced_effects
 	_camera = Camera2D.new()
 	_camera.zoom = Vector2.ONE * CONFIG.camera_zoom
@@ -315,7 +328,7 @@ func _on_pause_chosen(option: StringName) -> void:
 			sim = InfiltrationSimulation.new(CONFIG, sim.map, mode.data if mode != null else null)
 			enemy_controller = InfiltrationEnemyController.new(sim.map, sim.targets.size())
 			escort_controller = InfiltrationEscortController.new(sim)
-			_view.setup(sim)
+			_view.setup(sim, InfiltrationMode.current_look())
 			_set_paused(false)
 		&"back":
 			if mode != null:
@@ -400,30 +413,39 @@ func _update_security_hud() -> void:
 
 
 func _mission_guide() -> String:
-	var point: Vector2 = mode.data.extraction
-	var key: String = "INF_OBJECTIVE_EXIT"
-	var number: int = 1
+	_guide_age = (_guide_age + 1) % GUIDE_REFRESH_FRAMES
+	if _guide_age != 1 and _guide_text != "":
+		return _guide_text
+	_guide_target = Vector2.INF
+	_guide_tiles = InfiltrationNavigation.NONE
+	_guide_key = "INF_OBJECTIVE_EXIT"
+	_guide_number = 1
 	if mode.data.disable_alarms:
 		for index in sim.panels.size():
 			if not sim.panels[index].disabled:
-				point = sim.map.panels[index].position
-				key = "INF_OBJECTIVE_PANEL"
-				number = index + 1
-				break
+				_consider_objective(sim.map.panels[index].position, "INF_OBJECTIVE_PANEL", index + 1)
 	for index in sim.mission.copied.size():
 		if sim.mission.copied[index] == 0:
-			point = mode.data.terminals[index]
-			key = "INF_OBJECTIVE_TERMINAL"
-			number = index + 1
-			break
+			_consider_objective(mode.data.terminals[index], "INF_OBJECTIVE_TERMINAL", index + 1)
 	for index in sim.prisoners.size():
 		if sim.mission.recruited[index] == 0:
-			point = sim.prisoners[index].position
-			key = "INF_OBJECTIVE_PRISONER"
-			number = index + 1
-			break
-	var offset: Vector2 = point - sim.player.position
+			_consider_objective(sim.prisoners[index].position, "INF_OBJECTIVE_PRISONER", index + 1)
+	if _guide_target == Vector2.INF:
+		_consider_objective(mode.data.extraction, "INF_OBJECTIVE_EXIT", 1)
+	var offset: Vector2 = _guide_navigation.direction(sim.player.position, _guide_target, CONFIG.body_radius)
 	var direction: String = "←" if offset.x < 0.0 else "→"
 	if absf(offset.y) > absf(offset.x):
 		direction = "↑" if offset.y < 0.0 else "↓"
-	return tr("INF_TARGET_GUIDE").format({"objective": tr(key).format({"index": number}), "direction": direction, "distance": roundi(offset.length())})
+	_guide_text = tr("INF_TARGET_GUIDE").format({"objective": tr(_guide_key).format({"index": _guide_number}), "direction": direction, "distance": roundi(maxi(_guide_tiles, 0) * sim.map.tile_size)})
+	return _guide_text
+
+
+func _consider_objective(point: Vector2, key: String, number: int) -> void:
+	var tiles: int = _guide_navigation.path_tiles(sim.player.position, point)
+	if tiles == InfiltrationNavigation.NONE:
+		return
+	if _guide_tiles == InfiltrationNavigation.NONE or tiles < _guide_tiles:
+		_guide_tiles = tiles
+		_guide_target = point
+		_guide_key = key
+		_guide_number = number

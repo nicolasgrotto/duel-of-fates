@@ -11,6 +11,7 @@ extends Resource
 @export var extraction: Vector2
 @export var extraction_radius: float = 96.0
 @export var bonus_seconds: float = 90.0
+@export var preview: Texture2D
 
 
 func objective_count() -> int:
