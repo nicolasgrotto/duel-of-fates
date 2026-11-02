@@ -41,7 +41,7 @@ class Resource:
         lines.extend(f"{key} = {value}" for key, value in values.items())
         target = FOLDER / path
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        target.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
 WEAPONS = {
