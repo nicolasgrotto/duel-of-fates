@@ -60,3 +60,16 @@ Todo asset do projeto (arte, fonte, som, música, shader de terceiros) tem uma l
 | `data/infiltration/missions/*.tres` | quatro layouts e objetivos originais | original, gerado por `tools/art/make_infiltration_tiles.py::mission_maps` | mesma licença do projeto | atlas industrial existente; sem conteúdo externo |
 | `assets/infiltration/prisoner.png` | prisioneiro superior sem arma, 24×28 px | original, gerado por `tools/art/make_infiltration_tiles.py` | mesma licença do projeto | mesma silhueta humana, túnica clara da paleta; sem amostras |
 | Terminal, extração e marcador de escolta em `InfiltrationView` | geometria na grade superior | original do projeto | mesma licença do projeto | cores centrais e marcas por forma, inclusive com efeitos reduzidos |
+
+| `assets/space/training_ship.png` | nave Trama, 40×40 px | original, gerada por `tools/art/make_ships.py::player` | mesma licença do projeto | placas e motores assimétricos, quatro tons da paleta central, sem referência de franquia |
+| `assets/space/target_drone.png` | drone-alvo, 32×32 px | original, gerado por `tools/art/make_ships.py::drone` | mesma licença do projeto | corpo octogonal e emissor lateral original |
+| `assets/space/nebula.png` | nebulosa periódica, 256×128 px | original, gerada por `tools/art/make_ships.py::nebula` | mesma licença do projeto | campo trigonométrico periódico em quatro opacidades, sem imagem externa |
+| `assets/audio/space/engine.wav` | motor em laço de 1 s | original, sintetizado por `tools/audio/synth_audio.py::space_sounds` | mesma licença do projeto | osciladores e ruído filtrado com crossfade, sem amostras |
+| `assets/audio/space/shot.wav` | tiro primário de 0,10 s | original, sintetizado por `space_sounds` | mesma licença do projeto | osciladores e envelope, sem amostras |
+| `assets/audio/space/charge.wav` | aviso de tiro de 0,30 s | original, sintetizado por `space_sounds` | mesma licença do projeto | tons ascendentes, sem amostras |
+| `assets/audio/space/boost.wav` | impulso de 0,28 s | original, sintetizado por `space_sounds` | mesma licença do projeto | ar filtrado e oscilador, sem amostras |
+| `assets/audio/space/shield.wav` | escudo de 0,18 s | original, sintetizado por `space_sounds` | mesma licença do projeto | parciais vítreas, sem amostras |
+| `assets/audio/space/hull.wav` | impacto no casco de 0,16 s | original, sintetizado por `space_sounds` | mesma licença do projeto | ruído filtrado e grave, sem amostras |
+| `assets/audio/space/explosion.wav` | destruição de 0,42 s | original, sintetizado por `space_sounds` | mesma licença do projeto | ruído com semente local e oscilador grave, sem amostras |
+| `data/space/training_arena.tres`, naves e armas em `data/space/` | arena, conjunto e alvos do treino de voo | original do projeto | mesma licença do projeto | posicionamento fixo e dados independentes do duelo |
+| Estrelas, rastros, escudo e fragmentos em `presentation/space/` | geometria na grade de pixels | original do projeto | mesma licença do projeto | semente própria, pools visuais e cores do UiPalette |

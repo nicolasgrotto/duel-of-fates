@@ -457,6 +457,24 @@ def infiltration_sounds():
     save("infiltration/alarm.wav", (np.sin(2 * math.pi * 410 * t) + 0.35 * np.sin(2 * math.pi * 615 * t)) * pulse * 0.5)
 
 
+def space_sounds():
+    rng = np.random.default_rng(1313)
+    t = t_axis(1.1)
+    engine = np.sin(2 * math.pi * 72 * t) * .3 + np.sin(2 * math.pi * 144 * t) * .1
+    engine += lowpass(rng.normal(0, 1, len(t)), 380) * .25
+    engine *= .85 + .15 * np.sin(2 * math.pi * 3 * t)
+    save("space/engine.wav", loop_crossfade(engine, .1), peak=.5)
+    save("space/shot.wav", sweep(1800, 640, .10, .5) * envelope(.10, .002, 2.0))
+    save("space/charge.wav", (sweep(260, 720, .30, .8) + partials([510, 765], .30, [4, 6]) * .25) * envelope(.30, .04, .8))
+    air = bandpass(rng.normal(0, 1, len(t_axis(.28))), 600, 5200)
+    save("space/boost.wav", (air * .7 + sweep(140, 420, .28, .7) * .35) * envelope(.28, .008, 1.5))
+    save("space/shield.wav", partials([1230, 1890, 2710], .18, [18, 22, 30]) * envelope(.18, .002, 1.0))
+    impact = lowpass(rng.normal(0, 1, len(t_axis(.16))), 1700)
+    save("space/hull.wav", (impact * .65 + thump(130, .16) * .4) * envelope(.16, .002, 2.0))
+    blast = lowpass(rng.normal(0, 1, len(t_axis(.42))), 2000)
+    save("space/explosion.wav", (blast * .7 + sweep(95, 30, .42, .5) * .6) * envelope(.42, .003, 1.8))
+
+
 if __name__ == "__main__":
     blade_sounds()
     impact_sounds()
@@ -473,4 +491,5 @@ if __name__ == "__main__":
     arena_ambiences()
     themes()
     infiltration_sounds()
+    space_sounds()
     print("audio written")

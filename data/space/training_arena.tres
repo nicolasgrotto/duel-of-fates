@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="SpaceArenaData" format=3 uid="uid://cg7a6dvtngor"]
+
+[ext_resource type="Script" uid="uid://66iq1w7pov1m" path="res://data/space/space_arena_data.gd" id="1"]
+[ext_resource type="Script" uid="uid://2dg0a4ixdwc5" path="res://data/space/space_ship_placement.gd" id="2"]
+[ext_resource type="Resource" path="res://data/space/ships/target_drone.tres" id="drone"]
+[ext_resource type="Resource" path="res://data/space/ships/training_ship.tres" id="player"]
+
+[sub_resource type="Resource" id="pilot"]
+script = ExtResource("2")
+ship = ExtResource("player")
+position = Vector2(1400, 900)
+
+[sub_resource type="Resource" id="east"]
+script = ExtResource("2")
+ship = ExtResource("drone")
+position = Vector2(1740, 900)
+angle = 3.14159265
+team = 1
+respawn_seconds = 3.0
+
+[sub_resource type="Resource" id="north"]
+script = ExtResource("2")
+ship = ExtResource("drone")
+position = Vector2(1320, 360)
+angle = 1.57079633
+team = 1
+respawn_seconds = 3.0
+
+[sub_resource type="Resource" id="west"]
+script = ExtResource("2")
+ship = ExtResource("drone")
+position = Vector2(720, 1180)
+angle = -0.78539816
+team = 1
+respawn_seconds = 3.0
+
+[resource]
+script = ExtResource("1")
+id = &"flight_training"
+title_key = "SPACE_TRAINING"
+ships = Array[ExtResource("2")]([SubResource("pilot"), SubResource("east"), SubResource("north"), SubResource("west")])

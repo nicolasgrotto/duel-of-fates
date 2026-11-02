@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="SpaceShipData" format=3]
+
+[ext_resource type="Script" path="res://data/space/space_ship_data.gd" id="1"]
+[ext_resource type="Resource" path="res://data/space/weapons/training_primary.tres" id="2"]
+[ext_resource type="Texture2D" path="res://assets/space/training_ship.png" id="3"]
+
+[resource]
+script = ExtResource("1")
+id = &"weave"
+name_key = "SPACE_SHIP_WEAVE"
+primary = ExtResource("2")
+sprite = ExtResource("3")

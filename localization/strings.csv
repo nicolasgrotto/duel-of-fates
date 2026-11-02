@@ -906,3 +906,27 @@ INF_ESCORT_SAFE,extraída,extracted
 INF_SECURITY_READY,Alarme pronto,Alarm ready
 INF_SECURITY_ACTIVE,ALARME ATIVO,ALARM ACTIVE
 INF_SECURITY_DISABLED,Alarmes desativados,Alarms disabled
+SPACE_TRAINING,Treino de voo,Flight training
+SPACE_SHIP_WEAVE,Trama,Weave
+SPACE_TARGET_DRONE,Drone-alvo,Target drone
+SPACE_HULL,Casco,Hull
+SPACE_SHIELD,Escudo,Shield
+SPACE_TURN,girar,turn
+SPACE_THRUST,propulsão,thrust
+SPACE_REVERSE,ré,reverse
+SPACE_FIRE,primária,primary
+SPACE_BOOST,impulso,boost
+SPACE_SECONDARY,secundária,secondary
+SPACE_OBJECTIVE,"Pratique voo, impulso e tiro · drones abatidos: {count}","Practice flight, boost and fire · drones destroyed: {count}"
+SPACE_BOOST_READY,Impulso pronto,Boost ready
+SPACE_BOOST_COOLDOWN,Impulso: {seconds} s,Boost: {seconds} s
+SPACE_NO_SECONDARY,Secundária indisponível no treino,Secondary unavailable in training
+SPACE_POOL_FULL,Aguarde os disparos em voo,Wait for the shots in flight
+SPACE_DEFEATED,TREINO ENCERRADO,TRAINING ENDED
+SPACE_RESTART,Reiniciar treino,Restart training
+SPACE_BACK,Voltar a Modos especiais,Back to Special modes
+SPACE_LEGEND,"Gire para mirar · soltar a propulsão conserva inércia
+Impulso: início e fim vulneráveis · escudo regenera após 2 s
+Drone avisa antes de disparar · secundária indisponível","Turn to aim · releasing thrust preserves inertia
+Boost: vulnerable start and finish · shield recharges after 2 s
+Drones warn before firing · secondary unavailable"

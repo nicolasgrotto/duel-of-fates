@@ -23,6 +23,7 @@ const SCREENS: Dictionary = {
 	&"infiltration": "res://screens/infiltration/infiltration_menu.tscn",
 	&"infiltration_mission": "res://screens/infiltration/infiltration_screen.tscn",
 	&"infiltration_result": "res://screens/infiltration/infiltration_menu.tscn",
+	&"space_training": "res://screens/space/space_training.tscn",
 }
 const FADE_SECONDS: float = 0.18
 const SETTLE_FRAMES: int = 2

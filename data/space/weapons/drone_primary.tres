@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SpaceWeaponData" format=3]
+
+[ext_resource type="Script" path="res://data/space/space_weapon_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"drone_primary"
+speed = 460.0
+max_range = 1200.0
+interval = 1.4
+windup = 0.45
+muzzle = 32.0
+muzzle_side = 14.0

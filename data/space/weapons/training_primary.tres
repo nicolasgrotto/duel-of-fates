@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="SpaceWeaponData" format=3]
+
+[ext_resource type="Script" path="res://data/space/space_weapon_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"training_primary"
