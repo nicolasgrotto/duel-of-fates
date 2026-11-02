@@ -380,3 +380,18 @@ Validado pelo autor em 2026-11-01: D.1–D.4 ✅.
 | 12.8 | Pausar, voltar, reiniciar, usar Próxima e sair da última missão | Relógio e mundo congelam na pausa; controle pendente é descartado; retorno conserva seleção; última volta à lista | 47 verificações por resolução, InputMap pelo MCP; julgar áudio ouvido |
 
 Evidências em `build/task12_renders/` (82 capturas e dez folhas), `build/task12_mcp_renders/`, `task12_tests_final.log`, `task12_mcp_compile_checks.json` e `task12_assets_check.log`. Capturas usam `capture_progress.cfg`; os testes diretos isolam APPDATA em `build/task12_userdata`. A aprovação humana de controle/áudio e a meta de 60 FPS estáveis permanecem pendentes.
+
+## Task 13 — Treino de voo
+
+| Caso | Ação | Resultado esperado | Validação local |
+| --- | --- | --- | --- |
+| 13.1 | Abrir `screens/space/space_training.tscn` e F6; testar teclado e gamepad | Nave em vista superior, controles remapeados do J1, sem nova entrada de menu | 28 verificações gráficas de fluxo e InputMap pelo MCP; controle físico pendente |
+| 13.2 | Propulsionar, soltar, girar e dar ré | Inércia decresce, giro muda a direção de empuxo, ré mais fraca; sem atravessar corpos/bordas e sem dano de contato | testes de matemática, limites e colisões; capturas em duas resoluções |
+| 13.3 | Segurar primária e destruir um drone | Três acertos, uma explosão curta e reaparecimento após 3 s, adiado com ponto ocupado | testes de dano, cadência, pool, alcance e percurso relativo; capturas/MCP |
+| 13.4 | Cruzar tiros com impulso, observar início e fim | Janela de 0,05 a 0,20 s invulnerável; preparação/cauda vulneráveis, sem atirar/girar e com recarga | testes dos limites inclusivos, dano e bloqueio de ações; imagens completas/reduzidas |
+| 13.5 | Esperar um disparo e o escudo recuperar | Drone avisa; escudo absorve antes do casco, excedente atravessa; regeneração após 2 s sem acerto | testes e capturas de aviso, escudo e casco; julgar áudio ouvido |
+| 13.6 | Tocar secundária, pausar com arma segurada, reiniciar e sair | Aviso de indisponível; pausa congela tudo e exige soltar; retry limpa estado; volta a Modos especiais sem alterar outros bindings | três reaberturas com câmera ativa; saves preservados |
+| 13.7 | F3 e efeitos reduzidos; conferir PT/EN a 720p/1080p | Velocidade e círculos físicos visíveis; janela/aviso permanecem claros sem ecos; HUD e pausa sem corte | 38 capturas e duas folhas em `build/task13_renders/`, cinco capturas nativas MCP |
+| 13.8 | Pilotar continuamente na máquina de referência | Voo e áudio confortáveis, nave, tiros e aviso legíveis; sem travamento | amostra GT 730 com editor aberto: 59,9 FPS, pior quadro 18,1 ms, 19 draw calls; validação humana e 60 FPS sustentados pendentes |
+
+Suíte: 536 testes, zero falhas; 42 novos, incluindo reutilização dos mesmos objetos de nave/evento/projétil/intenção e contagem de objetos estável por 3.000 ticks após aquecimento. Evidências em `build/task13_tests_final.log`, `task13_bindings_final.log`, `task13_mcp_compile_checks.json`, `task13_assets_check.log`, `task13_flow_smoke.log` e `task13_profile.log`. Nenhuma gravação no save do autor; capturas usam `capture_progress.cfg` e processos diretos isolam APPDATA em `build/task13_userdata`.

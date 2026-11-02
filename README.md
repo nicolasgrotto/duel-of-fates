@@ -20,6 +20,8 @@ Fases 0 a 7.5 concluídas, na branch `pixel-art`: duelo completo com o elenco in
 - Português e inglês, teclado e gamepad.
 - **Infiltração** em Jogar: modo independente em visão superior, com tutorial e três missões de sabotagem, obtenção de informação e escolta. Patrulhas, furtividade, combate e alarmes determinísticos; briefing, extração, resultados e recordes/bônus salvos. Poderes desligados; sem moeda ou melhoria permanente. Ver [content/INFILTRATION.md](content/INFILTRATION.md).
 
+**Treino de voo (task 13):** abra [screens/space/space_training.tscn](screens/space/space_training.tscn) no editor e execute com F6. A/D giram, W propulsiona, S dá ré, J dispara e Shift inicia o impulso evasivo; são os bindings remapeáveis do J1. Inclui drone-alvo, escudo, casco, pausa e F3. Missões, melhorias e entrada em Jogar › Modos especiais pertencem à task 14; o treino não grava progresso.
+
 ## Abrir o projeto
 
 1. Instale a Godot 4.7 (versão padrão, GDScript).
