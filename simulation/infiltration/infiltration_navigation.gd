@@ -53,6 +53,14 @@ func direction(start: Vector2, destination: Vector2, radius: float) -> Vector2:
 	return (center - start).normalized()
 
 
+func invalidate() -> void:
+	for y in _map.rows.size():
+		for x in _width:
+			_passable[y * _width + x] = 0 if _map.is_solid(x, y) else 1
+	_goals.fill(NONE)
+	_next_slot = 0
+
+
 func path_tiles(start: Vector2, destination: Vector2) -> int:
 	var first: Vector2i = Vector2i((start / _map.tile_size).floor())
 	var last: Vector2i = Vector2i((destination / _map.tile_size).floor())

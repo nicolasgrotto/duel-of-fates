@@ -1055,3 +1055,38 @@ TECHNIQUE_RETREAT_DRAW,Saque de recuo,Retreat Draw
 TECHNIQUE_COVERING_FIRE,Fogo de cobertura,Covering Fire
 BLASTER_HOLSTER_PISTOL,Pistola de coldre,Holster Pistol
 BLASTER_BACK_RIFLE,Rifle de dorso,Back Rifle
+BOPS_TITLE,Operações de blaster,Blaster Operations
+BOPS_TRAINING,Pátio de calibração,Calibration Yard
+BOPS_KEYS_TITLE,CONTROLES · OPERAÇÕES DE BLASTER,CONTROLS · BLASTER OPERATIONS
+BOPS_OBJECTIVE,"Treine a mira, use a cobertura e esquive no tempo dos disparos.","Practice your aim, use cover and time your dodges against incoming fire."
+BOPS_HEALTH,Vida,Health
+BOPS_HEAT,Calor,Heat
+BOPS_COOLING,Resfriando,Cooling
+BOPS_VIGOR,Vigor,Stamina
+BOPS_READY,Pronto,Ready
+BOPS_COOLDOWN,{action} · {time},{action} · {time}
+BOPS_SECONDS,{seconds} s,{seconds} s
+BOPS_DEFEATED,TREINO ENCERRADO,TRAINING ENDED
+BOPS_RESTART,Reiniciar treino,Restart training
+BOPS_CHARACTER,Personagem · {name},Character · {name}
+BOPS_POWER,Poder · {name},Power · {name}
+BOPS_BACK,Voltar a Modos especiais,Back to Special modes
+BOPS_TEMPORARY_SIDEARM,Pistola temporária,Temporary Sidearm
+BOPS_AIM,Mirar,Aim
+BOPS_AIM_CONTROLS,Mouse / stick direito  mirar,Mouse / right stick  aim
+BOPS_CONTROLS_PAGES,← →  Duelo / Operações de blaster,← →  Duel / Blaster Operations
+BOPS_MOUSE_LEFT,Mouse 1,LMB
+BOPS_MOUSE_RIGHT,Mouse 2,RMB
+BOPS_PAUSE_LEGEND,"Guarda no tempo devolve na direção da mira.
+Esquiva de precisão devolve a recarga. Calor cheio trava a arma.
+Trocar personagem ou poder reinicia o treino.","Timed guard reflects along your aim.
+Precision dodges refund the cooldown. Full heat locks the weapon.
+Changing character or power restarts training."
+BOPS_ACTION_LEFT,Mover à esquerda,Move left
+BOPS_ACTION_RIGHT,Mover à direita,Move right
+BOPS_ACTION_UP,Mover para cima,Move up
+BOPS_ACTION_DOWN,Mover para baixo,Move down
+BOPS_ACTION_FIRE,Disparar,Fire
+BOPS_ACTION_GUARD,Guarda / parry,Guard / parry
+BOPS_ACTION_DODGE,Esquivar,Dodge
+BOPS_ACTION_POWER,Poder equipado,Equipped power

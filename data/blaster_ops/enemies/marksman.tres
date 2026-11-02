@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="BlasterOpsEnemyData" format=3]
+
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_enemy_data.gd" id="1"]
+[ext_resource type="Resource" path="res://data/blaster_ops/bolts/marksman_bolt.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"marksman"
+kind = 1
+archetype = 3
+health = 18.0
+speed = 0.0
+sprite = 3
+vision_range = 900.0
+vision_degrees = 130.0
+telegraph_seconds = 0.65
+initial_delay = 2.0
+fire_interval = 1.8
+can_raise_alarm = false
+respawn_seconds = 0.0
+bolt = ExtResource("2")
+aim_line = true

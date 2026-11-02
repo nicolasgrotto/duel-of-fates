@@ -4,6 +4,25 @@ Roteiro para o autor validar, jogando, o que entrou na fase 7.5 (revisão de com
 
 Legenda: ✅ ficou bom · ⚠️ funciona mas a sensação ou o número precisa de ajuste · ❌ não funciona.
 
+## 20. Núcleo de Operações de blaster (task 16)
+
+Abra `screens/blaster_ops/blaster_ops_training.tscn` e execute com F6. A entrada em Jogar › Modos especiais e as missões são da task 17. O treino não grava progresso. Números em `data/balance/blaster_ops_config.tres`, conjuntos/inimigos em `data/blaster_ops/` e regras em `content/BLASTER_OPS.md`.
+
+| Passo | Verificar | Resultado esperado |
+| --- | --- | --- |
+| 20.1 | Andar com WASD, mirar para o lado contrário com mouse e disparar com botão esquerdo/Espaço | Movimento independente da mira; diagonal normalizada; no controle, stick esquerdo move e direito mira, mantendo direção ao soltar |
+| 20.2 | Segurar disparo da pistola até aquecer; soltar e apertar de novo | Quinto tiro enche calor; arma trava por pelo menos 1 s e até esfriar a 40; HUD avisa e a fumaça é discreta |
+| 20.3 | Esquivar com Shift cedo, na chegada do tiro e tarde | Dash colide com paredes; preparação/cauda vulneráveis; precisão mostra pulso e zera recarga uma vez, sem devolver o projétil |
+| 20.4 | Mirar contra o tiro e tocar botão direito/Q; repetir com guarda antecipada e de costas | Parry devolve pela mira, perfeito acelera; guarda tardia desfaz e gasta Vigor; costas recebem dano |
+| 20.5 | Observar os quatro inimigos | Soldado avisa antes do tiro; Atirador mostra linha travada; cada tiro da rajada do Pesado tem preparação e sua frente reduz dano; Investidor fecha distância e ataca em arco evitável |
+| 20.6 | Atirar nas caixas marcadas, nas comuns e na parede; atravessar a caixa quebrada | Dano em três estados; com zero vira destroço passável; tiro que quebra termina nela, o próximo atravessa; inimigos usam a abertura |
+| 20.7 | E usa Repulsão; na pausa, trocar por Puxão e Barreira | Só um equipado; preparação clara, recarga desde a ativação; Repulsão empurra cone, Puxão aproxima o mais próximo, Barreira absorve tiros por tempo/vida limitados; parede bloqueia poderes direcionais |
+| 20.8 | Trocar personagem/poder pela pausa; reiniciar, perder, sair e reabrir | Troca reinicia tentativa; Corsária/Lince/Coldre com primária normal, Guardião com temporária mais fraca; caixas, tiros, vida e recargas restaurados; câmera permanece ativa |
+| 20.9 | Pausar segurando tiro/poder e retomar; remapear em Teclas e botões › Operações de blaster; voltar ao duelo | Pausa congela ticks e áudio; comandos pendentes descartados; dicas seguem remapeamento próprio; bindings do duelo preservados |
+| 20.10 | PT/EN, 720p/1080p, efeitos reduzidos e F3; ouvir avisos e jogar com gamepad | HUD/controles sem corte; preparações, projéteis, precisão e Barreira legíveis; F3 mostra mira, calor, recargas, colisões, alvos/estados e vida das caixas |
+
+Validação automática: **672 testes, zero falhas**, 35 novos; **936 duelos** idênticos ao baseline; **25 scripts válidos pelo MCP**. Piloto real na cena: **95 verificações sem falha por resolução**, 88 PNGs e oito folhas inspecionadas em `build/task16_renders/`; 1080p nativo em SubViewport próprio. Editor: 12 PNGs nativos de 1600×900 e folha inspecionada, InputMap/pausa e 18 verificações de precisão/cobertura sem falha (`build/task16_mcp_flow_checks.json`). EN/efeitos reduzidos: 10 PNGs em `build/task16_extra_renders/`, nove verificações sem falha por resolução. Logs: `build/task16_tests_full.log`, `build/task16_matrix_comparison.log`, `build/task16_capture720.log`, `build/task16_capture1080.log` e `build/task16_compile_checks.json`. Capturas começam com `capture_progress.cfg`, processos diretos usam APPDATA em `build/task16_userdata`. Arte regenerada idêntica por SHA-256; 37 arquivos preexistentes do autor preservados byte a byte. Avaliação humana de sensação, gamepad físico, áudio e desempenho sustentado continua pendente.
+
 ## 19. Estilo Coldre da História (task 15)
 
 | Passo | Verificar | Resultado esperado |

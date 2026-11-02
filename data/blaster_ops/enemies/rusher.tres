@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="BlasterOpsEnemyData" format=3]
+
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_enemy_data.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/blaster_ops/rusher.png" id="texture"]
+
+[resource]
+script = ExtResource("1")
+id = &"rusher"
+kind = 1
+archetype = 0
+health = 28.0
+speed = 200.0
+sprite = 0
+vision_range = 900.0
+vision_degrees = 130.0
+telegraph_seconds = 0.25
+initial_delay = 0.5
+fire_interval = 0.8
+can_raise_alarm = false
+respawn_seconds = 0.0
+texture = ExtResource("texture")
+melee_damage = 12.0
+melee_guard_vigor = 14.0
+melee_range = 48.0
+melee_interval = 0.8
+melee_flinch = 0.2
+preferred_range = 48.0

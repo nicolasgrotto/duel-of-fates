@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="BlasterOpsEnemyData" format=3]
+
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_enemy_data.gd" id="1"]
+[ext_resource type="Resource" path="res://data/blaster_ops/bolts/heavy_burst.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"heavy"
+kind = 1
+archetype = 2
+health = 48.0
+speed = 70.0
+sprite = 2
+vision_range = 900.0
+vision_degrees = 130.0
+telegraph_seconds = 0.12
+initial_delay = 1.2
+fire_interval = 1.5
+can_raise_alarm = false
+respawn_seconds = 0.0
+bolt = ExtResource("2")
+front_damage_ratio = 0.35
+front_degrees = 120.0
+turn_degrees = 120.0

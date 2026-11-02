@@ -52,3 +52,15 @@ static func hint(action: StringName, text_key: String) -> String:
 
 static func line(hints: PackedStringArray) -> String:
 	return SEPARATOR.join(hints)
+
+
+static func blaster_ops_hint(suffix: String) -> String:
+	var action: StringName = StringName(BlasterOpsBindings.PREFIX + suffix)
+	var names: PackedStringArray = key_names(action)
+	for event in InputMap.action_get_events(action):
+		if event is InputEventMouseButton:
+			names.append(TranslationServer.translate("BOPS_MOUSE_LEFT" if event.button_index == MOUSE_BUTTON_LEFT else "BOPS_MOUSE_RIGHT"))
+	var buttons: PackedStringArray = button_names(action)
+	if not buttons.is_empty():
+		names.append(buttons[0])
+	return "%s  %s" % [" / ".join(names), TranslationServer.translate("BOPS_ACTION_" + suffix.to_upper())]

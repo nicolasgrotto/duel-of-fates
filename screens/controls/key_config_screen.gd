@@ -29,6 +29,7 @@ func _ready() -> void:
 	for action in InputBindings.REBINDABLE:
 		_list.add_item(StringName(action), "")
 	_list.add_item(&"restore", tr("KEYS_RESTORE"))
+	_list.add_item(&"blaster_ops", tr("BOPS_TITLE"))
 	_list.add_item(&"back", tr("MENU_BACK"))
 	_list.chosen.connect(_on_chosen)
 	_status = _label(&"HintLabel")
@@ -107,6 +108,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _on_chosen(id: StringName) -> void:
 	match id:
+		&"blaster_ops":
+			SceneRouter.change(&"blaster_ops_keys")
 		&"back":
 			_leave()
 		&"restore":

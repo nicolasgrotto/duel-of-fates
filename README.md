@@ -66,6 +66,7 @@ Arte e áudio são gerados por ferramentas offline (Python 3 com numpy e Pillow)
 | [content/STORY.md](content/STORY.md) | Mundo, campanha, rotas, diálogos (PT-BR e EN) e finais |
 | [content/ARENAS.md](content/ARENAS.md) | As arenas e suas assinaturas visuais |
 | [content/INFILTRATION.md](content/INFILTRATION.md) | Missões, escolta, extração e bônus da Infiltração |
+| [content/BLASTER_OPS.md](content/BLASTER_OPS.md) | Núcleo de tiro superior, calor, esquiva, poderes e treino técnico de Operações de blaster |
 | [content/HUNTS.md](content/HUNTS.md) | As três caçadas, recompensas e falas nos dois idiomas |
 | [design/ART_DIRECTION.md](design/ART_DIRECTION.md) | Identidade visual, personagens, lâminas, luz e animação |
 | [design/VFX.md](design/VFX.md) | Efeitos, impacto, câmera lenta e efeitos dos poderes |

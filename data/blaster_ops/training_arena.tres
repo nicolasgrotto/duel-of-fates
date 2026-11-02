@@ -1,0 +1,70 @@
+[gd_resource type="Resource" script_class="BlasterOpsArenaData" format=3]
+
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_arena_data.gd" id="1"]
+[ext_resource type="Script" path="res://data/infiltration/infiltration_enemy_placement.gd" id="placement"]
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_cover_data.gd" id="cover"]
+[ext_resource type="Texture2D" path="res://assets/infiltration/training_tiles.png" id="tiles"]
+[ext_resource type="Texture2D" path="res://assets/infiltration/training_sprites.png" id="sprites"]
+[ext_resource type="Texture2D" path="res://assets/infiltration/enemy_sprites.png" id="enemies"]
+[ext_resource type="Texture2D" path="res://assets/blaster_ops/covers.png" id="cover_atlas"]
+[ext_resource type="Resource" path="res://data/blaster_ops/enemies/soldier.tres" id="soldier"]
+[ext_resource type="Resource" path="res://data/blaster_ops/enemies/marksman.tres" id="marksman"]
+[ext_resource type="Resource" path="res://data/blaster_ops/enemies/heavy.tres" id="heavy"]
+[ext_resource type="Resource" path="res://data/blaster_ops/enemies/rusher.tres" id="rusher"]
+
+[sub_resource type="Resource" id="e0"]
+script = ExtResource("placement")
+enemy = ExtResource("soldier")
+position = Vector2(864.0, 608.0)
+direction = Vector2(-1, 0)
+
+[sub_resource type="Resource" id="e1"]
+script = ExtResource("placement")
+enemy = ExtResource("marksman")
+position = Vector2(1120.0, 736.0)
+direction = Vector2(-1, 0)
+
+[sub_resource type="Resource" id="e2"]
+script = ExtResource("placement")
+enemy = ExtResource("heavy")
+position = Vector2(800.0, 992.0)
+direction = Vector2(-1, -1)
+
+[sub_resource type="Resource" id="e3"]
+script = ExtResource("placement")
+enemy = ExtResource("rusher")
+position = Vector2(480.0, 352.0)
+direction = Vector2(0, 1)
+
+[sub_resource type="Resource" id="c0"]
+script = ExtResource("cover")
+cell = Vector2i(10, 11)
+
+[sub_resource type="Resource" id="c1"]
+script = ExtResource("cover")
+cell = Vector2i(10, 12)
+
+[sub_resource type="Resource" id="c2"]
+script = ExtResource("cover")
+cell = Vector2i(13, 14)
+
+[sub_resource type="Resource" id="c3"]
+script = ExtResource("cover")
+cell = Vector2i(15, 9)
+
+[sub_resource type="Resource" id="c4"]
+script = ExtResource("cover")
+cell = Vector2i(22, 11)
+
+[resource]
+script = ExtResource("1")
+id = &"calibration_yard"
+title_key = "BOPS_TRAINING"
+player_spawn = Vector2(480, 736)
+rows = PackedStringArray("################################", "#..............................#", "#..............................#", "#..................#...........#", "#..................#...........#", "#..................#...........#", "#..................#...........#", "#............C.....#...........#", "#..................#...........#", "#..............C...............#", "#..............................#", "#.........C...........C........#", "#.........C....................#", "#..............................#", "#............C.....#...........#", "#..................#...........#", "#..................#...........#", "#..................#...........#", "#...========================...#", "#..............................#", "#..............................#", "################################")
+tiles = ExtResource("tiles")
+sprites = ExtResource("sprites")
+enemy_sprites = ExtResource("enemies")
+cover_atlas = ExtResource("cover_atlas")
+enemies = Array[ExtResource("placement")]([SubResource("e0"), SubResource("e1"), SubResource("e2"), SubResource("e3")])
+covers = Array[ExtResource("cover")]([SubResource("c0"), SubResource("c1"), SubResource("c2"), SubResource("c3"), SubResource("c4")])

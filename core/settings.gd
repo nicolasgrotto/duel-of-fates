@@ -25,6 +25,8 @@ var vibration: bool = true
 var key_preset: StringName = &"default"
 var custom_keys: Dictionary = {}
 var custom_buttons: Dictionary = {}
+var blaster_ops_keys: Dictionary = {}
+var blaster_ops_buttons: Dictionary = {}
 
 
 func _ready() -> void:
@@ -106,6 +108,8 @@ func load_settings(path: String = SETTINGS_PATH) -> void:
 	key_preset = StringName(file.get_value("input", "key_preset", String(key_preset)))
 	custom_keys = file.get_value("input", "custom_keys", {})
 	custom_buttons = file.get_value("input", "custom_buttons", {})
+	blaster_ops_keys = file.get_value("blaster_ops", "keys", {})
+	blaster_ops_buttons = file.get_value("blaster_ops", "buttons", {})
 	if not InputBindings.PRESETS.has(key_preset):
 		key_preset = &"default"
 	if not LOCALES.has(locale):
@@ -132,6 +136,8 @@ func save_settings(path: String = SETTINGS_PATH) -> void:
 	file.set_value("input", "key_preset", String(key_preset))
 	file.set_value("input", "custom_keys", custom_keys)
 	file.set_value("input", "custom_buttons", custom_buttons)
+	file.set_value("blaster_ops", "keys", blaster_ops_keys)
+	file.set_value("blaster_ops", "buttons", blaster_ops_buttons)
 	for slot in hold_to_lock.size():
 		file.set_value("accessibility", "hold_to_lock_p%d" % (slot + 1), hold_to_lock[slot])
 	file.save(path)
