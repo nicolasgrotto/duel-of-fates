@@ -84,7 +84,7 @@ Depois, o jogador distribui os pontos iniciais.
 - Pontos investidos são definitivos. Normal e Difícil obrigam a escolher onde chegar a 7. Mesmo com Fluxo 7, o protagonista fica a −2 dos chefes de Fluxo 9: poderes pela metade contra eles. A lâmina tem de decidir.
 - **Espaços de poder**: começa com um (Poder); abre Frente + Poder no 3º encontro e Trás + Poder no 6º.
 - **Pontos de habilidade** (decisão do autor; substitui "um poder por encontro"): moeda própria, separada dos pontos de atributo. Cada duelo da História dá pontos, **vencido ou perdido**: vitória 3, derrota 1; os marcos (encontros 3 e 6) dão +1 e o secreto dá 3. Uma campanha sem derrotas soma 26 (29 com o secreto); as duas árvores juntas custam 36 na Aurora e 37 no Eclipse, então o jogador escolhe uma build. Números em `CampaignData` (`skill_points_win`, `skill_points_loss`, `skill_points_milestone`, `skill_points_secret`), nunca no código. Pontos gastos são definitivos.
-- **Duas árvores** na mesma tela, com abas: **Poderes** e **Lâmina**. Cada nó custa pontos, exige o nó anterior do mesmo ramo e, nas supremas, o tier de Fluxo (POWERS.md: Tier II a partir do Fluxo 4, Tier III a partir do 7). Um nó desbloqueado e ainda sem requisito de tier aparece como "comprado, exige Fluxo N" e não pode ser equipado.
+- **Três árvores** na mesma tela, com abas: **Poderes**, **Lâmina** e **Blaster** (esta só abre com um blaster equipado; ver GAME_DESIGN, "Arsenal da História"). Cada nó custa pontos, exige o nó anterior do mesmo ramo e, nas supremas, o tier de Fluxo (POWERS.md: Tier II a partir do Fluxo 4, Tier III a partir do 7). Um nó desbloqueado e ainda sem requisito de tier aparece como "comprado, exige Fluxo N" e não pode ser equipado.
 - **Árvore de Poderes**, do mais simples às supremas (o primeiro nó vem de graça na criação):
 
 | # | Aurora | Custo | Eclipse | Custo |
@@ -406,7 +406,7 @@ O bônus de marco dos pontos de habilidade é concedido na vitória; derrotas em
 
 ### Kit de estilo na árvore de Lâmina
 
-Task 15: **Coldre / Holster** é a quarta opção na criação. Base original **Duelista de Coldre / Holster Duelist**, família Guardião com dano físico 10% menor. Frente vem aprendida (Saque duplo); os nós Trás, Ar e Habilidade liberam Saque de recuo, Investida descendente e Fogo de cobertura pelos custos existentes. Corte Projetado continua disponível nos três espaços. Prévia mostra arma carregada, duas mãos na lâmina e o traje escolhido. Não há novo passo de criação nesta entrega.
+Task 15: **Coldre / Holster** é a quarta opção na criação. Base original **Duelista de Coldre / Holster Duelist**, família Guardião com dano físico 10% menor. Começa com a Pistola e o Saque duplo equipados. Decisão do autor: as técnicas de blaster ficam na **árvore de Blaster** (Saque duplo → Saque de recuo → Fogo de cobertura; GAME_DESIGN, "Arsenal da História"), e a árvore de Lâmina do Coldre traz as técnicas de sabre do Guardião, com Investida descendente no ar. Corte Projetado continua disponível nos três espaços. Prévia mostra arma carregada, duas mãos na lâmina e o traje escolhido. Não há novo passo de criação nesta entrega.
 
 Save guarda `blaster_id`, inicialmente `holster_pistol`; ausência ou id inválido resolve à pistola sem perder outros campos. O Arsenal do hub compra e equipa as armas (GAME_DESIGN, "Arsenal da História"). A consulta `uses_blaster_style()` identifica o estilo. Na futura Saga (task 20) não há bifurcação: toda missão pode ser concluída só com o sabre; os outros estilos usam Infiltração. Nenhuma missão nova é adicionada aqui.
 

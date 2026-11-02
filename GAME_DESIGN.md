@@ -626,15 +626,27 @@ Cada arma tem seu **padrão de disparo**, usado pelas técnicas de saque e pela 
 
 | Blaster | Mãos e porte | Tiros | Dano | Tranco | Saque | Preço |
 |---|---|---|---|---|---|---|
-| Pistola | 1, quadril | conforme a técnica (1 a 3) | 4 | 0,25 s | 0,15 s | grátis |
-| Revólver pesado | 1, coxa | 1 | 12 | 0,40 s | 0,22 s | 150 |
-| Carabina | 2, lombar | 2 | 6 | 0,25 s | 0,28 s | 200 |
-| Rifle | 2, costas | 3 | 6 | 0,20 s | 0,40 s | 300 |
+| Pistola | 1, quadril | conforme a técnica (1 a 3) | 4 | 0,25 s | 0,15 s | 150 |
+| Revólver pesado | 1, coxa | 1 | 12 | 0,40 s | 0,22 s | 200 |
+| Carabina | 2, lombar | 2 | 6 | 0,25 s | 0,28 s | 250 |
+| Rifle | 2, costas | 3 | 6 | 0,20 s | 0,40 s | 350 |
 | Rifle de precisão | 2, costas | 1 | 22 | 0,50 s | 0,60 s | 450 |
 
 Disparo devolvido segue valendo: errar com o Rifle de precisão contra quem sabe aparar custa caro. O Vigor gasto e o tamanho do disparo sobem com a arma.
 
-**Estilos sem blaster:** quem tem um blaster equipado escolhe um dos espaços de técnica (Frente ou Trás) para o saque. Ele **substitui** a técnica daquele espaço, e essa é a contrapartida. Sem blaster equipado, nada muda. O estilo Coldre mantém seu kit e a habilidade Fogo de cobertura, que usa o padrão da arma equipada.
+**Pistola de graça só no Coldre** (decisão do autor): o estilo Coldre começa com a Pistola equipada. Os outros estilos pagam 150 por ela.
+
+**Árvore de Blaster** (decisão do autor): as técnicas que exigem blaster saem da árvore de Lâmina e ganham uma aba própria nas Habilidades, para que quem não quer blaster nunca veja um nó travado por arma na árvore do sabre nem gaste pontos nisso.
+
+| Nó | Espaço | Custo | Efeito |
+|---|---|---|---|
+| Saque duplo | Frente | 0, vem com o primeiro blaster | Substitui a técnica de frente |
+| Saque de recuo | Trás | 2, exige Saque duplo | Substitui a técnica de trás |
+| Fogo de cobertura | Habilidade | 3, exige Saque de recuo | Substitui a habilidade do estilo |
+
+A aba só abre com um blaster equipado. Cada nó comprado liga e desliga: desligado ou com a arma guardada, o sabre volta àquele espaço. Essa ocupação é a contrapartida de usar blaster. Na aba Lâmina, confirmar uma técnica de sabre devolve o espaço a ela. O Corte Projetado e o saque não dividem o mesmo espaço.
+
+**Coldre:** a árvore de Lâmina dele agora traz técnicas de sabre, as do Guardião, como nos outros estilos. O que o estilo tem de próprio é a Pistola e o Saque duplo já equipados na criação, além do corpo de duas mãos com dano de lâmina 10% menor. Se isso compensa os 10% é ponto a validar no PLAYTEST.
 
 ## Estilo Coldre da História (task 15)
 

@@ -551,9 +551,11 @@ Base de História em `data/characters/holster/`, não selecionável, usa recurso
 
 ### Arsenal da História
 
-`BlasterData` descreve o padrão da arma: `shot_count` (0 deixa a técnica decidir, caso da pistola), `shot_interval`, `vigor_multiplier`, `price` e `description_key`. `FighterState.move_shot_count` e `vigor_cost_of` aplicam o padrão só a técnicas de saque, e `AttackState` e `ActionStarter` os consultam. A lista à venda, as técnicas de saque por espaço e os créditos ficam em `CampaignData`.
+`BlasterData` descreve o padrão da arma: `shot_count` (0 deixa a técnica decidir, caso da pistola), `shot_interval`, `vigor_multiplier`, `price` e `description_key`. `FighterState.move_shot_count` e `vigor_cost_of` aplicam o padrão só a técnicas de saque, e `AttackState` e `ActionStarter` os consultam. A lista à venda, a árvore de Blaster e os créditos ficam em `CampaignData`.
 
-`StoryCampaign` guarda `credits`, `owned_blasters` e `blaster_slot` (-1 nenhum, 0 Frente, 1 Trás). A migração é por ausência: `_credits_from_cleared` paga os encontros já vencidos em saves antigos. `protagonist()` duplica o personagem e injeta `Sidearm.HOLSTER`, o blaster e a técnica de saque no espaço escolhido, sem tocar o elenco. A tela `screens/story/story_arsenal.gd` só chama a campanha. `PaletteBake` (`presentation/fighters/`) gera a textura de paleta codificada usada pela prévia e pela Infiltração.
+`StoryCampaign` guarda `credits`, `owned_blasters`, `blaster_carried`, `blaster_bought` e `blaster_active`. A migração é por ausência: `_credits_from_cleared` paga os encontros já vencidos em saves antigos, e `_load_blaster_state` converte saves do Coldre, dando sem custo os nós equivalentes aos que já tinham sido comprados na árvore de Lâmina. `protagonist()` duplica o personagem e, com a arma equipada, injeta `Sidearm.HOLSTER`, o blaster e os nós ativos de `CampaignData.blaster_tree`, sem tocar o elenco. `StoryPowerTree` recebe a aba Blaster pelo terceiro argumento. `style_character()` troca o kit do `holster.tres` pelo do personagem de `CampaignData.holster_blade_source`, então o recurso do Coldre segue servindo a simulação e a IA. A tela `screens/story/story_arsenal.gd` só chama a campanha. `PaletteBake` (`presentation/fighters/`) gera a textura de paleta codificada usada pela prévia e pela Infiltração.
+
+`ExhibitionBout.blade_scale` ajusta o dano de lâmina de cada lado só naquela luta, aplicado em `DuelSetup.equip`. Serve para um rebalanceamento do elenco não desmontar um roteiro por tick: o duelo de exibição é simulação real, e a execução prevista depende de quanto dano cada golpe dá.
 
 ### Execuções sorteadas por família
 

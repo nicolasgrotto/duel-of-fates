@@ -12,7 +12,10 @@ Legenda: ✅ ficou bom · ⚠️ funciona mas a sensação ou o número precisa 
 | 21.2 | Vencer várias lutas com o forte no último golpe | A execução varia, com a marcante da família entre as opções. Em rounds anteriores segue o corte de membro |
 | 21.3 | Duelo contra Corsária ou Lince: atirar em quem inicia o avanço com corte | O avanço é cancelado no startup com um tranco. Com o golpe já no ativo, ou com armadura, ele segue |
 | 21.4 | Atirar em rajada no mesmo rival | Só o primeiro tiro trava; os seguintes ferem durante a imunidade de 0,6 s. Ajuste em `CombatConfig.bolt_flinch_immunity` e em `flinch` de cada disparo |
-| 21.5 | História › Arsenal: comprar, equipar em Frente e Trás, voltar | Créditos sobem só na primeira vitória de cada encontro; o saque substitui a técnica do espaço e a arma aparece no corpo |
+| 21.5 | História › Arsenal: comprar e equipar uma arma com um estilo sem blaster, depois abrir Habilidades › Blaster | Créditos sobem só na primeira vitória de cada encontro; a Pistola custa 150 fora do Coldre; a arma aparece no corpo; Saque duplo entra em Frente |
+| 21.5b | Na aba Blaster, comprar e desligar nós; guardar a arma no Arsenal; olhar a aba Lâmina | Nenhuma técnica de blaster na Lâmina; desligar ou guardar devolve o sabre ao espaço; sem arma a aba fica travada com aviso |
+| 21.5c | Criar personagem Coldre | Começa com Pistola e Saque duplo equipados; Lâmina traz técnicas de sabre. Avaliar se compensa os 10% a menos de dano |
+| 21.7 | Duelar com a Corsária e contra ela | Corpo a corpo pesa mais; ainda deve parecer pressão de duas armas, não um Guardião de blaster. Números em `data/characters/corsair/corsair.tres` |
 | 21.6 | Usar Pistola, Revólver, Carabina, Rifle e Rifle de precisão nos estilos Técnica, Fúria e Voo | Cada arma dispara o seu padrão. O Rifle solta três; o de precisão um tiro maior, lento de sacar. Preços em `data/blasters/` |
 
 ## 20. Núcleo de Operações de blaster (task 16)

@@ -265,7 +265,7 @@ Decisão do autor (tasks 07 e 08): lâmina numa mão e disparos de blaster. Mec�
 - **Família de movimento — Versáteis**: perfil de esgrimista, lâmina média à frente na altura do peito; a Corsária leva a mão do blaster baixa, à frente do quadril, apontando para o chão; o Lince, sem segunda arma, recolhe a mão livre atrás do corpo, escondida pela silhueta. Swing de uma mão, curto e de punho; o tiro estica o braço livre na altura do peito com um coice curto.
 - Nomes, aparência, cores e falas são originais; nenhuma referência a personagens da franquia.
 - **Liberação**: os dois já vêm liberados (como o elenco comum).
-- **Equilíbrio** (matriz de 6 duelos por par no Difícil, 13 personagens): Corsária 55,6%, Lince 54,2%, dentro da meta de 40–60%. Em 40 s de IA contra IA, a Corsária atira mais que o dobro do Lince (teste `test_blade_gunner_shoots_clearly_less_than_the_armed_duelist`).
+- **Equilíbrio** (matriz de 6 duelos por par no Difícil, 13 personagens): valores ao entrar, Corsária 55,6%, Lince 54,2%, dentro da meta de 40–60%; hoje Corsária 29,2% e Lince 81,9% (ver ROADMAP). Em 40 s de IA contra IA, a Corsária atira mais que o dobro do Lince (teste `test_blade_gunner_shoots_clearly_less_than_the_armed_duelist`).
 
 ## Corsária / Corsair
 
@@ -273,7 +273,8 @@ Decisão do autor (tasks 07 e 08): lâmina numa mão e disparos de blaster. Mec�
 
 **A pressão de duas armas.** Corta de perto, atira de longe e atira recuando: quem foge da sequência leva um disparo.
 
-- **Atributos**: Vida 4 · Vigor 5 · Lâmina 4 · Defesa 4 · Agilidade 5 · Fluxo 4. Caminho Eclipse.
+- **Atributos**: Vida 4 · Vigor 5 · Lâmina 5 · Defesa 5 · Agilidade 5 · Fluxo 4. Caminho Eclipse.
+- **Ajuste a pedido do autor**: Lâmina e Defesa +1, rápidos +2 de dano e fortes +4. Na simulação, mudar só os disparos, a distância ou o uso de técnica quase não alterou o resultado, ou piorou: o que a derrubava era o corpo a corpo.
 - **Traço — Saque rápido**: recupera 3 de Vigor a cada golpe de lâmina que acerta.
 - **Habilidade — Recuo tático**: avanço para trás (200 u, invulnerável 0,18 s, 14 de Vigor); com direção para frente, avança.
 - **Sequência**: 3 rápidos (ascendente; **corte com disparo**: o passo 2 corta e dispara no mesmo tick ativo; estocada).
