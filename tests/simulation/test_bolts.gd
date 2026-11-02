@@ -248,3 +248,27 @@ func test_chained_evades_lean_differently_from_the_first() -> void:
 	for streak in range(1, 7):
 		assert_true(PoseSolver.evade_pose_for(streak) != first, "chain pose %d differs from the first" % streak)
 		assert_true(PoseSolver.evade_pose_for(streak) != PoseSolver.evade_pose_for(streak + 1), "consecutive chain poses alternate")
+
+
+func test_evade_on_the_contact_tick_succeeds_without_a_visible_dodge_state() -> void:
+	var duel: DuelFixture = _duel()
+	_shoot(duel)
+	assert_true(duel.step_until(func() -> bool: return _ticks_to_reach(duel) <= 1, 120))
+	duel.press(1, Intent.Command.EVADE)
+	duel.step()
+	assert_eq(duel.count_events(CombatEvent.Type.EVADE_SUCCESS), 1, "late but inside the window still slips")
+	assert_eq(duel.fighter(1).state, FighterState.State.IDLE, "the dodge state ends in the same tick")
+	assert_eq(duel.count_events(CombatEvent.Type.BOLT_HIT), 0)
+
+
+func test_evade_success_holds_the_dodge_pose_after_the_state_ends() -> void:
+	var duel: DuelFixture = _duel()
+	var solver: PoseSolver = PoseSolver.new()
+	var fighter: FighterState = duel.fighter(1)
+	solver.setup(fighter.character, fighter.character.art)
+	assert_false(solver.holds_evade(fighter))
+	solver.start_evade_hold(2)
+	assert_true(solver.holds_evade(fighter), "the slip stays visible while idle")
+	assert_eq(solver.evade_hold_streak, 1, "pose of the evade that just succeeded")
+	solver.advance(PoseSolver.EVADE_HOLD_TIME + 0.01)
+	assert_false(solver.holds_evade(fighter))

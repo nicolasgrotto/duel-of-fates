@@ -176,7 +176,7 @@ Implementada na fase 7.5 (`DodgeKind.SPIN`, números em `CombatConfig`, grupo Do
 - Baixo (separada da esquiva). No chão, **não custa Vigor**, recua muito pouco, fica invulnerável por apenas ~0,066 s e tem recovery de até 0,4 s.
 - Se um golpe cruza a hurtbox nessa janela: **sucesso**, o golpe é consumido e o defensor fica livre na hora para punir. Sem contato, a recovery fica vulnerável.
 - Cada uso exige um toque novo. Sucessos seguidos formam uma sequência visível: a primeira esquiva recua o tronco; as seguintes alternam inclinações diferentes (agachada baixa, recuo profundo, meio-corpo), nunca repetindo a pose da anterior.
-- **Contra disparos** (decisão do autor): um disparo que chega na janela também é um **sucesso**: o defensor fica livre na hora, a sequência continua e o disparo segue reto sem acertar. Contra uma rajada, cada disparo pede um novo toque no momento certo; errar o tempo leva o disparo normalmente.
+- **Contra disparos** (decisão do autor): um disparo que chega na janela também é um **sucesso** (inclusive no último instante, com a pose e o rastro visíveis): o defensor fica livre na hora, a sequência continua e o disparo segue reto sem acertar. Contra uma rajada, cada disparo pede um novo toque no momento certo; errar o tempo leva o disparo normalmente.
 
 ### Choque de lâminas (clash)
 

@@ -55,7 +55,7 @@ HUD       → barras, avisos
 | Parry | parry | 10–14 faíscas para cima, anel, lâmina clareia | leve | — |
 | Parry perfeito | parry perfeito | 16–22 faíscas, anel maior, lâmina clareia, dessaturação, punch-in | médio | fraco |
 | Empurrão | empurrão | 4–6 faíscas baixas, luz pequena, poeira | muito leve | — |
-| Imagens residuais | esquiva e dash aéreo | 3 silhuetas transparentes que somem rápido | — | — |
+| Imagens residuais | esquiva e dash aéreo | 3 silhuetas transparentes que somem rápido; numa esquiva de precisão bem-sucedida, a pose e as silhuetas duram ~0,16 s mesmo que o sucesso aconteça no mesmo tick em que a esquiva começou | — | — |
 | Brilho de esquiva | esquiva de precisão bem-sucedida (golpe ou disparo) | luz curta no peito na cor da lâmina de quem esquivou, sem anel | — | — |
 | Ação recusada | falta Vigor/Fluxo | só HUD e som | — | — |
 

@@ -130,6 +130,7 @@ const REBOUND_GRIP: Vector2 = Vector2(4.0, -50.0)
 const REBOUND_ANGLE: float = -125.0
 const HIT_LEAN: float = -26.0
 const CLASH_RECOIL_TIME: float = 0.22
+const EVADE_HOLD_TIME: float = 0.16
 const CLASH_LEAN: float = 12.0
 const CLASH_SHIFT: float = 6.0
 const CLASH_BLADE: float = 22.0
@@ -188,6 +189,8 @@ var clash_left: float = 0.0
 var rebounding: bool = false
 var block_line: MoveData.Cut = MoveData.Cut.HORIZONTAL
 var afterimage: bool = false
+var evade_hold_left: float = 0.0
+var evade_hold_streak: int = 0
 var guard: GuardTracker = GuardTracker.new()
 var bolt_contact: float = -1.0
 var rival_lock_style: CharacterData.LockStyle = CharacterData.LockStyle.BLADE
@@ -210,6 +213,7 @@ func advance(delta: float) -> void:
 	guard.advance(delta)
 	landing_left = maxf(landing_left - delta, 0.0)
 	clash_left = maxf(clash_left - delta, 0.0)
+	evade_hold_left = maxf(evade_hold_left - delta, 0.0)
 	tumble_left = maxf(tumble_left - delta, 0.0)
 	finish_hold_left = maxf(finish_hold_left - delta, 0.0)
 	if motion_time >= 0.0:
@@ -359,6 +363,11 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 	if fighter.singularity_ticks > 0 and fighter.singularity_phase == FighterState.SingularityPhase.FORMATION and fighter.is_free():
 		pose.off_hand = CAST_HAND
 		pose.open_hand = true
+	if holds_evade(fighter):
+		var held: Vector3 = evade_pose_for(evade_hold_streak)
+		pose.back_foot.x += held.z
+		crouch += held.x
+		lean += held.y
 	if fighter.instinct_evade_ticks > 0 and fighter.is_alive() and not fighter.is_attacking():
 		var evade: Vector2 = _instinct_evade(fighter, pose)
 		crouch += evade.x
@@ -649,6 +658,17 @@ func _blade_lock(fighter: FighterState, opponent: FighterState, pose: RigPose) -
 		_body_shift -= FLOW_HOLD_LEAN_BACK
 	var lean: float = family.lock_lean * (1.0 + pressure * 0.5) + push * 4.0
 	return Vector2(family.lock_crouch - pressure * 4.0 + (6.0 if press else 0.0), lean * (0.7 if press else 1.0))
+
+
+func start_evade_hold(streak: int) -> void:
+	evade_hold_left = EVADE_HOLD_TIME
+	evade_hold_streak = maxi(streak - 1, 0)
+
+
+func holds_evade(fighter: FighterState) -> bool:
+	if evade_hold_left <= 0.0 or not fighter.is_alive():
+		return false
+	return fighter.state == FighterState.State.IDLE or fighter.state == FighterState.State.WALKING
 
 
 func start_tumble() -> void:

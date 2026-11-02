@@ -191,6 +191,9 @@ func on_event(event: CombatEvent) -> void:
 			if event.target == fighter.index:
 				blade.flare = effects.parry_flare
 				_solver.guard_recoiled(event.heavy, true)
+		CombatEvent.Type.EVADE_SUCCESS:
+			if event.target == fighter.index and event.power == null:
+				_solver.start_evade_hold(int(event.amount))
 		CombatEvent.Type.BLOCK:
 			if event.target == fighter.index:
 				blade.flare = effects.parry_flare * fighter.character.family.block_parry_recoil
@@ -471,7 +474,7 @@ func _process(delta: float) -> void:
 	rig.set_blade_out(fighter.blade_out)
 	_update_blade()
 	_update_cutter(delta)
-	if (fighter.state == FighterState.State.DODGING or _solver.afterimage) and not reduced_effects:
+	if (fighter.state == FighterState.State.DODGING or _solver.afterimage or _solver.holds_evade(fighter)) and not reduced_effects:
 		afterimages.capture(rig, delta)
 
 
