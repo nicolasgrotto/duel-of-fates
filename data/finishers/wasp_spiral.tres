@@ -1,0 +1,95 @@
+[gd_resource type="Resource" script_class="FinisherMotion" format=3]
+
+[ext_resource type="Script" path="res://data/finisher_motion.gd" id="1_script"]
+[ext_resource type="Script" path="res://data/pose_key.gd" id="2_key"]
+[ext_resource type="Script" path="res://data/finisher_reaction.gd" id="3_reaction"]
+[ext_resource type="Script" path="res://data/finisher_effects.gd" id="4_effects"]
+[ext_resource type="Script" path="res://data/finisher_cue.gd" id="5_cue"]
+
+
+[sub_resource type="Resource" id="key_0"]
+script = ExtResource("2_key")
+time = 0.15
+grip = Vector2(18, -24)
+blade_angle = -20
+crouch = 6
+places_off_hand = true
+off_hand = Vector2(-12, -6)
+off_blade_angle = 150
+
+[sub_resource type="Resource" id="key_1"]
+script = ExtResource("2_key")
+time = 0.45
+grip = Vector2(20, -30)
+blade_angle = 0
+twirl = 1
+off_twirl = 1
+turn = 1
+trail = true
+places_off_hand = true
+off_hand = Vector2(-14, -8)
+off_blade_angle = 150
+
+[sub_resource type="Resource" id="key_2"]
+script = ExtResource("2_key")
+time = 0.8
+grip = Vector2(36, -48)
+blade_angle = 6
+turn = 1
+lean = 10
+step = 10
+trail = true
+off_trail = true
+accent = true
+places_off_hand = true
+off_hand = Vector2(34, -44)
+off_blade_angle = -6
+
+[sub_resource type="Resource" id="key_3"]
+script = ExtResource("2_key")
+time = 1.35
+grip = Vector2(16, -16)
+blade_angle = 110
+places_off_hand = true
+off_hand = Vector2(-6, -4)
+off_blade_angle = 120
+
+[sub_resource type="Resource" id="reaction"]
+script = ExtResource("3_reaction")
+head_at = 0.78
+kneel_at = 0.95
+fall_at = 1.1
+
+[sub_resource type="Resource" id="effects"]
+script = ExtResource("4_effects")
+streaks = PackedFloat32Array(0.45, 0.78)
+streaks_both = true
+
+[sub_resource type="Resource" id="cue_0"]
+script = ExtResource("5_cue")
+time = 0.2
+sound = &"swing_light"
+volume_db = 0.0
+pitch = 1.4
+
+[sub_resource type="Resource" id="cue_1"]
+script = ExtResource("5_cue")
+time = 0.5
+sound = &"swing_light"
+volume_db = 0.0
+pitch = 1.5
+
+[sub_resource type="Resource" id="cue_2"]
+script = ExtResource("5_cue")
+time = 0.78
+sound = &"hit_heavy"
+volume_db = 0.0
+pitch = 1.2
+
+[resource]
+script = ExtResource("1_script")
+keys = Array[ExtResource("2_key")]([SubResource("key_0"), SubResource("key_1"), SubResource("key_2"), SubResource("key_3")])
+lead_in = true
+reaction = SubResource("reaction")
+effects = SubResource("effects")
+cues = Array[ExtResource("5_cue")]([SubResource("cue_0"), SubResource("cue_1"), SubResource("cue_2")])

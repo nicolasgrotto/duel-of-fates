@@ -32,6 +32,7 @@ func build_setup() -> DuelSetup:
 	setup.rules = MatchRules.new()
 	setup.rules.rounds_to_win = 1
 	setup.rules.free_powers = true
+	setup.rules.fixed_finishers = true
 	setup.rules.fighter_intros = current.fighter_intros
 	setup.rules.start_health = current.start_health
 	setup.arena = current.arena

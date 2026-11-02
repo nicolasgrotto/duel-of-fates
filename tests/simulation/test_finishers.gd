@@ -1,10 +1,11 @@
 extends TestCase
 
 
-func _duel(first: StringName, second: StringName, rounds: int = 1, finishers: bool = true) -> DuelFixture:
+func _duel(first: StringName, second: StringName, rounds: int = 1, finishers: bool = true, fixed: bool = true) -> DuelFixture:
 	var rules: MatchRules = MatchRules.new()
 	rules.rounds_to_win = rounds
 	rules.finishers = finishers
+	rules.fixed_finishers = fixed
 	var cast: Array[CharacterData] = [DuelFixture.character(first), DuelFixture.character(second)]
 	var duel: DuelFixture = DuelFixture.create(rules, null, 7, cast)
 	duel.skip_intro()
@@ -206,3 +207,81 @@ func test_heron_whirls_behind_the_opponent() -> void:
 	var gap: float = killer.x - victim.x
 	duel.step(60)
 	assert_almost(duel.fighter(0).x - duel.fighter(1).x, gap, 0.5)
+
+
+func test_each_family_offers_four_exclusive_finishers_that_fit_the_knockout() -> void:
+	var seen: Dictionary = {}
+	var config: CombatConfig = DuelFixture.CONFIG
+	for id in DuelMode.CAST + [&"awakened_shadow", &"sovereign", &"elder", &"foretold", &"foretold_eclipse", &"holster"]:
+		var data: CharacterData = DuelFixture.character(id)
+		assert_eq(data.family.finisher_pool.size(), 4, String(id))
+		for value in data.family.finisher_pool:
+			var kind: Finisher.Kind = value as Finisher.Kind
+			assert_true(Finisher.is_staged(kind), String(id))
+			seen[kind] = String(data.family.resource_path)
+			var motion: FinisherMotion = FinisherMotion.for_kind(kind, data.finisher_style)
+			assert_true(motion != null, "%s %d" % [id, value])
+			var extra: float = config.consequences.long_cinematic_ko_time if Finisher.is_long(kind) else config.consequences.cinematic_ko_time
+			var done: float = maxf(motion.end_time(), motion.reaction.fall_at + FighterView.KNEEL_TIME + FighterView.FALL_DURATION)
+			assert_lt(done, config.ko_duration + extra, "%s %d fits the knockout" % [id, value])
+	assert_eq(seen.size(), 36)
+
+
+func test_family_finishers_never_restore_a_limb_through_a_split() -> void:
+	for kind in Finisher.STAGED:
+		var motion: FinisherMotion = FinisherMotion.for_kind(kind)
+		var reaction: FinisherReaction = motion.reaction
+		if reaction.split_at < 0.0 or kind == Finisher.Kind.OVERHEAD:
+			continue
+		assert_lt(reaction.front_arm_at, 0.0, str(kind))
+		assert_lt(reaction.back_arm_at, 0.0, str(kind))
+		assert_lt(reaction.front_leg_at, 0.0, str(kind))
+		assert_lt(reaction.back_leg_at, 0.0, str(kind))
+		assert_lt(reaction.head_at, 0.0, str(kind))
+
+
+func test_every_new_finisher_has_a_name_in_both_languages() -> void:
+	var saved: String = TranslationServer.get_locale()
+	for locale in ["pt_BR", "en"]:
+		TranslationServer.set_locale(locale)
+		for kind in Finisher.STAGED:
+			if kind < Finisher.Kind.GUARDIAN_DISARM:
+				continue
+			var key: String = "FINISHER_%s" % Finisher.Kind.keys()[kind]
+			assert_ne(TranslationServer.translate(key), key)
+	TranslationServer.set_locale(saved)
+
+
+func test_deciding_heavy_draws_from_the_family_pool_with_variety() -> void:
+	var drawn: Dictionary = {}
+	for tick_offset in 24:
+		var duel: DuelFixture = _duel(&"guardian", &"shadow", 1, true, false)
+		duel.step(tick_offset)
+		var result: Dictionary = _heavy(duel, false)
+		var family: PackedInt32Array = DuelFixture.character(&"guardian").family.finisher_pool
+		assert_true(result["finisher"] == Finisher.Kind.TWIN_BLADES or family.has(int(result["finisher"])), str(result["finisher"]))
+		drawn[result["finisher"]] = true
+	assert_gt(float(drawn.size()), 2.0, "the draw varies")
+
+
+func test_same_seed_and_tick_draw_the_same_finisher() -> void:
+	var first: Dictionary = _heavy(_duel(&"wasp", &"shadow", 1, true, false), false)
+	var second: Dictionary = _heavy(_duel(&"wasp", &"shadow", 1, true, false), false)
+	assert_eq(first["finisher"], second["finisher"])
+
+
+func test_powers_techniques_and_earlier_rounds_stay_fixed() -> void:
+	var earlier: Dictionary = _heavy(_duel(&"guardian", &"shadow", 2, true, false), false)
+	assert_eq(earlier["finisher"], Finisher.Kind.NONE)
+	var duel: DuelFixture = _duel(&"guardian", &"shadow", 1, true, false)
+	var dash: MoveData = load("res://data/techniques/dash_slash.tres")
+	assert_eq(Consequences.family_finisher(duel.sim, duel.fighter(0), duel.fighter(1), dash, dash.cinematic_finisher), dash.cinematic_finisher)
+	assert_eq(Consequences.family_finisher(duel.sim, duel.fighter(0), duel.fighter(1), null, Finisher.Kind.BLAST), Finisher.Kind.BLAST)
+
+
+func test_twin_blades_is_never_drawn_against_a_non_single_blade() -> void:
+	for tick_offset in 16:
+		var duel: DuelFixture = _duel(&"guardian", &"wasp", 1, true, false)
+		duel.step(tick_offset)
+		assert_ne(_heavy(duel, false)["finisher"], Finisher.Kind.TWIN_BLADES)
+

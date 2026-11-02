@@ -19,3 +19,12 @@ func test_every_game_script_compiles() -> void:
 	for path in scripts:
 		var script: GDScript = load(path) as GDScript
 		assert_true(script != null and script.can_instantiate(), path)
+
+
+func test_data_scripts_never_name_simulation_types() -> void:
+	var scripts: PackedStringArray = []
+	_collect("res://data", scripts)
+	for path in scripts:
+		var source: String = FileAccess.get_file_as_string(path)
+		for type_name in ["FighterState", "MatchSimulation"]:
+			assert_false(source.contains(type_name), "%s names %s" % [path, type_name])

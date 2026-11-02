@@ -1,5 +1,8 @@
 class_name Consequences
 
+const FINISHER_SEED_MIX: int = 31
+const FINISHER_TICK_MIX: int = 7
+
 
 static func check_exhaustion(sim: MatchSimulation, fighter: FighterState) -> void:
 	if not sim.rules.exhaustion or fighter.exhausted:
@@ -41,6 +44,23 @@ static func finisher_for(sim: MatchSimulation, move: MoveData, power: PowerData,
 	if move != null:
 		return move.cinematic_finisher
 	return Finisher.Kind.NONE
+
+
+static func family_finisher(sim: MatchSimulation, killer: FighterState, victim: FighterState, move: MoveData, base: Finisher.Kind) -> Finisher.Kind:
+	if base == Finisher.Kind.NONE or sim.rules.fixed_finishers or move == null:
+		return base
+	if move.kind != MoveData.Kind.HEAVY and move.kind != MoveData.Kind.FORWARD_HEAVY:
+		return base
+	var family: MotionFamily = killer.character.family
+	if family == null or family.finisher_pool.is_empty():
+		return base
+	var options: Array[Finisher.Kind] = [base]
+	for value in family.finisher_pool:
+		options.append(value as Finisher.Kind)
+	options = options.filter(func(kind: Finisher.Kind) -> bool: return Finisher.fits(kind, victim.character.weapon.kind))
+	if options.is_empty():
+		return base
+	return options[posmod(sim.seed_value * FINISHER_SEED_MIX + sim.tick * FINISHER_TICK_MIX + sim.round_number, options.size())]
 
 
 static func finisher_limb(sim: MatchSimulation, attacker: FighterState, defender: FighterState, move: MoveData, deciding: bool) -> MoveData.Limb:

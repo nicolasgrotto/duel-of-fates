@@ -17,6 +17,7 @@ const SMOKE_LIFE: float = 1.1
 const BONE_WIDTH: float = 2.0
 const SKULL_RADIUS: float = 6.0
 const HOLE_SHARE: float = 0.7
+const EXTRA_HOLE_STEP: float = 0.2
 const HOLE_OPEN_TIME: float = 0.1
 
 var kind: Finisher.Kind = Finisher.Kind.NONE
@@ -93,7 +94,12 @@ func fall_delay() -> float:
 
 
 func fall_limb() -> MoveData.Limb:
-	return MoveData.Limb.HEAD if _motion != null and not _motion.reaction.fall_backward else MoveData.Limb.NONE
+	if _motion == null or _motion.reaction.fall_backward:
+		return MoveData.Limb.NONE
+	var reaction: FinisherReaction = _motion.reaction
+	if reaction.head_at < 0.0 and (reaction.front_leg_at >= 0.0 or reaction.back_leg_at >= 0.0):
+		return MoveData.Limb.LEG
+	return MoveData.Limb.HEAD
 
 
 func clear() -> void:
@@ -167,6 +173,10 @@ func _fire(before: float, now: float) -> void:
 		view.sever_part(MoveData.Limb.ARM, true, _away)
 	if FinisherMotion.fired(reaction.back_arm_at, before, now):
 		view.sever_part(MoveData.Limb.ARM, false, _away)
+	if FinisherMotion.fired(reaction.front_leg_at, before, now):
+		view.sever_part(MoveData.Limb.LEG, true, _away)
+	if FinisherMotion.fired(reaction.back_leg_at, before, now):
+		view.sever_part(MoveData.Limb.LEG, false, _away)
 	if FinisherMotion.fired(reaction.kneel_at, before, now):
 		view.kneel()
 	if FinisherMotion.fired(reaction.turn_at, before, now):
@@ -175,7 +185,7 @@ func _fire(before: float, now: float) -> void:
 		view.sever_part(MoveData.Limb.HEAD, true, _away)
 		_burst(_local_point(rig.head_base), config.neck_embers, config.ember_speed * 0.6)
 	if FinisherMotion.fired(reaction.split_at, before, now):
-		_split_as = Finisher.Kind.VERTICAL
+		_split_as = reaction.split_as as Finisher.Kind
 		_split_offset = reaction.split_at
 		_prepare_split()
 
@@ -295,7 +305,11 @@ func _draw() -> void:
 	if kind == Finisher.Kind.CHARRED and age < config.xray_time and int(age * config.xray_flicker) % 2 == 0:
 		_draw_skeleton()
 	if _motion != null and _motion.effects.hole and age >= _motion.effects.hole_at:
-		_draw_hole()
+		_draw_hole(HOLE_SHARE, _motion.effects.hole_at)
+	if _motion != null:
+		for index in _motion.effects.extra_holes.size():
+			if age >= _motion.effects.extra_holes[index]:
+				_draw_hole(HOLE_SHARE - EXTRA_HOLE_STEP * (index + 1), _motion.effects.extra_holes[index])
 	for i in EMBER_POOL:
 		if _ember_life[i] <= 0.0:
 			continue
@@ -318,10 +332,10 @@ func _draw_edge(piece: FighterRig) -> void:
 	draw_line(from, to, color, config.finisher_edge_width)
 
 
-func _draw_hole() -> void:
-	var at: Vector2 = _local_point(rig.pelvis_point.lerp(rig.chest, HOLE_SHARE)).snapped(Vector2(GRID, GRID))
+func _draw_hole(share: float, opened_at: float) -> void:
+	var at: Vector2 = _local_point(rig.pelvis_point.lerp(rig.chest, share)).snapped(Vector2(GRID, GRID))
 	var color: Color = _cooling_color()
-	var radius: float = config.stab_hole_radius * minf((age - _motion.effects.hole_at) / HOLE_OPEN_TIME, 1.0)
+	var radius: float = config.stab_hole_radius * minf((age - opened_at) / HOLE_OPEN_TIME, 1.0)
 	draw_circle(at, radius * 1.8, Color(color, 0.35))
 	draw_circle(at, radius, color)
 	draw_circle(at, radius * 0.45, PALETTE.scar)

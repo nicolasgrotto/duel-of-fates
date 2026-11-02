@@ -4,6 +4,7 @@
 
 [resource]
 script = ExtResource("1_script")
+finisher_pool = PackedInt32Array(18, 19, 20, 21)
 id = &"guardian"
 grip = 0
 stance_width = 30.0

@@ -71,6 +71,7 @@ enum Grip { TWO_HANDED, ONE_HANDED, DUAL, STAFF }
 @export var heavy_crouch: float = 8.0
 @export var heavy_step: float = 10.0
 @export var finisher_twirl: bool = false
+@export var finisher_pool: PackedInt32Array
 @export var windup_shift: float = 5.0
 @export var lunge: float = 7.0
 @export var arc_bulge: float = 0.4

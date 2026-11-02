@@ -57,6 +57,7 @@ func styled(style: FinisherStyle) -> FinisherMotion:
 	copy.effects = effects.duplicate()
 	copy.effects.streaks = effects.streaks.duplicate()
 	copy.effects.shots = effects.shots.duplicate()
+	copy.effects.extra_holes = effects.extra_holes.duplicate()
 	copy.effects.scale_times(style.tempo)
 	var styled_cues: Array[FinisherCue] = []
 	for cue in cues:

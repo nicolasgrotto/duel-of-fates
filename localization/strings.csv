@@ -352,6 +352,42 @@ HINT_POWERS,poderes,powers
 HINT_EDIT_POWER,trocar poder,change power
 MENU_GALLERY,Galeria de poderes,Power gallery
 GALLERY_TIER,Tier {tier},Tier {tier}
+FINISHER_GUARDIAN_DISARM,Desarme e estocada,Disarm and Thrust
+FINISHER_GUARDIAN_RETURN,Corte de retorno,Return Cut
+FINISHER_GUARDIAN_COUNTER,Contraguarda final,Final Counterguard
+FINISHER_GUARDIAN_BOW,Reverência,The Bow
+FINISHER_AGGRESSOR_RISING,Rasgo ascendente,Rising Tear
+FINISHER_AGGRESSOR_KICK,Chute e estocada,Kick and Thrust
+FINISHER_AGGRESSOR_THREE,Três cortes,Three Cuts
+FINISHER_AGGRESSOR_THROAT,Lâmina na garganta,Blade at the Throat
+FINISHER_COLOSSUS_CRUSH,Esmagar a guarda,Guard Crusher
+FINISHER_COLOSSUS_CLEAVE,Corte de cima a baixo,Great Cleave
+FINISHER_COLOSSUS_SHOVE,Empurrão e estocada,Shove and Thrust
+FINISHER_COLOSSUS_LEG,Golpe na perna,Leg Breaker
+FINISHER_WASP_REVERSE,Tesoura invertida,Reverse Scissors
+FINISHER_WASP_SWARM,Enxame,Swarm
+FINISHER_WASP_CROSS,Cruzada dupla,Double Cross
+FINISHER_WASP_SPIRAL,Corte em espiral,Spiral Cut
+FINISHER_FENCER_SALUTE,Saudação,The Salute
+FINISHER_FENCER_TRIPLE,Estocada tripla,Triple Thrust
+FINISHER_FENCER_LINE,Passe em linha,Passing Line
+FINISHER_FENCER_HEART,Golpe no coração,Heart Strike
+FINISHER_STRIKER_FEINT,Finta e corte,Feint and Cut
+FINISHER_STRIKER_ANSWER,Contragolpe seco,Dry Answer
+FINISHER_STRIKER_BEHIND,Ataque pelas costas,From Behind
+FINISHER_STRIKER_DOUBLE,Corte duplo,Double Cut
+FINISHER_DANCER_LEAP,Salto sobre o rival,Over the Rival
+FINISHER_DANCER_LOW,Giro baixo,Low Spin
+FINISHER_DANCER_DESCENT,Corte na descida,Descending Cut
+FINISHER_DANCER_PIROUETTE,Pirueta final,Final Pirouette
+FINISHER_REAPER_WHEEL,Roda completa,Full Wheel
+FINISHER_REAPER_HOOK,Gancho e puxão,Hook and Pull
+FINISHER_REAPER_X,Corte duplo em X,X Cut
+FINISHER_REAPER_CHEST,Lâmina dupla no peito,Twin Blade to the Chest
+FINISHER_VERSATILE_SHOT_CUT,Tiro e corte,Shot and Cut
+FINISHER_VERSATILE_TWO_SHOTS,Dois tiros e estocada,Two Shots and a Thrust
+FINISHER_VERSATILE_BUTT,Coronhada e tiro,Butt and Shot
+FINISHER_VERSATILE_POINT_BLANK,Rajada à queima-roupa,Point-Blank Burst
 GALLERY_SIDE_COMMON,Fluxo comum · os dois caminhos,Common Flow · both paths
 GALLERY_SIDE_AURORA,Aurora · lado da luz,Aurora · side of light
 GALLERY_SIDE_ECLIPSE,Eclipse · lado sombrio,Eclipse · side of shadow

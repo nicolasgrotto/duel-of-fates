@@ -333,6 +333,8 @@ func apply_damage(fighter: FighterState, amount: float, power_damage: bool = fal
 func kill(victim: FighterState, killer: FighterState, move: MoveData, power: PowerData = null, thrown: MoveData = null) -> void:
 	var deciding: bool = is_deciding(killer)
 	victim.finisher_kind = Consequences.finisher_for(self, move if thrown == null else thrown, power, deciding)
+	if power == null and thrown == null:
+		victim.finisher_kind = Consequences.family_finisher(self, killer, victim, move, victim.finisher_kind)
 	if victim.finisher_kind == Finisher.Kind.TWIN_BLADES and victim.character.weapon.kind != WeaponData.Kind.SINGLE:
 		victim.finisher_kind = Finisher.Kind.EXECUTION
 	victim.finisher_limb = Consequences.finisher_limb(self, killer, victim, move, deciding) if victim.finisher_kind == Finisher.Kind.NONE else MoveData.Limb.NONE

@@ -12,6 +12,7 @@ const DEFAULT_START_HEALTH: PackedFloat32Array = [1.0, 1.0]
 @export var round_intro: bool = true
 @export var endless: bool = false
 @export var endless_finishers: bool = false
+@export var fixed_finishers: bool = false
 @export var powers: bool = true
 @export var focus_evade: bool = true
 @export var free_powers: bool = false

@@ -4,6 +4,7 @@
 
 [resource]
 script = ExtResource("1_script")
+finisher_pool = PackedInt32Array(50, 51, 52, 53)
 id = &"versatile"
 grip = 1
 stance_width = 30.0
