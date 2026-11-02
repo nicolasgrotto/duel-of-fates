@@ -85,6 +85,60 @@ func test_body_contact_preserves_stationary_drone_and_prevents_overlap() -> void
 	assert_almost(_sim.ships[0].hull, 100.0)
 
 
+func test_collision_costs_shield_only_on_a_cooldown_and_resets_regeneration() -> void:
+	_sim.ships[0].position = Vector2(752, 500)
+	_commands[0].thrust = 1.0
+	var shield: float = _sim.ships[0].shield
+	_steps(1)
+	assert_almost(_sim.ships[0].shield, shield - SpaceFixture.CONFIG.contact_shield_damage)
+	assert_almost(_sim.ships[0].hull, 100.0)
+	assert_almost(_sim.ships[1].hull, 30.0)
+	assert_eq(_sim.ships[0].shield_delay, Ticks.from_seconds(_sim.ships[0].data.shield_delay))
+	_steps(Ticks.from_seconds(SpaceFixture.CONFIG.contact_cooldown) - 2)
+	assert_almost(_sim.ships[0].shield, shield - SpaceFixture.CONFIG.contact_shield_damage)
+	_steps(3)
+	assert_almost(_sim.ships[0].shield, shield - SpaceFixture.CONFIG.contact_shield_damage * 2.0)
+
+
+func test_collision_never_reaches_the_hull_and_respects_the_ship_ratio() -> void:
+	_sim.ships[0].data.contact_ratio = 2.0
+	_sim.ships[0].shield = 5.0
+	_sim.ships[0].position = Vector2(752, 500)
+	_commands[0].thrust = 1.0
+	_steps(1)
+	assert_almost(_sim.ships[0].shield, 0.0)
+	assert_almost(_sim.ships[0].hull, 100.0)
+	_sim.ships[0].shield = 50.0
+	_steps(Ticks.from_seconds(SpaceFixture.CONFIG.contact_cooldown))
+	assert_almost(_sim.ships[0].shield, 50.0 - SpaceFixture.CONFIG.contact_shield_damage * 2.0)
+
+
+func test_boost_window_avoids_the_collision_cost() -> void:
+	var shield: float = _sim.ships[0].shield
+	_sim.ships[0].boost_tick = Ticks.from_seconds(SpaceFixture.CONFIG.boost_invulnerable_start)
+	_sim.ships[0].position = Vector2(752, 500)
+	_steps(1)
+	assert_almost(_sim.ships[0].shield, shield)
+	assert_eq(_sim.ships[0].contact_cooldown, 0)
+
+
+func test_debris_contact_stays_free() -> void:
+	var obstacle: SpaceObstacleData = SpaceObstacleData.new()
+	obstacle.position = Vector2(500, 500)
+	obstacle.radius = 40.0
+	_sim.arena.obstacles.append(obstacle)
+	var shield: float = _sim.ships[0].shield
+	_steps(1)
+	assert_almost(_sim.ships[0].shield, shield)
+
+
+func test_ship_boost_recharge_follows_its_ratio() -> void:
+	_sim.ships[0].data.boost_cooldown_ratio = 2.0
+	_commands[0].pressed = SpaceIntent.Command.BOOST
+	_steps(1)
+	assert_eq(_sim.ships[0].boost_cooldown, Ticks.from_seconds(SpaceFixture.CONFIG.boost_cooldown * 2.0))
+
+
 func test_projectile_hits_drone_once_and_three_shots_destroy_it() -> void:
 	for tick in 60:
 		_commands[0].held = SpaceIntent.Command.PRIMARY if tick == 0 or tick == 11 or tick == 22 else 0

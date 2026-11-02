@@ -13,9 +13,13 @@ extends Resource
 @export var formation_distance: float = 140.0
 @export var formation_thrust: float = 0.65
 @export var orbit_angle: float = 0.65
+@export var orbit_seconds: float = 2.4
+@export var attack_seconds: float = 2.2
 @export var gunship_retreat_ratio: float = 0.7
 @export var damaged_engine_turn: float = 0.45
 @export var high_rating_hull: float = 0.75
+@export var contact_shield_damage: float = 8.0
+@export var contact_cooldown: float = 0.5
 
 @export_group("Presentation")
 @export var camera_zoom: float = 1.8

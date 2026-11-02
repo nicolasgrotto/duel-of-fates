@@ -11,6 +11,7 @@ var previous_angle: float = 0.0
 var hull: float = 0.0
 var shield: float = 0.0
 var shield_delay: int = 0
+var contact_cooldown: int = 0
 var boost_tick: int = -1
 var boost_cooldown: int = 0
 var boost_direction: Vector2 = Vector2.ZERO
@@ -32,6 +33,7 @@ func reset(placement: SpaceShipPlacement) -> void:
 	hull = data.hull
 	shield = data.shield
 	shield_delay = 0
+	contact_cooldown = 0
 	boost_tick = -1
 	boost_cooldown = 0
 	boost_direction = Vector2.ZERO
@@ -51,7 +53,7 @@ func invulnerable(config: SpaceConfig) -> bool:
 
 
 func capture() -> Dictionary:
-	return {"team": team, "position": position, "previous": previous, "velocity": velocity, "angle": angle, "previous_angle": previous_angle, "hull": hull, "shield": shield, "shield_delay": shield_delay, "boost_tick": boost_tick, "boost_cooldown": boost_cooldown, "boost_direction": boost_direction, "cooldowns": cooldowns.duplicate(), "charges": charges.duplicate(), "respawn_ticks": respawn_ticks, "thrust": thrust, "spawned": spawned}
+	return {"contact_cooldown": contact_cooldown, "team": team, "position": position, "previous": previous, "velocity": velocity, "angle": angle, "previous_angle": previous_angle, "hull": hull, "shield": shield, "shield_delay": shield_delay, "boost_tick": boost_tick, "boost_cooldown": boost_cooldown, "boost_direction": boost_direction, "cooldowns": cooldowns.duplicate(), "charges": charges.duplicate(), "respawn_ticks": respawn_ticks, "thrust": thrust, "spawned": spawned}
 
 
 func restore(state: Dictionary) -> void:

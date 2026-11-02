@@ -1,6 +1,8 @@
 class_name SpaceEnemyController
 extends RefCounted
 
+const ATTACK_STAGGER: int = 47
+
 var _intents: Array[SpaceIntent] = []
 
 
@@ -59,6 +61,12 @@ func _target(sim: SpaceSimulation, index: int) -> int:
 	return nearest
 
 
+func _is_attacking(sim: SpaceSimulation, index: int) -> bool:
+	var orbit: int = Ticks.from_seconds(sim.config.orbit_seconds)
+	var cycle: int = orbit + Ticks.from_seconds(sim.config.attack_seconds)
+	return (sim.tick + index * ATTACK_STAGGER) % cycle >= orbit
+
+
 func _movement_goal(sim: SpaceSimulation, index: int, target: int) -> Vector2:
 	var ship: SpaceShipState = sim.ships[index]
 	var placement: SpaceShipPlacement = sim.arena.ships[index]
@@ -68,7 +76,7 @@ func _movement_goal(sim: SpaceSimulation, index: int, target: int) -> Vector2:
 		if goal.distance_to(ship.position) > sim.config.formation_distance:
 			return goal - ship.position
 	var offset: Vector2 = sim.ships[target].position - ship.position
-	if ship.data.archetype == SpaceShipData.Archetype.FIGHTER and offset.length() < ship.data.preferred_range:
+	if ship.data.archetype == SpaceShipData.Archetype.FIGHTER and offset.length() < ship.data.preferred_range and not _is_attacking(sim, index):
 		return offset.rotated(sim.config.orbit_angle * (-1.0 if index % 2 == 0 else 1.0))
 	if ship.data.archetype == SpaceShipData.Archetype.GUNSHIP and offset.length() < ship.data.preferred_range * sim.config.gunship_retreat_ratio:
 		return -offset

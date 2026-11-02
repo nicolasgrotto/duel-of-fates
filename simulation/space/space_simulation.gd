@@ -1,6 +1,8 @@
 class_name SpaceSimulation
 extends RefCounted
 
+const PLAYER_INDEX: int = 0
+
 var config: SpaceConfig
 var arena: SpaceArenaData
 var ships: Array[SpaceShipState] = []
@@ -70,6 +72,7 @@ func step(intents: Array[SpaceIntent]) -> void:
 
 func _advance_timers(ship: SpaceShipState, index: int) -> void:
 	ship.boost_cooldown = maxi(ship.boost_cooldown - 1, 0)
+	ship.contact_cooldown = maxi(ship.contact_cooldown - 1, 0)
 	if ship.boost_tick >= 0:
 		ship.boost_tick += 1
 		if ship.boost_tick >= config.boost_ticks():
@@ -90,7 +93,7 @@ func _move(index: int, intent: SpaceIntent) -> void:
 		ship.angle = wrapf(ship.angle + clampf(intent.turn, -1.0, 1.0) * deg_to_rad(ship.data.rotation_degrees) * ratio * Ticks.DELTA, -PI, PI)
 		if ship.data.can_boost and ship.boost_cooldown == 0 and (intent.pressed & SpaceIntent.Command.BOOST) != 0:
 			ship.boost_tick = 0
-			ship.boost_cooldown = Ticks.from_seconds(config.boost_cooldown)
+			ship.boost_cooldown = Ticks.from_seconds(config.boost_cooldown * ship.data.boost_cooldown_ratio)
 			ship.boost_direction = ship.forward() * (-1.0 if ship.thrust < 0.0 else 1.0)
 			ship.charges.fill(-1)
 			_emit(SpaceEvent.Type.BOOST_STARTED, index, -1, ship.position)
@@ -130,6 +133,8 @@ func _resolve_bodies() -> void:
 			if overlap <= 0.0:
 				continue
 			var normal: Vector2 = offset / distance if distance > SpaceGeometry.EPSILON else Vector2.RIGHT
+			if first == PLAYER_INDEX:
+				_apply_contact(second, a.position + normal * a.data.radius)
 			var share: float = 1.0 if b.data.immobile else 0.0 if a.data.immobile else 0.5
 			if not a.data.immobile:
 				a.position -= normal * overlap * share
@@ -148,6 +153,19 @@ func _resolve_bodies() -> void:
 				a.position += normal * overlap
 				a.velocity -= normal * minf(a.velocity.dot(normal), 0.0)
 				_clamp_ship(a)
+
+
+func _apply_contact(other: int, point: Vector2) -> void:
+	var ship: SpaceShipState = ships[PLAYER_INDEX]
+	if ship.contact_cooldown > 0 or ship.invulnerable(config):
+		return
+	ship.contact_cooldown = Ticks.from_seconds(config.contact_cooldown)
+	ship.shield_delay = Ticks.from_seconds(ship.data.shield_delay)
+	var absorbed: float = minf(ship.shield, config.contact_shield_damage * ship.data.contact_ratio)
+	if absorbed <= 0.0:
+		return
+	ship.shield -= absorbed
+	_emit(SpaceEvent.Type.SHIELD_HIT, other, PLAYER_INDEX, point, absorbed)
 
 
 func weapon(source: int, slot: int) -> SpaceWeaponData:

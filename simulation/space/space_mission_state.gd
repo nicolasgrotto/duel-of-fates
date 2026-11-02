@@ -55,6 +55,8 @@ func advance(sim: SpaceSimulation) -> void:
 		_finish(sim, Outcome.ALLY_DOWN)
 	elif sim.tick >= Ticks.from_seconds(data.limit_seconds):
 		_finish(sim, Outcome.TIMEOUT)
+	elif data.boss >= 0 and sim.ships[data.boss].hull <= 0.0 and _objectives_cleared(sim):
+		_finish(sim, Outcome.COMPLETED)
 	elif pending_wave == 0 and _wave_cleared(sim):
 		if wave < data.waves.size():
 			pending_wave = wave + 1
