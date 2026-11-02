@@ -473,6 +473,8 @@ def space_sounds():
     save("space/hull.wav", (impact * .65 + thump(130, .16) * .4) * envelope(.16, .002, 2.0))
     blast = lowpass(rng.normal(0, 1, len(t_axis(.42))), 2000)
     save("space/explosion.wav", (blast * .7 + sweep(95, 30, .42, .5) * .6) * envelope(.42, .003, 1.8))
+    launch = bandpass(rng.normal(0, 1, len(t_axis(.24))), 800, 3600)
+    save("space/missile.wav", (launch * .5 + sweep(220, 880, .24, .7) * .4) * envelope(.24, .008, 1.4))
 
 
 if __name__ == "__main__":

@@ -2,6 +2,7 @@ class_name SpaceAudio
 extends Node
 
 const ENGINE: AudioStream = preload("res://assets/audio/space/engine.wav")
+const MISSILE: AudioStream = preload("res://assets/audio/space/missile.wav")
 const SOUNDS: Dictionary = {
 	SpaceEvent.Type.BOOST_STARTED: preload("res://assets/audio/space/boost.wav"),
 	SpaceEvent.Type.WEAPON_PRIMED: preload("res://assets/audio/space/charge.wav"),
@@ -9,6 +10,7 @@ const SOUNDS: Dictionary = {
 	SpaceEvent.Type.SHIELD_HIT: preload("res://assets/audio/space/shield.wav"),
 	SpaceEvent.Type.HULL_HIT: preload("res://assets/audio/space/hull.wav"),
 	SpaceEvent.Type.SHIP_DESTROYED: preload("res://assets/audio/space/explosion.wav"),
+	SpaceEvent.Type.MISSILE_DESTROYED: preload("res://assets/audio/space/hull.wav"),
 }
 
 var _engine: AudioStreamPlayer
@@ -43,7 +45,7 @@ func on_event(event: SpaceEvent) -> void:
 	if not SOUNDS.has(event.type) or _voices.is_empty():
 		return
 	var voice: AudioStreamPlayer2D = _voices[_next]
-	voice.stream = SOUNDS[event.type]
+	voice.stream = MISSILE if event.type == SpaceEvent.Type.SHOT_FIRED and event.amount == float(SpaceWeaponData.Kind.MISSILE) else SOUNDS[event.type]
 	voice.global_position = event.position
 	voice.pitch_scale = 0.92 if event.source > 0 and event.type == SpaceEvent.Type.SHOT_FIRED else 1.0
 	voice.play()

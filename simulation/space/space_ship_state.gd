@@ -18,6 +18,7 @@ var cooldowns: PackedInt32Array = [0, 0]
 var charges: PackedInt32Array = [-1, -1]
 var respawn_ticks: int = 0
 var thrust: float = 0.0
+var spawned: bool = true
 
 
 func reset(placement: SpaceShipPlacement) -> void:
@@ -38,6 +39,7 @@ func reset(placement: SpaceShipPlacement) -> void:
 	charges.fill(-1)
 	respawn_ticks = 0
 	thrust = 0.0
+	spawned = placement.wave == 0
 
 
 func forward() -> Vector2:
@@ -49,7 +51,7 @@ func invulnerable(config: SpaceConfig) -> bool:
 
 
 func capture() -> Dictionary:
-	return {"team": team, "position": position, "previous": previous, "velocity": velocity, "angle": angle, "previous_angle": previous_angle, "hull": hull, "shield": shield, "shield_delay": shield_delay, "boost_tick": boost_tick, "boost_cooldown": boost_cooldown, "boost_direction": boost_direction, "cooldowns": cooldowns.duplicate(), "charges": charges.duplicate(), "respawn_ticks": respawn_ticks, "thrust": thrust}
+	return {"team": team, "position": position, "previous": previous, "velocity": velocity, "angle": angle, "previous_angle": previous_angle, "hull": hull, "shield": shield, "shield_delay": shield_delay, "boost_tick": boost_tick, "boost_cooldown": boost_cooldown, "boost_direction": boost_direction, "cooldowns": cooldowns.duplicate(), "charges": charges.duplicate(), "respawn_ticks": respawn_ticks, "thrust": thrust, "spawned": spawned}
 
 
 func restore(state: Dictionary) -> void:

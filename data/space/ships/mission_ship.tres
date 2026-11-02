@@ -1,0 +1,14 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://data/space/space_ship_data.gd" id="1"]
+[ext_resource type="Resource" path="res://data/space/weapons/training_primary.tres" id="2"]
+[ext_resource type="Resource" path="res://data/space/weapons/pilot_missile.tres" id="3"]
+[ext_resource type="Texture2D" path="res://assets/space/training_ship.png" id="4"]
+
+[resource]
+script = ExtResource("1")
+id = &"pilot"
+name_key = "SPACE_PLAYER"
+primary = ExtResource("2")
+secondary = ExtResource("3")
+sprite = ExtResource("4")

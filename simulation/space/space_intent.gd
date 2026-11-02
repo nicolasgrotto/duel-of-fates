@@ -7,6 +7,7 @@ var thrust: float = 0.0
 var turn: float = 0.0
 var held: int = 0
 var pressed: int = 0
+var target: int = -1
 
 
 func clear() -> void:
@@ -14,3 +15,4 @@ func clear() -> void:
 	turn = 0.0
 	held = 0
 	pressed = 0
+	target = -1

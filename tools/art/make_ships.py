@@ -72,6 +72,56 @@ def main():
     player(colors).save(folder / "training_ship.png", optimize=True)
     drone(colors).save(folder / "target_drone.png", optimize=True)
     nebula(colors).save(folder / "nebula.png", optimize=True)
+    for kind in ("fighter", "interceptor", "gunship", "launcher", "turret", "capital", "boss", "generator", "engine", "weakpoint", "debris"):
+        mission_sprite(colors, kind).save(folder / f"{kind}.png", optimize=True)
+
+
+def mission_sprite(colors, kind):
+    size = 96 if kind in ("capital", "boss") else 48 if kind in ("gunship", "debris") else 32
+    image = Image.new("RGBA", (size, size))
+    draw = ImageDraw.Draw(image)
+    c = size // 2
+    dark, metal, edge = (colors[key] for key in ("infiltration_seam", "prosthetic_metal", "infiltration_edge"))
+    if kind == "debris":
+        points = [(c + round(math.cos(i * math.tau / 9) * (c - 3 - i % 3 * 3)), c + round(math.sin(i * math.tau / 9) * (c - 3 - i % 2 * 4))) for i in range(9)]
+        draw.polygon(points, fill=dark, outline=edge)
+        draw.polygon([(12, 12), (29, 7), (38, 23), (25, 33), (14, 29)], fill=shade(metal, .5))
+        draw.line((12, 12, 25, 20, 25, 33), fill=edge)
+    elif kind in ("generator", "engine", "weakpoint", "turret", "launcher"):
+        draw.rounded_rectangle((3, 3, size - 4, size - 4), 4, fill=dark, outline=edge, width=2)
+        draw.rectangle((7, 8, size - 8, size - 9), fill=shade(metal, .6))
+        if kind == "turret":
+            draw.rectangle((c - 3, 0, c + 3, c), fill=metal)
+        elif kind == "launcher":
+            for x in (10, 20):
+                draw.rectangle((x - 2, 5, x + 2, 19), fill=dark, outline=colors["danger"])
+        else:
+            color = colors["menu_blade_a"] if kind == "generator" else colors["menu_blade_b"] if kind == "engine" else colors["potential"]
+            for y in (11, 16, 21):
+                draw.line((9, y, 22, y), fill=color, width=2)
+    else:
+        wing = c - 3 if kind in ("fighter", "gunship") else c // 2
+        draw.polygon([(c, 2), (c + 7, c - 6), (c + wing, c + 3), (size - 4, size - 5), (c, size - 11), (3, size - 5), (c - wing, c + 3), (c - 7, c - 6)], fill=dark, outline=edge)
+        draw.polygon([(c, 5), (c + 5, c - 3), (c + 4, size - 12), (c - 4, size - 12), (c - 5, c - 3)], fill=metal)
+        draw.rectangle((c - 2, c - 5, c + 2, c + 2), fill=colors["danger"])
+        for x in (c - wing + 3, c + wing - 3):
+            draw.line((x, c + 3, x, size - 8), fill=edge, width=2)
+        if kind == "capital":
+            for y in range(25, size - 15, 8):
+                draw.line((c - 10, y, c + 10, y), fill=shade(edge, .6))
+        elif kind == "boss":
+            draw.polygon(((18, 20), (69, 15), (80, 32), (74, 70), (60, 82), (20, 77), (13, 56)), fill=dark, outline=edge)
+            for y in (29, 39, 55, 65):
+                draw.rectangle((24, y, 66, y + 4), fill=shade(metal, .55), outline=edge)
+            draw.rectangle((39, 38, 55, 56), fill=dark, outline=colors["potential"], width=2)
+        elif kind == "gunship":
+            for x in (12, 24, 36):
+                draw.rectangle((x - 2, 7, x + 2, 18), fill=metal, outline=dark)
+                draw.line((x - 1, 7, x + 1, 7), fill=colors["danger"])
+        elif kind == "interceptor":
+            draw.rectangle((c + 5, 22, c + 10, 30), fill=dark, outline=edge)
+            draw.line((c + 6, 30, c + 9, 30), fill=colors["menu_blade_b"])
+    return image
 
 
 def nebula(colors):

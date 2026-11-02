@@ -472,7 +472,7 @@ Jogar tem só História, Duelar, Batalhas e Modos especiais; os modos ficam em s
 
 - **Duelar**: 1 Jogador, 2 Jogadores, CPU vs CPU.
 - **Batalhas**: Arcade, Sobrevivência, Caçada a chefes.
-- **Modos especiais**: Infiltração e o futuro Combate de naves (modos fora do duelo de lâminas). Planejado: **Operações de blaster** (tiro em visão de cima, várias missões: arena, assalto, defesa, resistir até a extração, escolta, duelo de blasters e chefe), reaproveitando o núcleo da Infiltração e as regras de disparo.
+- **Modos especiais**: Infiltração e Combate de naves (modos fora do duelo de lâminas). Planejado: **Operações de blaster** (tiro em visão de cima, várias missões: arena, assalto, defesa, resistir até a extração, escolta, duelo de blasters e chefe), reaproveitando o núcleo da Infiltração e as regras de disparo.
 
 Avaliação das sugestões de modos (autor e Claude): entram Operações de blaster e, depois de jogadas, uma camada opcional de **operações em sequência** (rotas de salas montadas a partir dos mapas, melhorias só na partida, semente determinística). A defesa de base vira um tipo de missão das Operações. Ficam fora por ora, por exigirem um sistema novo de movimento ou de IA com pouco reaproveitamento: combate de veículos terrestres (repete o de naves), comando tático de equipe e corrida de speeder. A **aventura de plataforma** foi reavaliada a pedido do autor e entra como **Fases de ação**: os controles do duelo (dashes, pulo duplo, pulo na parede, ataques, defesas, esquiva de precisão e poderes) já formam um jogo de ação completo; muda o mundo em volta. Sem trava permanente no oponente (a frente segue o direcional, com trava suave só perto de um inimigo), vários inimigos simples, plataformas, abismos e pontos de retorno, câmera que segue o jogador, mini-chefes em duelo de verdade e **desvio de costas**: com a guarda, um toque no tempo do parry devolve um disparo que chega por trás sem virar o corpo. O duelo não muda: o núcleo ganha um provedor de alvo em vez de supor sempre o oponente, e a matriz IA × IA tem de ficar idêntica. Também planejados: um quarto estilo da História, **lâmina com as duas mãos e blaster no coldre** (saca só nas técnicas de disparo, blasters como dados para variar no futuro), e a **Saga**, campanha maior que mistura os modos; nela, o estilo com blaster leva às Operações de blaster e o estilo só de lâmina às Infiltrações.
 
@@ -574,7 +574,7 @@ Jogar › Modos especiais › Infiltração substitui a entrada temporária de A
 
 ## Combate de naves (tasks 13–14)
 
-Modo próprio top-down de arenas espaciais. A task 13 entrega só o **Treino de voo**, acessível executando `screens/space/space_training.tscn` no editor ou pela rota técnica `space_training`; não acrescenta opção ao menu. A task 14 entra em **Jogar › Modos especiais › Combate de naves**, junto da Infiltração. Simulação independente em 60 Hz, sem mudar o duelo ou seus números. Nenhum progresso é gravado no treino.
+Modo próprio top-down de arenas espaciais em **Jogar › Modos especiais › Combate de naves**, junto da Infiltração. A task 13 estabeleceu o treino de fundação; a task 14 o substitui no fluxo por cinco missões, resultados e oficina. A rota técnica foi removida. Simulação independente em 60 Hz, sem mudar o duelo ou seus números. Recursos de treino continuam como fixtures, sem recompensa.
 
 ### Pilotagem e combate básico
 

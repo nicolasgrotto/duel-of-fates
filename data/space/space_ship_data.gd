@@ -1,6 +1,8 @@
 class_name SpaceShipData
 extends Resource
 
+enum Archetype { DRONE, FIGHTER, INTERCEPTOR, GUNSHIP, LAUNCHER, TURRET, CAPITAL, BOSS, SECTION }
+
 @export var id: StringName
 @export var name_key: String
 @export var hull: float = 100.0
@@ -18,3 +20,5 @@ extends Resource
 @export var primary: SpaceWeaponData
 @export var secondary: SpaceWeaponData
 @export var sprite: Texture2D
+@export var archetype: Archetype = Archetype.DRONE
+@export var preferred_range: float = 360.0

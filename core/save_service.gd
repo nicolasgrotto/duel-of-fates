@@ -13,6 +13,7 @@ var hunt_best: Dictionary = {}
 var infiltration_best: Dictionary = {}
 var unlocked: Dictionary = {}
 var campaign: Dictionary = {}
+var space: SpaceProgress = SpaceProgress.new()
 
 
 func _ready() -> void:
@@ -28,6 +29,7 @@ func reset() -> void:
 	infiltration_best = {}
 	unlocked = {}
 	campaign = {}
+	space = SpaceProgress.new()
 
 
 func load_progress() -> void:
@@ -46,6 +48,7 @@ func load_progress() -> void:
 	infiltration_best = file.get_value(SECTION, "infiltration_best", {})
 	unlocked = file.get_value(SECTION, "unlocked", {})
 	campaign = file.get_value(SECTION, "campaign", {})
+	space.restore(file.get_value(SECTION, "space", {}))
 
 
 func save_progress() -> void:
@@ -59,6 +62,7 @@ func save_progress() -> void:
 	file.set_value(SECTION, "infiltration_best", infiltration_best)
 	file.set_value(SECTION, "unlocked", unlocked)
 	file.set_value(SECTION, "campaign", campaign)
+	file.set_value(SECTION, "space", space.capture())
 	file.save(path)
 
 
@@ -129,3 +133,21 @@ func record_infiltration(id: StringName, ticks: int, bonuses: int) -> bool:
 	infiltration_best[key] = {"ticks": best, "bonuses": combined}
 	save_progress()
 	return true
+
+
+func record_space(id: StringName, ticks: int, rating: int) -> bool:
+	var earned: bool = space.record(id, ticks, rating)
+	save_progress()
+	return earned
+
+
+func buy_space_upgrade(track: int) -> bool:
+	if not space.buy(track):
+		return false
+	save_progress()
+	return true
+
+
+func reset_space_upgrades() -> void:
+	space.reset_upgrades()
+	save_progress()

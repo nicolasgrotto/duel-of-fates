@@ -1,0 +1,22 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://data/space/space_ship_data.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/space/turret.png" id="2"]
+[ext_resource type="Resource" path="res://data/space/weapons/fighter.tres" id="3"]
+
+[resource]
+script = ExtResource("1")
+id = &"turret"
+name_key = "SPACE_TURRET"
+hull = 40.0
+shield = 0.0
+shield_regeneration = 0.0
+speed = 0.0
+acceleration = 300.0
+radius = 26.0
+archetype = 5
+rotation_degrees = 45.0
+immobile = true
+can_boost = false
+sprite = ExtResource("2")
+primary = ExtResource("3")

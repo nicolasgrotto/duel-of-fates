@@ -1,7 +1,6 @@
 extends Node2D
 
 const CONFIG: SpaceConfig = preload("res://data/balance/space_config.tres")
-const ARENA: SpaceArenaData = preload("res://data/space/training_arena.tres")
 const PALETTE: UiPalette = preload("res://ui/palette.tres")
 const MAX_STEPS: int = 5
 const HUD_MARGIN: float = 56.0
@@ -9,7 +8,9 @@ const HUD_WIDTH: float = 290.0
 
 var sim: SpaceSimulation
 var controller: SpacePlayerController
-var drone_controller: SpaceDroneController
+var mode: SpaceMode
+var enemy_controller: SpaceEnemyController
+var finished: bool = false
 var intent: SpaceIntent = SpaceIntent.new()
 var paused: bool = false
 var _stage: PixelStage
@@ -36,7 +37,7 @@ func _ready() -> void:
 
 func _open_default() -> void:
 	if sim == null:
-		open({})
+		open({"mode": SpaceMode.new(SpaceMode.MISSIONS[0], SaveService.space.loadout())})
 
 
 func open(params: Dictionary) -> void:
@@ -44,8 +45,9 @@ func open(params: Dictionary) -> void:
 		return
 	SpaceBindings.install()
 	controller = SpacePlayerController.new()
-	sim = SpaceSimulation.new(CONFIG, params.get("arena", ARENA))
-	drone_controller = SpaceDroneController.new(sim.ships.size())
+	mode = params.mode
+	sim = mode.create_simulation()
+	enemy_controller = SpaceEnemyController.new(sim.ships.size())
 	_stage = PixelStage.new(CONFIG.units_per_pixel)
 	_stage.viewport.world_2d = World2D.new()
 	add_child(_stage)
@@ -73,7 +75,7 @@ func _build_hud() -> void:
 	var hud: CanvasLayer = CanvasLayer.new()
 	hud.layer = 10
 	add_child(hud)
-	var title: Label = _label(tr(sim.arena.title_key).to_upper(), &"ScreenTitleLabel")
+	var title: Label = _label(tr(mode.data.title_key).to_upper(), &"ScreenTitleLabel")
 	title.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.offset_top = 30.0
@@ -148,9 +150,9 @@ func _build_pause() -> void:
 
 
 func _process(delta: float) -> void:
-	if sim == null:
+	if sim == null or SceneRouter._busy:
 		return
-	if not paused:
+	if not paused and not finished:
 		_refusal_left = maxf(_refusal_left - delta, 0.0)
 		_accumulator += delta
 		var steps: int = 0
@@ -159,7 +161,7 @@ func _process(delta: float) -> void:
 			controller.produce(intent)
 			step_once(intent)
 			steps += 1
-			if paused:
+			if paused or finished:
 				break
 		if steps == MAX_STEPS:
 			_accumulator = 0.0
@@ -167,9 +169,9 @@ func _process(delta: float) -> void:
 
 
 func step_once(command: SpaceIntent) -> void:
-	if paused:
+	if paused or finished:
 		return
-	sim.step(drone_controller.produce_all(sim, command))
+	sim.step(enemy_controller.produce_all(sim, command))
 	for index in sim.event_count:
 		var event: SpaceEvent = sim.events[index]
 		_view.on_event(event)
@@ -177,8 +179,13 @@ func step_once(command: SpaceIntent) -> void:
 		if event.source == 0 and event.type == SpaceEvent.Type.ACTION_REFUSED:
 			_refusal_key = "SPACE_NO_SECONDARY" if int(event.amount) == SpaceEvent.Refusal.NO_SECONDARY else "SPACE_POOL_FULL"
 			_refusal_left = CONFIG.refusal_seconds
-	if sim.ships[0].hull <= 0.0:
-		_set_paused(true)
+	if sim.mission.outcome != SpaceMissionState.Outcome.ACTIVE:
+		finished = true
+		_view.animate = false
+		_audio.set_paused(true)
+		mode.finish(sim)
+		if not mode.external:
+			SceneRouter.change(&"space_result", {"mode": mode, "panel": &"result"})
 
 
 func _update_presentation(alpha: float) -> void:
@@ -187,7 +194,13 @@ func _update_presentation(alpha: float) -> void:
 	_view.alpha = alpha
 	var player: SpaceShipState = sim.ships[0]
 	var half: Vector2 = (get_viewport_rect().size / CONFIG.camera_zoom * 0.5).min(sim.arena.size * 0.5)
-	_camera.position = player.previous.lerp(player.position, alpha).clamp(half, sim.arena.size - half)
+	var focus: Vector2 = player.previous.lerp(player.position, alpha)
+	var target: int = sim.mission.next_target(sim)
+	if target >= 0:
+		var ahead: Vector2 = ((sim.ships[target].position - focus) * CONFIG.camera_focus_ratio).limit_length(CONFIG.camera_lookahead)
+		ahead.y = clampf(ahead.y, -CONFIG.camera_vertical_lookahead, CONFIG.camera_vertical_lookahead)
+		focus += ahead
+	_camera.position = focus.clamp(half, sim.arena.size - half)
 	_backdrop.center = _camera.position
 	_backdrop.queue_redraw()
 	_hull.ratio = player.hull / player.data.hull
@@ -197,19 +210,31 @@ func _update_presentation(alpha: float) -> void:
 	_shield.ratio = player.shield / player.data.shield if player.data.shield > 0.0 else 0.0
 	_shield.ghost_ratio = _shield.ratio
 	_shield.queue_redraw()
-	_objective.text = tr("SPACE_OBJECTIVE").format({"count": sim.destroyed_targets})
+	var bearing: String = ""
+	if target >= 0:
+		var offset: Vector2 = sim.ships[target].position - player.position
+		bearing = tr("SPACE_TARGET").format({"angle": roundi(rad_to_deg(wrapf(offset.angle() - player.angle, -PI, PI))), "distance": roundi(offset.length())})
+	_objective.text = tr(mode.data.objective_key) + "\n" + tr("SPACE_WAVE_TIME" if not mode.data.waves.is_empty() else "SPACE_RESULT_TIME").format({"wave": sim.mission.wave, "total": mode.data.waves.size(), "time": ChallengeMode.format_time(sim.tick * Ticks.DELTA)}) + "  " + bearing
+	if mode.data.protected_ship >= 0:
+		_objective.text += "\n" + tr("SPACE_ALLY_HULL").format({"hull": roundi(sim.ships[mode.data.protected_ship].hull / sim.ships[mode.data.protected_ship].data.hull * 100.0)})
+	if not mode.data.phases.is_empty():
+		_objective.text += "\n" + tr(mode.data.phases[sim.mission.phase].title_key) + " · " + tr("SPACE_OPEN" if sim.mission.weakpoint_open() else "SPACE_CLOSED")
 	_status.text = tr(_refusal_key) if _refusal_left > 0.0 else tr("SPACE_BOOST_READY") if player.boost_cooldown == 0 else tr("SPACE_BOOST_COOLDOWN").format({"seconds": snappedf(player.boost_cooldown * Ticks.DELTA, 0.1)})
-	if not paused:
+	_status.text += "\n" + (tr("SPACE_MISSILE_READY") if player.cooldowns[1] == 0 else tr("SPACE_MISSILE_COOLDOWN").format({"seconds": snappedf(player.cooldowns[1] * Ticks.DELTA, 0.1)}))
+	if not paused and not finished:
 		_audio.update(player)
 	if _view.debug:
 		var active: int = 0
 		for projectile in sim.projectiles:
 			active += int(projectile.active)
 		_debug.text = "FPS %d  tick %d\npos %s  velocity %s  speed %.2f\nangle %.3f  thrust %.2f\nhull %.1f  shield %.1f  recharge %d\nboost %d / %d  invulnerable %s\nweapons %s  windup %s\nprojectiles %d/%d  events %d/%d  dropped %d" % [Engine.get_frames_per_second(), sim.tick, player.position, player.velocity, player.velocity.length(), player.angle, player.thrust, player.hull, player.shield, player.shield_delay, player.boost_tick, player.boost_cooldown, player.invulnerable(CONFIG), player.cooldowns, player.charges, active, sim.projectiles.size(), sim.event_count, sim.events.size(), sim.dropped_events]
+		_debug.text += "\nwave %d pending %d phase %d visits %s" % [sim.mission.wave, sim.mission.pending_wave, sim.mission.phase, sim.mission.phase_visits]
+		for index in range(1, sim.ships.size()):
+			_debug.text += "\n%d %s hull %.0f target %d role %d" % [index, sim.ships[index].data.id, sim.ships[index].hull, sim.arena.ships[index].target, sim.arena.ships[index].role]
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if sim == null:
+	if sim == null or finished:
 		return
 	if event.is_action_pressed(&"debug_overlay"):
 		_view.debug = not _view.debug
@@ -246,13 +271,16 @@ func _on_pause_chosen(option: StringName) -> void:
 		&"continue":
 			_set_paused(false)
 		&"restart":
-			sim = SpaceSimulation.new(CONFIG, sim.arena)
-			drone_controller = SpaceDroneController.new(sim.ships.size())
+			sim = mode.create_simulation()
+			enemy_controller = SpaceEnemyController.new(sim.ships.size())
 			_view.setup(sim)
 			_refusal_left = 0.0
 			_set_paused(false)
 		&"back":
-			SceneRouter.change(&"menu", {"group": &"special"})
+			if mode.external:
+				mode.exit_requested.emit()
+			else:
+				SceneRouter.change(&"space", {"mission": mode.data.id})
 
 
 func _bar(parent: Node, top: float, color: Color) -> HudBar:

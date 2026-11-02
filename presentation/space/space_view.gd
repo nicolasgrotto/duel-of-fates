@@ -40,12 +40,12 @@ func setup(simulation: SpaceSimulation) -> void:
 
 
 func on_event(event: SpaceEvent) -> void:
-	if event.type != SpaceEvent.Type.SHIELD_HIT and event.type != SpaceEvent.Type.HULL_HIT and event.type != SpaceEvent.Type.SHIP_DESTROYED:
+	if event.type != SpaceEvent.Type.SHIELD_HIT and event.type != SpaceEvent.Type.HULL_HIT and event.type != SpaceEvent.Type.SHIP_DESTROYED and event.type != SpaceEvent.Type.MISSILE_DESTROYED:
 		return
 	if _left.is_empty():
 		return
 	_positions[_next] = sim.ships[event.target].position if event.type == SpaceEvent.Type.SHIELD_HIT else event.position
-	_angles[_next] = (event.position - sim.ships[event.target].position).angle()
+	_angles[_next] = (event.position - sim.ships[event.target].position).angle() if event.type != SpaceEvent.Type.MISSILE_DESTROYED else 0.0
 	_kinds[_next] = event.type
 	_left[_next] = _duration(event.type)
 	_next = (_next + 1) % _left.size()
@@ -76,6 +76,9 @@ func _draw() -> void:
 	if sim == null:
 		return
 	_draw_trails()
+	for obstacle in sim.arena.obstacles:
+		if obstacle.sprite != null:
+			draw_texture_rect(obstacle.sprite, Rect2(_snap(obstacle.position) - Vector2.ONE * obstacle.radius, Vector2.ONE * obstacle.radius * 2.0), false)
 	for index in sim.ships.size():
 		var ship: SpaceShipState = sim.ships[index]
 		if ship.hull <= 0.0:
@@ -88,6 +91,10 @@ func _draw() -> void:
 		var direction: Vector2 = projectile.velocity.normalized()
 		var tail: Vector2 = _snap(point - direction * sim.config.bolt_length)
 		var enemy: bool = sim.ships[projectile.source].team != sim.ships[0].team
+		if sim.projectile_data(projectile).kind == SpaceWeaponData.Kind.MISSILE:
+			draw_line(point - direction * 12.0, point + direction * 6.0, PALETTE.danger if enemy else PALETTE.menu_blade_a, 10.0)
+			draw_line(point - direction * 18.0, point - direction * 30.0, PALETTE.menu_blade_b, 4.0)
+			continue
 		draw_line(tail, point, PALETTE.danger if enemy else PALETTE.bolt, 4.0)
 		draw_line(tail, point, PALETTE.spark_hot, sim.config.units_per_pixel)
 		if enemy:
@@ -121,24 +128,36 @@ func _draw_ship(index: int) -> void:
 		for segment in 8:
 			draw_arc(point, ship.data.radius + 8.0, segment * TAU / 8, (segment + 0.55) * TAU / 8, 3, PALETTE.menu_blade_a, 2.0)
 	if index > 0:
-		_draw_target(ship, point, direction)
+		_draw_target(index, point, direction)
+	if sim.mission != null and (index == sim.mission.data.boss or sim.arena.ships[index].role == SpaceShipPlacement.Role.WEAKPOINT):
+		if sim.mission.can_damage(sim, index):
+			for segment in 8:
+				draw_arc(point, ship.data.radius + 8.0, segment * TAU / 8, (segment + 0.6) * TAU / 8, 3, PALETTE.potential, 3.0)
+		else:
+			for sign_value in [-1.0, 1.0]:
+				draw_line(point + Vector2(-18, -18 * sign_value), point + Vector2(18, 18 * sign_value), PALETTE.secondary, 3.0)
 	if debug:
 		draw_arc(point, ship.data.radius, 0, TAU, 20, PALETTE.text, 2.0)
 		draw_line(point, point + ship.velocity * 0.3, PALETTE.aurora, 2.0)
 		draw_line(point, point + direction * 70.0, PALETTE.potential, 2.0)
 
 
-func _draw_target(ship: SpaceShipState, point: Vector2, direction: Vector2) -> void:
+func _draw_target(index: int, point: Vector2, direction: Vector2) -> void:
+	var ship: SpaceShipState = sim.ships[index]
 	draw_line(point + Vector2(-20, 40), point + Vector2(20, 40), Color(PALETTE.secondary, 0.25), 2.0)
 	draw_line(point + Vector2(-20, 40), point + Vector2(-20 + ship.hull / ship.data.hull * 40.0, 40), PALETTE.secondary, 2.0)
 	draw_line(point + Vector2(-8, -44), point + Vector2(0, -38), PALETTE.accent, 2.0)
 	draw_line(point + Vector2(8, -44), point + Vector2(0, -38), PALETTE.accent, 2.0)
-	if ship.charges[0] >= 0 and ship.data.primary != null:
-		var progress: float = clampf(float(ship.charges[0]) / maxi(Ticks.from_seconds(ship.data.primary.windup), 1), 0.0, 1.0)
+	var data: SpaceWeaponData = sim.weapon(index, 0)
+	if ship.charges[0] >= 0 and data != null:
+		var progress: float = clampf(float(ship.charges[0]) / maxi(Ticks.from_seconds(data.windup), 1), 0.0, 1.0)
 		draw_arc(point, ship.data.radius + 12.0, -PI * 0.5, -PI * 0.5 + TAU * progress, 20, PALETTE.danger, 2.0)
-		for dash in 8:
-			var begin: Vector2 = point + direction * (ship.data.radius + 14.0 + dash * 24.0)
-			draw_line(_snap(begin), _snap(begin + direction * 10.0), Color(PALETTE.danger, 0.35 + progress * 0.35), 2.0)
+		for ray in data.count:
+			var offset: float = lerpf(-data.spread_degrees * 0.5, data.spread_degrees * 0.5, float(ray) / (data.count - 1)) if data.count > 1 else 0.0
+			var aim: Vector2 = direction.rotated(deg_to_rad(offset))
+			for dash in 8:
+				var begin: Vector2 = point + aim * (ship.data.radius + 14.0 + dash * 24.0)
+				draw_line(_snap(begin), _snap(begin + aim * 10.0), Color(PALETTE.danger, 0.35 + progress * 0.35), 2.0)
 
 
 func _draw_trails() -> void:

@@ -1,0 +1,22 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://data/space/space_ship_data.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/space/interceptor.png" id="2"]
+[ext_resource type="Resource" path="res://data/space/weapons/fighter.tres" id="3"]
+
+[resource]
+script = ExtResource("1")
+id = &"interceptor"
+name_key = "SPACE_INTERCEPTOR"
+hull = 20.0
+shield = 0.0
+shield_regeneration = 0.0
+speed = 230.0
+acceleration = 300.0
+radius = 22.0
+archetype = 2
+rotation_degrees = 100.0
+immobile = false
+can_boost = false
+sprite = ExtResource("2")
+primary = ExtResource("3")

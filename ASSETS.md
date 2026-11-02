@@ -73,3 +73,10 @@ Todo asset do projeto (arte, fonte, som, música, shader de terceiros) tem uma l
 | `assets/audio/space/explosion.wav` | destruição de 0,42 s | original, sintetizado por `space_sounds` | mesma licença do projeto | ruído com semente local e oscilador grave, sem amostras |
 | `data/space/training_arena.tres`, naves e armas em `data/space/` | arena, conjunto e alvos do treino de voo | original do projeto | mesma licença do projeto | posicionamento fixo e dados independentes do duelo |
 | Estrelas, rastros, escudo e fragmentos em `presentation/space/` | geometria na grade de pixels | original do projeto | mesma licença do projeto | semente própria, pools visuais e cores do UiPalette |
+| `assets/space/fighter.png`, `interceptor.png`, `gunship.png`, `launcher.png` | quatro silhuetas de inimigos, 32/48 px | originais, `tools/art/make_ships.py::mission_sprite` | mesma licença do projeto | placas originais e paleta central |
+| `assets/space/capital.png`, `turret.png`, `generator.png`, `engine.png`, `weakpoint.png` | capital de 96 px e seções de 32 px | originais, `mission_sprite` | mesma licença do projeto | seções independentes; nenhuma imagem externa |
+| `assets/space/debris.png` | destroço poligonal, 48 px | original, `mission_sprite` | mesma licença do projeto | contorno irregular determinístico, paleta central |
+| `assets/space/boss.png` | Ferro de maré, casco de 96 px | original, `mission_sprite` | mesma licença do projeto | espinha com placas largas e recessos, paleta central |
+| `assets/audio/space/missile.wav` | lançamento guiado, 0,24 s | original, `tools/audio/synth_audio.py::space_sounds` | mesma licença do projeto | ruído filtrado e varredura tonal, sem amostras |
+| `data/space/missions/*.tres`, novas naves/armas e `upgrades.tres` | cinco missões, chefe e oficina | originais, `tools/space/make_missions.py` e configuração do projeto | mesma licença do projeto | dados próprios, reaproveitam assets registrados |
+| Cápsula de míssil, leques de preparação e marcações de abertura em `SpaceView` | geometria procedural | original do projeto | mesma licença do projeto | formas diferenciadas e paleta central; sem textura externa |

@@ -45,6 +45,8 @@ Tiro do jogador é um traço curto quente (`bolt`); drone usa ponta partida e bo
 
 Task 14 amplia a mesma ferramenta de naves: caça de proa curta e placas em cunha; interceptador comprido com motor deslocado; canhoneira larga com três bocas; lançador com dois compartimentos; torre angular em pedestal; gerador com bobina quadrada e motor com grelhas. Capital é espinha industrial de placas com seções separadas; chefe Ferro de maré tem casco largo irregular e três recessos de núcleo, sem asas ou composição de outra obra. Sprites de núcleo/gerador/motor continuam reconhecíveis apagados. Detritos são polígonos irregulares de quatro tons de rock/rock_light, gerados com semente local, sem fotografias. Míssil é cápsula sólida com chama e rastro curto descontínuo; distinto do traço da primária por forma. Núcleo fechado tem barras cruzadas; aberto tem contorno partido e marca central. Tamanhos e colisões vêm dos dados e continuam na grade de 2 u.
 
+Nas missões, a câmera mantém o zoom uniforme de 1,8 e acompanha a nave com antecipação de 35% do deslocamento até o objetivo ativo, limitada a 240 u, a ±150 u na vertical e às bordas. Isso enquadra os núcleos e avisos da capital durante a aproximação sem reduzir a escala dos pixels e preserva espaço sob o HUD. É leitura de apresentação; não muda alvo, giro ou disparo do jogador.
+
 ### Duelo
 
 - Em enquadramento neutro, um lutador ocupa cerca de 25–30% da altura da tela; a arena é grande diante deles.

@@ -1,0 +1,20 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://data/space/space_ship_data.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/space/engine.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"engine"
+name_key = "SPACE_ENGINE"
+hull = 60.0
+shield = 0.0
+shield_regeneration = 0.0
+speed = 0.0
+acceleration = 300.0
+radius = 26.0
+archetype = 8
+rotation_degrees = 45.0
+immobile = true
+can_boost = false
+sprite = ExtResource("2")

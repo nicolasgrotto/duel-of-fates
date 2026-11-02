@@ -916,17 +916,90 @@ SPACE_THRUST,propulsão,thrust
 SPACE_REVERSE,ré,reverse
 SPACE_FIRE,primária,primary
 SPACE_BOOST,impulso,boost
-SPACE_SECONDARY,secundária,secondary
+SPACE_SECONDARY,Míssil guiado,Homing missile
 SPACE_OBJECTIVE,"Pratique voo, impulso e tiro · drones abatidos: {count}","Practice flight, boost and fire · drones destroyed: {count}"
 SPACE_BOOST_READY,Impulso pronto,Boost ready
 SPACE_BOOST_COOLDOWN,Impulso: {seconds} s,Boost: {seconds} s
 SPACE_NO_SECONDARY,Secundária indisponível no treino,Secondary unavailable in training
 SPACE_POOL_FULL,Aguarde os disparos em voo,Wait for the shots in flight
 SPACE_DEFEATED,TREINO ENCERRADO,TRAINING ENDED
-SPACE_RESTART,Reiniciar treino,Restart training
-SPACE_BACK,Voltar a Modos especiais,Back to Special modes
+SPACE_RESTART,Reiniciar missão,Restart mission
+SPACE_BACK,Voltar às missões,Back to missions
 SPACE_LEGEND,"Gire para mirar · soltar a propulsão conserva inércia
-Impulso: início e fim vulneráveis · escudo regenera após 2 s
-Drone avisa antes de disparar · secundária indisponível","Turn to aim · releasing thrust preserves inertia
-Boost: vulnerable start and finish · shield recharges after 2 s
-Drones warn before firing · secondary unavailable"
+Impulso: estado atual e conclusão da esquiva · escudo recarrega após 2 s
+Dispare contra mísseis ou esquive · secundária guiada a cada 3,5 s","Turn to aim · releasing thrust preserves inertia
+Boost: current state and completed dodge · shield recharges after 2 s
+Shoot down missiles or dodge · homing secondary every 3.5 s"
+MENU_SPACE,Combate de naves,Space combat
+SPACE_M1_TITLE,Corredor aberto,Open corridor
+SPACE_M2_TITLE,Rastro de cinza,Ash trail
+SPACE_M3_TITLE,Última escolta,Last escort
+SPACE_M4_TITLE,Cortar a rede,Cut the network
+SPACE_M5_TITLE,Ferro de maré,Tide iron
+SPACE_M1_BRIEF,Uma formação bloqueia o corredor. Desfaça a ponta do esquadrão e prepare-se para os interceptadores que seguem seu rastro.,A formation blocks the corridor. Break the squadron lead and prepare for interceptors following your trail.
+SPACE_M2_BRIEF,Destroços cobrem a aproximação. Dispare contra mísseis guiados ou atravesse a trajetória com a esquiva. A nave de artilharia dispara em leque.,Debris covers the approach. Shoot down homing missiles or boost across their path. The gunship fires a spread.
+SPACE_M3_BRIEF,"Mantenha a capital aliada inteira até eliminar as ondas. Gerador, motores e torres podem cair separadamente; perder o casco central encerra a escolta.","Keep the allied capital alive until the waves are eliminated. Generator, engines and turrets can fall separately; losing the central hull ends the escort."
+SPACE_M4_BRIEF,"Destrua o gerador para cortar a recarga do escudo. Elimine motores e casco central. As torres são alvos opcionais, mas continuam atirando enquanto intactas.",Destroy the generator to cut shield regeneration. Eliminate engines and central hull. Turrets are optional targets but keep firing while intact.
+SPACE_M5_BRIEF,"Ataque a abertura superior, depois a inferior e enfim o casco central. Os pontos fracos abrem em ciclos; o desenho segmentado indica a janela. Leia o arco de preparação antes do disparo.","Attack the upper opening, then the lower one and finally the central hull. Weak points open in cycles; the segmented outline marks the window. Read the charge arc before each shot."
+SPACE_M1_OBJECTIVE,Elimine os esquadrões do corredor,Eliminate the corridor squadrons
+SPACE_M2_OBJECTIVE,Elimine os lançadores e a artilharia,Eliminate the launchers and gunship
+SPACE_M3_OBJECTIVE,Elimine as ondas e proteja a capital,Eliminate the waves and protect the capital
+SPACE_M4_OBJECTIVE,"Destrua gerador, motores e casco central","Destroy generator, engines and central hull"
+SPACE_M5_OBJECTIVE,Destrua as três aberturas do Ferro de maré,Destroy all three openings of Tide iron
+SPACE_BRIEF_RULES,"Limite: {limit}s · Tempo de referência: {par}s
+Avaliação: vitória + casco ≥75% + tempo de referência
+Primeira vitória: 1 ponto para a oficina","Limit: {limit}s · Par time: {par}s
+Rating: victory + hull ≥75% + par time
+First victory: 1 workshop point"
+SPACE_START,Confirmar para iniciar · Equipamento atual da oficina,Confirm to start · Current workshop equipment
+SPACE_UNPLAYED,Missão ainda não concluída,Mission not yet completed
+SPACE_RECORD,"Melhor tempo: {time}
+Melhor avaliação: {rating}/3","Best time: {time}
+Best rating: {rating}/3"
+SPACE_TARGET,Alvo {angle}° · {distance}m,Target {angle}° · {distance}m
+SPACE_WAVE_TIME,Onda {wave}/{total} · {time},Wave {wave}/{total} · {time}
+SPACE_ALLY_HULL,Casco aliado: {hull}%,Allied hull: {hull}%
+SPACE_PHASE_1,Abertura superior · Leque,Upper opening · Spread
+SPACE_PHASE_2,Abertura inferior · Mísseis,Lower opening · Missiles
+SPACE_PHASE_3,Núcleo central · Barragem,Central core · Barrage
+SPACE_OPEN,Ponto fraco aberto,Weak point open
+SPACE_CLOSED,Blindagem fechada,Armor closed
+SPACE_KEEP_ALLY,Preservar o casco aliado,Preserve the allied hull
+SPACE_SUCCESS,Missão concluída,Mission completed
+SPACE_ALLY_DOWN,Capital aliada perdida,Allied capital lost
+SPACE_TIMEOUT,Tempo esgotado,Time expired
+SPACE_RESULT_TIME,Tempo: {time},Time: {time}
+SPACE_RATING,Avaliação: {rating}/3,Rating: {rating}/3
+SPACE_POINT_EARNED,Primeira vitória: +1 ponto na oficina,First victory: +1 workshop point
+SPACE_REPEAT,Recordes atualizados · O ponto desta missão já foi recebido,Records updated · This mission point was already earned
+SPACE_FAILURE_SAVE,Derrota não concede pontos nem altera recordes,Defeat grants no points and changes no records
+SPACE_WORKSHOP,Oficina de naves,Ship workshop
+SPACE_POINTS,Pontos disponíveis: {points},Available points: {points}
+SPACE_WORKSHOP_RULES,Cada primeira vitória concede 1 ponto. Cada nível custa 1 ponto; máximo de 2 níveis por sistema. Reinicie a distribuição sem custo. Todas as missões aceitam o equipamento inicial.,Each first victory grants 1 point. Each level costs 1 point; maximum 2 levels per system. Reset allocation for free. All missions support the starting equipment.
+SPACE_UP_VALUES,"Por nível
+Arma: +{damage} dano, −{interval}s entre disparos
+Escudo: +{shield} capacidade, +{regen}/s de recarga
+Propulsão: +{speed} velocidade, +{accel} aceleração","Per level
+Weapon: +{damage} damage, −{interval}s fire interval
+Shield: +{shield} capacity, +{regen}/s recharge
+Thrusters: +{speed} speed, +{accel} acceleration"
+SPACE_UP_WEAPON,Arma  {level}/{max},Weapon  {level}/{max}
+SPACE_UP_SHIELD,Escudo  {level}/{max},Shield  {level}/{max}
+SPACE_UP_SPEED,Propulsão  {level}/{max},Thrusters  {level}/{max}
+SPACE_UP_RESET,Redistribuir pontos,Reallocate points
+SPACE_MISSILE_READY,Míssil pronto,Missile ready
+SPACE_MISSILE_COOLDOWN,Míssil: {seconds}s,Missile: {seconds}s
+SPACE_PLAYER,Trama,Weave
+SPACE_FIGHTER,Caça,Fighter
+SPACE_INTERCEPTOR,Interceptador,Interceptor
+SPACE_GUNSHIP,Canhoneira,Gunship
+SPACE_LAUNCHER,Lançador,Launcher
+SPACE_TURRET,Torre,Turret
+SPACE_CAPITAL,Capital,Capital
+SPACE_BOSS,Ferro de maré,Tide iron
+SPACE_GENERATOR,Gerador de escudo,Shield generator
+SPACE_ENGINE,Motores,Engines
+SPACE_WEAKPOINT,Núcleo exposto,Exposed core
+SPACE_UP_UNAVAILABLE,Compra indisponível: confira o saldo e o limite de níveis.,Purchase unavailable: check your points and level cap.
+SPACE_UP_PURCHASED,Melhoria instalada. Vale na próxima tentativa.,Upgrade installed. Applies to the next attempt.
+SPACE_UP_RESET_DONE,Pontos devolvidos para redistribuição.,Points refunded for reallocation.

@@ -16,11 +16,11 @@ Fases 0 a 7.5 concluídas, na branch `pixel-art`: duelo completo com o elenco in
 - **O Fluxo**: 21 poderes em três categorias (Fluxo comum, Aurora e Eclipse) e 7 técnicas de lâmina, com potência definida pelo nível de Fluxo de cada lutador.
 - **11 personagens**, um chefe e três secretos, cada um com estilo, habilidade, traço e IA próprios.
 - **10 arenas** com identidade visual forte, em que as lâminas são a principal fonte de luz.
-- **Modos**: História (protagonista criado pelo jogador, pontos de habilidade, árvores de Poderes e Lâmina, duas rotas e quatro finais), Duelar (1 Jogador, 2 Jogadores local e CPU vs CPU), Batalhas (Arcade, Sobrevivência, Caçada a chefes com três missões de fases e condições especiais), Modos especiais (Infiltração: tutorial e três operações), Tutorial, Treinos guiados, Desafio de parry, Treino, Desafios e Galerias.
+- **Modos**: História (protagonista criado pelo jogador, pontos de habilidade, árvores de Poderes e Lâmina, duas rotas e quatro finais), Duelar (1 Jogador, 2 Jogadores local e CPU vs CPU), Batalhas (Arcade, Sobrevivência, Caçada a chefes com três missões de fases e condições especiais), Modos especiais (Infiltração: tutorial e três operações; Combate de naves: cinco missões e oficina), Tutorial, Treinos guiados, Desafio de parry, Treino, Desafios e Galerias.
 - Português e inglês, teclado e gamepad.
 - **Infiltração** em Jogar: modo independente em visão superior, com tutorial e três missões de sabotagem, obtenção de informação e escolta. Patrulhas, furtividade, combate e alarmes determinísticos; briefing, extração, resultados e recordes/bônus salvos. Poderes desligados; sem moeda ou melhoria permanente. Ver [content/INFILTRATION.md](content/INFILTRATION.md).
 
-**Treino de voo (task 13):** abra [screens/space/space_training.tscn](screens/space/space_training.tscn) no editor e execute com F6. A/D giram, W propulsiona, S dá ré, J dispara e Shift inicia o impulso evasivo; são os bindings remapeáveis do J1. Inclui drone-alvo, escudo, casco, pausa e F3. Missões, melhorias e entrada em Jogar › Modos especiais pertencem à task 14; o treino não grava progresso.
+**Combate de naves (task 14):** Jogar › Modos especiais › Combate de naves. Cinco missões independentes: esquadrões, mísseis, escolta, capital modular e chefe de três fases. A/D giram, W propulsiona, S dá ré, J dispara, K lança o míssil e Shift inicia o impulso evasivo; bindings remapeáveis do J1. Inclui briefing, resultado, oficina com pontos exclusivos, pausa, PT/EN e F3. Regras em [content/SPACE.md](content/SPACE.md); tela compartilhada em [screens/space/space_screen.tscn](screens/space/space_screen.tscn).
 
 ## Abrir o projeto
 

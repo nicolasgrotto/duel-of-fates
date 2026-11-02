@@ -10,9 +10,18 @@ extends Resource
 @export var boost_invulnerable_start: float = 0.05
 @export var boost_invulnerable_end: float = 0.20
 @export var drone_aim_degrees: float = 6.0
+@export var formation_distance: float = 140.0
+@export var formation_thrust: float = 0.65
+@export var orbit_angle: float = 0.65
+@export var gunship_retreat_ratio: float = 0.7
+@export var damaged_engine_turn: float = 0.45
+@export var high_rating_hull: float = 0.75
 
 @export_group("Presentation")
 @export var camera_zoom: float = 1.8
+@export var camera_focus_ratio: float = 0.35
+@export var camera_lookahead: float = 240.0
+@export var camera_vertical_lookahead: float = 150.0
 @export var units_per_pixel: float = 2.0
 @export var star_seed: int = 1313
 @export var star_count: int = 140
