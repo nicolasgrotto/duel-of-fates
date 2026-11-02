@@ -4,6 +4,8 @@ Ordem de construção do jogo. Cada fase termina jogável e testada. Marque `[x]
 
 ## Ponto de continuidade
 
+- [x] **Preparação da versão 1.0.0** (pedido do autor): `.gitignore` revisto, versão no projeto, workflows de Pages e release, README e notas da versão. Premissa Eclipse da Saga detalhada: Soberano, Sombra Desperta como subordinada e protagonista como subordinado dela; prisioneiros são agentes do Eclipse capturados.
+
 - [x] **Infiltração mais difícil e variada** (pedido do autor): dano e custo de Vigor maiores em disparos próprios do modo, sem alterar o duelo; atirador, drone, escudeiro e andador blindado original; inimigos também atacam prisioneiros recrutados; mínimo de prisioneiros por missão e bônus Todos resgatados; prisioneiros a 215 u/s e 60 de vida. Task 19 (Saga) e GAME_DESIGN registram a premissa Eclipse/Aurora do autor. Validação do autor: PLAYTEST 17.
 
 

@@ -1,8 +1,12 @@
 @tool
 extends RefCounted
-## Shared helpers used across multiple command handlers.
-## Eliminates duplication of scene-node resolution, class hierarchy
-## checks, file deletion, directory creation, and log-level detection.
+## Static helpers the editor command handlers share.
+##
+## Property coercion and compound property reads and writes, the text-filter compile,
+## scene-node and class resolution, scene tabs, file deletion and parent folders, the
+## filesystem index waits after a write or a delete, the Godot 4.3 tooltip-timer guard,
+## the file-create collision decision, batch failure summaries and the asset write
+## bracket.
 
 ## NOTE: This file is preloaded by core/modules.gd, so it CANNOT import core/modules.gd
 ## (circular dependency). Use direct preloads for dependencies instead.
@@ -10,11 +14,7 @@ const Coerce := preload("res://addons/godot_mcp_toolkit/contract/coerce.gd")
 const FileGuard := preload("res://addons/godot_mcp_toolkit/security/file_guard.gd")
 const VersionUtils := preload("res://addons/godot_mcp_toolkit/versioning/mcp_version_utils.gd")
 const PropertySetCheck := preload("res://addons/godot_mcp_toolkit/contract/property_set_check.gd")
-
-## Usage flags of the inspector header entries a property list interleaves with
-## its properties.
-const _PROPERTY_HEADER_USAGE := (
-		PROPERTY_USAGE_GROUP | PROPERTY_USAGE_SUBGROUP | PROPERTY_USAGE_CATEGORY)
+const DeclaredTypeFitter := preload("res://addons/godot_mcp_toolkit/contract/declared_type_fitter.gd")
 
 
 # -- Property coercion ---------------------------------------------------------
@@ -49,57 +49,6 @@ static func coerce_for_property(
 		coerced = NodePath(str(coerced))
 
 	return {"ok": true, "value": coerced}
-
-
-## Fits a coerced JSON value to the type [param target] declares for
-## [param property_name], through [method Coerce.coerce_to_declared_type], before the
-## caller sets it.
-##
-## The editor runs a script that is not [code]@tool[/code] as a placeholder instance,
-## whose set() stores a JSON float as given, so an [code]int[/code] export would save
-## as [code]100.0[/code]. A property missing from the target's property list keeps
-## its value. A custom project setting with no registered type lists the type of its
-## current value, so a fraction written to an int-valued custom setting is truncated
-## too.
-## [br][br]
-## Returns [code]{"value": <the value to set>, "warning": String}[/code], as
-## [method fit_to_type] does.
-static func fit_to_declared_type(
-	target: Object, property_name: String, value: Variant,
-) -> Dictionary:
-	return fit_to_type(value, _declared_type(target, property_name), property_name)
-
-
-## Converts a float [param value] to an int when [param declared_type] is
-## [code]int[/code], through [method Coerce.coerce_to_declared_type]; any other
-## value or type passes through unchanged.
-## [br][br]
-## Returns [code]{"value": <the converted value>, "warning": String}[/code]. The
-## warning is empty unless a fraction was dropped; then it names
-## [param property_name], the stored and the requested values in the readback's
-## adjusted-write wording.
-static func fit_to_type(value: Variant, declared_type: int, property_name: String) -> Dictionary:
-	var conversion := Coerce.coerce_to_declared_type(value, declared_type)
-	var warning := ""
-	if conversion["truncated"]:
-		warning = PropertySetCheck.adjusted_warning(conversion["value"], value, property_name)
-	return {"value": conversion["value"], "warning": warning}
-
-
-## The warning a scalar property write reports, or "" for a clean write.
-##
-## When the readback [param outcome] from [method describe_set_drop] is
-## [code]"adjusted"[/code], the warning names the [param stored] value against the
-## caller's [param requested] one rather than the fitted value, so a clamp that
-## follows the fit reports what the caller sent. Otherwise it is the warning in
-## [param fit], the result of [method fit_to_declared_type].
-static func scalar_set_warning(
-	outcome: Dictionary, fit: Dictionary, stored: Variant, requested: Variant,
-	property_name: String,
-) -> String:
-	if outcome.get("status", "") == "adjusted":
-		return PropertySetCheck.adjusted_warning(stored, requested, property_name)
-	return str(fit["warning"])
 
 
 ## Compile a regex text_filter. Returns [RegEx-or-null, error-or-null, warning].
@@ -354,14 +303,14 @@ static func _check_set_readback(
 	return _check_set_readback_value(before, after, coerced, original_path)
 
 
-## Map the [method describe_set_drop] tri-state onto the {ok:…} result shape the
-## compound-path callers expect. A clean write keeps the historical
+## Map the [code]PropertySetCheck.describe_set_drop[/code] tri-state onto the {ok:…}
+## result shape the compound-path callers expect. A clean write returns
 ## {"ok": true, "value": coerced}; an ADJUSTED write adds a "warning" (the compound
 ## callers already propagate result["warning"]); a DROPPED write is SET_FAILED.
 static func _check_set_readback_value(
 	before: Variant, after: Variant, coerced: Variant, original_path: String,
 ) -> Dictionary:
-	var outcome := describe_set_drop(before, after, coerced, original_path)
+	var outcome := PropertySetCheck.describe_set_drop(before, after, coerced, original_path)
 	match str(outcome.get("status", "")):
 		"dropped":
 			return {"ok": false, "code": "SET_FAILED", "error": str(outcome.get("error", ""))}
@@ -371,41 +320,10 @@ static func _check_set_readback_value(
 			return {"ok": true, "value": coerced}
 
 
-## Property-set-outcome classifier — delegates to the runtime-safe pure leaf
-## [code]contract/property_set_check.gd[/code] (the SSOT shared with the runtime
-## autoload's [code]runtime.set_property[/code]). Kept here as
-## [code]Helpers.describe_set_drop[/code] so the editor node/scene property-set
-## paths reach it through their existing helper facade with no call-site churn.
-## Returns the tri-state {"status": "ok" | "adjusted" (+warning) | "dropped" (+error)}.
-static func describe_set_drop(
-	before: Variant, after: Variant, coerced: Variant, path: String,
-) -> Dictionary:
-	return PropertySetCheck.describe_set_drop(before, after, coerced, path)
-
-
 ## Check whether a property name exists on an object instance.
 ## Uses get_property_list() which covers built-in, @export, and metadata.
 static func _has_property(obj: Object, property_name: String) -> bool:
-	return not property_entry(obj, property_name).is_empty()
-
-
-## The Variant type [param obj]'s property list declares for [param property_name],
-## or [constant @GlobalScope.TYPE_NIL] when the list has no such entry.
-static func _declared_type(obj: Object, property_name: String) -> int:
-	return int(property_entry(obj, property_name).get("type", TYPE_NIL))
-
-
-## The entry [param obj]'s property list holds for [param property_name], or an
-## empty Dictionary when it has none. Inspector group, subgroup and category
-## headers are skipped: an [code]@export_group("speed")[/code] listed ahead of
-## [code]var speed: int[/code] shares its name but declares no type, and a key
-## that names only a header is not a property.
-static func property_entry(obj: Object, property_name: String) -> Dictionary:
-	for p in obj.get_property_list():
-		if p["name"] == property_name \
-				and (int(p.get("usage", 0)) & _PROPERTY_HEADER_USAGE) == 0:
-			return p
-	return {}
+	return not DeclaredTypeFitter.property_entry(obj, property_name).is_empty()
 
 
 # -- Scene node resolution -----------------------------------------------------
@@ -605,13 +523,16 @@ static func close_scene_tab_safe(file_path: String) -> Dictionary:
 ## Clears the in-memory ResourceUID cache to prevent stale-UID errors.
 ## Returns {success: true, path: String} or an MCPToolkitError dict.
 static func delete_res_file(file_path: String, companions: Array = [".uid"]) -> Dictionary:
+	var relative_path := FileGuard.project_relative_path(file_path)
+	if relative_path.is_empty():
+		return MCPToolkitError.fail("PATH_DENIED",
+			"%s does not name a file inside the project, so it is not removed" % file_path)
 	# Capture the UID before deleting so we can evict it from the cache.
 	var uid: int = ResourceLoader.get_resource_uid(file_path)
 
 	var directory := DirAccess.open("res://")
 	if directory == null:
 		return MCPToolkitError.fail("INTERNAL", "DirAccess.open(res://) returned null")
-	var relative_path := file_path.substr("res://".length())
 	var remove_error := directory.remove(relative_path)
 	if remove_error != OK:
 		return MCPToolkitError.fail("DELETE_FAILED",

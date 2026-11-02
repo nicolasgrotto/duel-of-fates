@@ -13,3 +13,22 @@ __pycache__/
 
 # Local export output (Web build for GitHub Pages is generated, not committed)
 build/
+
+# Local tool configuration and agent workspaces
+.mcp.json
+.claude/
+.codex/
+
+# Local capture tool
+.preview/
+
+# Editor add-on brand assets, not licensed for redistribution
+addons/godot_mcp_toolkit/icon.svg
+addons/godot_mcp_toolkit/icon.svg.import
+
+# Operating system and archive leftovers
+Thumbs.db
+desktop.ini
+.DS_Store
+*.tmp
+*.zip

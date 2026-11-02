@@ -424,6 +424,8 @@ godot --headless --path . --script res://tools/simulate.gd -- --duels 100 --diff
 
 ## Exportação Web (GitHub Pages)
 
+- **Publicação**: `web.yml` publica no Pages a cada push na `main`; `release.yml` cria a release ao receber uma tag `v*`, com o build Web em zip e as notas de `RELEASE_NOTES.md`. Os dois rodam os testes antes de exportar.
+
 - Preset **Web** em `export_presets.cfg`, saída em `build/web/` (fora do git). **Sem threads** (`variant/thread_support=false`): o GitHub Pages não permite os cabeçalhos COOP/COEP que o `SharedArrayBuffer` exige; o PWA fica desligado.
 - **Exclusões**: `addons/godot_mcp_toolkit/*`, `.mcp.json`, `tests/*`, `tools/*`, `.preview/*`, `build/*`. O plugin de exportação do próprio addon (`core/export_strip.gd`) anula o autoload `MCPRuntimeServer` durante a exportação e o restaura depois; o autoload também se desliga sozinho fora do editor. Nada do jogo referencia o addon, os testes ou as ferramentas. No pacote fica só o texto da configuração `editor_plugins/enabled`, ignorado em runtime.
 - **Carregamento**: sem threads, `load_threaded_request` carrega na thread principal; o `SceneRouter` detecta a feature `nothreads` e só pede a cena depois que a tela escurece, para a espera ficar sob o fade.

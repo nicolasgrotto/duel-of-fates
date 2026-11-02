@@ -1,12 +1,43 @@
 # Regras para agentes de código: personalize
 
-## Leitura obrigatória: personalize
+## Leitura obrigatória
 
-## Regra visual e sonora: personalize
+1. [README.md](README.md): visão geral
+2. [DESIGN.md](DESIGN.md): intenção, sensação e o que não fazer
+3. [GAME_DESIGN.md](GAME_DESIGN.md): regras de gameplay
+4. [ARCHITECTURE.md](ARCHITECTURE.md): organização do projeto
+5. [ROADMAP.md](ROADMAP.md): fase atual e ponto de continuidade
 
-## Propriedade intelectual: personalize
+Conforme a tarefa, leia também `content/` (personagens, poderes, história, arenas) e `design/` (arte, efeitos, interface, áudio).
 
-## Stack: personalize
+Não contradiga uma decisão registrada sem explicar o motivo e atualizar o documento. Em caso de conflito, vale a hierarquia:
+
+```
+DESIGN.md → design/ART_DIRECTION.md → design/VFX.md, design/UI_UX.md, design/AUDIO.md
+          → GAME_DESIGN.md → content/ → ARCHITECTURE.md → código
+```
+
+## Regra visual e sonora
+
+Antes de criar ou alterar qualquer elemento visual ou sonoro (tela, HUD, personagem, lâmina, efeito, cor, fonte, animação, som, música), leia DESIGN.md e o documento de `design/` correspondente.
+
+- Todo elemento novo deve ser consistente com esses documentos.
+- Se uma decisão importante ainda não estiver definida, proponha uma solução e atualize a documentação **antes** de implementar.
+- Nunca introduza um estilo novo de forma isolada.
+- Cores e estilos de interface vêm do tema central (`Theme` e recursos de paleta descritos em ARCHITECTURE.md), nunca escritos soltos em scripts.
+
+## Propriedade intelectual
+
+- Nenhum nome, personagem, logo, arte, música ou som oficial de Star Wars (ou de outra franquia) no código ou nos assets. Nenhuma fala ou termo da franquia ("Força", "Jedi", "Sith", "sabre de luz" como nome de produto etc.).
+- O código usa termos neutros: `Fighter`, `Blade`, `Saber`, `character`, `flow`.
+- Nomes de tela, título e textos ficam nas tabelas de tradução, nunca no código.
+- Todo asset novo precisa de uma linha em [ASSETS.md](ASSETS.md) no mesmo commit. Sem licença conhecida e compatível, o asset não entra.
+
+## Stack
+
+- Godot 4.7, GDScript com tipagem estática.
+- Plugins, addons, GDExtensions e C# só com autorização explícita do autor, registrada em ARCHITECTURE.md.
+- Nunca introduza uma dependência para resolver um problema pequeno.
 
 ## Regras de arquitetura
 

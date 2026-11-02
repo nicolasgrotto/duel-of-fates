@@ -6,7 +6,7 @@ Jogo de duelo de lâminas de energia em visão lateral, feito na **Godot 4.7** c
 
 ## Situação
 
-Fases 0 a 7.5 concluídas, na branch `pixel-art`: duelo completo com o elenco inteiro, o Fluxo (poderes e técnicas), as dez arenas, todos os modos, a História com quatro finais, a revisão de combate e animação (Esquiva com giro, Pressão de lâminas, Desengajamento) e, da fase 8, ambiências e temas por arena, remapeamento do gamepad e a revisão do inglês. Agora é a fase de acabamento e de validação jogando: o roteiro está em [PLAYTEST.md](PLAYTEST.md). Detalhes em [ROADMAP.md](ROADMAP.md).
+**Versão 1.0.0.** Duelo completo com o elenco inteiro, o Fluxo (poderes e técnicas), as dez arenas, a História com quatro finais, Duelar, Batalhas, Infiltração e Combate de naves, em português e inglês. O detalhe de cada entrega fica em [ROADMAP.md](ROADMAP.md).
 
 ## O jogo em uma página
 
@@ -18,9 +18,9 @@ Fases 0 a 7.5 concluídas, na branch `pixel-art`: duelo completo com o elenco in
 - **10 arenas** com identidade visual forte, em que as lâminas são a principal fonte de luz.
 - **Modos**: História (protagonista criado pelo jogador, pontos de habilidade, árvores de Poderes e Lâmina, duas rotas e quatro finais), Duelar (1 Jogador, 2 Jogadores local e CPU vs CPU), Batalhas (Arcade, Sobrevivência, Caçada a chefes com três missões de fases e condições especiais), Modos especiais (Infiltração: tutorial e três operações; Combate de naves: cinco missões e oficina), Tutorial, Treinos guiados, Desafio de parry, Treino, Desafios e Galerias.
 - Português e inglês, teclado e gamepad.
-- **Infiltração** em Jogar: modo independente em visão superior, com tutorial e três missões de sabotagem, obtenção de informação e escolta. Patrulhas, furtividade, combate e alarmes determinísticos; briefing, extração, resultados e recordes/bônus salvos. Poderes desligados; sem moeda ou melhoria permanente. Ver [content/INFILTRATION.md](content/INFILTRATION.md).
+- **Infiltração** em Jogar › Modos especiais: seis missões de resgate em visão superior, com furtividade, sete tipos de inimigo, prisioneiros que precisam ser protegidos e personagem à escolha. No teclado: `WASD` move, `Shift` corre, `Ctrl` ou `C` agacha, `E` interage, `F` abate, mouse mira, botão esquerdo ou `Espaço` golpeia, botão direito ou `Q` defende.
 
-**Combate de naves (task 14):** Jogar › Modos especiais › Combate de naves. Cinco missões independentes: esquadrões, mísseis, escolta, capital modular e chefe de três fases. A/D giram, W propulsiona, S dá ré, J dispara, K lança o míssil e Shift inicia o impulso evasivo; bindings remapeáveis do J1. Inclui briefing, resultado, oficina com pontos exclusivos, pausa, PT/EN e F3. Regras em [content/SPACE.md](content/SPACE.md); tela compartilhada em [screens/space/space_screen.tscn](screens/space/space_screen.tscn).
+**Combate de naves:** Jogar › Modos especiais › Combate de naves. Seis missões, quatro naves no Hangar e oficina de melhorias. A/D giram, W propulsiona, S dá ré, J dispara, K lança o míssil e Shift inicia o impulso.
 
 ## Abrir o projeto
 
@@ -46,7 +46,7 @@ python -m http.server 8000 --directory build/web
 
 Depois abra `http://localhost:8000` no navegador. A build é sem threads e não precisa de cabeçalhos especiais.
 
-Publicação: o workflow `.github/workflows/web.yml` (disparo manual em Actions › Web build › Run workflow) importa, roda os testes, exporta e publica `build/web` no GitHub Pages. No repositório, ative Settings › Pages › Source: GitHub Actions.
+Publicação: o workflow `.github/workflows/web.yml` (a cada push na `main` ou em Actions › Web build › Run workflow) importa, roda os testes, exporta e publica `build/web` no GitHub Pages. No repositório, ative Settings › Pages › Source: GitHub Actions.
 
 Arte e áudio são gerados por ferramentas offline (Python 3 com numpy e Pillow): `python tools/art/paint_fighters.py` e `python tools/audio/synth_audio.py`. O jogo não depende delas.
 

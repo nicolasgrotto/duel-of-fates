@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+env:
+  GODOT_VERSION: 4.7.2
+  GODOT_RELEASE: stable
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Godot and the export templates
+        run: |
+          base="https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-${GODOT_RELEASE}"
+          wget -q "$base/Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64.zip"
+          wget -q "$base/Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_export_templates.tpz"
+          unzip -q "Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64.zip"
+          mv "Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64" godot
+          templates="$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}"
+          mkdir -p "$templates"
+          unzip -q "Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_export_templates.tpz"
+          mv templates/* "$templates/"
+
+      - name: Import, test and export
+        run: |
+          ./godot --headless --path . --import
+          ./godot --headless --path . --script res://tools/run_tests.gd
+          mkdir -p build/web
+          ./godot --headless --path . --export-release "Web" build/web/index.html
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          (cd build/web && zip -qr "../../duel-of-fates-${GITHUB_REF_NAME}-web.zip" .)
+          gh release create "$GITHUB_REF_NAME" "duel-of-fates-${GITHUB_REF_NAME}-web.zip" --title "Duel of Fates ${GITHUB_REF_NAME}" --notes-file RELEASE_NOTES.md

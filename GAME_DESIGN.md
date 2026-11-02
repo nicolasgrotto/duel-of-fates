@@ -603,7 +603,7 @@ Modo completo em Jogar › Modos especiais › Combate de naves; a rota técnica
 
 ## Saga: premissa decidida pelo autor
 
-A campanha completa parte de dois pressupostos opostos. No **Eclipse**, o mestre do protagonista é o Soberano, ou a Sombra Desperta como subordinada dele, e o envia para destruir a ordem dos cavaleiros da Aurora. Na **Aurora**, o Ancião envia o protagonista, cavaleiro da ordem, para derrubar o império do Soberano. Detalhes ficam para a task 19 do Codex.
+A campanha completa parte de dois pressupostos opostos. No **Eclipse**, a hierarquia é Soberano, Sombra Desperta como subordinada direta dele, e o protagonista como subordinado dela; a ordem de destruir os cavaleiros da Aurora desce por essa cadeia, e os prisioneiros a resgatar são agentes do Eclipse capturados pela ordem. Na **Aurora**, o Ancião envia o protagonista, cavaleiro da ordem, para derrubar o império do Soberano. Detalhes ficam para a task 19 do Codex.
 
 ## 19. Fora do escopo inicial
 
