@@ -33,3 +33,18 @@ Escudeiro, atirador, drone e andador não correm até o painel; soldados e pesad
 | Bloco de celas | Corredor central e oito blocos; só resgate | Libertar prisioneiros e sair (mínimo 2 de 4) | 12 + 2 reforços | 480 s |
 | Coração da base | Complexo de três níveis; todos os verbos | Desativar três painéis, copiar o terminal, libertar prisioneiros e sair (mínimo 2 de 3) | 16 + 3 reforços | 660 s |
 
+## Controles e personagem
+
+O teclado do modo é próprio e fixo, porque a mão direita fica no mouse: mover **WASD** ou setas, correr **Shift**, agachar/furtivo **Ctrl** (ou **C**), interagir **E**, abate silencioso **F**, golpe **botão esquerdo** ou **Espaço**, guarda **botão direito** ou **Q**. Não acompanha o remapeamento do duelo; o controle continua copiando os botões do duelo.
+
+A linha **Personagem** do menu escolhe entre personagens e trajes liberados, e a escolha fica salva. Muda só a aparência: silhueta vista de cima, cores do traje e cor e tipo da lâmina. Atributos, alcance e regras da simulação são iguais para todos. Peças opcionais de traje (como capuz) não mudam a silhueta vista de cima.
+
+## Regras
+
+Todos os mapas permitem contornar ou enfrentar os guardas. Abater patrulhas nunca é obrigatório. Cada missão oferece os bônus independentes **Sem alarme**, **Sem abates** (qualquer inimigo neutralizado conta, inclusive por disparo devolvido), **Dentro do tempo** (limite inclusivo) e **Todos resgatados**. A abordagem do resultado é **Furtivo** se nenhum painel ativou na tentativa; caso contrário **Direto**, mesmo após desligar a sirene.
+
+Interação usa a ação de interagir, até 80 u e com linha livre. Um toque interage com um único objeto: painel próximo tem prioridade, depois terminal, depois prisioneiro. Terminal copia imediatamente; prisioneiro recrutado segue as intenções de seu controlador pela grade a 215 u/s, parando a 56 u do jogador. Não teleporta, não atravessa paredes e não precisa permanecer junto ao jogador após alcançar a extração. É possível voltar para buscá-lo. Não luta nem recebe dano da lâmina do jogador; disparos de qualquer lado podem atingi-lo, e a IA também mira nele, tornando a posição da escolta uma responsabilidade legível.
+
+Extração é uma área de raio 96 u, marcada desde o início. Vencer exige todos os painéis/terminais obrigatórios, o mínimo de prisioneiros na área, todo prisioneiro recrutado e vivo já dentro dela e o jogador na área. A derrota por jogador abatido ou por prisioneiros abaixo do mínimo tem prioridade sobre extração no mesmo tick. Ao terminar, sucesso ou derrota, o resultado é selado, o mundo segue vivo ao fundo sem ferir o jogador e o encerramento mostra Missão concluída ou Missão falhou com o motivo, por cerca de 2,5 s ou até confirmar, antes da tela de resultado. O relógio conta todos os ticks da missão, inclusive o último, e exclui briefing, pausa e resultado. Um resultado congela a simulação e é selado uma vez. Reiniciar cria estado novo.
+
+O save registra conclusão, menor tempo em ticks e união dos bônus obtidos em vitórias; repetir mais devagar pode melhorar bônus sem piorar o tempo. Derrotas não escrevem progresso. Saves antigos começam com o registro vazio. Retry abre a mesma missão; Próxima abre o briefing seguinte, e a última retorna à lista.
