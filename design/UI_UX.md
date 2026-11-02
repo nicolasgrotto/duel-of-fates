@@ -24,6 +24,14 @@ Português (padrão) e inglês, escolhidos nas Opções e salvos. Todo texto de 
 
 ## Telas
 
+### Treino de Operações de blaster (task 16)
+
+Somente cena/rota técnica nesta etapa; a entrada pública será Jogar › Modos especiais › Operações de blaster na task 17. Mundo na grade superior; HUD fino com Vida, Calor, Vigor, recarga da Esquiva e nome/recarga do único poder, no tema atual. Calor bloqueado mostra **Resfriando / Cooling** além da cor; pronto/segundos distinguem recargas. Título e objetivo curto no alto, dicas de mira, tiro, guarda, esquiva e poder em duas linhas no rodapé. Sem minimapa, munição, tabela de dano ou itens.
+
+Pausa congela ticks e descarta comandos; oferece continuar, reiniciar, personagem e poder para a próxima tentativa e voltar a Modos especiais. Trocar equipamento reinicia o treino. Derrota oferece reiniciar ou voltar. F3 mostra mira, calor/trava, recargas, hitboxes, preparação e alvo/decisão de cada inimigo, além de vida das caixas. Efeitos reduzidos preservam avisos, linhas de mira e rachaduras.
+
+Teclas e botões ganha **Operações de blaster**, página própria para oito ações (quatro direções, tiro, guarda, esquiva e poder), sem mudar os bindings do duelo. Dicas geradas por ControlHints mostram teclado/mouse e botões/eixos; a página Controles pode alternar Duelo/Operações. Textos PT/EN, foco e limites em 720p/1080p.
+
 ### Treino de infiltração (task 10)
 
 Entrada temporária **Aprender › Treino de infiltração**. Na etapa 10, Aprender usava o espaçamento compacto de Jogar para caber a sétima linha com Voltar; a task 12 remove essa entrada e restaura o espaçamento padrão de Aprender. Tela própria com mundo pixel art visto de cima, vida e Vigor finos no canto superior esquerdo, título e estado **Treino · alarme inativo** no alto, uma linha de objetivo logo abaixo. Sem minimapa, relógio de missão ou recompensa nesta etapa.

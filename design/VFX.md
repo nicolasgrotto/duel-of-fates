@@ -125,6 +125,8 @@ Usam o rastro, o som e o impacto dos golpes fortes. O **choque entre técnicas**
 
 ## Disparos
 
+Task 16: cada tiro inimigo tem preparação visível e ponto quente na boca da arma antes do disparo; Atirador acrescenta linha fina vermelha travada, recortada pela parede. Investidor anuncia arco curto. Primária usa `UiPalette.bolt`; devolução usa a cor da lâmina; tiro inimigo tem ponta partida para distinguir direção sem depender de cor. Esquiva deixa dois ecos discretos, e precisão acende contorno curto no peito, sem câmera lenta. Repulsão é cone de ar com borda de tier I; Puxão converge ao jogador; Barreira é contorno local segmentado, nunca casca opaca. Caixa danificada solta faísca pequena, caixa quebrada deixa destroço; sem explosão que cubra a mira. Calor extremo solta dois traços curtos acima da arma. Efeitos reduzidos mantêm avisos/tiros/rachaduras, reduzem ecos e faíscas. Toda animação lê fase ou evento, sem decidir a regra.
+
 Na Infiltração (task 10), o mesmo traço quente percorre o plano superior. Desvio na guarda emite uma faísca curta no ponto de contato; parry devolve na cor da lâmina e perfeito acrescenta anel breve. A pose e o rastro do arco leem fase/direção da simulação. Sem câmera lenta, flash global ou tremor novos; efeitos reduzidos diminuem faíscas e preservam o disparo e a leitura da guarda.
 
 Task 11: cone recortado na grade, malha de baixa opacidade com borda tracejada; arco de suspeita e símbolos distinguem estados sem depender só de cor. Alarme acrescenta halo local curto no terminal; efeitos reduzidos deixam indicador estático, preservando cones e suspeita. Abate silencioso usa faísca curta existente, sem sangue. Nenhuma dessas imagens altera percepção.

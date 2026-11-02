@@ -77,6 +77,16 @@ Arquivos e pastas em `snake_case`; classes com `class_name` em `PascalCase`.
 
 ## Simulação
 
+### Núcleo de Operações de blaster (task 16)
+
+`BlasterOpsSimulation` **estende** `InfiltrationSimulation`; reutiliza atores, pools/eventos, geometria, percepção, navegação e intenção. Não modifica o duelo nem ativa regras novas nas instâncias comuns da Infiltração. `simulation/blaster_ops/` contém estado adicional de calor/esquiva/poder, atores com preparação travada, projéteis com dano/retorno/esquiva e mapa de colisão por instância com caixas destrutíveis. A simulação recebe intenções externas, em 60 Hz; não conhece Input, arte ou nós. Não executa o controlador por dentro.
+
+`BlasterOpsArenaData`, `BlasterOpsEnemyData`, `BlasterOpsLoadout` e `BlasterOpsPowerData`, em `data/blaster_ops/`, descrevem conteúdo e adaptação; configuração em `data/balance/blaster_ops_config.tres`. BlasterData/BoltData e PowerData da História/duelo são referências imutáveis, com escala/cadência/recarga só no conjunto do modo. O mapa runtime consulta vida das caixas sem alterar Resource original; quebrar caixa incrementa revisão. `InfiltrationNavigation.invalidate()` recalcula passabilidade em buffers existentes; apenas o controlador de Operações chama ao mudar revisão, inclusive após restore. Nenhuma alocação por tick depois de montar pools.
+
+Capture/restore inclui todos os timers, mira travada, calor, caixas e origem/dano/flags de cada disparo. Projétil de jogador tem emissor -1; a restauração especializada não o resolve pela lista de inimigos. Eventos novos são acrescentados ao fim do enum de InfiltrationEvent, preservando índices existentes; apresentação comum ignora os novos. Controlador inimigo estende o da Infiltração e produz intenção de patrulhar/investigar/lutar, sem escrever em atores. Novos padrões e preparação são resolvidos exclusivamente no núcleo.
+
+`BlasterOpsBindings` instala ações `blaster_ops_*` temporárias e refcontadas, com remapeamento próprio em Settings e eixos de mira independentes. Telas de configuração e ControlHints reutilizam essa mesma tabela; removê-las não toca no duelo. `screens/blaster_ops/blaster_ops_training.tscn` (F6) e rota técnica `blaster_ops_training` montam a cena, PixelStage com World2D exclusivo, vista derivada da InfiltrationView, HUD, áudio e pausa. `BlasterOpsTraining` monta conjunto/personagem/poder, sem SaveService. Menu público, missões e progresso ficam na task 17.
+
 ### Núcleo de Infiltração (task 10)
 
 Módulo separado, sem adaptar `MatchSimulation` nem `FighterState` ao plano superior. `simulation/infiltration/` contém `InfiltrationSimulation`, estado de atores, projéteis/eventos em pools e geometria de grade/setor/percurso. `InfiltrationIntent` contém movimento e mira `Vector2` e bits de `Intent.Command`; somente o controlador os produz. Passo fixo usa `Ticks.DELTA`, sem física de nós nem `delta` real. `capture`/`restore` e hash de estado incluem vida, Vigor, janelas, golpe, temporizadores de alvos, tiros e tick. Nenhum objeto novo por tick.

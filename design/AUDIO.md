@@ -32,6 +32,10 @@ Atrito elétrico contínuo que cresce em volume e brilho com o tempo da disputa;
 
 ## Corpo e movimento
 
+### Operações de blaster (task 16)
+
+Reutiliza exclusivamente o banco original: tiro/desvio/devolução/acerto `bolt_*`, esquiva e confirmação de precisão existentes, sons de Repulsão/Puxão/Barreira e impacto metálico para cobertura. Preparação inimiga usa o aviso curto existente da Infiltração; supera passos em volume, sem novo áudio ou imitação de franquia. Superaquecimento usa a recusa seca uma vez na entrada, nunca a cada tick segurado. Música e ambiência industriais existentes; pausa suspende áudio local e sair encerra seus players. Áudio consome eventos e não altera percepção, calor ou preparação.
+
 ### Infiltração (tasks 10–12)
 
 Passos metálicos por eventos de distância percorrida, com ritmo maior ao correr e volume menor em furtivo; nunca ruído sonoro que altera a simulação. Golpe, impacto, zumbido e disparos reutilizam os sons originais do banco (`swing_light`, `hit_light`, `blade_hum`, `bolt_shot`, `bolt_deflect`, `bolt_reflect`, `bolt_hit`), sem amostras novas na task 10. Som de deflexão claro, devolução com tom ascendente. Prioridade: disparo próximo/defesa > passos > ambiência. Pan segue a posição no quadro, sem mudar regras.

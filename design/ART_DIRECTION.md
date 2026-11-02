@@ -37,6 +37,8 @@ Task 12: os mapas de missão reutilizam o atlas industrial e a ferramenta de til
 
 ### Inimigos da Infiltração
 
+Task 16: Operações de blaster reutiliza esses sprites, o atlas industrial, os trajes e a grade superior. Investidor original de 24×28 px: ombros estreitos, duas botas, capacete baixo e bastão curto à frente, sem escudo. Caixas destrutíveis usam atlas de 32×32 px com quatro quadros (íntegra, duas etapas de dano, destroço baixo), mesmas placas e contorno; rachaduras são metal escuro, sem brilho. O personagem orienta o tronco à mira e anda em qualquer direção. Blaster aponta à frente da mão; o emissor integra o cabo e a lâmina fica baixa junto ao corpo fora da guarda. A guarda cruza a lâmina à frente, com arma recolhida. Sem copiar o rig lateral, sem sombras que escondam tiros. Ferramenta própria usa os construtores e a paleta da Infiltração.
+
 Mesma grade de 24×28 px e paleta do atlas: atirador esguio com cano longo e visor vermelho; drone hexagonal com sensor central; escudeiro com placa curva à frente, que precisa ler de longe. O andador blindado é original, em 48×56 px: carapaça hexagonal com pernas laterais e canhão duplo, sem silhueta de veículo de franquia. Atirador alertado mostra linha de mira fina, para o tiro forte ser legível.
 
 ### Personagens e imagens de fase nos modos especiais

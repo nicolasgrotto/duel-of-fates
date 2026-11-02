@@ -538,6 +538,14 @@ Progressão cosmética nos modos de duelo; nada muda os atributos do elenco.
 
 Idioma (Português/English), dificuldade, efeitos (Completos/Reduzidos), som, música, preset de teclado e remapeamento, replay do golpe final, finalizações, Poderes, segurar para disputar (por jogador), vibração do gamepad. Configurações de vídeo (resolução, tela cheia, V-Sync) e volumes separados.
 
+## Operações de blaster (tasks 16–17)
+
+Modo de tiro top-down que estende a fundação da Infiltração, com regras próprias e sem alterar o duelo. Regras, números e arquétipos em [content/BLASTER_OPS.md](content/BLASTER_OPS.md). A task 16 entrega um treino por rota técnica, sem missões, menu público ou progresso; a 17 colocará a seleção em **Jogar › Modos especiais › Operações de blaster**.
+
+Defesa de base é um tipo de missão deste modo, não outro modo. Veículos terrestres repetem a pilotagem das naves; comando de esquadrão, corrida e aventura lateral com motor próprio exigiriam movimento ou IA novos com pouco reaproveitamento, e ficam descartados. A decisão posterior do autor sobre **Fases de ação** (tasks 20–21), reaproveitando os controles e o núcleo do duelo, continua válida; não é implementada nesta tarefa.
+
+Primária usa calor, nunca munição ou itens. Esquiva curta tem janela invulnerável interna; cruzar um disparo no começo dessa janela devolve a recarga. Guarda mira com a lâmina: toque no tempo devolve **na direção da mira**, inclusive no perfeito; guarda tardia só desfaz o tiro e gasta Vigor. Paredes bloqueiam tiros, e caixas marcadas podem ser destruídas. Um único poder equipado por vez (Repulsão, Puxão ou Barreira), com recarga; sem barra adicional de Fluxo neste modo. Personagens sem arma usam pistola temporária mais fraca. Cada tiro inimigo avisa antes, e o atirador trava uma linha de mira legível.
+
 ## Infiltração (tasks 10–12)
 
 Modo próprio de ação e furtividade em bases vistas de cima, autorizado em DESIGN, "Além do duelo". Usa simulação separada do duelo, em 60 Hz. A task 10 entrega apenas o **Treino de infiltração**, em Aprender: uma sala navegável com paredes, caixas, boneco e emissores de disparos, sem progressão ou recompensas. Não há patrulhas, alarmes funcionais ou missões nesta etapa.
