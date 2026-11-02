@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="AiProfileData" format=3]
+
+[ext_resource type="Script" path="res://data/balance/ai/ai_profile_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"holster"
+aggression = 0.55
+defense = 0.55
+heavy_ratio = 0.25
+shove_bias = 0.5
+parry_bias = 0.7
+dodge_bias = 0.3
+patience = 0.4
+preferred_gap = 180.0
+safe_gap = 420.0
+low_vigor_ratio = 0.3
+ability_bias = 0.35
+technique_bias = 0.7

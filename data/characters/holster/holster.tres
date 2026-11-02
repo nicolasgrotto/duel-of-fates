@@ -1,0 +1,224 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Script" path="res://data/character_data.gd" id="1_script"]
+[ext_resource type="Script" path="res://data/move_data.gd" id="2_move"]
+[ext_resource type="Script" path="res://data/weapon_data.gd" id="3_weapon"]
+[ext_resource type="Script" path="res://data/costume_data.gd" id="4_costume"]
+[ext_resource type="Resource" path="res://data/characters/common/counter.tres" id="5_counter"]
+[ext_resource type="Resource" path="res://data/characters/common/shove.tres" id="6_shove"]
+[ext_resource type="Resource" path="res://data/characters/common/aerial_light.tres" id="7_aerial_light"]
+[ext_resource type="Resource" path="res://data/characters/common/aerial_heavy.tres" id="8_aerial_heavy"]
+[ext_resource type="Resource" path="res://data/characters/holster/holster_ai.tres" id="9_ai"]
+[ext_resource type="Resource" path="res://assets/characters/guardian/art.tres" id="10_art"]
+[ext_resource type="Resource" path="res://data/families/guardian.tres" id="11_family"]
+[ext_resource type="Script" path="res://data/ability_data.gd" id="12_ability"]
+[ext_resource type="Script" path="res://data/powers/power_data.gd" id="14_power"]
+[ext_resource type="Resource" path="res://data/powers/barrier.tres" id="p_barrier"]
+[ext_resource type="Resource" path="res://data/powers/heal.tres" id="p_heal"]
+[ext_resource type="Resource" path="res://data/powers/repulse.tres" id="p_repulse"]
+[ext_resource type="Resource" path="res://data/techniques/retreat_draw.tres" id="t_blade_throw"]
+[ext_resource type="Resource" path="res://data/techniques/double_draw.tres" id="t_dash_slash"]
+[ext_resource type="Resource" path="res://data/intros/guardian.tres" id="intro_res"]
+
+[ext_resource type="Texture2D" path="res://assets/ui/blade/ability_stance.png" id="blade_icon"]
+
+[ext_resource type="Resource" path="res://data/blasters/holster_pistol.tres" id="blaster"]
+[ext_resource type="Resource" path="res://data/techniques/covering_fire.tres" id="covering"]
+[ext_resource type="Resource" path="res://data/techniques/plunge.tres" id="plunge"]
+
+[sub_resource type="Resource" id="guardian_light_1"]
+script = ExtResource("2_move")
+id = &"guardian_light_1"
+kind = 0
+startup = 0.1
+active = 0.1
+recovery = 0.2
+damage = 10.0
+vigor_cost = 8.0
+block_vigor_cost = 8.0
+knockback = 40.0
+block_push = 30.0
+hitstun = 0.35
+blockstun = 0.24
+lunge = 20.0
+reach = 100.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 60.0
+can_blade_lock = false
+wound_limb = 0
+finisher_limb = 1
+blade_angle_windup = -150.0
+blade_angle_strike = 20.0
+cut = 1
+
+[sub_resource type="Resource" id="guardian_light_2"]
+script = ExtResource("2_move")
+id = &"guardian_light_2"
+kind = 0
+startup = 0.1
+active = 0.1
+recovery = 0.2
+damage = 10.0
+vigor_cost = 8.0
+block_vigor_cost = 8.0
+knockback = 40.0
+block_push = 30.0
+hitstun = 0.35
+blockstun = 0.24
+lunge = 20.0
+reach = 100.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 60.0
+can_blade_lock = false
+wound_limb = 0
+finisher_limb = 1
+blade_angle_windup = 70.0
+blade_angle_strike = -110.0
+cut = 2
+
+[sub_resource type="Resource" id="guardian_heavy"]
+script = ExtResource("2_move")
+id = &"guardian_heavy"
+kind = 1
+startup = 0.32
+active = 0.12
+recovery = 0.42
+damage = 24.0
+vigor_cost = 24.0
+block_vigor_cost = 30.0
+knockback = 120.0
+block_push = 60.0
+hitstun = 0.5
+blockstun = 0.3
+lunge = 40.0
+reach = 115.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 70.0
+can_blade_lock = true
+wound_limb = 1
+finisher_limb = 1
+blade_angle_windup = -170.0
+blade_angle_strike = 40.0
+cut = 1
+cinematic_finisher = 12
+
+[sub_resource type="Resource" id="guardian_forward_heavy"]
+script = ExtResource("2_move")
+id = &"guardian_forward_heavy"
+kind = 2
+startup = 0.36
+active = 0.12
+recovery = 0.52
+damage = 26.0
+vigor_cost = 30.0
+block_vigor_cost = 32.0
+knockback = 140.0
+block_push = 70.0
+hitstun = 0.5
+blockstun = 0.3
+lunge = 110.0
+reach = 115.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 70.0
+can_blade_lock = true
+wound_limb = 2
+finisher_limb = 2
+blade_angle_windup = -160.0
+blade_angle_strike = 60.0
+cut = 1
+cinematic_finisher = 9
+
+[sub_resource type="Resource" id="guardian_ability"]
+script = ExtResource("12_ability")
+icon = ExtResource("blade_icon")
+id = &"covering_fire"
+kind = 0
+move = ExtResource("covering")
+
+[sub_resource type="Resource" id="guardian_weapon"]
+script = ExtResource("3_weapon")
+kind = 0
+hilt = 0
+blade_length = 92.0
+blade_width = 1.0
+hilt_length = 12.0
+hum_pitch = 1.0
+sidearm = 3
+blaster = ExtResource("blaster")
+
+[sub_resource type="Resource" id="guardian_costume_0"]
+script = ExtResource("4_costume")
+id = &"guardian_original"
+name_key = "COSTUME_ORIGINAL"
+requirement_key = ""
+colors = PackedColorArray(0.4196, 0.3529, 0.2824, 1, 0.1804, 0.1608, 0.1451, 1, 0.3529, 0.2745, 0.1961, 1, 0.6902, 0.5412, 0.4314, 1, 0.2902, 0.1961, 0.1333, 1, 0.6039, 0.6392, 0.6784, 1, 0.2275, 0.1725, 0.1333, 1, 1.0000, 0.6980, 0.1804, 1)
+show_parts = PackedStringArray()
+hide_parts = PackedStringArray()
+
+[sub_resource type="Resource" id="guardian_costume_1"]
+script = ExtResource("4_costume")
+id = &"guardian_traveler"
+name_key = "COSTUME_TRAVELER"
+requirement_key = "REQUIREMENT_TRAVELER"
+colors = PackedColorArray(0.2706, 0.3020, 0.3451, 1, 0.1333, 0.1529, 0.1882, 1, 0.5137, 0.5647, 0.6196, 1, 0.6902, 0.5412, 0.4314, 1, 0.2902, 0.1961, 0.1333, 1, 0.6039, 0.6392, 0.6784, 1, 0.2275, 0.1725, 0.1333, 1, 1.0000, 0.6980, 0.1804, 1)
+show_parts = PackedStringArray("collar", "neckerchief")
+hide_parts = PackedStringArray("hood", "mask")
+
+[sub_resource type="Resource" id="guardian_costume_2"]
+script = ExtResource("4_costume")
+id = &"guardian_sentinel"
+name_key = "COSTUME_SENTINEL"
+requirement_key = "REQUIREMENT_SENTINEL"
+colors = PackedColorArray(0.3176, 0.2824, 0.2353, 1, 0.1569, 0.1373, 0.1176, 1, 0.6275, 0.5843, 0.4941, 1, 0.6902, 0.5412, 0.4314, 1, 0.2902, 0.1961, 0.1333, 1, 0.6039, 0.6392, 0.6784, 1, 0.2275, 0.1725, 0.1333, 1, 1.0000, 0.6980, 0.1804, 1)
+show_parts = PackedStringArray("pad")
+hide_parts = PackedStringArray()
+
+[resource]
+script = ExtResource("1_script")
+id = &"holster"
+name_key = "CHARACTER_HOLSTER"
+health = 5
+vigor = 4
+blade = 4
+defense = 6
+agility = 4
+flow = 5
+light_chain = Array[ExtResource("2_move")]([SubResource("guardian_light_1"), SubResource("guardian_light_2")])
+heavy = SubResource("guardian_heavy")
+forward_heavy = SubResource("guardian_forward_heavy")
+counter = ExtResource("5_counter")
+shove = ExtResource("6_shove")
+aerial_light = ExtResource("7_aerial_light")
+aerial_heavy = ExtResource("8_aerial_heavy")
+guard_break_stun = 1.2
+block_cost_multiplier = 1.0
+blade_damage_multiplier = 0.9
+ability = SubResource("guardian_ability")
+powers = Array[ExtResource("14_power")]([ExtResource("p_repulse"), ExtResource("p_heal"), ExtResource("p_barrier")])
+technique_forward = ExtResource("t_dash_slash")
+technique_back = ExtResource("t_blade_throw")
+technique_air = ExtResource("plunge")
+ai_profile = ExtResource("9_ai")
+path = 0
+style_key = "STYLE_HOLSTER"
+trait_key = "TRAIT_HOLSTER"
+ability_key = "ABILITY_COVERING_FIRE"
+secret = false
+selectable = false
+art = ExtResource("10_art")
+family = ExtResource("11_family")
+weapon = SubResource("guardian_weapon")
+costumes = Array[ExtResource("4_costume")]([SubResource("guardian_costume_0"), SubResource("guardian_costume_1"), SubResource("guardian_costume_2")])
+blade_colors = PackedColorArray(0.4980, 0.8941, 1.0000, 1, 0.3725, 0.5451, 1.0000, 1, 0.2471, 1.0000, 0.7843, 1)
+blade_color_keys = PackedStringArray("BLADE_GUARDIAN_0", "BLADE_GUARDIAN_1", "BLADE_GUARDIAN_2")
+guard_angle = -58.0
+guard_grip = Vector2(20, -30)
+intro = ExtResource("intro_res")
+eclipse_eyes = false
+challenge_stat = &"perfect_parries"
+challenge_target = 3
+challenge_key = "CHALLENGE_COLOR_GUARDIAN"

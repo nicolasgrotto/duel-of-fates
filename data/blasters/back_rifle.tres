@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="BlasterData" format=3]
+
+[ext_resource type="Script" path="res://data/blasters/blaster_data.gd" id="1"]
+[ext_resource type="Resource" path="res://data/blasters/back_rifle_bolt.tres" id="2"]
+[ext_resource type="Texture2D" path="res://assets/blasters/rifle.png" id="3"]
+[ext_resource type="Texture2D" path="res://assets/blasters/rifle_n.png" id="4"]
+[ext_resource type="Texture2D" path="res://assets/blasters/sling.png" id="5"]
+[ext_resource type="Texture2D" path="res://assets/blasters/sling_n.png" id="6"]
+
+[resource]
+script = ExtResource("1")
+id = &"back_rifle"
+name_key = "BLASTER_BACK_RIFLE"
+bolt = ExtResource("2")
+draw_time = 0.4
+holster_time = 0.3
+carry = 2
+carry_anchor = Vector2(-10, -32)
+carry_angle = -65.0
+size_class = 2
+muzzle = Vector2(44, -4)
+art_part = &"rifle"
+texture = ExtResource("3")
+normal = ExtResource("4")
+pivot = Vector2(10, 6)
+support_texture = ExtResource("5")
+support_normal = ExtResource("6")
+support_pivot = Vector2(6, 6)

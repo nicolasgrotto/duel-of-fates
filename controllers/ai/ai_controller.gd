@@ -259,6 +259,8 @@ func _try_ability(me: FighterState, opponent: FighterState, gap: float) -> bool:
 		AbilityData.Kind.STRIKE:
 			var move: MoveData = ability.move
 			var reach: float = move.reach + move.lunge
+			if move.draws_sidearm and me.carried_blaster() != null:
+				reach = me.carried_blaster().bolt.max_range * BOLT_REACH_SHARE
 			var minimum: float = 0.0 if move.hits_behind else me.character.heavy.reach * 0.6
 			if gap <= reach and gap >= minimum and me.vigor >= move.vigor_cost:
 				_schedule(Intent.Command.SPECIAL, warning, 0, Plan.WAIT, 0, "ability strike")
@@ -342,6 +344,8 @@ func _try_technique(sim: MatchSimulation, me: FighterState, gap: float) -> bool:
 		reach = technique.projectile_range
 	elif technique.bolt != null:
 		reach = technique.bolt.max_range * BOLT_REACH_SHARE
+	elif technique.draws_sidearm and me.carried_blaster() != null:
+		reach = me.carried_blaster().bolt.max_range * BOLT_REACH_SHARE
 	if technique.lunge < 0.0:
 		if gap > profile.safe_gap:
 			return false

@@ -4,18 +4,23 @@ extends StateLogic
 
 func step(sim: MatchSimulation, fighter: FighterState, intent: Intent) -> void:
 	var move: MoveData = fighter.move
+	if _try_burst_cancel(sim, fighter, intent):
+		return
 	match fighter.move_phase:
 		FighterState.Phase.STARTUP:
 			if move.dash_in_startup and fighter.on_ground:
-				fighter.vx = fighter.facing * move.lunge * fighter.agility_multiplier / maxf(move.startup, Ticks.DELTA)
+				var startup: float = Ticks.to_seconds(fighter.move_startup_ticks()) if fighter.draws_sidearm() else move.startup
+				fighter.vx = fighter.facing * move.lunge * fighter.agility_multiplier / maxf(startup, Ticks.DELTA)
 			else:
 				decelerate(sim, fighter)
 			if _try_feint(sim, fighter, move):
 				return
-			if fighter.phase_ticks + 1 >= move.startup_ticks() and _holds_charge(fighter, move, intent):
+			if fighter.phase_ticks + 1 >= fighter.move_startup_ticks() and _holds_charge(fighter, move, intent):
 				return
 			fighter.phase_ticks += 1
-			if fighter.phase_ticks >= move.startup_ticks():
+			if fighter.draws_sidearm():
+				fighter.sidearm_out = fighter.phase_ticks >= fighter.carried_blaster().draw_ticks()
+			if fighter.phase_ticks >= fighter.move_startup_ticks():
 				_enter_active(sim, fighter, move)
 			return
 	fighter.phase_ticks += 1
@@ -29,9 +34,11 @@ func step(sim: MatchSimulation, fighter: FighterState, intent: Intent) -> void:
 		FighterState.Phase.RECOVERY:
 			decelerate(sim, fighter)
 			_continue_burst(sim, fighter, move)
+			if fighter.draws_sidearm() and fighter.phase_ticks >= move.recovery_ticks():
+				fighter.sidearm_out = false
 			if _try_chain(sim, fighter):
 				return
-			var recovery: int = fighter.recovery_cut if fighter.recovery_cut >= 0 else move.recovery_ticks()
+			var recovery: int = fighter.recovery_cut if fighter.recovery_cut >= 0 else fighter.move_recovery_ticks()
 			if fighter.phase_ticks >= recovery:
 				finish_to_neutral(sim, fighter)
 
@@ -70,7 +77,7 @@ func _enter_active(sim: MatchSimulation, fighter: FighterState, move: MoveData) 
 		_throw_blade(sim, fighter, move)
 	elif move.technique_style == MoveData.TechniqueStyle.WAVE:
 		_project_wave(sim, fighter, move)
-	if move.bolt != null:
+	if fighter.move_bolt() != null:
 		_start_burst(sim, fighter, move)
 	if move.dash_in_startup:
 		fighter.vx = 0.0
@@ -83,9 +90,10 @@ func _enter_active(sim: MatchSimulation, fighter: FighterState, move: MoveData) 
 func _start_burst(sim: MatchSimulation, fighter: FighterState, move: MoveData) -> void:
 	if move.reach <= 0.0:
 		fighter.move_hit_done = true
-	BoltResolver.fire(sim, fighter, move.bolt)
-	fighter.bolts_left = move.bolt.count - 1
-	fighter.bolt_ticks = move.bolt.interval_ticks()
+	var bolt: BoltData = fighter.move_bolt()
+	BoltResolver.fire(sim, fighter, bolt)
+	fighter.bolts_left = (move.shot_count if fighter.draws_sidearm() else bolt.count) - 1
+	fighter.bolt_ticks = _bolt_interval(fighter, move)
 
 
 func _continue_burst(sim: MatchSimulation, fighter: FighterState, move: MoveData) -> void:
@@ -94,9 +102,25 @@ func _continue_burst(sim: MatchSimulation, fighter: FighterState, move: MoveData
 	fighter.bolt_ticks -= 1
 	if fighter.bolt_ticks > 0:
 		return
-	BoltResolver.fire(sim, fighter, move.bolt)
+	BoltResolver.fire(sim, fighter, fighter.move_bolt())
 	fighter.bolts_left -= 1
-	fighter.bolt_ticks = move.bolt.interval_ticks()
+	fighter.bolt_ticks = _bolt_interval(fighter, move)
+
+
+func _bolt_interval(fighter: FighterState, move: MoveData) -> int:
+	return maxi(Ticks.from_seconds(move.shot_interval), 1) if fighter.draws_sidearm() else move.bolt.interval_ticks()
+
+
+func _try_burst_cancel(sim: MatchSimulation, fighter: FighterState, intent: Intent) -> bool:
+	if not fighter.draws_sidearm() or not fighter.move.burst_cancellable or fighter.move_phase == FighterState.Phase.STARTUP:
+		return false
+	var guard_ticks: int = fighter.carried_blaster().holster_ticks()
+	var allowed: int = (1 << FighterState.Action.BLOCK) | (1 << FighterState.Action.EVADE)
+	if not ActionStarter.try_buffered(sim, fighter, intent, allowed):
+		return false
+	if fighter.state == FighterState.State.BLOCKING:
+		fighter.sidearm_guard_ticks = guard_ticks
+	return true
 
 
 func _holds_charge(fighter: FighterState, move: MoveData, intent: Intent) -> bool:

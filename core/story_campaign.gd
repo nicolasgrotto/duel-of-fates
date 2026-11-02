@@ -13,6 +13,7 @@ const CATALOG: PowerCatalog = preload("res://data/powers/catalog.tres")
 var name: String = ""
 var path: int = 0
 var style: int = 0
+var blaster_id: StringName = &"holster_pistol"
 var look: int = 0
 var hair: int = CAMPAIGN.default_hair
 var beard: int = 0
@@ -289,6 +290,17 @@ func style_character() -> CharacterData:
 	return resolved
 
 
+func uses_blaster_style() -> bool:
+	return CAMPAIGN.styles[style] == &"holster"
+
+
+func blaster_data() -> BlasterData:
+	for blaster in CAMPAIGN.blasters:
+		if blaster.id == blaster_id:
+			return blaster
+	return CAMPAIGN.blasters[0]
+
+
 func blade_color() -> Color:
 	var id: StringName = CAMPAIGN.blade_sources[color]
 	return (load(CHARACTER_PATH % [id, id]) as CharacterData).blade_colors[0]
@@ -297,6 +309,9 @@ func blade_color() -> Color:
 func protagonist() -> CharacterData:
 	var base: CharacterData = style_character()
 	var data: CharacterData = base.duplicate()
+	if uses_blaster_style():
+		data.weapon = base.weapon.duplicate() as WeaponData
+		data.weapon.blaster = blaster_data()
 	data.directional_ability_fallback = false
 	if not blade_kind_owned(TreeNodeData.Kind.STYLE_FORWARD):
 		data.technique_forward = null
@@ -369,7 +384,7 @@ static func load_power(id: StringName) -> PowerData:
 func to_dict() -> Dictionary:
 	return {
 		"name": name, "path": path, "style": style, "look": look, "color": color, "difficulty": difficulty,
-		"hair": hair, "beard": beard, "hair_color": hair_color, "skin": skin,
+		"hair": hair, "beard": beard, "hair_color": hair_color, "skin": skin, "blaster_id": blaster_data().id,
 		"blade_bought": blade_bought.duplicate(), "projected_cut_slot": projected_cut_slot,
 		"attributes": attributes.duplicate(), "free_points": free_points, "skill_points": skill_points, "cleared": cleared.duplicate(), "learned": learned.duplicate(),
 		"equipped": equipped.duplicate(), "slots_open": slots_open, "secret_pending": secret_pending, "ending": ending,
@@ -380,7 +395,9 @@ static func from_dict(data: Dictionary) -> StoryCampaign:
 	var campaign: StoryCampaign = StoryCampaign.new()
 	campaign.name = data.get("name", "")
 	campaign.path = data.get("path", 0)
-	campaign.style = data.get("style", 0)
+	campaign.style = clampi(data.get("style", 0), 0, CAMPAIGN.styles.size() - 1)
+	campaign.blaster_id = StringName(data.get("blaster_id", "holster_pistol"))
+	campaign.blaster_id = campaign.blaster_data().id
 	campaign.look = data.get("look", 0)
 	campaign.hair = data.get("hair", CAMPAIGN.default_hair)
 	campaign.beard = data.get("beard", 0)

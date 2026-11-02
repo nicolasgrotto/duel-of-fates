@@ -1046,3 +1046,12 @@ SPACE_WEAKPOINT,Núcleo exposto,Exposed core
 SPACE_UP_UNAVAILABLE,Compra indisponível: confira o saldo e o limite de níveis.,Purchase unavailable: check your points and level cap.
 SPACE_UP_PURCHASED,Melhoria instalada. Vale na próxima tentativa.,Upgrade installed. Applies to the next attempt.
 SPACE_UP_RESET_DONE,Pontos devolvidos para redistribuição.,Points refunded for reallocation.
+STYLE_HOLSTER,Coldre,Holster
+CHARACTER_HOLSTER,Duelista de Coldre,Holster Duelist
+TRAIT_HOLSTER,Lâmina de duas mãos; saque de arma,Two-handed blade; drawn sidearm
+ABILITY_COVERING_FIRE,Fogo de cobertura,Covering Fire
+TECHNIQUE_DOUBLE_DRAW,Saque duplo,Double Draw
+TECHNIQUE_RETREAT_DRAW,Saque de recuo,Retreat Draw
+TECHNIQUE_COVERING_FIRE,Fogo de cobertura,Covering Fire
+BLASTER_HOLSTER_PISTOL,Pistola de coldre,Holster Pistol
+BLASTER_BACK_RIFLE,Rifle de dorso,Back Rifle

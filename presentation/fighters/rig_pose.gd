@@ -19,6 +19,9 @@ var off_trail: bool = false
 var hand_spacing: float = 0.0
 var arm_extension: float = 0.0
 var sidearm_raise: float = 0.0
+var sidearm_draw: float = 0.0
+var sidearm_active: bool = false
+var sidearm_angle: float = 0.0
 var front_elbow_hint: Vector2 = Vector2.DOWN
 var back_elbow_hint: Vector2 = Vector2.DOWN
 
@@ -42,6 +45,9 @@ func copy_from(other: RigPose) -> void:
 	hand_spacing = other.hand_spacing
 	arm_extension = other.arm_extension
 	sidearm_raise = other.sidearm_raise
+	sidearm_draw = other.sidearm_draw
+	sidearm_active = other.sidearm_active
+	sidearm_angle = other.sidearm_angle
 	front_elbow_hint = other.front_elbow_hint
 	back_elbow_hint = other.back_elbow_hint
 
@@ -65,6 +71,9 @@ func blend_toward(target: RigPose, weight: float) -> void:
 	hand_spacing = target.hand_spacing
 	arm_extension = lerpf(arm_extension, target.arm_extension, weight)
 	sidearm_raise = lerpf(sidearm_raise, target.sidearm_raise, weight)
+	sidearm_draw = lerpf(sidearm_draw, target.sidearm_draw, weight)
+	sidearm_active = target.sidearm_active
+	sidearm_angle = lerp_angle(sidearm_angle, target.sidearm_angle, weight)
 	front_elbow_hint = front_elbow_hint.lerp(target.front_elbow_hint, weight)
 	back_elbow_hint = back_elbow_hint.lerp(target.back_elbow_hint, weight)
 

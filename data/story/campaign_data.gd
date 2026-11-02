@@ -2,7 +2,7 @@ class_name CampaignData
 extends Resource
 
 const DEFAULT_NAMES: PackedStringArray = ["Kael", "Iria", "Tarin", "Vessa", "Oren", "Lyse"]
-const DEFAULT_STYLE_KEYS: PackedStringArray = ["STYLE_TECHNIQUE", "STYLE_FURY", "STYLE_FLIGHT"]
+const DEFAULT_STYLE_KEYS: PackedStringArray = ["STYLE_TECHNIQUE", "STYLE_FURY", "STYLE_FLIGHT", "STYLE_HOLSTER"]
 const DEFAULT_HAIR_STYLES: PackedStringArray = ["", "hair_short", "hair_mid_wavy", "hair_wavy", "hair_long", "hair_ponytail", "hair_bun", "hair_bob", "hair_long_straight", "hair_braid", "hair_high_ponytail", "hair_side_bangs"]
 const DEFAULT_HAIR_KEYS: PackedStringArray = ["HAIR_NONE", "HAIR_SHORT", "HAIR_MID_WAVY", "HAIR_WAVY", "HAIR_LONG", "HAIR_PONYTAIL", "HAIR_BUN", "HAIR_BOB", "HAIR_LONG_STRAIGHT", "HAIR_BRAID", "HAIR_HIGH_PONYTAIL", "HAIR_SIDE_BANGS"]
 const DEFAULT_BEARD_STYLES: PackedStringArray = ["", "beard_short", "beard_full", "beard_long", "beard_mustache"]
@@ -25,7 +25,8 @@ const TreeNodeData = preload("res://data/story/story_tree_node.gd")
 @export var eclipse_normal_ending: EndingData
 @export var eclipse_secret_ending: EndingData
 @export var names: PackedStringArray = DEFAULT_NAMES
-@export var styles: Array[StringName] = [&"guardian", &"shadow", &"heron"]
+@export var styles: Array[StringName] = [&"guardian", &"shadow", &"heron", &"holster"]
+@export var blasters: Array[BlasterData] = [preload("res://data/blasters/holster_pistol.tres"), preload("res://data/blasters/back_rifle.tres")]
 @export var style_keys: PackedStringArray = DEFAULT_STYLE_KEYS
 @export var outfits: Array[CostumeData] = [
 	preload("res://data/story/outfits/wanderer.tres"), preload("res://data/story/outfits/watcher.tres"),

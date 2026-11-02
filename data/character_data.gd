@@ -29,6 +29,7 @@ enum LockStyle { BLADE, FLOW_HOLD }
 @export_group("Traits")
 @export var guard_break_stun: float = 1.3
 @export var block_cost_multiplier: float = 1.0
+@export var blade_damage_multiplier: float = 1.0
 @export var vigor_on_hit: float = 0.0
 @export var double_jump_ratio: float = 0.7
 @export var air_dash_vigor: float = 18.0

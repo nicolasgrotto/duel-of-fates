@@ -266,6 +266,9 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 	pose.hand_spacing = 0.0
 	pose.arm_extension = 0.0
 	pose.sidearm_raise = 0.0
+	pose.sidearm_draw = 0.0
+	pose.sidearm_active = false
+	pose.sidearm_angle = 0.0
 	pose.front_elbow_hint = family.front_elbow
 	pose.back_elbow_hint = family.back_elbow
 	pose.grip = guard_grip
@@ -1139,6 +1142,8 @@ func _projected_cut(fighter: FighterState, pose: RigPose) -> Vector2:
 
 
 func _shot(fighter: FighterState, pose: RigPose) -> Vector2:
+	if fighter.draws_sidearm():
+		return _holster_shot(fighter, pose)
 	var move: MoveData = fighter.move
 	var aim: float = 1.0
 	var kick: float = 0.0
@@ -1160,6 +1165,40 @@ func _shot(fighter: FighterState, pose: RigPose) -> Vector2:
 	pose.blade_angle = lerpf(pose.blade_angle, SHOT_LOWERED_ANGLE, aim)
 	pose.open_hand = false
 	return Vector2(-2.0 * kick, 0.0)
+
+
+func _holster_shot(fighter: FighterState, pose: RigPose) -> Vector2:
+	pose.sidearm_active = true
+	var blaster: BlasterData = fighter.carried_blaster()
+	var progress: float = 1.0
+	var reach: float = 1.0
+	var returning: bool = false
+	if fighter.move_phase == FighterState.Phase.STARTUP:
+		progress = clampf(float(fighter.phase_ticks) / blaster.draw_ticks(), 0.0, 1.0)
+	elif fighter.move_phase == FighterState.Phase.RECOVERY:
+		returning = fighter.phase_ticks >= fighter.move.recovery_ticks()
+		progress = 1.0 - clampf(float(fighter.phase_ticks - fighter.move.recovery_ticks()) / blaster.holster_ticks(), 0.0, 1.0)
+	var drawn: float = smoothstep(0.3, 1.0, progress)
+	reach = smoothstep(0.0, 0.3, progress)
+	var direction: Vector2 = pose.blade_direction()
+	var hilt_hand: Vector2 = pose.grip - direction * family.back_hand_spacing
+	var anchor: Vector2 = blaster.reach_anchor()
+	var aim: Vector2 = Vector2(12.0, -28.0) if blaster.two_handed() else Vector2(30.0, -28.0)
+	pose.off_hand = hilt_hand.lerp(anchor, reach).lerp(aim, drawn)
+	pose.sidearm_draw = drawn
+	pose.sidearm_raise = drawn
+	pose.sidearm_angle = lerp_angle(deg_to_rad(blaster.carry_angle), 0.0, drawn)
+	pose.hand_spacing = 0.0
+	var grip: Vector2 = Vector2(30.0, -28.0) if blaster.two_handed() else SHOT_LOWERED_GRIP
+	pose.grip = pose.grip.lerp(grip, drawn)
+	pose.blade_angle = lerpf(pose.blade_angle, 85.0 if blaster.two_handed() else SHOT_LOWERED_ANGLE, drawn)
+	var since_shot: int = maxi(Ticks.from_seconds(fighter.move.shot_interval), 1) - fighter.bolt_ticks
+	if fighter.move_phase == FighterState.Phase.ACTIVE and since_shot < 3:
+		pose.off_hand.x -= SHOT_KICK * (1.0 - float(since_shot) / 3.0)
+	pose.open_hand = false
+	if returning and progress <= 0.0:
+		pose.off_hand = RELAXED_HAND
+	return Vector2.ZERO
 
 
 func _raise_sidearm(fighter: FighterState, pose: RigPose) -> void:
@@ -1243,6 +1282,11 @@ static func evade_pose_for(streak: int) -> Vector3:
 
 func _place_off_hand(fighter: FighterState, pose: RigPose) -> void:
 	var direction: Vector2 = pose.blade_direction()
+	if fighter.sidearm_guard_ticks > 0 and fighter.carried_blaster() != null:
+		var blaster: BlasterData = fighter.carried_blaster()
+		var returning: float = 1.0 - float(fighter.sidearm_guard_ticks) / blaster.holster_ticks()
+		pose.off_hand = pose.pelvis + blaster.carry_anchor.lerp(pose.grip - pose.pelvis - direction * family.back_hand_spacing, smoothstep(0.0, 1.0, returning))
+		return
 	if character.weapon.kind == WeaponData.Kind.LANCE:
 		pose.hand_spacing = family.lance_hand_spacing
 		pose.off_hand = pose.grip - direction * pose.hand_spacing

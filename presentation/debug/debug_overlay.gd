@@ -87,6 +87,8 @@ func _fighter_lines(i: int) -> PackedStringArray:
 	lines.append("singularity %s  ticks %d  wave %d  mass %d  aim %s" % [FighterState.SingularityPhase.keys()[fighter.singularity_phase], fighter.singularity_ticks, fighter.singularity_wave, fighter.singularity_mass, str(fighter.singularity_aim)])
 	lines.append("instinct %d  counter %d  motion %s (%d)" % [fighter.instinct_ticks, fighter.instinct_counter_ticks, FighterState.InstinctMotion.keys()[fighter.instinct_motion], fighter.instinct_evade_ticks])
 	lines.append("bolts out %d  burst left %d" % [_bolts_owned(i), fighter.bolts_left])
+	if fighter.carried_blaster() != null:
+		lines.append("blaster %s  draw %d  out %s  guard return %d" % [fighter.carried_blaster().id, fighter.carried_blaster().draw_ticks(), fighter.sidearm_out, fighter.sidearm_guard_ticks])
 	lines.append_array(sim.state_logic(fighter).debug_lines(sim, fighter))
 	if i < views.size():
 		lines.append_array(views[i].intro_debug_lines())

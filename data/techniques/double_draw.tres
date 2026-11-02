@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="MoveData" format=3]
+
+[ext_resource type="Script" path="res://data/move_data.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/ui/blade/blade_shot.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+icon = ExtResource("2")
+id = &"double_draw"
+kind = 10
+startup = 0.12
+active = 0.24
+recovery = 0.2
+damage = 0.0
+vigor_cost = 16.0
+block_vigor_cost = 0.0
+knockback = 0.0
+block_push = 0.0
+hitstun = 0.0
+blockstun = 0.0
+lunge = 0.0
+reach = 0.0
+technique_style = 9
+required_sidearm = 3
+draws_sidearm = true
+shot_count = 2
+shot_interval = 0.12
+burst_cancellable = true
+dash_in_startup = false

@@ -69,6 +69,8 @@ var move_connected: bool = false
 var chain_index: int = 0
 var bolts_left: int = 0
 var bolt_ticks: int = 0
+var sidearm_out: bool = false
+var sidearm_guard_ticks: int = 0
 
 var dodge_kind: DodgeKind = DodgeKind.NONE
 var dodge_direction: int = 0
@@ -170,7 +172,7 @@ func setup(fighter_index: int, data: CharacterData, config: CombatConfig) -> voi
 	max_health = config.health_base * config.attribute_multiplier(data.health)
 	max_vigor = config.vigor_base * config.attribute_multiplier(data.vigor)
 	vigor_regen = config.vigor_regen * config.attribute_multiplier(data.vigor)
-	blade_multiplier = config.attribute_multiplier(data.blade)
+	blade_multiplier = config.attribute_multiplier(data.blade) * data.blade_damage_multiplier
 	defense_multiplier = config.attribute_multiplier(data.defense)
 	agility_multiplier = config.attribute_multiplier(data.agility)
 	guard_reserve = maxf(data.defense - config.attribute_neutral, 0) * config.defense_reserve_per_point
@@ -179,7 +181,7 @@ func setup(fighter_index: int, data: CharacterData, config: CombatConfig) -> voi
 	if data.max_health_override > 0.0:
 		max_health = data.max_health_override
 	var base_perfect: float = data.perfect_parry_window if data.perfect_parry_window > 0.0 else config.perfect_parry_window
-	var perfect_window: float = base_perfect + (blade_multiplier - 1.0) * config.perfect_parry_blade_bonus
+	var perfect_window: float = base_perfect + (config.attribute_multiplier(data.blade) - 1.0) * config.perfect_parry_blade_bonus
 	perfect_parry_ticks = Ticks.from_seconds(perfect_window)
 	parry_window_ticks = Ticks.from_seconds(data.parry_window if data.parry_window > 0.0 else config.parry_window)
 	flow_level = data.flow
@@ -252,12 +254,39 @@ func ticks_left_in_move() -> int:
 		return 0
 	match move_phase:
 		Phase.STARTUP:
-			return move.total_ticks() - phase_ticks
+			return move_startup_ticks() + move.active_ticks() + move_recovery_ticks() - phase_ticks
 		Phase.ACTIVE:
-			return move.active_ticks() + move.recovery_ticks() - phase_ticks
+			return move.active_ticks() + move_recovery_ticks() - phase_ticks
 		Phase.RECOVERY:
-			return move.recovery_ticks() - phase_ticks
+			return move_recovery_ticks() - phase_ticks
 	return 0
+
+
+func carried_blaster() -> BlasterData:
+	return character.weapon.blaster if character.weapon.sidearm == WeaponData.Sidearm.HOLSTER else null
+
+
+func draws_sidearm() -> bool:
+	return move != null and move.draws_sidearm and carried_blaster() != null
+
+
+func move_startup_ticks() -> int:
+	return move.startup_ticks() + (carried_blaster().draw_ticks() if draws_sidearm() else 0)
+
+
+func move_recovery_ticks() -> int:
+	return move.recovery_ticks() + (carried_blaster().holster_ticks() if draws_sidearm() else 0)
+
+
+func move_bolt() -> BoltData:
+	if draws_sidearm():
+		return carried_blaster().bolt
+	return move.bolt if move != null else null
+
+
+func sidearm_guard_multiplier() -> float:
+	var blaster: BlasterData = carried_blaster()
+	return blaster.guard_cost_multiplier if blaster != null and (sidearm_out or sidearm_guard_ticks > 0) else 1.0
 
 
 func reset_for_round(start_x: float, start_facing: int) -> void:
@@ -275,6 +304,7 @@ func reset_for_round(start_x: float, start_facing: int) -> void:
 	stun_ticks = 0
 	freeze_ticks = 0
 	clear_move()
+	sidearm_guard_ticks = 0
 	chain_index = 0
 	dodge_kind = DodgeKind.NONE
 	invulnerable_ticks = 0
@@ -345,6 +375,7 @@ func reset_for_round(start_x: float, start_facing: int) -> void:
 
 
 func clear_move() -> void:
+	sidearm_out = false
 	move = null
 	move_phase = Phase.NONE
 	phase_ticks = 0

@@ -3,6 +3,8 @@ extends StateLogic
 
 
 func step(sim: MatchSimulation, fighter: FighterState, intent: Intent) -> void:
+	if fighter.sidearm_guard_ticks > 0:
+		fighter.sidearm_guard_ticks -= 1
 	_guard_walk(sim, fighter, intent)
 	_advance_parry_window(sim, fighter)
 	var tapped: bool = fighter.buffered_action == FighterState.Action.BLOCK
@@ -41,6 +43,7 @@ func _guard_walk(sim: MatchSimulation, fighter: FighterState, intent: Intent) ->
 
 
 func exit(_sim: MatchSimulation, fighter: FighterState) -> void:
+	fighter.sidearm_guard_ticks = 0
 	fighter.parry_ticks = FighterState.NO_PARRY
 	fighter.stun_ticks = 0
 

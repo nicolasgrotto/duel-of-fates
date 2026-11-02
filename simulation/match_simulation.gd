@@ -214,6 +214,7 @@ func gain_vigor(fighter: FighterState, amount: float) -> void:
 
 func block_cost(defender: FighterState, move: MoveData) -> float:
 	var cost: float = move.block_vigor_cost * defender.character.block_cost_multiplier / defender.defense_multiplier
+	cost *= defender.sidearm_guard_multiplier()
 	if defender.wound == FighterState.Wound.ARM:
 		cost *= config.consequences.wounded_arm_block_multiplier
 	if defender.focus_ticks > 0:
@@ -623,4 +624,7 @@ func _check_round_end() -> void:
 		if not rules.endless:
 			fighters[round_winner].round_wins += 1
 	_set_phase(Phase.KO)
+	for fighter in fighters:
+		if fighter.draws_sidearm():
+			change_state(fighter, FighterState.State.IDLE)
 	emit(CombatEvent.Type.ROUND_ENDED, round_winner, CombatEvent.NO_FIGHTER if round_winner == NO_WINNER else 1 - round_winner)

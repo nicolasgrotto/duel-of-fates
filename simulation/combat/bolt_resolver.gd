@@ -31,7 +31,7 @@ static func resolve(sim: MatchSimulation, projectile: Projectile, owner: Fighter
 		if target.parry_ticks != FighterState.NO_PARRY:
 			_reflect(sim, projectile, owner, target, target.parry_ticks < target.perfect_parry_ticks)
 		else:
-			sim.drain_vigor(target, projectile.bolt.guard_vigor)
+			sim.drain_vigor(target, projectile.bolt.guard_vigor * target.sidearm_guard_multiplier())
 			_fizzle(sim, projectile, owner, target)
 		return
 	_hit(sim, projectile, owner, target)

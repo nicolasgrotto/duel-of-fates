@@ -244,23 +244,30 @@ func _on_flow_event(event: CombatEvent, at: Vector2) -> void:
 				Projectile.Kind.BLADE:
 					AudioDirector.play(&"swing_heavy", views[event.source].global_position, 0.0, 1.2, &"Blades")
 				Projectile.Kind.BOLT:
-					AudioDirector.play(&"bolt_shot", views[event.source].global_position, BOLT_DB, _bolt_pitch(event.source) * randf_range(0.95, 1.05))
+					AudioDirector.play(_blaster_sound(event.source, &"shot"), views[event.source].global_position, BOLT_DB, _bolt_pitch(event.source) * randf_range(0.95, 1.05))
 		CombatEvent.Type.PROJECTILE_REFLECTED:
 			AudioDirector.play(&"power_cleave_return", at)
 		CombatEvent.Type.BOLT_HIT:
-			AudioDirector.play(&"bolt_hit", at, BOLT_DB)
+			AudioDirector.play(_blaster_sound(event.source, &"hit"), at, BOLT_DB)
 		CombatEvent.Type.BOLT_BLOCKED:
-			AudioDirector.play(&"power_barrier_absorb" if event.power != null else &"bolt_deflect", at, BOLT_DB, randf_range(0.95, 1.1))
+			AudioDirector.play(&"power_barrier_absorb" if event.power != null else _blaster_sound(event.source, &"block"), at, BOLT_DB, randf_range(0.95, 1.1))
 		CombatEvent.Type.BOLT_REFLECTED:
-			AudioDirector.play(&"bolt_reflect", at, BOLT_DB, 1.15 if event.amount > 0.0 else 1.0)
+			AudioDirector.play(_blaster_sound(event.target, &"reflect"), at, BOLT_DB, 1.15 if event.amount > 0.0 else 1.0)
 		CombatEvent.Type.TECHNIQUE_CLASH:
 			AudioDirector.play(&"clash", at, 2.0, 0.8)
 			AudioDirector.play(&"power_supreme_push", at, -4.0, 1.4)
 
 
 func _bolt_pitch(index: int) -> float:
-	var move: MoveData = sim.fighters[index].move
-	return move.bolt.pitch if move != null and move.bolt != null else 1.0
+	var bolt: BoltData = sim.fighters[index].move_bolt()
+	return bolt.pitch if bolt != null else 1.0
+
+
+func _blaster_sound(index: int, kind: StringName) -> StringName:
+	var blaster: BlasterData = sim.fighters[index].carried_blaster()
+	if blaster != null:
+		return blaster.get(String(kind) + "_sound")
+	return &"bolt_deflect" if kind == &"block" else StringName("bolt_" + String(kind))
 
 
 func _process(delta: float) -> void:

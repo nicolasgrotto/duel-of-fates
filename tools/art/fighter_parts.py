@@ -2,6 +2,23 @@
 from painter import Part
 
 
+def blaster_parts(long=False):
+    barrel = 44 if long else 22
+    body = Part("rifle" if long else "pistol", -20, -12, barrel + 4, 16)
+    body.paint(body.polygon_mask([(-8, -8), (barrel - 8, -8), (barrel, -4), (barrel, 0), (-8, 0)]), "metal", tone=0.53, bevel=1)
+    body.paint(body.polygon_mask([(-6, 0), (2, 0), (-2, 12), (-10, 12)]), "leather", tone=0.53, bevel=1)
+    body.paint(body.line_mask([(-6, -9), (barrel - 12, -9)], 2), "metal", tone=0.68, bevel=1)
+    body.paint(body.line_mask([(barrel - 2, -6), (barrel - 2, 0)], 2), "trim", tone=0.68, bevel=1)
+    body.paint(body.line_mask([(2, -4), (12, -4)], 2), "eyes", tone=0.42, emission=0.2, bevel=1)
+    if long:
+        body.paint(body.polygon_mask([(-18, -6), (-6, -6), (-6, 2), (-18, 6)]), "leather", tone=0.53, bevel=1)
+        body.paint(body.polygon_mask([(12, 0), (28, 0), (26, 4), (14, 4)]), "body", tone=0.53, bevel=1)
+    support = Part("sling" if long else "holster", -12, -12, barrel, 16)
+    support.paint(support.polygon_mask([(-10, -10), (barrel - 4, -8), (barrel - 2, 2), (-4, 6), (-8, 14), (-12, 12)]), "leather", tone=0.42, bevel=1)
+    support.paint(support.line_mask([(-8, -10), (barrel - 6, -8)], 2), "trim", tone=0.68, bevel=1)
+    return body, support
+
+
 def build_dims(spec):
     build = {
         "shoulder_half": 12.0, "waist_half": 9.0, "hip_half": 8.0, "torso_length": 44.0, "neck": 5.0,

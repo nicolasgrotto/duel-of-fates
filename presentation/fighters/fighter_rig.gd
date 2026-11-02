@@ -40,6 +40,7 @@ var _cloths: Array[ClothStrip] = []
 var _cloth_anchors: Array[String] = []
 var _hilt: HiltView
 var _sidearm: SidearmView
+var _carried_blaster: CarriedBlasterView
 var _marks: CutMarks
 var _cuts: Array[String] = []
 var _layers: Array[CanvasItem] = []
@@ -122,6 +123,10 @@ func build(data: CharacterData, look: CostumeData) -> void:
 		_sidearm.z_index = BACK_HAND_DEPTH
 		_sidearm.setup(costume)
 		add_child(_sidearm)
+	if data.weapon.sidearm == WeaponData.Sidearm.HOLSTER and data.weapon.blaster != null:
+		_carried_blaster = CarriedBlasterView.new()
+		_carried_blaster.setup(data.weapon.blaster, shader_material)
+		add_child(_carried_blaster)
 	clear_prosthetics()
 	_marks = CutMarks.new()
 	_marks.z_index = 16
@@ -246,6 +251,8 @@ func apply(pose: RigPose, facing: int, delta: float) -> void:
 	_hilt.update_pose(pose, front_hand, back_hand)
 	if _sidearm != null:
 		_sidearm.update_pose(pose)
+	if _carried_blaster != null:
+		_carried_blaster.update_pose(pose)
 	_simulate_cloths(pose, pelvis, facing, delta)
 	_update_marks(delta)
 

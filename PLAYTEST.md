@@ -4,6 +4,21 @@ Roteiro para o autor validar, jogando, o que entrou na fase 7.5 (revisão de com
 
 Legenda: ✅ ficou bom · ⚠️ funciona mas a sensação ou o número precisa de ajuste · ❌ não funciona.
 
+## 19. Estilo Coldre da História (task 15)
+
+| Passo | Verificar | Resultado esperado |
+| --- | --- | --- |
+| 19.1 | Nova campanha, estilo Coldre, Aurora e Eclipse, PT/EN, 720p/1080p | Quarta opção, arma visível no quadril, duas mãos na lâmina e aparência escolhida |
+| 19.2 | Habilidade + frente no primeiro encontro | Saque legível, dois tiros e retorno ao coldre; arma não fica na mão em repouso |
+| 19.3 | Comprar Trás, Ar e Habilidade na aba Lâmina | Saque de recuo (um tiro), Investida descendente (lâmina) e Fogo de cobertura (três tiros); custos antigos da árvore |
+| 19.4 | Guarda ou esquiva de precisão logo após o primeiro tiro | Restante da rajada cancelado, arma recolhida; na guarda, a mão retorna ao cabo e o bloqueio custa mais Vigor por esse intervalo |
+| 19.5 | Rival bloqueia, apara e faz esquiva de precisão contra tiros | Guarda desfaz, parry devolve, esquiva confirma sucesso; tiro não interrompe preparação/ativo de golpes |
+| 19.6 | Fechar/reabrir História; comprar/equipar/retirar Corte Projetado | Estilo, arma e compras preservados; substituir um espaço e restaurá-lo funciona |
+| 19.7 | Conferir sequência de rifle em `build/task15_renders/sheet_*_back_rifle.png` | Mão alcança o ombro, rifle sai das costas, mira usa duas mãos com lâmina baixa, retorno mais lento; variante é dado, sem seletor novo nesta entrega |
+| 19.8 | F3; esquiva, disputa e finalização | Id da arma, ticks e rajada legíveis; arma sempre no suporte nesses estados |
+
+Validação automática: **637 testes, zero falhas**, incluindo 22 novos; matriz de **936 duelos** idêntica ao baseline. Nove verificações de captura por resolução. Evidências em `build/task15_tests_final.log`, `build/task15_matrix_comparison.log` e `build/task15_renders/`. Avaliação humana de ritmo, dificuldade e áudio permanece a fazer.
+
 ## Caçada a chefes — task 09
 
 | # | Como testar | Esperado | Onde ajustar |

@@ -57,6 +57,10 @@ enum TechniqueStyle { ARC, DASH, THROW, THRUST, RISING, FLURRY, LUNGE, PLUNGE, W
 @export var from_guard: bool = false
 @export var required_sidearm: WeaponData.Sidearm = WeaponData.Sidearm.NONE
 @export var bolt: BoltData
+@export var draws_sidearm: bool = false
+@export var shot_count: int = 1
+@export var shot_interval: float = 0.12
+@export var burst_cancellable: bool = false
 @export var recovery_on_hit: float = -1.0
 @export var dash_in_startup: bool = false
 
