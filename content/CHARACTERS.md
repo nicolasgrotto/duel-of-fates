@@ -363,13 +363,15 @@ Os três têm **potencial**: o teto de todos os atributos sobe (+1, +2, +3), e a
 
 ## Protagonista da História
 
-- **Introdução**: Herda a entrada de Técnica (Guardião), Fúria (Sombra) ou Voo (Garça), preservando a aparência e a cor escolhidas.
+**Coldre / Holster** (task 15): quarto estilo, Duelista de Coldre / Holster Duelist. Reutiliza arte corporal, introdução, guarda e sequência da família Guardião. Dano de todos os golpes de lâmina 10% menor nos mesmos atributos, sem herdar a redução de custo de guarda do Guardião. Pistola original visível no quadril; a mão auxiliar só a saca para Saque duplo (frente), Saque de recuo (trás) e Fogo de cobertura (habilidade). No ar usa Investida descendente. Variante de dados com rifle às costas, tiro de duas mãos e lâmina baixa. Sem entrada no elenco selecionável. IA defensiva de distância média: prefere 180 u, recua até 420 u, usa tiros por alcance e alterna guarda/parry com lâmina ao se aproximar. Números em GAME_DESIGN; carregamento em STORY.
+
+- **Introdução**: Herda a entrada de Técnica (Guardião), Fúria (Sombra) Voo (Garça) ou Coldre (Guardião), preservando a aparência e a cor escolhidas.
 
 Criado pelo jogador (ver [STORY.md](STORY.md)).
 
 - **Nome**: da lista (Kael, Iria, Tarin, Vessa, Oren, Lyse) ou digitado, até 16 caracteres.
 - **Caminho**: Aurora ou Eclipse (define os poderes e as falas).
-- **Estilo de luta**: **Técnica** (golpes, habilidade e técnicas do Guardião), **Fúria** (da Sombra) ou **Voo** (da Garça).
+- **Estilo de luta**: **Técnica** (golpes, habilidade e técnicas do Guardião), **Fúria** (da Sombra) **Voo** (da Garça) ou **Coldre** (Guardião com arma carregada).
 - **Kit comprado na História**: só a técnica de frente vem na criação. Trás, Ar, habilidade do estilo e Corte Projetado são comprados na aba Lâmina, com os mesmos pontos de habilidade dos poderes. Para completar os espaços só do protagonista, Técnica usa Investida descendente no ar e Voo usa Estocada na frente; o elenco acima permanece igual. Detalhes e migração em STORY.md §4.
 - **Visual**: **Errante** (capa longa azul-ardósia `#3e4a5e`, corpo `#1d222b`, acabamento `#7f90aa`, lenço, sem capuz nem máscara), **Vigia** (capa curta `#454d58`, capuz e máscara) ou **Peregrino** (capa longa terrosa `#51483c`, ombreiras, sem capuz ou máscara); mais Placas claras e Túnica em camadas; e, a pedido do autor, **Batedor** (túnica verde-oliva `#3c4630`, lenço, sem capa); **Nobre** (capa vinho `#4a1c24`, gola alta, acabamento dourado `#c8a45a`); **Cinzas** (capa cinza `#4a4a4e`, capuz sem máscara); **Duelista** (preto `#1c1a1e` com acabamento vermelho `#a83a3a`, gola e ombreiras, sem capa); **Andarilho do deserto** (areia `#8a7450`, capuz e lenço, sem capa); **Sentinela azul** (capa azul-aço `#2c3a52`, placas no peito).
 - **Traje** (fase 8, além dos três acima): **Armadura de placas clara** (peitoral e ombreiras de placas claras sobre a túnica, sem capa) e **Túnica escura em camadas** (gola alta e capa). Trajes em `data/story/outfits/`.

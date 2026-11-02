@@ -605,6 +605,21 @@ Modo completo em Jogar › Modos especiais › Combate de naves; a rota técnica
 
 A campanha completa parte de dois pressupostos opostos. No **Eclipse**, a hierarquia é Soberano, Sombra Desperta como subordinada direta dele, e o protagonista como subordinado dela; a ordem de destruir os cavaleiros da Aurora desce por essa cadeia, e os prisioneiros a resgatar são agentes do Eclipse capturados pela ordem. Na **Aurora**, o Ancião envia o protagonista, cavaleiro da ordem, para derrubar o império do Soberano. Detalhes ficam para a task 19 do Codex.
 
+## Estilo Coldre da História (task 15)
+
+Quarto estilo, **Coldre / Holster**, exclusivo do protagonista: família Guardião, guarda e sequência de duas mãos, dano de lâmina 10% abaixo de Técnica nos mesmos atributos. Não entra no elenco nem na matriz. Não muda botões, regras dos disparos nem os estilos Versáteis.
+
+| Espaço | Golpe | Preparação / ativo / recuperação sem saque | Vigor | Tiros |
+| --- | --- | --- | --- | --- |
+| Trás | Saque de recuo / Retreat Draw | 0,10 / 0,12 / 0,20 s | 12 | 1, recua 90 u durante a preparação completa |
+| Frente | Saque duplo / Double Draw | 0,12 / 0,24 / 0,20 s | 16 | 2, intervalo 0,12 s |
+| Habilidade | Fogo de cobertura / Covering Fire | 0,20 / 0,36 / 0,24 s | 22 | 3, intervalo 0,12 s |
+| Ar | Investida descendente | recurso existente | existente | só lâmina |
+
+O saque da arma soma à preparação e o retorno soma à recuperação; ambos arredondados para ticks de 60 Hz. Pistola de quadril: saque 0,15 s, retorno 0,15 s, disparo de 4 de dano a 900 u/s, alcance 1.100 u. Rifle de dorso: saque 0,40 s, retorno 0,30 s, disparo de 8 de dano a 650 u/s, alcance 1.500 u. A arma define o projétil, o golpe define quantos tiros usa. A rajada da habilidade prepara por mais tempo; nenhum disparo aéreo.
+
+Após o primeiro tiro, guarda ou esquiva de precisão cancelam os tiros restantes e a recuperação. O cancelamento recolhe a arma imediatamente; na guarda a mão auxiliar leva o tempo de retorno para reassumir o cabo, pagando +25% de Vigor nos bloqueios desse intervalo (inclusive contra disparos). Parry conserva a regra normal. Durante saque, mira e retorno, a lâmina tem só uma mão; não há guarda simultânea ao ataque. `sidearm_out` indica arma sacada entre o fim do saque e o começo do retorno, nunca em repouso, guarda, esquiva, disputa ou finalização. Interrupções recolhem a arma, sem permitir disparos atrasados. O rifle usa as duas mãos ao mirar, com a lâmina baixa na mão principal, e o mesmo custo transitório de guarda.
+
 ## 19. Fora do escopo inicial
 
 Online, torneio, editor de personagens, perigos de arena que afetam o combate. A arquitetura deixa espaço para eles (simulação determinística, arena que reage a eventos).

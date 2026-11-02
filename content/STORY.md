@@ -63,7 +63,7 @@ Seis passos, com a prévia do personagem mudando junto com a opção destacada:
 
 1. **Nome**: lista pronta (Kael, Iria, Tarin, Vessa, Oren, Lyse) ou digitado, até 16 caracteres.
 2. **Caminho do Fluxo**: Caminho da Aurora ou Caminho do Eclipse. Define o poder inicial (Repulsão / Puxão), os poderes aprendidos, a rota e as falas.
-3. **Estilo de luta**: Técnica (base do Guardião), Fúria (base da Sombra), Voo (base da Garça).
+3. **Estilo de luta**: Técnica (base do Guardião), Fúria (base da Sombra), Voo (base da Garça) ou Coldre (lâmina de duas mãos e arma carregada).
 4. **Visual**: um dos visuais do protagonista (lista em [CHARACTERS.md](CHARACTERS.md#protagonista-da-história)), mais cabelo, barba, cor do cabelo e pele.
 5. **Cor da lâmina**: dez cores do elenco.
 6. **Dificuldade**: define o total de pontos de atributo da campanha.
@@ -405,5 +405,9 @@ O bônus de marco dos pontos de habilidade é concedido na vitória; derrotas em
 
 
 ### Kit de estilo na árvore de Lâmina
+
+Task 15: **Coldre / Holster** é a quarta opção na criação. Base original **Duelista de Coldre / Holster Duelist**, família Guardião com dano físico 10% menor. Frente vem aprendida (Saque duplo); os nós Trás, Ar e Habilidade liberam Saque de recuo, Investida descendente e Fogo de cobertura pelos custos existentes. Corte Projetado continua disponível nos três espaços. Prévia mostra arma carregada, duas mãos na lâmina e o traje escolhido. Não há novo passo de criação nesta entrega.
+
+Save guarda `blaster_id`, inicialmente `holster_pistol`; ausência ou id inválido resolve à pistola sem perder outros campos. `back_rifle` prova troca por dados, sem seletor novo. A consulta `uses_blaster_style()` identifica o estilo para a futura Saga (task 19): Coldre permite missões de blaster; os outros estilos usam Infiltração. Nenhuma missão nova é adicionada aqui.
 
 A Garça do elenco não tem técnica de frente e o Guardião não tem técnica aérea. Para que os cinco nós sejam úteis nos três estilos, só na História os espaços ausentes recebem recursos existentes: Estocada na frente de Voo; Investida descendente no ar de Técnica. `CampaignData` guarda esses complementos; o elenco dos duelos permanece como antes. Comprar o nó disponibiliza sua técnica no espaço original; o Corte Projetado substitui um único espaço escolhido e pode ser retirado restaurando a técnica do estilo nessa posição. Espaço não comprado não aciona a habilidade por direção. Saves anteriores à árvore recebem os nós 1–4 sem custo nem reembolso; o Corte Projetado continua por comprar.

@@ -110,6 +110,8 @@ Quatro amostras originais em synth_audio.py::singularity_sounds, com semente pr�
 
 ### Disparos (task 06)
 
+Task 15: armas de coldre reutilizam os sons originais de disparo, impacto e desvio; `BlasterData` referencia os ids existentes e `BoltData.pitch` define afinação. Sem novos arquivos de áudio ou som durante o saque silencioso.
+
 Quatro sons originais em `synth_audio.py::bolt_sounds`, com semente própria: tiro seco e curto com queda rápida de frequência (`bolt_shot`), desvio na lâmina como um chiado curto e metálico (`bolt_deflect`), devolução com o chiado e um tom ascendente (`bolt_reflect`), acerto abafado e curto (`bolt_hit`). Nenhum lembra o som de armas da franquia: sem o "pew" ressonante com mola. Volume abaixo das lâminas.
 
 Família Versáteis (tasks 07 e 08): os personagens usam os mesmos sons, com afinação por disparo (`BoltData.pitch`): a Corsária um pouco mais grave (0,92), o Lince mais agudo e seco (1,12). A Rajada Desestabilizadora reaproveita os sons de disparo e de golpe.

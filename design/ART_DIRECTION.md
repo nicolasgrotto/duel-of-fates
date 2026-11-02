@@ -97,6 +97,10 @@ Desenhadas pelo jogo, como os cabos, na cor de metal e de couro do traje. **Blas
 
 ### Disparos
 
+Task 15, estilo Coldre: base de duas mãos do Guardião. Armas e suportes são peças pintadas pelo mesmo `fighter_parts.py` (mapa de material + normal, 0,5 px/u), recoloridas com METAL e LEATHER do traje. Pistola compacta de perfil angular no quadril externo, coldre aberto; rifle original reto com coronha curta e célula lateral, preso em diagonal nas costas por suporte, sem mira telescópica ou anéis no cano. Ambos ficam visíveis no corpo fora do tiro, inclusive na prévia. Camada do suporte atrás da arma e à frente da roupa; rifle abaixo do braço de trás, empunhadura visível junto ao ombro.
+
+Saque segue a posição carregada: mão sai do cabo, alcança quadril/coxa/costas/lombar conforme dados, puxa a arma e alinha na horizontal. Retorno faz o caminho inverso e termina na empunhadura de duas mãos. Pistola usa mão auxiliar; rifle (classe LONG) recebe apoio da mão principal no corpo da arma, com lâmina baixa quase vertical. O cabo da lâmina continua na mão principal; não some. O ativo conserva mira, com recuo curto por tiro; sem novos swings. Cancelar para guarda recolhe a arma e recupera a mão auxiliar durante a janela de penalidade. Repouso, esquiva, disputa e finalização mostram a arma no suporte.
+
 Branco quente de baixa saturação `#ffe2b0` (`UiPalette.bolt`) com núcleo branco, em traço curto e duro. Fica fora do círculo saturado das lâminas e das cores do Fluxo, para o disparo ler como "não é lâmina" pela forma e pela saturação. Ver [VFX.md](VFX.md#disparos).
 
 ### Revisão de animação aprovada (próxima etapa)

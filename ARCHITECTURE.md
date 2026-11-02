@@ -489,6 +489,8 @@ Treino: `DummyController.Behavior.SHOOT` aperta frente + Habilidade no intervalo
 
 ### Família Versáteis (tasks 07 e 08)
 
+
+
 Corsária (`data/characters/corsair/`) e Lince (`data/characters/lynx/`) usam a família `data/families/versatile.tres` e as regras de disparo da task 06. Ganchos novos, todos por dados:
 
 - `MoveData.bolt` em golpes comuns (o passo 2 da Corsária corta e dispara); técnicas de disparo em `data/techniques/` (`double_shot`, `retreat_shot`, `snap_shot`) com disparos em `data/bolts/`. Impulso negativo (`lunge` < 0) agora recua durante o ativo (Recuo com disparo).
@@ -523,3 +525,12 @@ Na revisão da task 11 pelo MCP, recursos regravados pelo editor tinham perdido 
 **Arrays compactados exportados: regra obrigatória.** A perda de dados vista nas tasks 11, 13 e 14 e que desfez todos os mapas da Infiltração tem causa comprovada por reprodução: ao salvar um recurso, o editor apaga o valor de `@export var x: PackedStringArray = []` e de qualquer outro `Packed*Array` com default em literal `[...]`, vazio ou não. Default por construtor (`PackedX()` ou `PackedX([...])`) preserva o valor, mas grava `x = null` quando não definido; é a origem dos `= null` espalhados. As duas formas seguras são: **sem inicializador** quando o default é vazio (`@export var rows: PackedStringArray`) e **`const` tipada** quando não é (`const DEFAULT_X: PackedStringArray = ["a"]` e `@export var x: PackedStringArray = DEFAULT_X`). `tests/data/test_resource_integrity.gd` falha se alguém reintroduzir a forma frágil, se um recurso de `data/` tiver `= null` ou se mapas, rotas e nomes de cor forem esvaziados. Depois da correção, regravar pelo editor mantém os dados.
 
 O SubViewport do treino de Infiltração recebe `World2D` exclusivo antes de entrar na árvore. Isso conserva sua câmera interna ao abrir outra instância ou liberar a anterior: o mundo compartilhado fazia a câmera perder a ativação em reaberturas pelo editor. A câmera de referência do enquadramento fica no viewport principal e só fornece posição/zoom ao PixelStage. A correção fica no modo, sem alterar o PixelStage compartilhado do duelo.
+
+
+### Armas carregadas e estilo Coldre (task 15)
+
+`data/blasters/blaster_data.gd` (`BlasterData`) reúne id, tradução, BoltData, tempos de saque/retorno, posição Carry (HIP_HOLSTER, THIGH_HOLSTER, BACK, LOWER_BACK), âncora/ângulo, SizeClass (PISTOL, CARBINE, LONG), peças/normal/pivôs e ids de som. `WeaponData.Sidearm.HOLSTER` e `blaster` são opcionais; inteiros antigos preservados. Recursos `holster_pistol.tres` e `back_rifle.tres` comprovam parâmetros e posições diferentes. Classe LONG pede apoio da mão principal e lâmina baixa; nenhuma condição por id da arma.
+
+MoveData marca `draws_sidearm`, quantidade/intervalo de tiros e cancelamento. FighterState resolve tempos efetivos, projétil da arma e `sidearm_out`; AttackState avança saque, rajada e retorno. Guarda após cancelamento mantém `sidearm_guard_ticks` (arma já no suporte), usado no custo físico e de disparos; limpa no round e entra no snapshot. A simulação não lê âncoras nem arte. PoseSolver usa a mesma mão auxiliar/IK e RigPose; FighterRig monta arma/suporte pintados e só lê a pose. F3 expõe dados e ticks. Armas existentes continuam em SidearmView.
+
+Base de História em `data/characters/holster/`, não selecionável, usa recursos da família/arte Guardião com golpes físicos de dano reduzido. CampaignData inclui a quarta opção e catálogo de blasters. StoryCampaign persiste blaster_id, normaliza ausências/ids inválidos e duplica apenas WeaponData para equipar sem mutar recursos compartilhados; `uses_blaster_style()` é o ponto de integração da futura Saga. Nós da árvore resolvem os recursos do kit normalmente. IA só gera intenções, calculando alcance do projétil equipado.
