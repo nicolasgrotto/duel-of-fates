@@ -11,6 +11,8 @@ var progress: int = 0
 var _last_x: float = 0.0
 var _walked: float = 0.0
 var _evade_tick: int = -1
+var _ability_tick: int = -1
+var _closing_ticks: int = -1
 
 
 func _init(lesson_data: LessonData, dummy_controller: DummyController, training: TrainingConfig) -> void:
@@ -24,7 +26,16 @@ func step() -> LessonStep:
 	return lesson.steps[step_index] if step_index < lesson.steps.size() else null
 
 
+func is_closing() -> bool:
+	return _closing_ticks >= 0
+
+
 func on_tick(sim: MatchSimulation) -> void:
+	if is_closing() and not done:
+		_closing_ticks -= 1
+		if _closing_ticks <= 0:
+			_finish()
+		return
 	if done or step() == null:
 		return
 	var me: FighterState = sim.fighters[player]
@@ -44,6 +55,8 @@ func on_event(event: CombatEvent, sim: MatchSimulation) -> void:
 		return
 	if event.type == CombatEvent.Type.EVADE_SUCCESS and event.target == player:
 		_evade_tick = sim.tick
+	if event.type == CombatEvent.Type.ATTACK_STARTED and event.source == player and event.move != null and (event.move.kind == MoveData.Kind.ABILITY or event.move.kind == MoveData.Kind.STANCE):
+		_ability_tick = sim.tick
 	if _matches(step().goal, event, sim):
 		_advance()
 
@@ -75,6 +88,8 @@ func _matches(goal: LessonStep.Goal, event: CombatEvent, sim: MatchSimulation) -
 			return mine and event.type == CombatEvent.Type.BLADE_LOCK_ENDED
 		LessonStep.Goal.ABILITY:
 			return mine and event.type == CombatEvent.Type.ATTACK_STARTED and move != null and (move.kind == MoveData.Kind.ABILITY or move.kind == MoveData.Kind.STANCE)
+		LessonStep.Goal.ABILITY_ANSWER:
+			return against_me and (event.type == CombatEvent.Type.RESPONSE or event.type == CombatEvent.Type.PERFECT_PARRY) and _ability_tick >= 0 and sim.tick - _ability_tick <= Ticks.from_seconds(config.ability_answer_window)
 		LessonStep.Goal.EVADE:
 			return against_me and event.type == CombatEvent.Type.EVADE_SUCCESS
 		LessonStep.Goal.EVADE_STREAK:
@@ -105,12 +120,16 @@ func _advance() -> void:
 		step_index += 1
 		progress = 0
 		if step_index >= lesson.steps.size():
-			_finish()
+			_closing_ticks = Ticks.from_seconds(config.lesson_close_seconds)
+			if dummy != null:
+				dummy.set_behavior(DummyController.Behavior.STAND)
 			return
 		_enter_step()
 
 
 func instruction() -> String:
+	if is_closing():
+		return result_title()
 	return format_keys(TranslationServer.translate(step().text_key)) if step() != null else ""
 
 

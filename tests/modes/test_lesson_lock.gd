@@ -76,6 +76,6 @@ func test_real_guided_mirror_locks_complete_the_three_lock_goal() -> void:
 		if BladeLockResolver.can_disengage(fixture.sim):
 			fixture.press(0, Intent.Command.HEAVY)
 		_tick(fixture, tracker)
-		if tracker.done:
+		if tracker.is_closing():
 			break
-	assert_true(tracker.done, "guided step %d phase %d states %d/%d locks %d disengages %d" % [tracker.step_index, fixture.sim.phase, fixture.fighter(0).state, fixture.fighter(1).state, fixture.count_events(CombatEvent.Type.BLADE_LOCK_STARTED), fixture.count_events(CombatEvent.Type.DISENGAGE)])
+	assert_true(tracker.is_closing(), "guided step %d phase %d states %d/%d locks %d disengages %d" % [tracker.step_index, fixture.sim.phase, fixture.fighter(0).state, fixture.fighter(1).state, fixture.count_events(CombatEvent.Type.BLADE_LOCK_STARTED), fixture.count_events(CombatEvent.Type.DISENGAGE)])

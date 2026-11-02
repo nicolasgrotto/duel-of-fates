@@ -416,6 +416,13 @@ Automação concluída; avaliação humana de controle, dificuldade e áudio pen
 
 Suíte: 536 testes, zero falhas; 42 novos, incluindo reutilização dos mesmos objetos de nave/evento/projétil/intenção e contagem de objetos estável por 3.000 ticks após aquecimento. Evidências em `build/task13_tests_final.log`, `task13_bindings_final.log`, `task13_mcp_compile_checks.json`, `task13_assets_check.log`, `task13_flow_smoke.log` e `task13_profile.log`. Nenhuma gravação no save do autor; capturas usam `capture_progress.cfg` e processos diretos isolam APPDATA em `build/task13_userdata`.
 
+## 18. Encerramento vivo e fim das lições
+
+- 18.1 Destruir a última nave: a explosão e os tiros seguem atrás de Missão concluída, sem congelar.
+- 18.2 Concluir e perder na Infiltração: guardas seguem andando atrás do texto, e nada fere o personagem nesse momento.
+- 18.3 Tutorial: na última parte, a Contraguarda é explicada, o boneco passa a atacar e é preciso desviar e responder duas vezes. Conferir se o tempo do golpe é justo e se o texto cabe na faixa.
+- 18.4 Tutorial e treinos guiados: ao cumprir o último objetivo, dá para ver o efeito, Concluído aparece por uns 3 s e só então vem o resultado.
+
 ## 17. Inimigos, dano e mínimo de prisioneiros
 
 - 17.1 Levar tiros sem guarda e com guarda: vida e Vigor devem cair bem mais rápido que antes. Se ficar pesado ou leve demais, os valores estão em `tools/infiltration/make_missions.py`.

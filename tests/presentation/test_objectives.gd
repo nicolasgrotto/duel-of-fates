@@ -29,7 +29,7 @@ func test_lesson_advances_on_light_hits() -> void:
 	fixture.place(60.0)
 	fixture.press(0, Intent.Command.LIGHT)
 	_feed(fixture, tracker, 30)
-	assert_true(tracker.done)
+	assert_true(tracker.is_closing())
 
 
 func test_parry_points() -> void:
@@ -82,7 +82,7 @@ func test_guided_evade_ends_with_spin_dodges() -> void:
 		_feed(fixture, tracker, 1)
 		fixture.intents[0].move_x = 0
 		_feed(fixture, tracker, 40)
-	assert_true(tracker.done)
+	assert_true(tracker.is_closing())
 
 
 func test_chain_step_closes_with_the_last_light_of_a_two_hit_chain() -> void:
@@ -100,4 +100,4 @@ func test_chain_step_closes_with_the_last_light_of_a_two_hit_chain() -> void:
 		if fixture.fighter(0).move_phase == FighterState.Phase.RECOVERY:
 			fixture.press(0, Intent.Command.LIGHT)
 		_feed(fixture, tracker, 1)
-	assert_true(tracker.done)
+	assert_true(tracker.is_closing())

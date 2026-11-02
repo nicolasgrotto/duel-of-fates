@@ -87,9 +87,16 @@ goal = 11
 count = 1
 dummy = 0
 
+[sub_resource type="Resource" id="step_12"]
+script = ExtResource("2_step")
+text_key = "TUT_ABILITY_ANSWER"
+goal = 20
+count = 2
+dummy = 2
+
 [resource]
 script = ExtResource("1_lesson")
 id = &"tutorial"
 title_key = "LESSON_TUTORIAL"
 done_key = "LESSON_TUTORIAL_DONE"
-steps = Array[ExtResource("2_step")]([SubResource("step_0"), SubResource("step_1"), SubResource("step_2"), SubResource("step_3"), SubResource("step_4"), SubResource("step_5"), SubResource("step_6"), SubResource("step_7"), SubResource("step_8"), SubResource("step_9"), SubResource("step_10"), SubResource("step_11")])
+steps = Array[ExtResource("2_step")]([SubResource("step_0"), SubResource("step_1"), SubResource("step_2"), SubResource("step_3"), SubResource("step_4"), SubResource("step_5"), SubResource("step_6"), SubResource("step_7"), SubResource("step_8"), SubResource("step_9"), SubResource("step_10"), SubResource("step_11"), SubResource("step_12")])

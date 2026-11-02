@@ -527,7 +527,8 @@ TUT_SHOVE,O boneco se defende: {block} + {light_attack} empurra através da guar
 TUT_GUARD_BREAK,Ataque a guarda até ela quebrar,Attack the guard until it breaks
 TUT_WOUND,Com o boneco exausto acerte um golpe para feri-lo,With the dummy exhausted land a blow to wound it
 TUT_LOCK,Ataque forte junto com o boneco para travar as lâminas e toque {light_attack} rápido,Heavy attack together with the dummy to lock blades and tap {light_attack} fast
-TUT_ABILITY,Use a habilidade do lutador com {special},Use your fighter's ability with {special}
+TUT_ABILITY,Contraguarda: {special} abre uma postura que desvia o golpe e responde. Toque {special} para ver,Counterguard: {special} opens a stance that deflects a blow and answers. Tap {special} to see it
+TUT_ABILITY_ANSWER,O boneco ataca: chegue perto e toque {special} logo antes do golpe para desviar e responder,The dummy attacks: get close and tap {special} right before the blow to deflect and answer
 GUIDE_EVADE_ONE,Toque {evade} no instante do golpe: esquiva de precisão,Tap {evade} right as the blow lands: precision evade
 GUIDE_EVADE_STREAK,Faça três esquivas de precisão seguidas,Chain three precision evades
 GUIDE_EVADE_PUNISH,Esquive e acerte o boneco logo em seguida,Evade and hit the dummy right after
