@@ -35,6 +35,14 @@ Na task 11, o atlas superior ganha soldado de ombros estreitos e arma lateral, s
 
 Task 12: os mapas de missão reutilizam o atlas industrial e a ferramenta de tiles. Terminal de informação é um monitor angular com duas barras; saída é contorno quadrado aberto e seta no piso; prisioneiro usa sprite superior sem arma de 24×28 px, gerado pela ferramenta existente com túnica clara da paleta e losango acima da cabeça, sem imitar personagem de outra obra. Geometria na mesma grade e cores do UiPalette; sem novos efeitos luminosos. Estados concluídos usam marca de confirmação além da cor. A apresentação só lê o estado da missão.
 
+### Personagens e imagens de fase nos modos especiais
+
+Na Infiltração, cada personagem do elenco tem um sprite próprio de vista superior em 24×28 px, com silhueta dada por ombros, capuz ou cabelo e capa. O sprite usa a mesma codificação de paleta dos lutadores (luz, slot e brilho), e as cores vêm do traje escolhido. Lâmina na cor escolhida, cabo no metal do traje e mão na pele, sempre presa ao cabo: na guarda a lâmina sai da mão direita e cruza à frente do corpo, nunca girando pelo centro com o cabo para fora.
+
+Imagens de fase são pixel art gerada pelos mesmos scripts das missões, em 480×170 px nativos e sem filtro de redução. Infiltração mostra um recorte real do mapa com guardas e objetivo; naves mostram nebulosa e a composição real da missão.
+
+As naves do jogador variam em tamanho e silhueta (Agulha estreita, Bigorna larga e blocada, Lança longa com lançadores), sem silhuetas de franquia, na mesma paleta e grade.
+
 ### Combate de naves — vista superior (task 13)
 
 Mesma grade de 1 px = 2 u e filtro nearest, mundo no PixelStage e UI em alta resolução. Trama: sprite nativo de 40×40 px, casco hexagonal curto, proa chanfrada, espinha transversal e duas caixas de motor de comprimentos diferentes; cockpit pequeno, sem asas em X/H, esfera central ou silhuetas de franquias. Drone-alvo: 32×32 px, corpo octogonal achatado e emissor lateral curto, sem aparência de lutador. `tools/art/make_ships.py` gera ambos com quatro tons, contorno seletivo, rebites e placas; slots metálicos de prosthetic_metal/infiltration_wall, bordas de accent, cockpit de menu_blade_a, propulsão de menu_blade_b, tudo do UiPalette.

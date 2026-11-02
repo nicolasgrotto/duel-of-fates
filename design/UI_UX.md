@@ -42,6 +42,12 @@ Durante a missão, título e progresso/tempo ocupam o topo; dicas contextuais di
 
 Resultado é uma tela própria pelo roteador: nome, sucesso ou motivo de derrota, cada objetivo com estado, bônus da tentativa, tempo e abordagem Furtivo/Direto. Oferece Tentar de novo, Próxima missão só no sucesso e Missões; na última, termina na lista. Histórico de bônus e melhor tempo aparecem no briefing. Sem tabela de dano, moeda ou novo estilo. Capturas usam save isolado.
 
+### Menus de missão com imagem (Infiltração e naves)
+
+Mesma composição da Caçada: lista à esquerda; à direita, imagem da fase de 480×170 px nativos exibida a ×2 (960×340 na base 1920×1080), sem moldura e com o mesmo filtro de ampliação das miniaturas, seguida de título e corpo nos estilos da Caçada, dentro de área rolável. A imagem também aparece no resultado e some nas linhas sem fase (Voltar, Oficina, Hangar, Personagem). Tudo precisa caber em 720p e 1080p, em PT e EN.
+
+Infiltração ganha a linha **Personagem**: painel próprio no mesmo padrão, com lista de personagens liberados, sprite da vista superior ampliado e troca de traje e cor de lâmina por esquerda/direita. Dicas mostram as teclas do modo. Naves ganham a linha **Hangar**: lista das quatro naves, sprite ampliado, barras de casco, escudo, velocidade, manobra e poder de fogo, e pontos fortes e fracos em texto. O briefing mostra a nave atual.
+
 ### Combate de naves (task 13)
 
 Treino de voo em tela própria, aberto pela cena do editor/rota técnica; sem entrada temporária em Jogar ou Aprender. HUD mínima: casco e escudo finos no canto superior esquerdo, título no alto, objetivo de prática e contador de drones abatidos; estado de recarga do impulso em texto. Rodapé de duas linhas com bindings atuais para propulsão/ré, rotação, primária, impulso e pausa. Forte mostra aviso de secundária indisponível no treino, sem prometer míssil utilizável. Usa Oxanium e `InfiltrationLabel` de 28 px do tema existente, legível em 720p/1080p. Cores vêm exclusivamente do UiPalette. Sem números de dano.
