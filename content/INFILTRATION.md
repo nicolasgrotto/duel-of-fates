@@ -10,17 +10,17 @@ Inimigos veem prisioneiros recrutados como veem o jogador, ganham alerta e atira
 
 ## Inimigos
 
-Disparos próprios do modo, sem alterar o disparo do duelo. Comum: 9 de dano e 12 de Vigor na guarda.
+Disparos próprios do modo, sem alterar o disparo do duelo. Comum: 7 de dano e 11 de Vigor na guarda (antes 4 e 4).
 
 | Inimigo | Papel | Vida | Como lidar |
 | --- | --- | --- | --- |
 | Soldado | Patrulha e chama alarme | 20 | Abate por trás ou combate |
 | Sentinela | Fixo, cone giratório | 16 | Passar na janela do giro |
-| Pesado | Rajada de três, 8 de dano cada | 36 | Guarda e aproximação |
-| Atirador | Fixo, alcance de 680 u em cone estreito, 22 de dano, com linha de mira visível | 14 | Sair da linha ou devolver o disparo |
-| Drone | Rápido e sem arma, 12 de dano de perto e 16 de Vigor na guarda | 12 | Um golpe e meio; parry devolve dano |
-| Escudeiro | Escudo frontal anula corte e disparo de frente; gira 150°/s | 30 | Contornar, ou abate por trás |
-| Andador blindado | Corpo grande, canhão duplo de 16, frente reduz o dano a 25%, gira 60°/s, sem abate silencioso | 160 | Atacar por trás ou evitar |
+| Pesado | Rajada de três, 6 de dano cada | 36 | Guarda e aproximação |
+| Atirador | Fixo, alcance de 680 u em cone estreito, 18 de dano, com linha de mira visível | 14 | Sair da linha ou devolver o disparo |
+| Drone | Rápido e sem arma, 8 de dano de perto e 14 de Vigor na guarda | 12 | Um golpe e meio; parry devolve dano |
+| Escudeiro | Escudo frontal anula corte e disparo de frente; gira 120°/s | 30 | Contornar, ou abate por trás |
+| Andador blindado | Corpo grande, canhão duplo de 12, frente reduz o dano a 25%, gira 60°/s, sem abate silencioso | 160 | Atacar por trás ou evitar |
 
 Escudeiro, atirador, drone e andador não correm até o painel; soldados e pesados chamam o alarme.
 
