@@ -139,11 +139,12 @@ func test_barrage_costs_vigor_fires_five_bolts_then_dashes_in() -> void:
 	assert_gt(duel.count_events(CombatEvent.Type.HIT) + duel.count_events(CombatEvent.Type.BLOCK), 0, "the dashing cut reaches the rival")
 
 
-func test_barrage_bolts_never_interrupt_an_attack() -> void:
+func test_barrage_bolts_do_not_stop_an_active_strike() -> void:
 	var duel: DuelFixture = _duel(&"corsair", 300.0)
 	duel.press(1, Intent.Command.HEAVY)
 	duel.step()
 	duel.release(1)
+	duel.fighter(1).move_phase = FighterState.Phase.ACTIVE
 	BoltResolver.fire(duel.sim, duel.fighter(0), BARRAGE.bolt)
 	for projectile in duel.sim.projectiles:
 		if projectile.active and projectile.kind == Projectile.Kind.BOLT:

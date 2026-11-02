@@ -48,6 +48,9 @@ extends Resource
 @export var shove_vigor_loss: float = 20.0
 @export var shove_stagger: float = 0.35
 
+@export_group("Bolts")
+@export var bolt_flinch_immunity: float = 0.6
+
 @export_group("Dodge")
 @export var dodge_vigor: float = 20.0
 @export var dodge_duration: float = 0.28

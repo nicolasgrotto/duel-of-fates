@@ -60,7 +60,7 @@ func test_bolt_flinches_an_idle_fighter_without_knockback() -> void:
 	assert_true(_bolt(duel) == null, "the bolt ends on the hit")
 
 
-func test_bolt_never_interrupts_an_attack() -> void:
+func test_bolt_cancels_a_heavy_still_in_startup() -> void:
 	var arrival: int = _arrival_tick()
 	var duel: DuelFixture = _duel()
 	var health: float = duel.fighter(1).health
@@ -73,8 +73,8 @@ func test_bolt_never_interrupts_an_attack() -> void:
 	assert_true(heavy != null and duel.fighter(1).is_attacking())
 	duel.step_until(func() -> bool: return duel.count_events(CombatEvent.Type.BOLT_HIT) > 0, 30)
 	assert_almost(duel.fighter(1).health, health - BOLT.damage)
-	assert_true(duel.fighter(1).is_attacking(), "the attack goes on")
-	assert_eq(duel.fighter(1).move, heavy)
+	assert_true(duel.fighter(1).move == null)
+	assert_eq(duel.fighter(1).state, FighterState.State.HIT)
 
 
 func test_facing_guard_blocks_with_vigor_and_back_guard_does_not() -> void:

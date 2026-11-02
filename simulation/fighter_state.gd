@@ -59,6 +59,7 @@ var on_ground: bool = true
 var state: State = State.IDLE
 var state_ticks: int = 0
 var stun_ticks: int = 0
+var bolt_immunity_ticks: int = 0
 var freeze_ticks: int = 0
 
 var move: MoveData
@@ -302,6 +303,7 @@ func reset_for_round(start_x: float, start_facing: int) -> void:
 	state = State.IDLE
 	state_ticks = 0
 	stun_ticks = 0
+	bolt_immunity_ticks = 0
 	freeze_ticks = 0
 	clear_move()
 	sidearm_guard_ticks = 0

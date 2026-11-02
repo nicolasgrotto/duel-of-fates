@@ -543,6 +543,8 @@ func _step_fighter(fighter: FighterState, intent: Intent) -> void:
 func _tick_timers(fighter: FighterState) -> void:
 	if fighter.invulnerable_ticks > 0:
 		fighter.invulnerable_ticks -= 1
+	if fighter.bolt_immunity_ticks > 0:
+		fighter.bolt_immunity_ticks -= 1
 	if fighter.parry_lockout_ticks > 0:
 		fighter.parry_lockout_ticks -= 1
 	fighter.ticks_since_damage += 1

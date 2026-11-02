@@ -212,19 +212,24 @@ func test_holster_bolt_evade_and_parry_use_the_shared_resolution() -> void:
 		assert_almost(duel.fighter(1).health, duel.fighter(1).max_health)
 
 
-func test_holster_bolt_never_interrupts_preparation_or_active_attack() -> void:
+func test_holster_bolt_stops_the_draw_but_not_the_active_burst() -> void:
 	var duel: DuelFixture = _duel()
 	var fighter: FighterState = duel.fighter(0)
-	for phase in [FighterState.Phase.STARTUP, FighterState.Phase.ACTIVE]:
-		_start(duel)
-		fighter.move_phase = phase
-		var projectile: Projectile = Projectile.new()
-		projectile.bolt = RIFLE.bolt
-		projectile.damage = RIFLE.bolt.damage
-		projectile.x = fighter.x + 10.0
-		BoltResolver.resolve(duel.sim, projectile, duel.fighter(1), fighter)
-		assert_eq(fighter.move, DOUBLE)
-		assert_eq(fighter.move_phase, phase)
+	_start(duel)
+	fighter.move_phase = FighterState.Phase.ACTIVE
+	var projectile: Projectile = Projectile.new()
+	projectile.bolt = RIFLE.bolt
+	projectile.damage = RIFLE.bolt.damage
+	projectile.x = fighter.x + 10.0
+	BoltResolver.resolve(duel.sim, projectile, duel.fighter(1), fighter)
+	assert_eq(fighter.move, DOUBLE)
+	fighter.clear_move()
+	duel.sim.change_state(fighter, FighterState.State.IDLE)
+	_start(duel)
+	fighter.move_phase = FighterState.Phase.STARTUP
+	BoltResolver.resolve(duel.sim, projectile, duel.fighter(1), fighter)
+	assert_true(fighter.move == null)
+	assert_eq(fighter.state, FighterState.State.HIT)
 
 
 func test_holster_snapshot_replays_draw_burst_and_guard_return() -> void:

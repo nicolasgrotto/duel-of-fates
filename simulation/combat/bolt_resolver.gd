@@ -38,11 +38,27 @@ static func resolve(sim: MatchSimulation, projectile: Projectile, owner: Fighter
 
 
 static func flinches(fighter: FighterState) -> bool:
-	if not fighter.on_ground:
+	if not fighter.on_ground or fighter.bolt_immunity_ticks > 0:
 		return false
 	if fighter.state == FighterState.State.IDLE or fighter.state == FighterState.State.WALKING:
 		return true
-	return fighter.is_attacking() and fighter.move_phase == FighterState.Phase.RECOVERY
+	if not fighter.is_attacking():
+		return false
+	if fighter.move_phase == FighterState.Phase.RECOVERY:
+		return true
+	return fighter.move_phase == FighterState.Phase.STARTUP and _startup_exposed(fighter)
+
+
+static func _startup_exposed(fighter: FighterState) -> bool:
+	return fighter.move.kind != MoveData.Kind.STANCE and fighter.armor_used >= fighter.move.armor_hits and not (fighter.wrath_ticks > 0 and fighter.wrath_armor > 0)
+
+
+static func _flinch_ticks(fighter: FighterState, bolt: BoltData) -> int:
+	var ticks: int = bolt.flinch_ticks()
+	if fighter.is_attacking() and fighter.move_phase == FighterState.Phase.RECOVERY:
+		var recovery: int = fighter.recovery_cut if fighter.recovery_cut >= 0 else fighter.move_recovery_ticks()
+		ticks = maxi(ticks, recovery - fighter.phase_ticks)
+	return ticks
 
 
 static func _evade(sim: MatchSimulation, projectile: Projectile, owner: FighterState, target: FighterState) -> void:
@@ -87,6 +103,8 @@ static func _hit(sim: MatchSimulation, projectile: Projectile, owner: FighterSta
 		sim.kill(target, owner, null)
 		return
 	if flinches(target):
+		var stun: int = _flinch_ticks(target, projectile.bolt)
 		sim.change_state(target, FighterState.State.HIT)
-		target.stun_ticks = projectile.bolt.flinch_ticks()
+		target.stun_ticks = stun
+		target.bolt_immunity_ticks = stun + Ticks.from_seconds(sim.config.bolt_flinch_immunity)
 		target.vx = 0.0
