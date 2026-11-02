@@ -5,6 +5,8 @@ signal caster_changed(index: int)
 signal entry_staged(index: int)
 signal caster_required(character_id: StringName, entry_index: int)
 
+const FINISHER_WIELDER: StringName = &"finisher_wielder"
+const FINISHER_WIELDERS: Array[StringName] = [&"guardian", &"shadow", &"bastion", &"wasp", &"mirror", &"ember", &"heron", &"reaper", &"corsair"]
 const PALETTE: UiPalette = preload("res://ui/palette.tres")
 const CATALOG: PowerCatalog = preload("res://data/powers/catalog.tres")
 const TOP_MARGIN: float = 120.0
@@ -61,7 +63,25 @@ func setup(tick_runner: TickRunner, training_config: TrainingConfig) -> void:
 	config = training_config
 	_entries.assign(CATALOG.powers)
 	_entries.append_array(CATALOG.techniques)
+	_entries.append_array(family_finisher_entries())
 	_build()
+
+
+static func family_finisher_entries() -> Array[MoveData]:
+	var entries: Array[MoveData] = []
+	for id in FINISHER_WIELDERS:
+		var character: CharacterData = DuelMode.character(id)
+		for value in character.family.finisher_pool:
+			var move: MoveData = character.heavy.duplicate() as MoveData
+			move.kind = MoveData.Kind.TECHNIQUE
+			move.cinematic_finisher = value as Finisher.Kind
+			move.set_meta(FINISHER_WIELDER, id)
+			entries.append(move)
+	return entries
+
+
+static func is_family_finisher(entry: Resource) -> bool:
+	return entry != null and entry.has_meta(FINISHER_WIELDER)
 
 
 func controllers() -> Array[FighterController]:
@@ -171,6 +191,9 @@ func start_at(index: int) -> void:
 
 
 static func wielder_for(technique: MoveData, current: CharacterData) -> StringName:
+	if is_family_finisher(technique):
+		var wielder: StringName = technique.get_meta(FINISHER_WIELDER)
+		return &"" if DuelMode.character(wielder).family == current.family else wielder
 	if technique == null or technique.usable_by(current):
 		return &""
 	for id in DuelMode.CAST:
@@ -240,7 +263,7 @@ func _stage(sim: MatchSimulation) -> void:
 		_close_in(sim, power.targeted_reach(fighter.flow_tier))
 	elif not technique.throws_blade and technique.projectile_range <= 0.0:
 		_close_in(sim, technique.reach + technique.lunge)
-	var finishing: bool = _finishers and has_finisher(entry)
+	var finishing: bool = (_finishers or is_family_finisher(entry)) and has_finisher(entry)
 	sim.rules.endless_finishers = finishing
 	target.finishing = finishing
 	if finishing:
@@ -290,13 +313,21 @@ func _close_in(sim: MatchSimulation, reach: float) -> void:
 	second.x = half
 
 
+func _entry_name(entry: Resource, power: PowerData) -> String:
+	if power != null:
+		return power.name_key
+	if is_family_finisher(entry):
+		return "FINISHER_%s" % Finisher.Kind.keys()[(entry as MoveData).cinematic_finisher]
+	return PowerCatalog.technique_key(entry as MoveData)
+
+
 func _refresh(sim: MatchSimulation) -> void:
 	var entry: Resource = _entries[_entry_index]
 	var power: PowerData = entry as PowerData
-	_name.text = "‹ %s ›" % tr(power.name_key if power != null else PowerCatalog.technique_key(entry as MoveData))
+	_name.text = "‹ %s ›" % tr(_entry_name(entry, power))
 	_name.add_theme_color_override(&"font_color", category_color(entry))
 	_description.text = tr(power.description_key) if power != null else ""
-	_side.text = tr(SIDE_KEYS[power.path] if power != null else "GALLERY_SIDE_TECHNIQUE")
+	_side.text = tr(SIDE_KEYS[power.path] if power != null else "GALLERY_SIDE_FINISHER" if is_family_finisher(entry) else "GALLERY_SIDE_TECHNIQUE")
 	var lowest: int = power.min_tier(sim.config.flow) if power != null else 0
 	for tier in _chips.size():
 		var active: bool = tier == _tier

@@ -154,3 +154,33 @@ func test_entry_names_take_their_category_color() -> void:
 	assert_eq(GalleryPanel.category_color(CATALOG.find(&"lightning")), palette.eclipse)
 	assert_eq(GalleryPanel.category_color(CATALOG.find(&"pull")), palette.text)
 	assert_eq(GalleryPanel.category_color(CATALOG.techniques[0]), palette.secondary)
+
+
+func test_every_family_finisher_has_a_named_entry_and_a_wielder_of_that_family() -> void:
+	var entries: Array[MoveData] = GalleryPanel.family_finisher_entries()
+	assert_eq(entries.size(), GalleryPanel.FINISHER_WIELDERS.size() * 4)
+	var kinds: Dictionary = {}
+	for entry in entries:
+		assert_true(GalleryPanel.is_family_finisher(entry))
+		assert_true(GalleryPanel.has_finisher(entry))
+		var key: String = "FINISHER_%s" % Finisher.Kind.keys()[entry.cinematic_finisher]
+		assert_ne(TranslationServer.translate(key), key)
+		kinds[entry.cinematic_finisher] = true
+		var wielder: StringName = GalleryPanel.wielder_for(entry, DuelFixture.GUARDIAN)
+		var family: MotionFamily = DuelMode.character(entry.get_meta(GalleryPanel.FINISHER_WIELDER)).family
+		assert_true(family.finisher_pool.has(entry.cinematic_finisher))
+		if family == DuelFixture.GUARDIAN.family:
+			assert_eq(wielder, &"")
+		else:
+			assert_eq(DuelMode.character(wielder).family, family)
+	assert_eq(kinds.size(), entries.size())
+
+
+func test_family_finisher_entries_never_change_the_shared_heavy() -> void:
+	var heavy: MoveData = DuelMode.character(&"guardian").heavy
+	var before: int = heavy.cinematic_finisher
+	var kind: int = heavy.kind
+	GalleryPanel.family_finisher_entries()
+	assert_eq(heavy.cinematic_finisher, before)
+	assert_eq(heavy.kind, kind)
+	assert_false(GalleryPanel.is_family_finisher(heavy))

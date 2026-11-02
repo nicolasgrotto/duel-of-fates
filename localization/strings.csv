@@ -388,6 +388,7 @@ FINISHER_VERSATILE_SHOT_CUT,Tiro e corte,Shot and Cut
 FINISHER_VERSATILE_TWO_SHOTS,Dois tiros e estocada,Two Shots and a Thrust
 FINISHER_VERSATILE_BUTT,Coronhada e tiro,Butt and Shot
 FINISHER_VERSATILE_POINT_BLANK,Rajada à queima-roupa,Point-Blank Burst
+GALLERY_SIDE_FINISHER,Execução da família,Family finisher
 GALLERY_SIDE_COMMON,Fluxo comum · os dois caminhos,Common Flow · both paths
 GALLERY_SIDE_AURORA,Aurora · lado da luz,Aurora · side of light
 GALLERY_SIDE_ECLIPSE,Eclipse · lado sombrio,Eclipse · side of shadow
@@ -807,6 +808,7 @@ TECHNIQUE_RETREAT_SHOT,Recuo com disparo,Retreating shot
 TECHNIQUE_SNAP_SHOT,Tiro de guarda,Snap shot
 TECHNIQUE_UNSETTLING_BARRAGE,Rajada Desestabilizadora,Unsettling Barrage
 STORY_SKILLS,Habilidades · {points} pontos,Skills · {points} points
+STORY_ARSENAL,Arsenal · {credits} créditos,Arsenal · {credits} credits
 STORY_NOTE_SKILL_POINTS,+{points} pontos de habilidade,+{points} skill points
 TREE_TAB_POWERS,Poderes,Powers
 TREE_BUY,Comprar,Buy
