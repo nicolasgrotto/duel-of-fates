@@ -41,3 +41,5 @@ func equip(sim: MatchSimulation) -> void:
 			sim.fighters[i].equip_powers(custom)
 		if flow_levels[i] > 0:
 			sim.fighters[i].set_flow_level(flow_levels[i], sim.config)
+		if bout != null:
+			sim.fighters[i].blade_multiplier *= bout.blade_scale[i]
