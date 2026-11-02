@@ -394,4 +394,21 @@ Evidências em `build/task12_renders/` (82 capturas e dez folhas), `build/task12
 | 13.7 | F3 e efeitos reduzidos; conferir PT/EN a 720p/1080p | Velocidade e círculos físicos visíveis; janela/aviso permanecem claros sem ecos; HUD e pausa sem corte | 38 capturas e duas folhas em `build/task13_renders/`, cinco capturas nativas MCP |
 | 13.8 | Pilotar continuamente na máquina de referência | Voo e áudio confortáveis, nave, tiros e aviso legíveis; sem travamento | amostra GT 730 com editor aberto: 59,9 FPS, pior quadro 18,1 ms, 19 draw calls; validação humana e 60 FPS sustentados pendentes |
 
+### Task 14 — missões de naves, capitais, chefe e oficina
+
+Automação concluída; avaliação humana de controle, dificuldade e áudio pendente. Entrar por Jogar › Modos especiais › Combate de naves. Os controles são os bindings atuais do J1; K é a secundária no padrão.
+
+| ID | Ação | Resultado esperado | Evidência automática |
+| --- | --- | --- | --- |
+| 14.1 | Abrir seleção, ler os cinco briefings e voltar | Cinco missões disponíveis, retorno a Modos especiais com Combate de naves em foco | fluxo roteado 720p, capturas nas duas resoluções |
+| 14.2 | Jogar Corredor aberto | Cunha de três caças, depois dois interceptadores; intenção e entrada determinísticas | piloto base vence, formação ocupada adia slot, captura do esquadrão |
+| 14.3 | Jogar Rastro de cinza e cruzar destroços | Leque legível, míssil sólido guiado, primária pode interceptar; impulso evita dano só na janela interna; detrito bloqueia corpo e tiro | colisões varridas, guia limitada, alvo fixo e esquiva testados; capturas de míssil inimigo/detrito |
+| 14.4 | Defender a capital em Última escolta | Casco aliado pode receber tiros; chegar a zero encerra a tentativa | vitória normal e derrota por aliado, prioridades e congelamento testados |
+| 14.5 | Atacar Cortar a rede | Gerador retira escudo/recarga; motor reduz giro; torres independentes continuam até serem destruídas | seções independentes e vitória por comandos; captura após gerador |
+| 14.6 | Jogar Ferro de maré inteiro | Superior → inferior → centro; proteção cruzada e abertura segmentada; três padrões com preparação | três fases uma vez, limites inclusivos/exclusivos e tiros antigos preservados; vitória também no MCP |
+| 14.7 | Comprar Arma, Escudo e Propulsão, repetir vitória e redistribuir | Um ponto por primeira vitória, custo/limites claros; repetição não duplica ponto; redistribuição gratuita | stats isolados, saldo, limites, persistência e migração testados; oficina PT/EN |
+| 14.8 | Pausar segurando tiro, reiniciar e sair | Tick/tempo congelados, soltar antes de novo tiro, nova tentativa limpa; aliases removidos ao sair | entrada pelo MCP, pausa no tick 22 e retomada/reinício nas capturas |
+| 14.9 | Ler HUD, resultado, oficina e F3 em PT/EN, 720p/1080p | Objetivos, tempo, avaliação, casco aliado e recarga de míssil sem corte; núcleo e preparação legíveis | folhas em `build/task14_renders/`; 38 scripts válidos pelo MCP |
+| 14.10 | Rodar por vários minutos na máquina de referência e ouvir os avisos | Controle confortável, sons distinguíveis, 60 FPS sustentados | amostra com editor aberto: 59,9 FPS, pior quadro 18,18 ms, 24 draw calls; simulação 466,76 µs/tick; ainda requer avaliação humana e medição sustentada |
+
 Suíte: 536 testes, zero falhas; 42 novos, incluindo reutilização dos mesmos objetos de nave/evento/projétil/intenção e contagem de objetos estável por 3.000 ticks após aquecimento. Evidências em `build/task13_tests_final.log`, `task13_bindings_final.log`, `task13_mcp_compile_checks.json`, `task13_assets_check.log`, `task13_flow_smoke.log` e `task13_profile.log`. Nenhuma gravação no save do autor; capturas usam `capture_progress.cfg` e processos diretos isolam APPDATA em `build/task13_userdata`.
