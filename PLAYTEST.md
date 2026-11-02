@@ -4,9 +4,20 @@ Roteiro para o autor validar, jogando, o que entrou na fase 7.5 (revisão de com
 
 Legenda: ✅ ficou bom · ⚠️ funciona mas a sensação ou o número precisa de ajuste · ❌ não funciona.
 
+## 21. Execuções sorteadas, Arsenal e tranco dos disparos
+
+| Passo | Verificar | Resultado esperado |
+| --- | --- | --- |
+| 21.1 | Treino › Galeria (`F`): passar pelas execuções de cada família | Cada família mostra quatro execuções novas, com nome. Pode ajustar em `tools/art/make_finishers.py`. A sensação de cada uma só jogando dá para julgar |
+| 21.2 | Vencer várias lutas com o forte no último golpe | A execução varia, com a marcante da família entre as opções. Em rounds anteriores segue o corte de membro |
+| 21.3 | Duelo contra Corsária ou Lince: atirar em quem inicia o avanço com corte | O avanço é cancelado no startup com um tranco. Com o golpe já no ativo, ou com armadura, ele segue |
+| 21.4 | Atirar em rajada no mesmo rival | Só o primeiro tiro trava; os seguintes ferem durante a imunidade de 0,6 s. Ajuste em `CombatConfig.bolt_flinch_immunity` e em `flinch` de cada disparo |
+| 21.5 | História › Arsenal: comprar, equipar em Frente e Trás, voltar | Créditos sobem só na primeira vitória de cada encontro; o saque substitui a técnica do espaço e a arma aparece no corpo |
+| 21.6 | Usar Pistola, Revólver, Carabina, Rifle e Rifle de precisão nos estilos Técnica, Fúria e Voo | Cada arma dispara o seu padrão. O Rifle solta três; o de precisão um tiro maior, lento de sacar. Preços em `data/blasters/` |
+
 ## 20. Núcleo de Operações de blaster (task 16)
 
-Abra `screens/blaster_ops/blaster_ops_training.tscn` e execute com F6. A entrada em Jogar › Modos especiais e as missões são da task 17. O treino não grava progresso. Números em `data/balance/blaster_ops_config.tres`, conjuntos/inimigos em `data/blaster_ops/` e regras em `content/BLASTER_OPS.md`.
+Abra `screens/blaster_ops/blaster_ops_training.tscn` e execute com F6. A entrada em Jogar › Modos especiais e as missões são das tasks 17 e 18. O treino não grava progresso. Números em `data/balance/blaster_ops_config.tres`, conjuntos/inimigos em `data/blaster_ops/` e regras em `content/BLASTER_OPS.md`.
 
 | Passo | Verificar | Resultado esperado |
 | --- | --- | --- |

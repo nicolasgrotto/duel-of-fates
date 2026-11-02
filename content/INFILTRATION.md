@@ -1,5 +1,7 @@
 # Infiltração
 
+**Mudança decidida pelo autor (task 17):** a Infiltração passa a fazer parte do menu **Operações** e a usar os mesmos controles das Incursões, com esquiva e poderes: a esquiva faz ruído e o poder tem recarga longa. Até lá, valem as regras abaixo. Ver GAME_DESIGN, "Operações: Infiltração e Incursão".
+
 Seis operações independentes, disponíveis desde o início em Jogar, com **resgate de prisioneiros como foco**: toda missão tem ao menos um prisioneiro para libertar e levar vivo à saída, pensando na união das fases numa História. A primeira também ensina o modo e é repetível. Nenhuma concede moeda, atributos ou cosméticos nesta etapa. Poderes do Fluxo ficam desligados: a ação de interação é exclusiva, preservando a leitura de guarda, abate e cobertura. O duelo não muda.
 
 Duração-alvo de uma primeira jogada cuidadosa: **3 a 6 minutos**. O percurso mínimo andando, sem esperar patrulha, é medido em teste. Mapas têm de 66×36 a 96×64 tiles, com alas ligadas por passagens estreitas, e início e extração são distantes. A dica de objetivo segue o caminho real, não a linha reta, e aponta para o objetivo pendente mais próximo.

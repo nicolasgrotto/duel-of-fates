@@ -539,11 +539,11 @@ Progressão cosmética nos modos de duelo; nada muda os atributos do elenco.
 
 Idioma (Português/English), dificuldade, efeitos (Completos/Reduzidos), som, música, preset de teclado e remapeamento, replay do golpe final, finalizações, Poderes, segurar para disputar (por jogador), vibração do gamepad. Configurações de vídeo (resolução, tela cheia, V-Sync) e volumes separados.
 
-## Operações de blaster (tasks 16–17)
+## Operações de blaster (tasks 16–18)
 
 Modo de tiro top-down que estende a fundação da Infiltração, com regras próprias e sem alterar o duelo. Regras, números e arquétipos em [content/BLASTER_OPS.md](content/BLASTER_OPS.md). A task 16 entrega um treino por rota técnica, sem missões, menu público ou progresso; a 17 colocará a seleção em **Jogar › Modos especiais › Operações de blaster**.
 
-Defesa de base é um tipo de missão deste modo, não outro modo. Veículos terrestres repetem a pilotagem das naves; comando de esquadrão, corrida e aventura lateral com motor próprio exigiriam movimento ou IA novos com pouco reaproveitamento, e ficam descartados. A decisão posterior do autor sobre **Fases de ação** (tasks 20–21), reaproveitando os controles e o núcleo do duelo, continua válida; não é implementada nesta tarefa.
+Defesa de base é um tipo de missão deste modo, não outro modo. Veículos terrestres repetem a pilotagem das naves; comando de esquadrão, corrida e aventura lateral com motor próprio exigiriam movimento ou IA novos com pouco reaproveitamento, e ficam descartados. A decisão posterior do autor sobre **Fases de ação** (tasks 21–22), reaproveitando os controles e o núcleo do duelo, continua válida; não é implementada nesta tarefa.
 
 Primária usa calor, nunca munição ou itens. Esquiva curta tem janela invulnerável interna; cruzar um disparo no começo dessa janela devolve a recarga. Guarda mira com a lâmina: toque no tempo devolve **na direção da mira**, inclusive no perfeito; guarda tardia só desfaz o tiro e gasta Vigor. Paredes bloqueiam tiros, e caixas marcadas podem ser destruídas. Um único poder equipado por vez (Repulsão, Puxão ou Barreira), com recarga; sem barra adicional de Fluxo neste modo. Personagens sem arma usam pistola temporária mais fraca. Cada tiro inimigo avisa antes, e o atirador trava uma linha de mira legível.
 
@@ -614,6 +614,10 @@ Modo completo em Jogar › Modos especiais › Combate de naves; a rota técnica
 
 A campanha completa parte de dois pressupostos opostos. No **Eclipse**, a hierarquia é Soberano, Sombra Desperta como subordinada direta dele, e o protagonista como subordinado dela; a ordem de destruir os cavaleiros da Aurora desce por essa cadeia, e os prisioneiros a resgatar são agentes do Eclipse capturados pela ordem. Na **Aurora**, o Ancião envia o protagonista, cavaleiro da ordem, para derrubar o império do Soberano. Detalhes ficam para a task 19 do Codex.
 
+## Operações: Infiltração e Incursão (decisão do autor)
+
+Infiltração e Operações de blaster viram um menu só, **Operações**, com rótulo de objetivo em cada missão. O personagem controla igual em todas, e a regra da missão muda o jogo: na Infiltração a esquiva e o blaster fazem barulho, e o poder tem recarga longa; na Incursão o objetivo é eliminar, destruir bases ou chefes, e prisioneiros libertos são secundários e ajudam. Toda missão pode ser concluída só com o sabre. Blaster de uma mão deixa o sabre aceso na outra. Implementação nas tasks 17 e 18.
+
 ## Arsenal da História
 
 Decisão do autor. Tela **Arsenal** no hub, para qualquer estilo. **Créditos** vêm só da primeira vitória em cada encontro: repetir não rende nada, e saves antigos recebem pelos encontros já vencidos. Compram só blasters; não valem fora da História. O elenco do duelo não muda.
@@ -622,13 +626,13 @@ Cada arma tem seu **padrão de disparo**, usado pelas técnicas de saque e pela 
 
 | Blaster | Mãos e porte | Tiros | Dano | Tranco | Saque | Preço |
 |---|---|---|---|---|---|---|
-| Pistola | 1, quadril | 2 | 4 | 0,25 s | 0,15 s | inicial no Coldre |
+| Pistola | 1, quadril | conforme a técnica (1 a 3) | 4 | 0,25 s | 0,15 s | grátis |
 | Revólver pesado | 1, coxa | 1 | 12 | 0,40 s | 0,22 s | 150 |
 | Carabina | 2, lombar | 2 | 6 | 0,25 s | 0,28 s | 200 |
 | Rifle | 2, costas | 3 | 6 | 0,20 s | 0,40 s | 300 |
-| Atirador | 2, costas | 1 | 22 | 0,50 s | 0,60 s | 450 |
+| Rifle de precisão | 2, costas | 1 | 22 | 0,50 s | 0,60 s | 450 |
 
-Disparo devolvido segue valendo: errar com o Atirador contra quem sabe aparar custa caro. O Vigor gasto e o tamanho do disparo sobem com a arma.
+Disparo devolvido segue valendo: errar com o Rifle de precisão contra quem sabe aparar custa caro. O Vigor gasto e o tamanho do disparo sobem com a arma.
 
 **Estilos sem blaster:** quem tem um blaster equipado escolhe um dos espaços de técnica (Frente ou Trás) para o saque. Ele **substitui** a técnica daquele espaço, e essa é a contrapartida. Sem blaster equipado, nada muda. O estilo Coldre mantém seu kit e a habilidade Fogo de cobertura, que usa o padrão da arma equipada.
 

@@ -137,7 +137,7 @@ O duelo continua sendo o coração do jogo. O autor aprovou modos que saem do fo
 - **Combate de naves**: missões **top-down 2D** de pilotagem (esquadrões, mísseis, naves capitais, chefe), com melhorias de arma, escudo e velocidade entre missões. Essas melhorias valem só dentro desse modo; fora dele continua valendo a regra de não ter progressão fora do protagonista da História.
 - **Caçada a chefes**: duelos contra chefes únicos com fases, padrões próprios e condições especiais de vitória, no motor do duelo.
 - **Família Versáteis**: lâmina numa mão e blaster na outra ou integrado ao cabo. Disparos existem também no duelo, como projéteis que a guarda e o parry desviam.
-- **Operações de blaster** (tasks 16–17): tiro em visão superior nas bases da Infiltração, com mira independente, calor, esquiva e um poder equipado. Várias missões, incluindo defesa de objetivo; leitura de preparação, paredes e cobertura vem antes da velocidade. A task 16 entrega só o treino, sem progressão.
+- **Operações de blaster** (tasks 16–18, viram Incursões no menu único de Operações): tiro em visão superior nas bases da Infiltração, com mira independente, calor, esquiva e um poder equipado. Várias missões, incluindo defesa de objetivo; leitura de preparação, paredes e cobertura vem antes da velocidade. A task 16 entrega só o treino, sem progressão.
 
 Descartados por enquanto: Exploração e Relíquias (plataforma e puzzles) e Defesa de Objetivo. A Sobrevivência já existe no menu Jogar.
 Cada modo novo documenta suas regras em GAME_DESIGN e sua tela em design/UI_UX **antes** de ser implementado.

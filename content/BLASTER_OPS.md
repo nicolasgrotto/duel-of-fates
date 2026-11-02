@@ -1,6 +1,8 @@
 # Operações de blaster
 
-Fundação de tiro em visão superior (task 16), sobre a geometria, atores e navegação da Infiltração. O duelo e as missões de Infiltração conservam suas regras. Esta entrega contém **Pátio de calibração / Calibration Yard**, treino reiniciável, sem vitória, recompensa, save de progresso ou entrada pública. Rota técnica `blaster_ops_training`, cena `screens/blaster_ops/blaster_ops_training.tscn`; pode ser executada no editor. A task 17 acrescentará as missões e Jogar › Modos especiais › Operações de blaster.
+Fundação de tiro em visão superior (task 16), sobre a geometria, atores e navegação da Infiltração. O duelo e as missões de Infiltração conservam suas regras. Esta entrega contém **Pátio de calibração / Calibration Yard**, treino reiniciável, sem vitória, recompensa, save de progresso ou entrada pública. Rota técnica `blaster_ops_training`, cena `screens/blaster_ops/blaster_ops_training.tscn`; pode ser executada no editor. As tasks 17 e 18 unificam o modo com a Infiltração e acrescentam as missões em Jogar › Modos especiais › Operações de blaster.
+
+**Mudança decidida pelo autor (tasks 17 e 18):** este modo deixa de ser separado. As missões daqui viram **Incursões**, no menu único **Operações**, ao lado das Infiltrações, com um só conjunto de controles e possíveis só com o sabre. As teclas abaixo descrevem o treino atual, até a task 17. Regras em GAME_DESIGN, "Operações: Infiltração e Incursão".
 
 ## Jogador e controles
 

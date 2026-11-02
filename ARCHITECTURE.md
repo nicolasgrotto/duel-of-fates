@@ -544,3 +544,20 @@ O SubViewport do treino de Infiltração recebe `World2D` exclusivo antes de ent
 MoveData marca `draws_sidearm`, quantidade/intervalo de tiros e cancelamento. FighterState resolve tempos efetivos, projétil da arma e `sidearm_out`; AttackState avança saque, rajada e retorno. Guarda após cancelamento mantém `sidearm_guard_ticks` (arma já no suporte), usado no custo físico e de disparos; limpa no round e entra no snapshot. A simulação não lê âncoras nem arte. PoseSolver usa a mesma mão auxiliar/IK e RigPose; FighterRig monta arma/suporte pintados e só lê a pose. F3 expõe dados e ticks. Armas existentes continuam em SidearmView.
 
 Base de História em `data/characters/holster/`, não selecionável, usa recursos da família/arte Guardião com golpes físicos de dano reduzido. CampaignData inclui a quarta opção e catálogo de blasters. StoryCampaign persiste blaster_id, normaliza ausências/ids inválidos e duplica apenas WeaponData para equipar sem mutar recursos compartilhados; `uses_blaster_style()` é o ponto de integração da futura Saga. Nós da árvore resolvem os recursos do kit normalmente. IA só gera intenções, calculando alcance do projétil equipado.
+
+### Tranco dos disparos no duelo
+
+`BoltResolver.flinches` interrompe também o startup exposto de um golpe: `_startup_exposed` exclui postura, armadura e Ira. Golpe no ativo segue. O tempo do tranco é o maior entre `BoltData.flinch` e a recovery que restava, então errar um golpe continua punido. `FighterState.bolt_immunity_ticks` guarda o tranco mais `CombatConfig.bolt_flinch_immunity`: durante esse tempo o disparo fere, mas não trava de novo. A contagem desce em `MatchSimulation`. A Infiltração e as Operações usam regras próprias e não passam por aqui.
+
+### Arsenal da História
+
+`BlasterData` descreve o padrão da arma: `shot_count` (0 deixa a técnica decidir, caso da pistola), `shot_interval`, `vigor_multiplier`, `price` e `description_key`. `FighterState.move_shot_count` e `vigor_cost_of` aplicam o padrão só a técnicas de saque, e `AttackState` e `ActionStarter` os consultam. A lista à venda, as técnicas de saque por espaço e os créditos ficam em `CampaignData`.
+
+`StoryCampaign` guarda `credits`, `owned_blasters` e `blaster_slot` (-1 nenhum, 0 Frente, 1 Trás). A migração é por ausência: `_credits_from_cleared` paga os encontros já vencidos em saves antigos. `protagonist()` duplica o personagem e injeta `Sidearm.HOLSTER`, o blaster e a técnica de saque no espaço escolhido, sem tocar o elenco. A tela `screens/story/story_arsenal.gd` só chama a campanha. `PaletteBake` (`presentation/fighters/`) gera a textura de paleta codificada usada pela prévia e pela Infiltração.
+
+### Execuções sorteadas por família
+
+`MotionFamily.finisher_pool` lista as execuções da família. A escolha é de `Consequences.family_finisher`, chamada por `MatchSimulation.kill` quando o golpe forte decide a partida, sem poder nem arremesso: as opções são a execução base do golpe mais o pool filtrado por `Finisher.fits`, e o índice é `posmod(seed * 31 + tick * 7 + round, tamanho)`. É uma função pura, sem consumir o RNG, então replay repete a execução e o resto da simulação não muda. `MatchRules.fixed_finishers` desliga o sorteio na exibição coreografada e nos testes.
+
+Os recursos ficam em `data/finishers/<kind>.tres`, gerados por `tools/art/make_finishers.py`, que também escreve os pools nas famílias e valida a coreografia: edite o gerador e rode de novo, em vez de editar o `.tres`. `Finisher.Kind` só cresce no fim, porque os recursos salvam inteiros. `Finisher.BEHIND` marca as que terminam atrás da vítima. Para coreografar, `FinisherReaction` ganhou `front_leg_at`, `back_leg_at` e `split_as`, e `FinisherEffects` ganhou `extra_holes`; `FinisherPlayer` os interpreta. A Galeria (`GalleryPanel.family_finisher_entries`) monta entradas por família, troca o personagem pelo representante e força a execução.
+
