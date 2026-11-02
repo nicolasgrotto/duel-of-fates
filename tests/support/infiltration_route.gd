@@ -6,6 +6,11 @@ const DANGER_ANGLE_MARGIN: float = 16.0
 const LOOKAHEAD: float = 110.0
 const INTERACT_RANGE: float = 8.0
 const SWING_RANGE: float = 65.0
+const FLANK_RANGE: float = 80.0
+const MAX_WAIT_TICKS: int = 600
+const ARMORED_PRIORITY: float = 2.0
+const FLANK_PATIENCE_TICKS: int = 180
+const FLANK_RECOVERY: int = 0
 const NOTICED_RANGE: float = 460.0
 const ATTACK_RANGE: float = 420.0
 
@@ -14,6 +19,9 @@ var _navigation: InfiltrationNavigation
 var _points: PackedVector2Array = []
 var _point: int = 0
 var _aggressive: bool = false
+var _waited: int = 0
+var _flank_side: float = 1.0
+var _flank_ticks: int = 0
 
 
 func _init(sim: InfiltrationSimulation, aggressive: bool = false) -> void:
@@ -30,6 +38,7 @@ func _init(sim: InfiltrationSimulation, aggressive: bool = false) -> void:
 
 func produce(sim: InfiltrationSimulation) -> InfiltrationIntent:
 	intent.clear()
+	_flank_ticks = maxi(_flank_ticks - FLANK_RECOVERY, 0) if _flank_ticks <= FLANK_PATIENCE_TICKS else _flank_ticks - 1
 	var threat: int = _threat(sim)
 	if threat >= 0:
 		_fight(sim, threat)
@@ -47,7 +56,11 @@ func produce(sim: InfiltrationSimulation) -> InfiltrationIntent:
 	if not _aggressive:
 		intent.held = Intent.Command.SPECIAL
 		if _is_watched(sim, sim.player.position + movement * LOOKAHEAD):
-			movement = _evade(sim, movement)
+			_waited += 1
+			if _waited < MAX_WAIT_TICKS:
+				movement = _evade(sim, movement)
+		else:
+			_waited = 0
 	intent.movement = movement
 	return intent
 
@@ -61,7 +74,11 @@ func _threat(sim: InfiltrationSimulation) -> int:
 			continue
 		if not _aggressive and actor.awareness != InfiltrationActor.Awareness.ALERTED:
 			continue
+		if (sim.target_data[index] as InfiltrationEnemyData).front_damage_ratio < 1.0 and _flank_ticks > FLANK_PATIENCE_TICKS:
+			continue
 		var distance: float = sim.player.position.distance_to(actor.position)
+		if (sim.target_data[index] as InfiltrationEnemyData).front_damage_ratio < 1.0:
+			distance *= ARMORED_PRIORITY
 		if distance < nearest and InfiltrationGeometry.wall_fraction(sim.map, sim.player.position, actor.position) == INF:
 			nearest = distance
 			result = index
@@ -72,6 +89,16 @@ func _fight(sim: InfiltrationSimulation, index: int) -> void:
 	var target: InfiltrationActor = sim.targets[index]
 	var offset: Vector2 = target.position - sim.player.position
 	intent.aim = offset.normalized()
+	var data: InfiltrationEnemyData = sim.target_data[index] as InfiltrationEnemyData
+	if data.front_damage_ratio < 1.0 and offset.length() <= FLANK_RANGE and InfiltrationGeometry.in_sector(target.position, target.aim, sim.player.position, INF, data.front_degrees):
+		_flank_ticks += 1
+		var side: Vector2 = offset.orthogonal().normalized() * _flank_side
+		if InfiltrationGeometry.wall_fraction(sim.map, sim.player.position, sim.player.position + side * LOOKAHEAD, sim.config.body_radius) != INF:
+			_flank_side = -_flank_side
+			side = -side
+		intent.movement = side
+		intent.held = Intent.Command.DODGE
+		return
 	if offset.length() > SWING_RANGE:
 		intent.movement = _navigation.direction(sim.player.position, target.position, sim.config.body_radius)
 		intent.held = Intent.Command.BLOCK

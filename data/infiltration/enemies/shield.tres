@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="InfiltrationEnemyData" format=3]
+
+[ext_resource type="Script" path="res://data/infiltration/infiltration_enemy_data.gd" id="enemy"]
+[ext_resource type="Resource" path="res://data/infiltration/bolts/trooper_bolt.tres" id="bolt"]
+
+[resource]
+script = ExtResource("enemy")
+kind = 1
+respawn_seconds = 0.0
+id = &"shield"
+archetype = 5
+speed = 90.0
+vision_range = 360.0
+vision_degrees = 90.0
+preferred_range = 160.0
+sprite = 5
+health = 30.0
+fire_interval = 2.0
+turn_degrees = 120.0
+front_damage_ratio = 0.0
+front_degrees = 110.0
+can_raise_alarm = false
+bolt = ExtResource("bolt")

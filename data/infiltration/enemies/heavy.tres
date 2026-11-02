@@ -1,22 +1,18 @@
-[gd_resource type="Resource" script_class="InfiltrationEnemyData" format=3 uid="uid://y3vq6uni7kqt"]
+[gd_resource type="Resource" script_class="InfiltrationEnemyData" format=3]
 
-[ext_resource type="Script" uid="uid://bw08nhekcfokc" path="res://data/bolt_data.gd" id="bolt"]
-[ext_resource type="Script" uid="uid://bflb3ptkebjg3" path="res://data/infiltration/infiltration_enemy_data.gd" id="enemy"]
-
-[sub_resource type="Resource" id="burst"]
-script = ExtResource("bolt")
-count = 3
+[ext_resource type="Script" path="res://data/infiltration/infiltration_enemy_data.gd" id="enemy"]
+[ext_resource type="Resource" path="res://data/infiltration/bolts/heavy_burst.tres" id="bolt"]
 
 [resource]
 script = ExtResource("enemy")
+kind = 1
+respawn_seconds = 0.0
+id = &"heavy"
 archetype = 2
 speed = 75.0
 vision_range = 360.0
 vision_degrees = 75.0
 sprite = 2
-id = &"heavy"
-kind = 1
 health = 36.0
-bolt = SubResource("burst")
-fire_interval = 2.0
-respawn_seconds = 0.0
+fire_interval = 1.6
+bolt = ExtResource("bolt")

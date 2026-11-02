@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="InfiltrationEnemyData" format=3]
+
+[ext_resource type="Script" path="res://data/infiltration/infiltration_enemy_data.gd" id="enemy"]
+[ext_resource type="Resource" path="res://data/infiltration/bolts/walker_cannon.tres" id="bolt"]
+[ext_resource type="Texture2D" path="res://assets/infiltration/walker.png" id="texture"]
+
+[resource]
+script = ExtResource("enemy")
+kind = 1
+respawn_seconds = 0.0
+id = &"walker"
+archetype = 6
+speed = 60.0
+vision_range = 520.0
+vision_degrees = 80.0
+preferred_range = 320.0
+health = 160.0
+fire_interval = 2.6
+turn_degrees = 60.0
+body_radius = 30.0
+front_damage_ratio = 0.25
+front_degrees = 150.0
+takedown_immune = true
+can_raise_alarm = false
+bolt = ExtResource("bolt")
+texture = ExtResource("texture")

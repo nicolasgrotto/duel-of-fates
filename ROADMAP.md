@@ -4,6 +4,9 @@ Ordem de construção do jogo. Cada fase termina jogável e testada. Marque `[x]
 
 ## Ponto de continuidade
 
+- [x] **Infiltração mais difícil e variada** (pedido do autor): dano e custo de Vigor maiores em disparos próprios do modo, sem alterar o duelo; atirador, drone, escudeiro e andador blindado original; inimigos também atacam prisioneiros recrutados; mínimo de prisioneiros por missão e bônus Todos resgatados; prisioneiros a 215 u/s e 60 de vida. Task 19 (Saga) e GAME_DESIGN registram a premissa Eclipse/Aurora do autor. Validação do autor: PLAYTEST 17.
+
+
 - [x] **Resgate como foco da Infiltração e encerramento de missão** (pedido do autor): todas as missões têm prisioneiros, incluindo a nova Bloco de celas (quatro resgates); painéis como objetivo agora destravam as celas (`panels_unlock_prisoners`); escolta em fila; agachar em `Ctrl`, com `C` como alternativa; `MissionEndBanner` mostra Missão concluída ou Missão falhou nos dois modos antes do resultado. Validação do autor: PLAYTEST 16.
 
 

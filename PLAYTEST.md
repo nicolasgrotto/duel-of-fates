@@ -416,6 +416,16 @@ Automação concluída; avaliação humana de controle, dificuldade e áudio pen
 
 Suíte: 536 testes, zero falhas; 42 novos, incluindo reutilização dos mesmos objetos de nave/evento/projétil/intenção e contagem de objetos estável por 3.000 ticks após aquecimento. Evidências em `build/task13_tests_final.log`, `task13_bindings_final.log`, `task13_mcp_compile_checks.json`, `task13_assets_check.log`, `task13_flow_smoke.log` e `task13_profile.log`. Nenhuma gravação no save do autor; capturas usam `capture_progress.cfg` e processos diretos isolam APPDATA em `build/task13_userdata`.
 
+## 17. Inimigos, dano e mínimo de prisioneiros
+
+- 17.1 Levar tiros sem guarda e com guarda: vida e Vigor devem cair bem mais rápido que antes. Se ficar pesado ou leve demais, os valores estão em `tools/infiltration/make_missions.py`.
+- 17.2 Atirador: a linha de mira avisa antes do tiro forte, e dá para sair dela ou devolver o disparo.
+- 17.3 Drone: rápido e fraco. Parar com a guarda custa Vigor, o parry devolve dano e um golpe e meio o derruba.
+- 17.4 Escudeiro: de frente o golpe não faz nada; contornar correndo ou abater por trás resolve.
+- 17.5 Andador blindado: gira devagar, resiste de frente, recusa abate silencioso e leva dano cheio por trás. Conferir se ele não prende em portas e caixas.
+- 17.6 Prisioneiros: acompanham melhor sem alcançar o jogador. Inimigos alertados atiram neles; proteger a fila deve ser parte do jogo.
+- 17.7 Mínimo: perder prisioneiros acima do mínimo não encerra a missão; abaixo dele, a missão falha. Sair com todos dá o bônus Todos resgatados.
+
 ## 16. Resgate e encerramento
 
 - 16.1 Segurar `Ctrl` (ou `C`) em missão: o personagem fica furtivo, e movimento e golpes continuam respondendo.

@@ -11,6 +11,8 @@ var suspicion: float = 0.0
 var last_known: Vector2 = Vector2.ZERO
 var memory_ticks: int = 0
 var visible_player: bool = false
+var target_prisoner: int = -1
+var radius: float = 18.0
 var waypoint: int = 0
 var spawned: bool = true
 

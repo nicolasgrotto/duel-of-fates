@@ -1,12 +1,13 @@
 [gd_resource type="Resource" script_class="InfiltrationEnemyData" format=3]
 
 [ext_resource type="Script" path="res://data/infiltration/infiltration_enemy_data.gd" id="enemy"]
-[ext_resource type="Resource" path="res://data/bolts/standard_bolt.tres" id="bolt"]
+[ext_resource type="Resource" path="res://data/infiltration/bolts/trooper_bolt.tres" id="bolt"]
 
 [resource]
 script = ExtResource("enemy")
-id = &"patrol_trooper"
 kind = 1
-health = 20.0
-bolt = ExtResource("bolt")
 respawn_seconds = 0.0
+id = &"patrol_trooper"
+health = 20.0
+fire_interval = 1.2
+bolt = ExtResource("bolt")

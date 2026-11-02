@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="BoltData" format=3]
+
+[ext_resource type="Script" path="res://data/bolt_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"trooper_bolt"
+speed = 900.0
+max_range = 1100.0
+size = 6.0
+flinch = 0.12
+muzzle_height = 100.0
+muzzle_forward = 30.0
+count = 1
+interval = 0.1
+perfect_reflect_speed = 1.25
+damage = 7.0
+guard_vigor = 11.0

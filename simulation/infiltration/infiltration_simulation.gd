@@ -55,6 +55,7 @@ func _init(configuration: InfiltrationConfig, map_data: InfiltrationMapData, mis
 		actor.health = 0.0 if placement.reinforcement else placement.enemy.health
 		actor.spawned = not placement.reinforcement
 		actor.fire_ticks = Ticks.from_seconds(placement.enemy.initial_delay)
+		actor.radius = placement.enemy.body_radius if placement.enemy.body_radius > 0.0 else config.body_radius
 		targets.append(actor)
 	for panel in map.panels:
 		panels.append(InfiltrationPanel.new())
@@ -198,8 +199,9 @@ func _resolve_swing() -> void:
 		if InfiltrationGeometry.wall_fraction(map, player.position, target.position) != INF:
 			continue
 		target.last_swing_id = player.swing_id
-		_emit(InfiltrationEvent.Type.SWING_HIT, 0, index + 1, target.position, config.swing_damage)
-		_damage_target(index, config.swing_damage)
+		var damage: float = _armored_damage(index, config.swing_damage, player.position)
+		_emit(InfiltrationEvent.Type.SWING_HIT if damage > 0.0 else InfiltrationEvent.Type.BOLT_BLOCKED, 0, index + 1, target.position, damage)
+		_damage_target(index, damage)
 
 
 func _step_targets() -> void:
@@ -281,7 +283,7 @@ func _step_bolts() -> void:
 					fraction = impact
 					victim = index + 1
 		for index in prisoners.size():
-			if prisoners[index].health <= 0.0:
+			if prisoners[index].health <= 0.0 or (mission != null and mission.extracted[index] != 0):
 				continue
 			var impact: float = InfiltrationGeometry.segment_box_fraction(bolt.position, end, _body_box(prisoners[index], bolt.data.size))
 			if impact < fraction:
@@ -299,7 +301,7 @@ func _step_bolts() -> void:
 					_emit(InfiltrationEvent.Type.BOLT_HIT, bolt.owner, victim, bolt.position, bolt.data.damage)
 				elif victim > 0:
 					_emit(InfiltrationEvent.Type.BOLT_HIT, bolt.owner, victim, bolt.position, bolt.data.damage)
-					_damage_target(victim - 1, bolt.data.damage, false, bolt.origin)
+					_damage_target(victim - 1, _armored_damage(victim - 1, bolt.data.damage, bolt.origin), false, bolt.origin)
 				elif bolt.owner == 0:
 					InfiltrationPerception.noise(self, bolt.position, config.reflected_wall_noise, 0)
 			continue
@@ -310,7 +312,7 @@ func _step_bolts() -> void:
 
 
 func _body_box(actor: InfiltrationActor, padding: float) -> Rect2:
-	var radius: float = config.body_radius + padding
+	var radius: float = actor.radius + padding
 	return Rect2(actor.position - Vector2.ONE * radius, Vector2.ONE * radius * 2.0)
 
 
@@ -334,17 +336,54 @@ func _resolve_player_bolt(bolt: InfiltrationBolt) -> void:
 		InfiltrationPerception.noise(self, bolt.position, config.combat_noise, 0)
 		return
 	bolt.active = false
-	player.health = maxf(player.health - bolt.data.damage, 0.0)
-	_emit(InfiltrationEvent.Type.BOLT_HIT, bolt.owner, 0, bolt.position, bolt.data.damage)
+	_hurt_player(bolt.data.damage, bolt.data.flinch_ticks(), bolt.owner, bolt.position)
+
+
+func _hurt_player(damage: float, flinch_ticks: int, source: int, point: Vector2) -> void:
+	player.health = maxf(player.health - damage, 0.0)
+	_emit(InfiltrationEvent.Type.BOLT_HIT, source, 0, point, damage)
 	var interruptible: bool = player.swing_tick < 0 or player.swing_tick >= config.startup_ticks() + config.active_ticks()
 	if interruptible:
-		player.stun_ticks = bolt.data.flinch_ticks()
+		player.stun_ticks = flinch_ticks
 		player.swing_tick = -1
 		player.velocity = Vector2.ZERO
 	if player.health == 0.0:
 		player.guard = false
 		player.swing_tick = -1
-		_emit(InfiltrationEvent.Type.DEFEATED, bolt.owner, 0, player.position)
+		_emit(InfiltrationEvent.Type.DEFEATED, source, 0, player.position)
+
+
+func _armored_damage(index: int, damage: float, from: Vector2) -> float:
+	var data: InfiltrationEnemyData = target_data[index] as InfiltrationEnemyData
+	if data == null or data.front_damage_ratio >= 1.0:
+		return damage
+	var target: InfiltrationActor = targets[index]
+	return damage * data.front_damage_ratio if InfiltrationGeometry.in_sector(target.position, target.aim, from, INF, data.front_degrees) else damage
+
+
+func _step_melee(index: int, data: InfiltrationEnemyData, intent: InfiltrationIntent) -> void:
+	var actor: InfiltrationActor = targets[index]
+	if actor.awareness != InfiltrationActor.Awareness.ALERTED or (intent.held & Intent.Command.LIGHT) == 0 or actor.fire_ticks > 0:
+		return
+	if actor.target_prisoner >= 0:
+		var prisoner: InfiltrationActor = prisoners[actor.target_prisoner]
+		if actor.position.distance_to(prisoner.position) <= data.melee_range + prisoner.radius:
+			prisoner.health = maxf(prisoner.health - data.melee_damage, 0.0)
+			actor.fire_ticks = Ticks.from_seconds(data.melee_interval)
+			_emit(InfiltrationEvent.Type.BOLT_HIT, index + 1, targets.size() + actor.target_prisoner + 1, prisoner.position, data.melee_damage)
+		return
+	if actor.position.distance_to(player.position) > data.melee_range + player.radius:
+		return
+	actor.fire_ticks = Ticks.from_seconds(data.melee_interval)
+	if player.guard and InfiltrationGeometry.in_sector(player.position, player.aim, actor.position, INF, config.guard_degrees):
+		if player.parry_age >= 0:
+			_emit(InfiltrationEvent.Type.BOLT_REFLECTED, 0, index + 1, actor.position, 0.0)
+			_damage_target(index, config.swing_damage)
+		else:
+			_spend_vigor(data.melee_guard_vigor)
+			_emit(InfiltrationEvent.Type.BOLT_BLOCKED, index + 1, 0, actor.position)
+		return
+	_hurt_player(data.melee_damage, Ticks.from_seconds(data.melee_flinch), index + 1, player.position)
 
 
 func _damage_target(index: int, damage: float, silent: bool = false, source_position: Vector2 = Vector2(INF, INF)) -> void:
@@ -426,7 +465,7 @@ func takedown_target() -> int:
 		return -1
 	for index in range(map.targets.size(), targets.size()):
 		var actor: InfiltrationActor = targets[index]
-		if actor.health <= 0.0 or actor.awareness != InfiltrationActor.Awareness.UNAWARE:
+		if actor.health <= 0.0 or actor.awareness != InfiltrationActor.Awareness.UNAWARE or (target_data[index] as InfiltrationEnemyData).takedown_immune:
 			continue
 		if not InfiltrationGeometry.in_sector(actor.position, -actor.aim, player.position, config.takedown_range, config.takedown_rear_degrees):
 			continue
@@ -488,7 +527,7 @@ func _apply_enemy_intent(index: int, intent: InfiltrationIntent) -> void:
 	var actor: InfiltrationActor = targets[index]
 	var data: InfiltrationEnemyData = target_data[index] as InfiltrationEnemyData
 	if intent.aim.length_squared() > 0.0:
-		actor.aim = intent.aim.normalized()
+		actor.aim = _turned_aim(actor, data, intent.aim.normalized())
 	actor.decision = InfiltrationActor.Decision.PATROL
 	if actor.awareness == InfiltrationActor.Awareness.SUSPICIOUS:
 		actor.decision = InfiltrationActor.Decision.INVESTIGATE
@@ -496,7 +535,7 @@ func _apply_enemy_intent(index: int, intent: InfiltrationIntent) -> void:
 		actor.decision = InfiltrationActor.Decision.FIGHT
 	var speed: float = data.speed * (data.alarm_speed_ratio if (intent.held & Intent.Command.DODGE) != 0 else 1.0)
 	var movement: Vector2 = intent.movement.limit_length() * speed * Ticks.DELTA
-	actor.position = InfiltrationGeometry.move_body(map, actor.position, movement, config.body_radius, targets, actor, player)
+	actor.position = InfiltrationGeometry.move_body(map, actor.position, movement, actor.radius, targets, actor, player)
 	actor.velocity = (actor.position - actor.previous) / Ticks.DELTA
 	actor.walked += actor.previous.distance_to(actor.position)
 	if actor.walked >= config.step_distance:
@@ -511,7 +550,10 @@ func _apply_enemy_intent(index: int, intent: InfiltrationIntent) -> void:
 		if actor.position.distance_to(point) <= config.panel_activation_range and InfiltrationGeometry.wall_fraction(map, actor.position, point) == INF:
 			_panel_requests[intent.panel] = 1
 	actor.fire_ticks = maxi(actor.fire_ticks - 1, 0)
-	if actor.awareness != InfiltrationActor.Awareness.ALERTED or (intent.held & Intent.Command.LIGHT) == 0 or not InfiltrationPerception.sees(self, index):
+	if data.melee_damage > 0.0:
+		_step_melee(index, data, intent)
+		return
+	if actor.awareness != InfiltrationActor.Awareness.ALERTED or (intent.held & Intent.Command.LIGHT) == 0 or not InfiltrationPerception.has_shot(self, index):
 		actor.burst_left = 0
 		return
 	if actor.fire_ticks == 0 and actor.burst_left == 0:
@@ -525,6 +567,13 @@ func _apply_enemy_intent(index: int, intent: InfiltrationIntent) -> void:
 			actor.burst_ticks = data.bolt.interval_ticks()
 			if actor.burst_left == 0:
 				actor.fire_ticks = Ticks.from_seconds(data.fire_interval)
+
+
+func _turned_aim(actor: InfiltrationActor, data: InfiltrationEnemyData, desired: Vector2) -> Vector2:
+	if data.turn_degrees <= 0.0:
+		return desired
+	var limit: float = deg_to_rad(data.turn_degrees) * Ticks.DELTA
+	return actor.aim.rotated(clampf(actor.aim.angle_to(desired), -limit, limit))
 
 
 func _step_panels() -> void:

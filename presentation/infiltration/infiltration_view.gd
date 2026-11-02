@@ -73,7 +73,8 @@ func _draw() -> void:
 			var kind: int = SPRITE_DUMMY if sim.target_data[index].kind == InfiltrationTargetData.Kind.DUMMY else SPRITE_EMITTER
 			_draw_actor(actor, kind)
 		else:
-			_draw_actor(actor, (sim.target_data[index] as InfiltrationEnemyData).sprite, true)
+			var enemy_data: InfiltrationEnemyData = sim.target_data[index] as InfiltrationEnemyData
+			_draw_actor(actor, enemy_data.sprite, true, enemy_data.texture)
 			_draw_awareness(actor)
 	if sim.player.health > 0.0:
 		_draw_actor(sim.player, SPRITE_PLAYER)
@@ -92,7 +93,7 @@ func _draw() -> void:
 		_draw_debug()
 
 
-func _draw_actor(actor: InfiltrationActor, sprite: int, enemy: bool = false) -> void:
+func _draw_actor(actor: InfiltrationActor, sprite: int, enemy: bool = false, texture: Texture2D = null) -> void:
 	var location: Vector2 = actor.previous.lerp(actor.position, alpha)
 	var aim: Vector2 = actor.aim
 	if not enemy and sprite == SPRITE_PLAYER and actor.swing_tick >= 0:
@@ -104,7 +105,10 @@ func _draw_actor(actor: InfiltrationActor, sprite: int, enemy: bool = false) -> 
 	if not enemy and sprite == SPRITE_PLAYER and actor.locomotion == InfiltrationActor.Locomotion.SNEAK:
 		scale.y = 0.9
 	draw_set_transform(_snap(location), aim.angle() + PI * 0.5, scale)
-	if not enemy and sprite == SPRITE_PLAYER:
+	if texture != null:
+		var large: Vector2 = texture.get_size() * sim.config.units_per_pixel
+		draw_texture_rect(texture, Rect2(-large * 0.5, large), false)
+	elif not enemy and sprite == SPRITE_PLAYER:
 		draw_texture_rect(_look.texture, Rect2(-size * 0.5, size), false)
 	else:
 		draw_texture_rect_region(sim.map.enemy_sprites if enemy else sim.map.sprites, Rect2(-size * 0.5, size), Rect2(Vector2(sprite * sim.config.sprite_pixels.x, 0), Vector2(sim.config.sprite_pixels)))
@@ -234,6 +238,8 @@ func _draw_security() -> void:
 			continue
 		var origin: Vector2 = _snap(actor.previous.lerp(actor.position, alpha))
 		var color: Color = _awareness_color(actor)
+		if data.aim_line and actor.awareness == InfiltrationActor.Awareness.ALERTED and (actor.visible_player or actor.target_prisoner >= 0):
+			draw_line(origin, origin + actor.aim * data.vision_range * minf(InfiltrationGeometry.wall_fraction(sim.map, origin, origin + actor.aim * data.vision_range), 1.0), Color(PALETTE.danger, 0.6), sim.config.units_per_pixel)
 		_cone_points[0] = origin
 		for point in CONE_SAMPLES + 1:
 			var angle: float = actor.aim.angle() + deg_to_rad(data.vision_degrees * (float(point) / CONE_SAMPLES - 0.5))

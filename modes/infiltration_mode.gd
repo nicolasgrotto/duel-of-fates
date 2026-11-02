@@ -68,8 +68,8 @@ func objective_lines(sim: InfiltrationSimulation) -> Array[Dictionary]:
 			lines.append({"key": "INF_OBJECTIVE_PANEL", "index": index + 1, "done": sim.panels[index].disabled})
 	for index in sim.mission.copied.size():
 		lines.append({"key": "INF_OBJECTIVE_TERMINAL", "index": index + 1, "done": sim.mission.copied[index] != 0})
-	for index in sim.mission.extracted.size():
-		lines.append({"key": "INF_OBJECTIVE_PRISONER", "index": index + 1, "done": sim.mission.extracted[index] != 0})
+	if not sim.prisoners.is_empty():
+		lines.append({"key": "INF_OBJECTIVE_MINIMUM", "index": data.required_prisoners(), "done": sim.mission.rescued() >= data.required_prisoners()})
 	lines.append({"key": "INF_OBJECTIVE_EXIT", "index": 1, "done": sim.mission.outcome == InfiltrationMissionState.Outcome.COMPLETED})
 	return lines
 
@@ -81,7 +81,7 @@ func next() -> void:
 
 static func bonus_text(mask: int) -> String:
 	var lines: PackedStringArray = []
-	var keys: PackedStringArray = ["INF_BONUS_ALARM", "INF_BONUS_ABATES", "INF_BONUS_TIME"]
+	var keys: PackedStringArray = ["INF_BONUS_ALARM", "INF_BONUS_ABATES", "INF_BONUS_TIME", "INF_BONUS_RESCUED"]
 	for index in keys.size():
 		lines.append(TranslationServer.translate("INF_CHECK").format({"state": TranslationServer.translate("INF_DONE" if (mask & (1 << index)) != 0 else "INF_PENDING"), "objective": TranslationServer.translate(keys[index])}))
 	return "\n".join(lines)

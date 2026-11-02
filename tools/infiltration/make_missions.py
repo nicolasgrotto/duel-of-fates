@@ -12,7 +12,22 @@ TILE_PIXELS = 32
 WALK_SPEED = 240.0
 PREVIEW_SIZE = (480, 170)
 SPRITE = (24, 28)
-ENEMY_SPRITE = {"trooper": 0, "sentry": 1, "heavy": 2}
+ENEMY_SPRITE = {"trooper": 0, "sentry": 1, "heavy": 2, "marksman": 3, "drone": 4, "shield": 5}
+BOLTS = {
+    "trooper_bolt": dict(damage="7.0", guard_vigor="11.0"),
+    "heavy_burst": dict(damage="6.0", guard_vigor="9.0", count="3"),
+    "marksman_bolt": dict(damage="18.0", guard_vigor="26.0", speed="1500.0", max_range="1500.0", flinch="0.25"),
+    "walker_cannon": dict(damage="12.0", guard_vigor="18.0", speed="760.0", max_range="1300.0", size="9.0", flinch="0.2", count="2", interval="0.18"),
+}
+ENEMIES = {
+    "patrol_trooper": dict(id='&"patrol_trooper"', health="20.0", bolt="trooper_bolt", fire_interval="1.2"),
+    "sentry": dict(id='&"sentry"', archetype="1", speed="0.0", vision_range="440.0", vision_degrees="100.0", sprite="1", health="16.0", bolt="trooper_bolt", fire_interval="1.0"),
+    "heavy": dict(id='&"heavy"', archetype="2", speed="75.0", vision_range="360.0", vision_degrees="75.0", sprite="2", health="36.0", bolt="heavy_burst", fire_interval="1.6"),
+    "marksman": dict(id='&"marksman"', archetype="3", speed="0.0", vision_range="680.0", vision_degrees="46.0", rotation_degrees="22.0", sprite="3", health="14.0", bolt="marksman_bolt", fire_interval="2.4", prefers_prisoners="true", aim_line="true", can_raise_alarm="false"),
+    "drone": dict(id='&"drone"', archetype="4", speed="170.0", alarm_speed_ratio="1.0", vision_range="320.0", vision_degrees="150.0", preferred_range="24.0", sprite="4", health="12.0", prefers_prisoners="true", can_raise_alarm="false", melee_damage="8.0", melee_guard_vigor="14.0", melee_range="34.0", melee_interval="0.7", melee_flinch="0.15"),
+    "shield": dict(id='&"shield"', archetype="5", speed="90.0", vision_range="360.0", vision_degrees="90.0", preferred_range="160.0", sprite="5", health="30.0", bolt="trooper_bolt", fire_interval="2.0", turn_degrees="120.0", front_damage_ratio="0.0", front_degrees="110.0", can_raise_alarm="false"),
+    "walker": dict(id='&"walker"', archetype="6", speed="60.0", vision_range="520.0", vision_degrees="80.0", preferred_range="320.0", health="160.0", bolt="walker_cannon", fire_interval="2.6", turn_degrees="60.0", body_radius="30.0", front_damage_ratio="0.25", front_degrees="150.0", takedown_immune="true", can_raise_alarm="false", texture="walker"),
+}
 PREVIEW_CONE_REACH = 110
 PREVIEW_CONE_DEGREES = 80
 
@@ -51,6 +66,7 @@ class Layout:
         self.preview_center = (0, 0)
         self.preview_hero = ((0, 0), (1, 0))
         self.preview_guards = []
+        self.minimum_prisoners = 0
 
     def carve(self, x0, y0, x1, y1, tile="."):
         for y in range(y0, y1 + 1):
@@ -63,8 +79,8 @@ class Layout:
     def strip(self, x0, y0, x1, y1):
         self.carve(x0, y0, x1, y1, "=")
 
-    def sentry(self, cell, direction=(-1, 0)):
-        self.enemies.append(("sentry", cell, direction, [], False))
+    def sentry(self, cell, direction=(-1, 0), kind="sentry"):
+        self.enemies.append((kind, cell, direction, [], False))
 
     def patrol(self, kind, corners):
         first, second = corners[0], corners[1]
@@ -135,7 +151,7 @@ def first_access():
     m.patrol("trooper", [(46, 4), (61, 4), (61, 13), (46, 13)])
     m.sentry((47, 31), (0, -1))
     m.patrol("trooper", [(26, 22), (38, 22), (38, 31), (26, 31)])
-    m.sentry((17, 22), (-1, 0))
+    m.patrol("drone", [(4, 22), (18, 22), (18, 31), (4, 31)])
     m.reserve((61, 31), (-1, 0))
     m.spawn = (5, 6)
     m.panels = [(46, 22)]
@@ -185,22 +201,23 @@ def silent_network():
     m.patrol("trooper", [(60, 4), (79, 4), (79, 14), (60, 14)])
     m.sentry((70, 24), (0, 1))
     m.patrol("trooper", [(60, 30), (79, 30), (79, 33), (60, 33)])
-    m.patrol("trooper", [(31, 24), (51, 24), (51, 32), (31, 32)])
-    m.sentry((6, 31), (1, 0))
+    m.patrol("shield", [(31, 24), (51, 24), (51, 32), (31, 32)])
+    m.sentry((6, 31), (1, 0), "marksman")
     m.patrol("trooper", [(4, 24), (22, 24), (22, 32), (4, 32)])
     m.sentry((41, 47), (1, 0))
-    m.patrol("trooper", [(31, 42), (51, 42), (51, 51), (31, 51)])
+    m.patrol("drone", [(31, 42), (51, 42), (51, 51), (31, 51)])
     m.patrol("heavy", [(60, 42), (79, 42), (79, 51), (60, 51)])
     m.reserve((22, 42))
     m.reserve((79, 24), (-1, 0))
     m.spawn = (5, 6)
     m.panels = [(78, 7), (4, 25), (78, 48)]
     m.exit = (5, 50)
-    m.prisoners = [(41, 44)]
+    m.prisoners = [(41, 44), (60, 44)]
+    m.minimum_prisoners = 1
     m.disable_alarms = True
     m.panels_unlock_prisoners = True
     m.bonus = 360
-    m.route_order = [(78, 7), (4, 25), (78, 48), (41, 44)]
+    m.route_order = [(78, 7), (4, 25), (78, 48), (41, 44), (60, 44)]
     m.minimum_seconds = 90
     m.preview_center = (41, 45)
     m.preview_hero = ((34, 43), (1, 0.2))
@@ -230,25 +247,26 @@ def cold_archive():
         m.crates(68, y, 75, y)
     m.sentry((9, 22), (0, 1))
     m.patrol("trooper", [(4, 4), (15, 4), (15, 51), (4, 51)])
-    m.sentry((29, 16), (1, 0))
+    m.sentry((29, 16), (1, 0), "marksman")
     m.patrol("trooper", [(24, 4), (35, 4), (35, 51), (24, 51)])
-    m.patrol("heavy", [(29, 4), (29, 8), (24, 8), (24, 4)])
+    m.patrol("drone", [(29, 4), (29, 8), (24, 8), (24, 4)])
     m.sentry((49, 26), (0, -1))
-    m.patrol("trooper", [(44, 4), (55, 4), (55, 51), (44, 51)])
+    m.patrol("shield", [(44, 4), (55, 4), (55, 51), (44, 51)])
     m.sentry((49, 50), (0, -1))
     m.patrol("trooper", [(64, 4), (79, 4), (79, 51), (64, 51)])
     m.sentry((72, 16), (-1, 0))
     m.patrol("heavy", [(64, 28), (79, 28), (79, 40), (64, 40)])
-    m.sentry((72, 48), (1, 0))
+    m.sentry((72, 48), (1, 0), "marksman")
     m.reserve((35, 49))
     m.reserve((79, 6), (-1, 0))
     m.spawn = (4, 5)
     m.panels = [(55, 28), (9, 40)]
     m.terminals = [(29, 50), (78, 6)]
-    m.prisoners = [(72, 40)]
+    m.prisoners = [(72, 40), (64, 20)]
+    m.minimum_prisoners = 1
     m.exit = (64, 51)
     m.bonus = 390
-    m.route_order = [(29, 50), (78, 6), (72, 40)]
+    m.route_order = [(29, 50), (78, 6), (72, 40), (64, 20)]
     m.minimum_seconds = 75
     m.preview_center = (72, 39)
     m.preview_hero = ((66, 39), (1, 0))
@@ -292,18 +310,19 @@ def way_back():
     m.patrol("trooper", [(60, 3), (79, 3), (79, 13), (60, 13)])
     m.sentry((69, 28), (-1, 0))
     m.patrol("trooper", [(60, 23), (79, 23), (79, 33), (60, 33)])
-    m.patrol("heavy", [(31, 23), (51, 23), (51, 32), (31, 32)])
+    m.patrol("shield", [(31, 23), (51, 23), (51, 32), (31, 32)])
     m.sentry((35, 28), (1, 0))
     m.patrol("trooper", [(4, 23), (22, 23), (22, 32), (4, 32)])
     m.sentry((19, 47), (1, 0))
-    m.patrol("trooper", [(4, 43), (38, 43), (38, 51), (4, 51)])
-    m.patrol("trooper", [(47, 42), (79, 42), (79, 52), (47, 52)])
-    m.sentry((60, 47), (1, 0))
+    m.patrol("drone", [(4, 43), (38, 43), (38, 51), (4, 51)])
+    m.patrol("walker", [(47, 47), (71, 47)])
+    m.sentry((62, 52), (0, -1), "marksman")
     m.reserve((22, 3), (0, 1))
     m.reserve((48, 52), (0, -1))
     m.spawn = (5, 5)
     m.panels = [(51, 23), (22, 51)]
     m.prisoners = [(79, 47), (20, 33)]
+    m.minimum_prisoners = 1
     m.exit = (22, 5)
     m.bonus = 480
     m.route_order = [(79, 47), (20, 33)]
@@ -327,13 +346,13 @@ def cell_block():
     m.crates(23, 26, 23, 27)
     m.crates(43, 28, 43, 29)
     m.crates(63, 26, 63, 27)
-    m.patrol("trooper", [(4, 26), (79, 26), (79, 29), (4, 29)])
+    m.patrol("shield", [(4, 26), (79, 26), (79, 29), (4, 29)])
     m.sentry((13, 17), (0, 1))
     m.patrol("trooper", [(28, 8), (38, 8), (38, 20), (28, 20)])
-    m.sentry((53, 17), (1, 0))
+    m.sentry((53, 17), (1, 0), "marksman")
     m.patrol("trooper", [(48, 8), (58, 8), (58, 20), (48, 20)])
-    m.patrol("heavy", [(68, 8), (78, 8), (78, 20), (68, 20)])
-    m.patrol("trooper", [(8, 35), (18, 35), (18, 40), (8, 40)])
+    m.patrol("walker", [(68, 8), (78, 8), (78, 20), (68, 20)])
+    m.patrol("drone", [(8, 35), (18, 35), (18, 40), (8, 40)])
     m.sentry((33, 38), (0, -1))
     m.patrol("trooper", [(28, 35), (38, 35), (38, 40), (28, 40)])
     m.patrol("trooper", [(48, 35), (58, 35), (58, 50), (48, 50)])
@@ -344,6 +363,7 @@ def cell_block():
     m.spawn = (4, 27)
     m.panels = [(13, 8), (33, 50)]
     m.prisoners = [(33, 8), (53, 50), (73, 8), (73, 50)]
+    m.minimum_prisoners = 2
     m.exit = (13, 50)
     m.bonus = 480
     m.route_order = [(33, 8), (53, 50), (73, 8), (73, 50)]
@@ -390,21 +410,21 @@ def core_breach():
         m.crates(x, 50, x, 57)
     for x in (74, 84):
         m.crates(x, 49, x, 58)
-    m.sentry((39, 10), (1, 0))
-    m.patrol("trooper", [(29, 4), (64, 4), (64, 16), (29, 16)])
+    m.sentry((39, 10), (1, 0), "marksman")
+    m.patrol("shield", [(29, 4), (64, 4), (64, 16), (29, 16)])
     m.sentry((49, 10), (-1, 0))
     m.patrol("trooper", [(73, 4), (91, 4), (91, 16), (73, 16)])
-    m.sentry((82, 10), (0, 1))
-    m.patrol("heavy", [(73, 26), (91, 26), (91, 38), (73, 38)])
+    m.sentry((82, 10), (0, 1), "marksman")
+    m.patrol("walker", [(73, 26), (91, 26), (91, 38), (73, 38)])
     m.sentry((82, 32), (-1, 0))
     m.patrol("trooper", [(29, 26), (64, 26), (64, 38), (29, 38)])
     m.sentry((46, 32), (1, 0))
     m.patrol("trooper", [(4, 26), (20, 26), (20, 38), (4, 38)])
-    m.sentry((12, 32), (0, 1))
-    m.patrol("trooper", [(4, 48), (28, 48), (28, 59), (4, 59)])
-    m.patrol("heavy", [(37, 48), (60, 48), (60, 59), (37, 59)])
+    m.sentry((12, 32), (0, 1), "marksman")
+    m.patrol("drone", [(4, 48), (28, 48), (28, 59), (4, 59)])
+    m.patrol("walker", [(37, 48), (60, 48), (60, 59), (37, 59)])
     m.sentry((46, 53), (1, 0))
-    m.patrol("trooper", [(69, 48), (91, 48), (91, 59), (69, 59)])
+    m.patrol("drone", [(69, 48), (91, 48), (91, 59), (69, 59)])
     m.sentry((79, 54), (-1, 0))
     m.reserve((64, 3), (0, 1))
     m.reserve((28, 60), (0, -1))
@@ -413,6 +433,7 @@ def core_breach():
     m.panels = [(91, 7), (4, 39), (64, 39)]
     m.terminals = [(91, 39)]
     m.prisoners = [(91, 53), (60, 53), (25, 53)]
+    m.minimum_prisoners = 2
     m.exit = (5, 53)
     m.disable_alarms = True
     m.panels_unlock_prisoners = True
@@ -434,6 +455,10 @@ EXTERNALS = [
     ("Resource", "data/infiltration/enemies/sentry.tres", "sentry"),
     ("Resource", "data/infiltration/enemies/patrol_trooper.tres", "trooper"),
     ("Resource", "data/infiltration/enemies/heavy.tres", "heavy"),
+    ("Resource", "data/infiltration/enemies/marksman.tres", "marksman"),
+    ("Resource", "data/infiltration/enemies/drone.tres", "drone"),
+    ("Resource", "data/infiltration/enemies/shield.tres", "shield"),
+    ("Resource", "data/infiltration/enemies/walker.tres", "walker"),
     ("Texture2D", "assets/infiltration/training_tiles.png", "tiles"),
     ("Texture2D", "assets/infiltration/training_sprites.png", "sprites"),
     ("Texture2D", "assets/infiltration/enemy_sprites.png", "enemies"),
@@ -462,7 +487,7 @@ def resource_text(m):
     if m.terminals:
         text += f"terminals = {packed(m.terminals)}\n"
     if m.prisoners:
-        text += f"prisoner_spawns = {packed(m.prisoners)}\n"
+        text += f"prisoner_spawns = {packed(m.prisoners)}\nminimum_prisoners = {m.minimum_prisoners}\n"
     text += f'extraction = {vector(m.exit)}\nbonus_seconds = {m.bonus}.0\npreview = ExtResource("preview")\n'
     return text
 
@@ -545,7 +570,36 @@ def preview_image(m):
     return image
 
 
+def write_enemies():
+    bolts = ROOT / "data/infiltration/bolts"
+    bolts.mkdir(parents=True, exist_ok=True)
+    base = dict(speed="900.0", max_range="1100.0", size="6.0", flinch="0.12", muzzle_height="100.0", muzzle_forward="30.0", count="1", interval="0.1", perfect_reflect_speed="1.25")
+    for name, fields in BOLTS.items():
+        values = {**base, **fields}
+        text = '[gd_resource type="Resource" script_class="BoltData" format=3]\n\n[ext_resource type="Script" path="res://data/bolt_data.gd" id="1"]\n\n[resource]\nscript = ExtResource("1")\n'
+        text += f'id = &"{name}"\n' + "".join(f"{key} = {value}\n" for key, value in values.items())
+        (bolts / f"{name}.tres").write_text(text, encoding="utf-8", newline="\n")
+    folder = ROOT / "data/infiltration/enemies"
+    for name, fields in ENEMIES.items():
+        values = dict(fields)
+        text = '[gd_resource type="Resource" script_class="InfiltrationEnemyData" format=3]\n\n[ext_resource type="Script" path="res://data/infiltration/infiltration_enemy_data.gd" id="enemy"]\n'
+        bolt = values.pop("bolt", None)
+        texture = values.pop("texture", None)
+        if bolt:
+            text += f'[ext_resource type="Resource" path="res://data/infiltration/bolts/{bolt}.tres" id="bolt"]\n'
+        if texture:
+            text += f'[ext_resource type="Texture2D" path="res://assets/infiltration/{texture}.png" id="texture"]\n'
+        text += '\n[resource]\nscript = ExtResource("enemy")\nkind = 1\nrespawn_seconds = 0.0\n'
+        text += "".join(f"{key} = {value}\n" for key, value in values.items())
+        if bolt:
+            text += 'bolt = ExtResource("bolt")\n'
+        if texture:
+            text += 'texture = ExtResource("texture")\n'
+        (folder / f"{name}.tres").write_text(text, encoding="utf-8", newline="\n")
+
+
 def main():
+    write_enemies()
     folder = ROOT / "data/infiltration/missions"
     previews = ROOT / "assets/infiltration/previews"
     previews.mkdir(parents=True, exist_ok=True)

@@ -15,12 +15,11 @@ static func move_body(map: InfiltrationMapData, start: Vector2, motion: Vector2,
 				if map.is_solid(x, y):
 					destination = _clip_axis(result, destination, axis, radius, Rect2(Vector2(x, y) * map.tile_size, Vector2.ONE * map.tile_size))
 		var other: int = 1 - axis
-		var reach: float = radius * 2.0
 		for target in targets:
-			if absf(target.position[other] - result[other]) < reach and target != self_actor and target.health > 0.0:
-				destination = _clip_axis(result, destination, axis, radius, Rect2(target.position - Vector2.ONE * radius, Vector2.ONE * radius * 2.0))
+			if absf(target.position[other] - result[other]) < radius + target.radius and target != self_actor and target.health > 0.0:
+				destination = _clip_axis(result, destination, axis, radius, Rect2(target.position - Vector2.ONE * target.radius, Vector2.ONE * target.radius * 2.0))
 		if player != null and player.health > 0.0:
-			destination = _clip_axis(result, destination, axis, radius, Rect2(player.position - Vector2.ONE * radius, Vector2.ONE * radius * 2.0))
+			destination = _clip_axis(result, destination, axis, radius, Rect2(player.position - Vector2.ONE * player.radius, Vector2.ONE * player.radius * 2.0))
 		result[axis] = destination
 	return result
 

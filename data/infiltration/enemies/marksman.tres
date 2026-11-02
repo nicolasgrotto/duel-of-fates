@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="InfiltrationEnemyData" format=3]
+
+[ext_resource type="Script" path="res://data/infiltration/infiltration_enemy_data.gd" id="enemy"]
+[ext_resource type="Resource" path="res://data/infiltration/bolts/marksman_bolt.tres" id="bolt"]
+
+[resource]
+script = ExtResource("enemy")
+kind = 1
+respawn_seconds = 0.0
+id = &"marksman"
+archetype = 3
+speed = 0.0
+vision_range = 680.0
+vision_degrees = 46.0
+rotation_degrees = 22.0
+sprite = 3
+health = 14.0
+fire_interval = 2.4
+prefers_prisoners = true
+aim_line = true
+can_raise_alarm = false
+bolt = ExtResource("bolt")

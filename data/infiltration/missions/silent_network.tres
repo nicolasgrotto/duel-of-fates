@@ -7,6 +7,10 @@
 [ext_resource type="Resource" path="res://data/infiltration/enemies/sentry.tres" id="sentry"]
 [ext_resource type="Resource" path="res://data/infiltration/enemies/patrol_trooper.tres" id="trooper"]
 [ext_resource type="Resource" path="res://data/infiltration/enemies/heavy.tres" id="heavy"]
+[ext_resource type="Resource" path="res://data/infiltration/enemies/marksman.tres" id="marksman"]
+[ext_resource type="Resource" path="res://data/infiltration/enemies/drone.tres" id="drone"]
+[ext_resource type="Resource" path="res://data/infiltration/enemies/shield.tres" id="shield"]
+[ext_resource type="Resource" path="res://data/infiltration/enemies/walker.tres" id="walker"]
 [ext_resource type="Texture2D" path="res://assets/infiltration/training_tiles.png" id="tiles"]
 [ext_resource type="Texture2D" path="res://assets/infiltration/training_sprites.png" id="sprites"]
 [ext_resource type="Texture2D" path="res://assets/infiltration/enemy_sprites.png" id="enemies"]
@@ -59,14 +63,14 @@ route = PackedVector2Array(3872, 1952, 5088, 1952, 5088, 2144, 3872, 2144)
 
 [sub_resource type="Resource" id="enemy_5"]
 script = ExtResource("placement")
-enemy = ExtResource("trooper")
+enemy = ExtResource("shield")
 position = Vector2(2016, 1568)
 direction = Vector2(1, 0)
 route = PackedVector2Array(2016, 1568, 3296, 1568, 3296, 2080, 2016, 2080)
 
 [sub_resource type="Resource" id="enemy_6"]
 script = ExtResource("placement")
-enemy = ExtResource("sentry")
+enemy = ExtResource("marksman")
 position = Vector2(416, 2016)
 direction = Vector2(1, 0)
 
@@ -85,7 +89,7 @@ direction = Vector2(1, 0)
 
 [sub_resource type="Resource" id="enemy_9"]
 script = ExtResource("placement")
-enemy = ExtResource("trooper")
+enemy = ExtResource("drone")
 position = Vector2(2016, 2720)
 direction = Vector2(1, 0)
 route = PackedVector2Array(2016, 2720, 3296, 2720, 3296, 3296, 2016, 3296)
@@ -131,7 +135,8 @@ briefing_key = "INF_NETWORK_BRIEF"
 map = SubResource("layout")
 disable_alarms = true
 panels_unlock_prisoners = true
-prisoner_spawns = PackedVector2Array(2656, 2848)
+prisoner_spawns = PackedVector2Array(2656, 2848, 3872, 2848)
+minimum_prisoners = 1
 extraction = Vector2(352, 3232)
 bonus_seconds = 360.0
 preview = ExtResource("preview")

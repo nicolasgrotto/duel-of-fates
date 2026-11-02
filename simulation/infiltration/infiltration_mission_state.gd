@@ -2,7 +2,7 @@ class_name InfiltrationMissionState
 extends RefCounted
 
 enum Outcome { ACTIVE, COMPLETED, PLAYER_DOWN, PRISONER_DOWN }
-enum Bonus { NO_ALARM = 1, NO_TAKEDOWNS = 2, TIME = 4 }
+enum Bonus { NO_ALARM = 1, NO_TAKEDOWNS = 2, TIME = 4, ALL_RESCUED = 8 }
 
 var data: InfiltrationMissionData
 var outcome: Outcome = Outcome.ACTIVE
@@ -73,11 +73,8 @@ func advance(sim: InfiltrationSimulation, escorts: Array[InfiltrationIntent]) ->
 	for index in sim.prisoners.size():
 		var actor: InfiltrationActor = sim.prisoners[index]
 		actor.previous = actor.position
-		if actor.health <= 0.0:
-			_finish(sim, Outcome.PRISONER_DOWN)
-			return
 		actor.velocity = Vector2.ZERO
-		if recruited[index] == 0 or extracted[index] != 0:
+		if actor.health <= 0.0 or recruited[index] == 0 or extracted[index] != 0:
 			continue
 		if index < escorts.size():
 			var movement: Vector2 = escorts[index].movement.limit_length() * sim.config.escort_speed * Ticks.DELTA
@@ -88,10 +85,33 @@ func advance(sim: InfiltrationSimulation, escorts: Array[InfiltrationIntent]) ->
 		if actor.position.distance_to(data.extraction) <= data.extraction_radius:
 			extracted[index] = 1
 			sim.emit_mission_event(InfiltrationEvent.Type.PRISONER_EXTRACTED, index, actor.position)
-	if sim.player.health <= 0.0:
+	if surviving_prisoners(sim) < data.required_prisoners():
+		_finish(sim, Outcome.PRISONER_DOWN)
+	elif sim.player.health <= 0.0:
 		_finish(sim, Outcome.PLAYER_DOWN)
-	elif completed_objectives(sim) == data.objective_count() and sim.player.position.distance_to(data.extraction) <= data.extraction_radius:
+	elif completed_objectives(sim) == data.objective_count() and _followers_arrived(sim) and sim.player.position.distance_to(data.extraction) <= data.extraction_radius:
 		_finish(sim, Outcome.COMPLETED)
+
+
+func surviving_prisoners(sim: InfiltrationSimulation) -> int:
+	var count: int = 0
+	for actor in sim.prisoners:
+		count += int(actor.health > 0.0)
+	return count
+
+
+func rescued() -> int:
+	var count: int = 0
+	for value in extracted:
+		count += value
+	return count
+
+
+func _followers_arrived(sim: InfiltrationSimulation) -> bool:
+	for index in sim.prisoners.size():
+		if recruited[index] != 0 and extracted[index] == 0 and sim.prisoners[index].health > 0.0:
+			return false
+	return true
 
 
 func _finish(sim: InfiltrationSimulation, result: Outcome) -> void:
@@ -107,13 +127,12 @@ func completed_objectives(sim: InfiltrationSimulation) -> int:
 			count += int(panel.disabled)
 	for value in copied:
 		count += value
-	for value in extracted:
-		count += value
-	return count
+	return count + mini(rescued(), data.required_prisoners())
 
 
 func bonuses(tick: int) -> int:
-	return (0 if alarm_raised else Bonus.NO_ALARM) | (0 if takedowns > 0 else Bonus.NO_TAKEDOWNS) | (Bonus.TIME if tick <= Ticks.from_seconds(data.bonus_seconds) else 0)
+	var mask: int = (0 if alarm_raised else Bonus.NO_ALARM) | (0 if takedowns > 0 else Bonus.NO_TAKEDOWNS) | (Bonus.TIME if tick <= Ticks.from_seconds(data.bonus_seconds) else 0)
+	return mask | (Bonus.ALL_RESCUED if not extracted.is_empty() and rescued() == extracted.size() else 0)
 
 
 func capture() -> Dictionary:

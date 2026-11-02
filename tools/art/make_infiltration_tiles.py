@@ -179,14 +179,38 @@ def main():
     tileset(colors).save(folder / "training_tiles.png", optimize=True)
     sprites(colors).save(folder / "training_sprites.png", optimize=True)
     enemy_sprites(colors).save(folder / "enemy_sprites.png", optimize=True)
+    walker_sprite(colors).save(folder / "walker.png", optimize=True)
     prisoner_colors = dict(colors)
     prisoner_colors["infiltration_cloth"] = colors["secondary"]
     sprites(prisoner_colors).crop((0, 0, *SPRITE)).save(folder / "prisoner.png", optimize=True)
     heroes()
 
 
+def walker_sprite(colors):
+    image = Image.new("RGBA", (48, 56))
+    draw = ImageDraw.Draw(image)
+    dark = colors["infiltration_seam"]
+    metal = colors["infiltration_wall"]
+    edge = colors["infiltration_edge"]
+    draw.ellipse((4, 34, 44, 54), fill=(*dark, 150))
+    for x in (2, 36):
+        draw.rectangle((x, 26, x + 9, 48), fill=shade(metal, .6), outline=dark)
+        draw.rectangle((x + 1, 44, x + 8, 50), fill=shade(metal, 1.2), outline=edge)
+        draw.line((x + 2, 30, x + 7, 30), fill=edge)
+    draw.polygon(((14, 8), (34, 8), (42, 20), (42, 36), (34, 44), (14, 44), (6, 36), (6, 20)), fill=metal, outline=edge)
+    draw.polygon(((17, 13), (31, 13), (36, 22), (36, 33), (30, 39), (18, 39), (12, 33), (12, 22)), fill=shade(metal, 1.3), outline=dark)
+    draw.rectangle((16, 18, 32, 22), fill=dark)
+    draw.line((18, 20, 30, 20), fill=colors["potential"])
+    for y in (28, 33):
+        draw.line((17, y, 31, y), fill=shade(metal, .7))
+    for x in (15, 29):
+        draw.rectangle((x, 1, x + 4, 15), fill=colors["menu_hilt"], outline=dark)
+        draw.rectangle((x + 1, 0, x + 3, 2), fill=colors["bolt"])
+    return image
+
+
 def enemy_sprites(colors):
-    atlas = Image.new("RGBA", (SPRITE[0] * 3, SPRITE[1]))
+    atlas = Image.new("RGBA", (SPRITE[0] * 6, SPRITE[1]))
     dark = colors["infiltration_seam"]
     metal = colors["infiltration_wall"]
     edge = colors["infiltration_edge"]
@@ -216,6 +240,40 @@ def enemy_sprites(colors):
                 draw.rectangle((2, 10, 5, 14), fill=shade(metal, .7))
                 draw.rectangle((18, 10, 21, 14), fill=shade(metal, .7))
         atlas.paste(body, (kind * SPRITE[0], 0))
+    marksman = Image.new("RGBA", SPRITE)
+    draw = ImageDraw.Draw(marksman)
+    draw.ellipse((3, 20, 21, 27), fill=(*dark, 160))
+    draw.rectangle((7, 18, 10, 25), fill=shade(metal, .6), outline=dark)
+    draw.rectangle((14, 18, 17, 25), fill=shade(metal, .6), outline=dark)
+    draw.rectangle((7, 11, 17, 20), fill=shade(metal, .8), outline=dark)
+    draw.rectangle((5, 10, 8, 16), fill=metal, outline=dark)
+    draw.rectangle((16, 10, 19, 16), fill=metal, outline=dark)
+    draw.rectangle((9, 5, 15, 11), fill=shade(metal, 1.4), outline=dark)
+    draw.line((10, 7, 14, 7), fill=colors["danger"])
+    draw.rectangle((17, 0, 19, 13), fill=colors["menu_hilt"], outline=dark)
+    draw.point((18, 0), fill=colors["danger"])
+    atlas.paste(marksman, (3 * SPRITE[0], 0))
+    drone = Image.new("RGBA", SPRITE)
+    draw = ImageDraw.Draw(drone)
+    draw.ellipse((5, 19, 19, 25), fill=(*dark, 120))
+    draw.polygon(((12, 3), (20, 10), (20, 17), (12, 22), (4, 17), (4, 10)), fill=shade(metal, 1.1), outline=edge)
+    draw.ellipse((8, 8, 16, 16), fill=dark, outline=edge)
+    draw.ellipse((10, 10, 14, 14), fill=colors["danger"])
+    draw.line((1, 12, 4, 12), fill=edge, width=2)
+    draw.line((20, 12, 23, 12), fill=edge, width=2)
+    draw.line((10, 3, 14, 3), fill=colors["potential"])
+    atlas.paste(drone, (4 * SPRITE[0], 0))
+    shielded = Image.new("RGBA", SPRITE)
+    draw = ImageDraw.Draw(shielded)
+    draw.ellipse((2, 20, 22, 27), fill=(*dark, 160))
+    draw.rectangle((6, 18, 10, 25), fill=shade(metal, .6), outline=dark)
+    draw.rectangle((14, 18, 18, 25), fill=shade(metal, .6), outline=dark)
+    draw.rectangle((5, 11, 18, 21), fill=metal, outline=dark)
+    draw.rectangle((9, 6, 15, 12), fill=shade(metal, 1.5), outline=dark)
+    draw.rectangle((10, 8, 14, 9), fill=colors["potential"])
+    draw.polygon(((2, 6), (6, 1), (18, 1), (22, 6), (22, 8), (2, 8)), fill=shade(edge, .9), outline=dark)
+    draw.line((6, 3, 18, 3), fill=shade(edge, 1.3))
+    atlas.paste(shielded, (5 * SPRITE[0], 0))
     return atlas
 
 

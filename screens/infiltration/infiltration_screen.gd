@@ -268,7 +268,7 @@ func _closure_detail(won: bool) -> String:
 	var time: String = tr("INF_TIME").format({"time": ChallengeMode.format_time(sim.mission.finished_tick * Ticks.DELTA)})
 	if sim.prisoners.is_empty():
 		return time
-	return tr("INF_END_RESCUED").format({"count": sim.prisoners.size()}) + ControlHints.SEPARATOR + time
+	return tr("INF_END_RESCUED").format({"count": sim.mission.rescued(), "total": sim.prisoners.size()}) + ControlHints.SEPARATOR + time
 
 
 func _show_result() -> void:
@@ -446,13 +446,11 @@ func _escort_guide() -> String:
 	var following: int = 0
 	var lowest: float = CONFIG.prisoner_health
 	for index in sim.prisoners.size():
-		following += int(sim.mission.recruited[index] != 0 and sim.mission.extracted[index] == 0)
-		if sim.mission.recruited[index] != 0:
+		var alive: bool = sim.prisoners[index].health > 0.0
+		following += int(alive and sim.mission.recruited[index] != 0 and sim.mission.extracted[index] == 0)
+		if alive and sim.mission.recruited[index] != 0:
 			lowest = minf(lowest, sim.prisoners[index].health)
-	var safe: int = 0
-	for value in sim.mission.extracted:
-		safe += value
-	return tr("INF_ESCORT_GUIDE").format({"safe": safe, "total": sim.prisoners.size(), "following": following, "health": roundi(lowest)})
+	return tr("INF_ESCORT_GUIDE").format({"safe": sim.mission.rescued(), "total": sim.prisoners.size(), "minimum": mode.data.required_prisoners(), "following": following, "health": roundi(lowest)})
 
 
 func _mission_guide() -> String:
@@ -472,7 +470,7 @@ func _mission_guide() -> String:
 			_consider_objective(mode.data.terminals[index], "INF_OBJECTIVE_TERMINAL", index + 1)
 	if not sim.mission.prisoners_locked(sim):
 		for index in sim.prisoners.size():
-			if sim.mission.recruited[index] == 0:
+			if sim.mission.recruited[index] == 0 and sim.prisoners[index].health > 0.0:
 				_consider_objective(sim.prisoners[index].position, "INF_OBJECTIVE_PRISONER", index + 1)
 	if _guide_target == Vector2.INF:
 		_consider_objective(mode.data.extraction, "INF_OBJECTIVE_EXIT", 1)

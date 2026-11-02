@@ -864,12 +864,12 @@ INF_ARCHIVE,Arquivo frio,Cold archive
 INF_RESCUE,Caminho de volta,The way back
 INF_CELLS,Bloco de celas,Cell block
 INF_CORE,Coração da base,Heart of the base
-INF_FIRST_BRIEF,"Um aliado foi preso nos galpões a leste. Entre sem ser visto, desça pela passagem de serviço, use Interagir para soltá-lo e leve-o até a saída a oeste. Caixas e janelas de patrulha são sua cobertura. O painel de alarme é opcional.","An ally is held in the eastern warehouses. Get in unseen, take the service passage down, use Interact to free them and lead them to the exit in the west. Crates and patrol gaps are your cover. The alarm panel is optional."
-INF_NETWORK_BRIEF,"A cela de um informante está travada pela rede da base. Inutilize os três painéis, um em cada nível, para abri-la. Depois liberte o informante e leve-o à saída a sudoeste. Sem os painéis, a cela não abre.","An informant's cell is locked by the base network. Disable all three panels, one on each level, to open it. Then free the informant and lead them to the southwestern exit. Without the panels, the cell stays shut."
-INF_ARCHIVE_BRIEF,"Copie dos dois terminais a localização do arquivista preso, um no fim do segundo arquivo e outro no canto nordeste. Depois liberte-o na última ala e saia a sudeste. As estantes cortam a visão. Os painéis de alarme são opcionais.","Copy the location of the captive archivist from both terminals, one at the end of the second archive and one in the northeastern corner. Then free them in the last wing and leave in the southeast. Shelves cut sight lines. The alarm panels are optional."
-INF_RESCUE_BRIEF,"Dois prisioneiros aguardam: um na ala sudeste e outro no nível central, no caminho de volta. Conduza os dois vivos pelos três níveis até a saída perto de onde você entrou. A escolta anda mais devagar e disparos podem atingi-la.","Two prisoners are waiting: one in the southeastern wing and one on the central level, on your way back. Lead both alive across all three levels to the exit near where you came in. The escort walks slower and bolts can hit them."
-INF_CELLS_BRIEF,"Quatro prisioneiros em quatro blocos ao longo do corredor central. Liberte um por um, sem perder ninguém: a fila cresce e fica mais difícil de esconder. A saída fica no bloco sudoeste. Os painéis de alarme são opcionais.",Four prisoners in four blocks along the central corridor. Free them one by one without losing anyone: the line grows and gets harder to hide. The exit is in the southwestern block. The alarm panels are optional.
-INF_CORE_BRIEF,"A operação final. Inutilize os três painéis que travam as celas, copie o terminal central e liberte os três prisioneiros do nível inferior. Leve todos à saída a sudoeste. É a base mais vigiada, com reforços nas três alas.","The final operation. Disable the three panels locking the cells, copy the central terminal and free the three prisoners on the lower level. Lead them all to the southwestern exit. This is the most heavily watched base, with reinforcements in all three wings."
+INF_FIRST_BRIEF,"Um aliado foi preso nos galpões a leste. Entre sem ser visto, desça pela passagem de serviço, use Interagir para soltá-lo e leve-o até a saída a oeste. Inimigos alertados também atiram nele: proteja-o. Cuidado com os drones, que atacam de perto.","An ally is held in the eastern warehouses. Get in unseen, take the service passage down, use Interact to free them and lead them to the exit in the west. Alerted enemies shoot at them too: protect them. Watch out for drones, which strike up close."
+INF_NETWORK_BRIEF,"Dois informantes estão em celas travadas pela rede da base. Inutilize os três painéis para abri-las e liberte ao menos um. Atiradores vigiam de longe, e escudeiros só caem pelos flancos. A saída fica a sudoeste.","Two informants are in cells locked by the base network. Disable all three panels to open them and free at least one. Marksmen watch from afar, and shield bearers only fall from the flanks. The exit is in the southwest."
+INF_ARCHIVE_BRIEF,"Copie dos dois terminais a localização dos arquivistas presos e liberte ao menos um deles. As estantes cortam a visão, mas atiradores cobrem os corredores longos. Saia a sudeste. Os painéis de alarme são opcionais.","Copy the location of the captive archivists from both terminals and free at least one. Shelves cut sight lines, but marksmen cover the long aisles. Leave in the southeast. The alarm panels are optional."
+INF_RESCUE_BRIEF,"Dois prisioneiros aguardam: um na ala sudeste, vigiada por um andador blindado, e outro no nível central. Leve ao menos um vivo até a saída. O andador não cai por abate silencioso e gira devagar: ataque por trás ou passe longe.","Two prisoners are waiting: one in the southeastern wing, watched by an armored walker, and one on the central level. Lead at least one alive to the exit. The walker cannot be silently taken down and turns slowly: strike from behind or stay away."
+INF_CELLS_BRIEF,Quatro prisioneiros em quatro blocos ao longo do corredor central. Liberte ao menos dois: a fila cresce e vira alvo. A saída fica no bloco sudoeste. Os painéis de alarme são opcionais.,Four prisoners in four blocks along the central corridor. Free at least two: the line grows and becomes a target. The exit is in the southwestern block. The alarm panels are optional.
+INF_CORE_BRIEF,"A operação final. Inutilize os três painéis que travam as celas, copie o terminal central e liberte ao menos dois dos três prisioneiros. Andadores, atiradores e drones guardam a base. Leve todos que puder à saída a sudoeste.","The final operation. Disable the three panels locking the cells, copy the central terminal and free at least two of the three prisoners. Walkers, marksmen and drones guard the base. Lead everyone you can to the southwestern exit."
 INF_BRIEF_RULES,"Bônus: sem alarme · sem abates · até {time} s
 Poderes indisponíveis. Guarda: desviar/aparar disparos.","Bonuses: no alarm · no takedowns · within {time} s
 Powers unavailable. Guard: deflect/parry bolts."
@@ -878,7 +878,7 @@ INF_RECORD,Concluída · melhor tempo {time},Completed · best time {time}
 INF_START,Confirmar: iniciar missão,Confirm: start mission
 INF_SUCCESS,Missão concluída,Mission complete
 INF_PLAYER_DOWN,Missão falhou · você foi abatido,Mission failed · you were downed
-INF_PRISONER_DOWN,Missão falhou · prisioneiro abatido,Mission failed · prisoner downed
+INF_PRISONER_DOWN,Missão falhou · prisioneiros de menos,Mission failed · too few prisoners
 INF_NEXT,Próxima missão,Next mission
 INF_MISSIONS,Missões,Missions
 INF_TIME,Tempo: {time},Time: {time}
@@ -891,11 +891,13 @@ INF_PENDING,[–],[–]
 INF_OBJECTIVE_PANEL,Desativar painel {index},Disable panel {index}
 INF_OBJECTIVE_TERMINAL,Copiar terminal {index},Copy terminal {index}
 INF_OBJECTIVE_PRISONER,Extrair prisioneiro {index},Extract prisoner {index}
+INF_OBJECTIVE_MINIMUM,Resgatar ao menos {index},Rescue at least {index}
 INF_OBJECTIVE_EXIT,Alcançar a saída,Reach the exit
 INF_BONUSES,Bônus da tentativa,Attempt bonuses
 INF_BONUS_ALARM,Sem alarme,No alarm
 INF_BONUS_ABATES,Sem abates,No takedowns
 INF_BONUS_TIME,Dentro do tempo,Within the time limit
+INF_BONUS_RESCUED,Todos resgatados,Everyone rescued
 INF_FAILURE_SAVE,Derrotas não registram conclusão ou bônus.,Defeats do not record completion or bonuses.
 INF_INTERACT,Interagir,Interact
 INF_CHARACTER,Personagem: {name},Character: {name}
@@ -909,15 +911,15 @@ INF_COPY,Copiar informação,Copy information
 INF_RECRUIT,Recrutar prisioneiro,Recruit prisoner
 INF_LOCKED,Cela travada: desative os painéis,Cell locked: disable the panels
 INF_END_PLAYER,Você foi abatido,You were downed
-INF_END_PRISONER,Um prisioneiro foi abatido,A prisoner was downed
-INF_END_RESCUED,Prisioneiros a salvo: {count},Prisoners safe: {count}
+INF_END_PRISONER,Prisioneiros de menos para concluir,Too few prisoners left to complete it
+INF_END_RESCUED,Prisioneiros a salvo: {count} de {total},Prisoners safe: {count} of {total}
 MISSION_END_SUCCESS,Missão concluída,Mission complete
 MISSION_END_FAILURE,Missão falhou,Mission failed
 SPACE_END_PLAYER,Sua nave foi destruída,Your ship was destroyed
 INF_PROGRESS,Objetivos {done}/{total} · {time},Objectives {done}/{total} · {time}
 INF_EXIT_DISTANCE,Saída a {distance} u,Exit {distance} u away
 INF_TARGET_GUIDE,{objective} · {direction} · {distance} u,{objective} · {direction} · {distance} u
-INF_ESCORT_GUIDE,Prisioneiros a salvo: {safe}/{total} · seguindo: {following} · menor vida {health},Prisoners safe: {safe}/{total} · following: {following} · lowest health {health}
+INF_ESCORT_GUIDE,Prisioneiros a salvo: {safe}/{total} · mínimo {minimum} · seguindo: {following} · menor vida {health},Prisoners safe: {safe}/{total} · minimum {minimum} · following: {following} · lowest health {health}
 INF_SECURITY_READY,Alarme pronto,Alarm ready
 INF_SECURITY_ACTIVE,ALARME ATIVO,ALARM ACTIVE
 INF_SECURITY_DISABLED,Alarmes desativados,Alarms disabled

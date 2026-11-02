@@ -7,6 +7,10 @@
 [ext_resource type="Resource" path="res://data/infiltration/enemies/sentry.tres" id="sentry"]
 [ext_resource type="Resource" path="res://data/infiltration/enemies/patrol_trooper.tres" id="trooper"]
 [ext_resource type="Resource" path="res://data/infiltration/enemies/heavy.tres" id="heavy"]
+[ext_resource type="Resource" path="res://data/infiltration/enemies/marksman.tres" id="marksman"]
+[ext_resource type="Resource" path="res://data/infiltration/enemies/drone.tres" id="drone"]
+[ext_resource type="Resource" path="res://data/infiltration/enemies/shield.tres" id="shield"]
+[ext_resource type="Resource" path="res://data/infiltration/enemies/walker.tres" id="walker"]
 [ext_resource type="Texture2D" path="res://assets/infiltration/training_tiles.png" id="tiles"]
 [ext_resource type="Texture2D" path="res://assets/infiltration/training_sprites.png" id="sprites"]
 [ext_resource type="Texture2D" path="res://assets/infiltration/enemy_sprites.png" id="enemies"]
@@ -22,7 +26,7 @@ position = Vector2(2144, 3232)
 
 [sub_resource type="Resource" id="enemy_0"]
 script = ExtResource("placement")
-enemy = ExtResource("trooper")
+enemy = ExtResource("shield")
 position = Vector2(288, 1696)
 direction = Vector2(1, 0)
 route = PackedVector2Array(288, 1696, 5088, 1696, 5088, 1888, 288, 1888)
@@ -42,7 +46,7 @@ route = PackedVector2Array(1824, 544, 2464, 544, 2464, 1312, 1824, 1312)
 
 [sub_resource type="Resource" id="enemy_3"]
 script = ExtResource("placement")
-enemy = ExtResource("sentry")
+enemy = ExtResource("marksman")
 position = Vector2(3424, 1120)
 direction = Vector2(1, 0)
 
@@ -55,14 +59,14 @@ route = PackedVector2Array(3104, 544, 3744, 544, 3744, 1312, 3104, 1312)
 
 [sub_resource type="Resource" id="enemy_5"]
 script = ExtResource("placement")
-enemy = ExtResource("heavy")
+enemy = ExtResource("walker")
 position = Vector2(4384, 544)
 direction = Vector2(1, 0)
 route = PackedVector2Array(4384, 544, 5024, 544, 5024, 1312, 4384, 1312)
 
 [sub_resource type="Resource" id="enemy_6"]
 script = ExtResource("placement")
-enemy = ExtResource("trooper")
+enemy = ExtResource("drone")
 position = Vector2(544, 2272)
 direction = Vector2(1, 0)
 route = PackedVector2Array(544, 2272, 1184, 2272, 1184, 2592, 544, 2592)
@@ -135,6 +139,7 @@ map = SubResource("layout")
 disable_alarms = false
 panels_unlock_prisoners = false
 prisoner_spawns = PackedVector2Array(2144, 544, 3424, 3232, 4704, 544, 4704, 3232)
+minimum_prisoners = 2
 extraction = Vector2(864, 3232)
 bonus_seconds = 480.0
 preview = ExtResource("preview")

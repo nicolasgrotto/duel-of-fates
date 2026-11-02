@@ -67,7 +67,7 @@ func test_archetypes_and_extended_map_are_valid_original_data() -> void:
 	assert_eq(HEAVY.bolt.count, 3)
 	assert_eq(MAP.enemies.size(), 5)
 	assert_eq(MAP.panels.size(), 1)
-	assert_eq(MAP.enemy_sprites.get_size(), Vector2(72, 28))
+	assert_eq(MAP.enemy_sprites.get_size(), Vector2(144, 28))
 	for placement in MAP.enemies:
 		assert_eq(InfiltrationGeometry.wall_fraction(MAP, placement.position, placement.position, CONFIG.body_radius), INF)
 		for point in placement.route:
