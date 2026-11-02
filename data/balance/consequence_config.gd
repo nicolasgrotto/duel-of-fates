@@ -1,6 +1,8 @@
 class_name ConsequenceConfig
 extends Resource
 
+const DEFAULT_CUT_HEIGHTS: PackedFloat32Array = [100.0, 132.0, 66.0, 104.0, 96.0, 100.0]
+
 @export_group("Exhaustion")
 @export var exhaustion_enter_ratio: float = 0.05
 @export var exhaustion_exit_ratio: float = 0.30
@@ -12,7 +14,7 @@ extends Resource
 @export var wounded_leg_dodge_multiplier: float = 1.2
 
 @export_group("Finishers")
-@export var cut_heights: PackedFloat32Array = PackedFloat32Array([100.0, 132.0, 66.0, 104.0, 96.0, 100.0])
+@export var cut_heights: PackedFloat32Array = DEFAULT_CUT_HEIGHTS
 @export var head_line: float = 118.0
 @export var leg_line: float = 50.0
 @export var head_on_deciding_heavy: bool = true

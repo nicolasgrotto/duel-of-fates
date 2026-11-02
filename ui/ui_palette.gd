@@ -1,6 +1,8 @@
 class_name UiPalette
 extends Resource
 
+const DEFAULT_FLOW_TIERS: PackedColorArray = [Color("#9cc4ff"), Color("#5d8dff"), Color("#b26bff"), Color("#ff2b45")]
+
 @export_group("Interface")
 @export var background: Color = Color("#05070d")
 @export var text: Color = Color("#e8ecf5")
@@ -10,7 +12,7 @@ extends Resource
 @export var aurora: Color = Color("#5aa2ff")
 @export var eclipse: Color = Color("#ff4458")
 @export var potential: Color = Color("#d9b45a")
-@export var flow_tiers: PackedColorArray = PackedColorArray([Color("#9cc4ff"), Color("#5d8dff"), Color("#b26bff"), Color("#ff2b45")])
+@export var flow_tiers: PackedColorArray = DEFAULT_FLOW_TIERS
 
 @export_group("Duel HUD")
 @export var bar_back: Color = Color(0.91, 0.925, 0.96, 0.1)

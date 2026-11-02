@@ -1,6 +1,9 @@
 class_name PowerVfxConfig
 extends Resource
 
+const DEFAULT_REPULSE_BAND_ALPHA: PackedFloat32Array = [0.34, 0.2, 0.1]
+const DEFAULT_STORM_SHELL_ALPHA: PackedFloat32Array = [0.5, 0.26, 0.12]
+
 @export_group("Debris")
 @export var plunge_dust: int = 6
 @export var plunge_chunks: int = 3
@@ -30,7 +33,7 @@ extends Resource
 @export var repulse_bow_ratio: float = 0.22
 @export var repulse_edge_width: float = 2.0
 @export var repulse_edge_light: float = 0.6
-@export var repulse_band_alpha: PackedFloat32Array = PackedFloat32Array([0.34, 0.2, 0.1])
+@export var repulse_band_alpha: PackedFloat32Array = DEFAULT_REPULSE_BAND_ALPHA
 @export var repulse_echo_tier: int = 2
 @export var repulse_echo_spacing: float = 18.0
 @export var repulse_echo_alpha: float = 0.28
@@ -78,7 +81,7 @@ extends Resource
 @export var storm_shell: Vector2 = Vector2(44.0, 86.0)
 @export var storm_tier_growth: float = 0.08
 @export var storm_fill_alpha: float = 0.06
-@export var storm_shell_alpha: PackedFloat32Array = PackedFloat32Array([0.5, 0.26, 0.12])
+@export var storm_shell_alpha: PackedFloat32Array = DEFAULT_STORM_SHELL_ALPHA
 @export var storm_shell_spacing: float = 6.0
 @export var storm_flicker_rate: float = 14.0
 @export var storm_arcs: int = 5

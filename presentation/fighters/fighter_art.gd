@@ -7,7 +7,7 @@ extends Resource
 @export var pivots: Dictionary = {}
 @export var dims: Dictionary = {}
 @export var cloths: Array = []
-@export var default_parts: PackedStringArray = []
+@export var default_parts: PackedStringArray
 
 var _canvas_textures: Dictionary = {}
 

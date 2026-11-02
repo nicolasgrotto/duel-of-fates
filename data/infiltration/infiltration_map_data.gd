@@ -4,7 +4,7 @@ extends Resource
 @export var id: StringName
 @export var title_key: String
 @export var tile_size: float = 64.0
-@export var rows: PackedStringArray = []
+@export var rows: PackedStringArray
 @export var player_spawn: Vector2
 @export var player_direction: Vector2 = Vector2.RIGHT
 @export var targets: Array[InfiltrationTargetData] = []

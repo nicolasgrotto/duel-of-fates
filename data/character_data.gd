@@ -1,6 +1,8 @@
 class_name CharacterData
 extends Resource
 
+const DEFAULT_BLADE_COLORS: PackedColorArray = [Color("#7fe4ff")]
+
 enum Path { AURORA, ECLIPSE }
 enum LockStyle { BLADE, FLOW_HOLD }
 
@@ -77,8 +79,8 @@ enum LockStyle { BLADE, FLOW_HOLD }
 @export var family: MotionFamily
 @export var weapon: WeaponData
 @export var costumes: Array[CostumeData] = []
-@export var blade_colors: PackedColorArray = PackedColorArray([Color("#7fe4ff")])
-@export var blade_color_keys: PackedStringArray = []
+@export var blade_colors: PackedColorArray = DEFAULT_BLADE_COLORS
+@export var blade_color_keys: PackedStringArray
 @export var guard_angle: float = -55.0
 @export var guard_grip: Vector2 = Vector2(14.0, -24.0)
 @export var eclipse_eyes: bool = false

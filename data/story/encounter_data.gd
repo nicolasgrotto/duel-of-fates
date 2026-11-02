@@ -13,6 +13,6 @@ enum Route { COMMON, AURORA, ECLIPSE }
 @export var boss_ai: bool = false
 @export var milestone: bool = false
 @export var awards_points: bool = true
-@export var unlocks: PackedStringArray = []
+@export var unlocks: PackedStringArray
 @export var before: Array[DialogueLine] = []
 @export var after: Array[DialogueLine] = []

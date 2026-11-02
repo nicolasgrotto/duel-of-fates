@@ -1,6 +1,8 @@
 class_name PowerData
 extends Resource
 
+const DEFAULT_TIER_VALUES: PackedFloat32Array = [1.0, 1.0, 1.0, 1.0]
+
 enum Path { COMMON, AURORA, ECLIPSE }
 enum Kind {
 	REPULSE, PULL, THROW, MIND_TWIST, SUPREME_PUSH, FRACTURE,
@@ -42,7 +44,7 @@ enum Kind {
 @export var speed: float = 0.0
 @export var escape_damage: float = 0.0
 @export var absorb_gain: float = 0.0
-@export var tier_values: PackedFloat32Array = PackedFloat32Array([1.0, 1.0, 1.0, 1.0])
+@export var tier_values: PackedFloat32Array = DEFAULT_TIER_VALUES
 @export var interaction: InteractionTable
 @export var guard_vigor: float = 10.0
 @export var barrier_drain: float = 0.0
@@ -68,10 +70,10 @@ enum Kind {
 @export var throw_push: float = 0.0
 
 @export_group("By Flow level")
-@export var level_damage: PackedFloat32Array = []
-@export var level_speed: PackedFloat32Array = []
-@export var level_cost: PackedFloat32Array = []
-@export var level_cooldown: PackedFloat32Array = []
+@export var level_damage: PackedFloat32Array
+@export var level_speed: PackedFloat32Array
+@export var level_cost: PackedFloat32Array
+@export var level_cooldown: PackedFloat32Array
 
 @export_group("Finisher")
 @export var finisher: Finisher.Kind = Finisher.Kind.NONE

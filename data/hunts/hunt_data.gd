@@ -13,7 +13,7 @@ extends Resource
 @export var condition: HuntCondition
 @export var before: Array[DialogueLine] = []
 @export var after: Array[DialogueLine] = []
-@export var unlocks: PackedStringArray = []
+@export var unlocks: PackedStringArray
 @export var reward_key: String
 
 

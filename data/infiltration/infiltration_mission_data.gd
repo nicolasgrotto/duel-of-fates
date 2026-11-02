@@ -6,8 +6,8 @@ extends Resource
 @export var briefing_key: String
 @export var map: InfiltrationMapData
 @export var disable_alarms: bool = false
-@export var terminals: PackedVector2Array = []
-@export var prisoner_spawns: PackedVector2Array = []
+@export var terminals: PackedVector2Array
+@export var prisoner_spawns: PackedVector2Array
 @export var extraction: Vector2
 @export var extraction_radius: float = 96.0
 @export var bonus_seconds: float = 90.0

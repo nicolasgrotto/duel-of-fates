@@ -1,6 +1,8 @@
 class_name MoveData
 extends Resource
 
+const DEFAULT_PROJECTILE_TIER_SCALES: PackedFloat32Array = [1.0]
+
 enum Kind { LIGHT, HEAVY, FORWARD_HEAVY, COUNTER, SHOVE, AERIAL_LIGHT, AERIAL_HEAVY, LOCK_FINISH, ABILITY, STANCE, TECHNIQUE, DISENGAGE }
 enum Limb { NONE, ARM, LEG, HEAD }
 enum Cut { ARC, DESCENDING, RISING, HORIZONTAL, THRUST, SPIN }
@@ -49,7 +51,7 @@ enum TechniqueStyle { ARC, DASH, THROW, THRUST, RISING, FLURRY, LUNGE, PLUNGE, W
 @export var projectile_speed: float = 0.0
 @export var projectile_range: float = 0.0
 @export var projectile_size: float = 0.0
-@export var projectile_tier_scales: PackedFloat32Array = PackedFloat32Array([1.0])
+@export var projectile_tier_scales: PackedFloat32Array = DEFAULT_PROJECTILE_TIER_SCALES
 @export var follow_up: MoveData
 @export var follow_up_auto: bool = false
 @export var from_guard: bool = false

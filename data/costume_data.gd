@@ -1,17 +1,19 @@
 class_name CostumeData
 extends Resource
 
+const DEFAULT_COLORS: PackedColorArray = [
+	Color("#6b5a48"), Color("#2e2925"), Color("#8a6a3a"), Color("#9a7660"),
+	Color("#4a3222"), Color("#9aa3ad"), Color("#3a2c22"), Color("#ffb22e"),
+]
+
 enum Slot { CLOAK, BODY, TRIM, SKIN, HAIR, METAL, LEATHER, EYES }
 
 @export var id: StringName
 @export var name_key: String
 @export var requirement_key: String
-@export var colors: PackedColorArray = PackedColorArray([
-	Color("#6b5a48"), Color("#2e2925"), Color("#8a6a3a"), Color("#9a7660"),
-	Color("#4a3222"), Color("#9aa3ad"), Color("#3a2c22"), Color("#ffb22e"),
-])
-@export var show_parts: PackedStringArray = []
-@export var hide_parts: PackedStringArray = []
+@export var colors: PackedColorArray = DEFAULT_COLORS
+@export var show_parts: PackedStringArray
+@export var hide_parts: PackedStringArray
 @export var prosthetic_arm: bool = false
 
 

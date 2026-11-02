@@ -1,6 +1,8 @@
 class_name MatchRules
 extends Resource
 
+const DEFAULT_START_HEALTH: PackedFloat32Array = [1.0, 1.0]
+
 @export var rounds_to_win: int = 2
 @export var exhaustion: bool = true
 @export var wounds: bool = true
@@ -13,4 +15,4 @@ extends Resource
 @export var powers: bool = true
 @export var focus_evade: bool = true
 @export var free_powers: bool = false
-@export var start_health: PackedFloat32Array = PackedFloat32Array([1.0, 1.0])
+@export var start_health: PackedFloat32Array = DEFAULT_START_HEALTH
