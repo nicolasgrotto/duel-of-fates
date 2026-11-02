@@ -7,7 +7,7 @@
 script = ExtResource("1")
 id = &"capital"
 name_key = "SPACE_CAPITAL"
-hull = 180.0
+hull = 600.0
 shield = 70.0
 shield_regeneration = 3.0
 speed = 0.0

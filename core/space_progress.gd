@@ -2,10 +2,17 @@ class_name SpaceProgress
 extends RefCounted
 
 const CONFIG: SpaceUpgradeConfig = preload("res://data/space/upgrades.tres")
-const IDS: PackedStringArray = ["open_corridor", "ash_trail", "last_escort", "cut_network", "tide_iron"]
+const IDS: PackedStringArray = ["open_corridor", "ash_trail", "last_escort", "cut_network", "iron_graveyard", "tide_iron"]
+const SHIPS: Array[SpaceShipData] = [
+	preload("res://data/space/ships/mission_ship.tres"),
+	preload("res://data/space/ships/needle.tres"),
+	preload("res://data/space/ships/anvil.tres"),
+	preload("res://data/space/ships/spear.tres"),
+]
 
 var records: Dictionary = {}
 var levels: PackedInt32Array = [0, 0, 0]
+var ship_id: StringName = SHIPS[0].id
 
 
 func available() -> int:
@@ -31,8 +38,24 @@ func reset_upgrades() -> void:
 	levels.fill(0)
 
 
+func selected_ship() -> SpaceShipData:
+	for ship in SHIPS:
+		if ship.id == ship_id:
+			return ship
+	return SHIPS[0]
+
+
+func select_ship(id: StringName) -> bool:
+	for ship in SHIPS:
+		if ship.id == id:
+			ship_id = id
+			return true
+	return false
+
+
 func loadout() -> SpaceLoadout:
 	var result: SpaceLoadout = SpaceLoadout.new()
+	result.ship = selected_ship()
 	result.weapon_level = levels[0]
 	result.shield_level = levels[1]
 	result.speed_level = levels[2]
@@ -40,12 +63,14 @@ func loadout() -> SpaceLoadout:
 
 
 func capture() -> Dictionary:
-	return {"records": records.duplicate(true), "levels": levels.duplicate()}
+	return {"records": records.duplicate(true), "levels": levels.duplicate(), "ship": String(ship_id)}
 
 
 func restore(state: Dictionary) -> void:
 	records.clear()
 	levels.fill(0)
+	ship_id = SHIPS[0].id
+	select_ship(StringName(str(state.get("ship", ""))))
 	var saved: Variant = state.get("records", {})
 	if saved is Dictionary:
 		for id in IDS:

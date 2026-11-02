@@ -7,7 +7,7 @@
 script = ExtResource("1")
 id = &"engine"
 name_key = "SPACE_ENGINE"
-hull = 60.0
+hull = 140.0
 shield = 0.0
 shield_regeneration = 0.0
 speed = 0.0

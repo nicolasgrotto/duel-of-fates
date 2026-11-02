@@ -81,7 +81,7 @@ func test_spread_is_atomic_when_pool_cannot_fit_all_bolts() -> void:
 
 
 func test_existing_boss_projectiles_keep_original_pattern_after_phase_change() -> void:
-	var mode: SpaceMode = SpaceMode.new(SpaceMode.MISSIONS[4], SpaceLoadout.new(), true)
+	var mode: SpaceMode = SpaceMode.new(SpaceMode.MISSIONS[5], SpaceLoadout.new(), true)
 	var sim: SpaceSimulation = mode.create_simulation()
 	var original: SpaceWeaponData = sim.weapon(1, 0)
 	assert_true(sim._fire(1, 0, original, 0))
@@ -93,7 +93,7 @@ func test_existing_boss_projectiles_keep_original_pattern_after_phase_change() -
 
 
 func test_player_secondary_fixes_current_objective_without_explicit_target() -> void:
-	var mode: SpaceMode = SpaceMode.new(SpaceMode.MISSIONS[4], SpaceLoadout.new(), true)
+	var mode: SpaceMode = SpaceMode.new(SpaceMode.MISSIONS[5], SpaceLoadout.new(), true)
 	var sim: SpaceSimulation = mode.create_simulation()
 	var commands: Array[SpaceIntent] = SpaceFixture.commands(sim.ships.size())
 	commands[0].pressed = SpaceIntent.Command.SECONDARY

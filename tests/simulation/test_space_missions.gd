@@ -1,5 +1,7 @@
 extends TestCase
 
+const MINIMUM_PILOT_SECONDS: float = 30.0
+
 
 func _sim(index: int) -> SpaceSimulation:
 	return SpaceMode.new(SpaceMode.MISSIONS[index], SpaceLoadout.new(), true).create_simulation()
@@ -16,13 +18,64 @@ func _run(index: int) -> SpaceSimulation:
 	return sim
 
 
-func test_all_five_missions_complete_with_base_loadout_and_real_commands() -> void:
+func _run_idle(index: int) -> SpaceSimulation:
+	var sim: SpaceSimulation = _sim(index)
+	var ai: SpaceEnemyController = SpaceEnemyController.new(sim.ships.size())
+	var idle: SpaceIntent = SpaceIntent.new()
+	for tick in Ticks.from_seconds(sim.mission.data.limit_seconds) + 1:
+		sim.step(ai.produce_all(sim, idle))
+		if sim.mission.outcome != SpaceMissionState.Outcome.ACTIVE:
+			break
+	return sim
+
+
+func test_doing_nothing_loses_every_mission() -> void:
+	for index in SpaceMode.MISSIONS.size():
+		var sim: SpaceSimulation = _run_idle(index)
+		assert_ne(sim.mission.outcome, SpaceMissionState.Outcome.COMPLETED, String(sim.mission.data.id))
+		assert_ne(sim.mission.outcome, SpaceMissionState.Outcome.ACTIVE, String(sim.mission.data.id))
+
+
+func test_escort_is_lost_if_the_pilot_does_not_help() -> void:
+	assert_eq(_run_idle(2).mission.outcome, SpaceMissionState.Outcome.ALLY_DOWN)
+
+
+func test_fighters_attack_inside_their_orbit() -> void:
+	var sim: SpaceSimulation = _sim(0)
+	var ai: SpaceEnemyController = SpaceEnemyController.new(sim.ships.size())
+	var idle: SpaceIntent = SpaceIntent.new()
+	var shots: int = 0
+	for tick in 1800:
+		sim.step(ai.produce_all(sim, idle))
+		for event_index in sim.event_count:
+			if sim.events[event_index].type == SpaceEvent.Type.SHIELD_HIT or sim.events[event_index].type == SpaceEvent.Type.HULL_HIT:
+				shots += 1
+	assert_gt(float(shots), 10.0)
+	assert_lt(sim.ships[0].hull, sim.ships[0].data.hull)
+
+
+func test_other_ships_finish_the_first_mission() -> void:
+	for ship in range(1, SpaceProgress.SHIPS.size()):
+		var loadout: SpaceLoadout = SpaceLoadout.new()
+		loadout.ship = SpaceProgress.SHIPS[ship]
+		var sim: SpaceSimulation = SpaceMode.new(SpaceMode.MISSIONS[0], loadout, true).create_simulation()
+		var ai: SpaceEnemyController = SpaceEnemyController.new(sim.ships.size())
+		var pilot: SpaceMissionPilot = SpaceMissionPilot.new()
+		for tick in Ticks.from_seconds(sim.mission.data.limit_seconds) + 1:
+			sim.step(ai.produce_all(sim, pilot.produce(sim)))
+			if sim.mission.outcome != SpaceMissionState.Outcome.ACTIVE:
+				break
+		assert_eq(sim.mission.outcome, SpaceMissionState.Outcome.COMPLETED, String(loadout.ship.id))
+
+
+func test_all_missions_complete_with_base_loadout_and_last_long_even_with_perfect_aim() -> void:
 	for index in SpaceMode.MISSIONS.size():
 		var sim: SpaceSimulation = _run(index)
 		assert_eq(sim.mission.outcome, SpaceMissionState.Outcome.COMPLETED, String(sim.mission.data.id))
 		assert_true(sim.ships[0].hull > 0.0)
 		assert_true(sim.mission.rating(sim) >= 1)
 		assert_eq(sim.dropped_events, 0)
+		assert_gt(sim.tick * Ticks.DELTA, MINIMUM_PILOT_SECONDS, String(sim.mission.data.id))
 
 
 func test_wave_delay_and_formation_spawn_are_deterministic() -> void:
@@ -71,7 +124,7 @@ func test_enemy_controller_only_produces_reused_intents() -> void:
 func test_capital_generator_engine_and_turrets_are_independent() -> void:
 	var sim: SpaceSimulation = _sim(3)
 	sim._damage(2, 0, 1000.0, sim.ships[2].position)
-	assert_almost(sim.ships[1].hull, 180.0)
+	assert_almost(sim.ships[1].hull, sim.ships[1].data.hull)
 	assert_almost(sim.ships[1].shield, 0.0)
 	assert_true(sim.ships[3].hull > 0.0)
 	assert_false(sim.mission.shield_online(sim, 1))
@@ -112,7 +165,7 @@ func test_ally_can_take_damage_from_enemy_commands() -> void:
 
 
 func test_player_failure_takes_priority_over_final_enemy_death() -> void:
-	var sim: SpaceSimulation = _sim(4)
+	var sim: SpaceSimulation = _sim(5)
 	sim.ships[0].hull = 0.0
 	sim.ships[1].hull = 0.0
 	sim.step(SpaceFixture.commands(sim.ships.size()))
@@ -120,7 +173,7 @@ func test_player_failure_takes_priority_over_final_enemy_death() -> void:
 
 
 func test_timeout_is_inclusive_and_does_not_grant_rating() -> void:
-	var sim: SpaceSimulation = _sim(4)
+	var sim: SpaceSimulation = _sim(5)
 	sim.tick = Ticks.from_seconds(sim.mission.data.limit_seconds) - 1
 	sim.step(SpaceFixture.commands(sim.ships.size()))
 	assert_eq(sim.mission.outcome, SpaceMissionState.Outcome.TIMEOUT)
@@ -128,7 +181,7 @@ func test_timeout_is_inclusive_and_does_not_grant_rating() -> void:
 
 
 func test_boss_opens_only_current_weakpoint_in_half_open_window() -> void:
-	var sim: SpaceSimulation = _sim(4)
+	var sim: SpaceSimulation = _sim(5)
 	var stage: SpaceBossPhase = sim.mission.data.phases[0]
 	sim.mission.phase_ticks = Ticks.from_seconds(stage.open_start) - 1
 	assert_false(sim.mission.can_damage(sim, 2))
@@ -144,11 +197,13 @@ func test_boss_opens_only_current_weakpoint_in_half_open_window() -> void:
 
 
 func test_boss_thresholds_trigger_once_without_healing_or_double_damage() -> void:
-	var sim: SpaceSimulation = _sim(4)
+	var sim: SpaceSimulation = _sim(5)
 	var commands: Array[SpaceIntent] = SpaceFixture.commands(sim.ships.size())
 	sim.mission.phase_ticks = 60
+	var core: float = sim.ships[2].data.hull
+	var whole: float = sim.ships[1].data.hull
 	sim._damage(2, 0, 1000.0, sim.ships[2].position)
-	assert_almost(sim.ships[1].hull, 160.0)
+	assert_almost(sim.ships[1].hull, whole - core)
 	sim.step(commands)
 	assert_eq(sim.mission.phase, 1)
 	assert_eq(sim.mission.phase_visits, PackedInt32Array([1, 1, 0]))
@@ -156,7 +211,7 @@ func test_boss_thresholds_trigger_once_without_healing_or_double_damage() -> voi
 	sim._damage(3, 0, 1000.0, sim.ships[3].position)
 	sim.step(commands)
 	assert_eq(sim.mission.phase, 2)
-	assert_almost(sim.ships[1].hull, 80.0)
+	assert_almost(sim.ships[1].hull, whole - core * 2.0)
 	for tick in 200:
 		sim.step(commands)
 	assert_eq(sim.mission.phase_visits, PackedInt32Array([1, 1, 1]))
@@ -165,7 +220,7 @@ func test_boss_thresholds_trigger_once_without_healing_or_double_damage() -> voi
 
 
 func test_snapshot_restores_wave_boss_and_projectile_identity() -> void:
-	var sim: SpaceSimulation = _sim(4)
+	var sim: SpaceSimulation = _sim(5)
 	var ai: SpaceEnemyController = SpaceEnemyController.new(sim.ships.size())
 	var pilot: SpaceMissionPilot = SpaceMissionPilot.new()
 	for tick in 600:

@@ -23,14 +23,17 @@ func test_training_arena_uses_original_sprites_valid_spawns_and_expected_stats()
 	TranslationServer.set_locale(saved_locale)
 
 
-func test_five_missions_preserve_sections_obstacles_and_localized_content() -> void:
-	assert_eq(SpaceMode.MISSIONS.size(), 5)
+func test_missions_preserve_sections_obstacles_and_localized_content() -> void:
+	assert_eq(SpaceMode.MISSIONS.size(), 6)
+	assert_eq(SpaceProgress.IDS.size(), SpaceMode.MISSIONS.size())
 	var locale_before: String = TranslationServer.get_locale()
 	for locale in ["pt_BR", "en"]:
 		TranslationServer.set_locale(locale)
 		for data in SpaceMode.MISSIONS:
 			assert_eq(data.arena.size, Vector2(2800, 1800))
-			assert_eq(data.arena.obstacles.size(), 3)
+			assert_true(data.arena.obstacles.size() >= 3)
+			assert_true(data.preview != null)
+			assert_eq(Vector2i(data.preview.get_size()), Vector2i(480, 170))
 			for key in [data.title_key, data.briefing_key, data.objective_key]:
 				assert_ne(TranslationServer.translate(key), key)
 			var arena: SpaceArenaData = data.create_arena(SpaceLoadout.new(), SpaceMode.UPGRADES)
@@ -42,7 +45,37 @@ func test_five_missions_preserve_sections_obstacles_and_localized_content() -> v
 	assert_eq(escort.protected_ship, 1)
 	assert_eq(escort.arena.ships[2].role, SpaceShipPlacement.Role.GENERATOR)
 	assert_eq(escort.arena.ships[2].parent, 1)
-	var boss: SpaceMissionData = SpaceMode.MISSIONS[4]
+	var boss: SpaceMissionData = SpaceMode.MISSIONS[5]
 	assert_eq(boss.phases.size(), 3)
 	assert_eq(boss.arena.ships[2].role, SpaceShipPlacement.Role.WEAKPOINT)
 	assert_eq(boss.arena.ships[2].parent, 1)
+
+
+func test_player_ships_have_distinct_strengths_and_localized_text() -> void:
+	assert_eq(SpaceProgress.SHIPS.size(), 4)
+	var ids: Dictionary = {}
+	var locale_before: String = TranslationServer.get_locale()
+	for ship in SpaceProgress.SHIPS:
+		ids[ship.id] = true
+		assert_true(ship.primary != null and ship.secondary != null and ship.sprite != null, String(ship.id))
+		for locale in ["pt_BR", "en"]:
+			TranslationServer.set_locale(locale)
+			assert_ne(TranslationServer.translate(ship.name_key), ship.name_key)
+			assert_ne(TranslationServer.translate(ship.description_key), ship.description_key)
+	TranslationServer.set_locale(locale_before)
+	assert_eq(ids.size(), 4)
+	var base: SpaceShipData = SpaceProgress.SHIPS[0]
+	var needle: SpaceShipData = SpaceProgress.SHIPS[1]
+	var anvil: SpaceShipData = SpaceProgress.SHIPS[2]
+	var spear: SpaceShipData = SpaceProgress.SHIPS[3]
+	assert_almost(base.shield, 28.0)
+	assert_gt(needle.speed, base.speed)
+	assert_lt(needle.hull, base.hull)
+	assert_gt(needle.contact_ratio, base.contact_ratio)
+	assert_gt(anvil.hull, base.hull)
+	assert_gt(anvil.shield, base.shield)
+	assert_lt(anvil.speed, base.speed)
+	assert_lt(anvil.contact_ratio, base.contact_ratio)
+	assert_gt(spear.primary.max_range, base.primary.max_range)
+	assert_lt(spear.secondary.interval, base.secondary.interval)
+	assert_lt(spear.rotation_degrees, base.rotation_degrees)

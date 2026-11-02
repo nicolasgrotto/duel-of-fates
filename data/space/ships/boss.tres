@@ -8,7 +8,7 @@
 script = ExtResource("1")
 id = &"boss"
 name_key = "SPACE_BOSS"
-hull = 240.0
+hull = 1500.0
 shield = 0.0
 shield_regeneration = 0.0
 speed = 0.0

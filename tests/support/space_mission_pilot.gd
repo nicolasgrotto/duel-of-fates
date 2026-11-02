@@ -1,23 +1,34 @@
 class_name SpaceMissionPilot
 extends RefCounted
 
+const DODGE_RANGE: float = 120.0
+const THREAT_RANGE: float = 520.0
+const STANDOFF: Vector2 = Vector2(-440, 0)
+const ARRIVAL_RADIUS: float = 120.0
+const ARRIVAL_SPEED: float = 25.0
+const DRIFT_LIMIT: float = 640.0
+
 var intent: SpaceIntent = SpaceIntent.new()
 var _arrived: int = -1
 
 
 func produce(sim: SpaceSimulation) -> SpaceIntent:
 	intent.clear()
-	var target: int = sim.mission.next_target(sim)
+	var pilot: SpaceShipState = sim.ships[0]
+	var target: int = _nearby_threat(sim)
+	if target < 0:
+		target = sim.mission.next_target(sim)
 	if target < 0:
 		return intent
 	intent.target = target
-	var pilot: SpaceShipState = sim.ships[0]
 	var enemy: SpaceShipState = sim.ships[target]
 	var offset: Vector2 = enemy.position - pilot.position
+	if enemy.data.immobile and _arrived == target and offset.length() > DRIFT_LIMIT:
+		_arrived = -1
 	if enemy.data.immobile and _arrived != target:
-		var goal: Vector2 = enemy.position + Vector2(-440, 0) - pilot.position
+		var goal: Vector2 = enemy.position + STANDOFF - pilot.position
 		var speed: float = pilot.velocity.length()
-		if goal.length() < 120.0 and speed < 25.0:
+		if goal.length() < ARRIVAL_RADIUS and speed < ARRIVAL_SPEED:
 			_arrived = target
 		else:
 			var heading: float = wrapf(goal.angle() - pilot.angle, -PI, PI)
@@ -34,4 +45,30 @@ func produce(sim: SpaceSimulation) -> SpaceIntent:
 		intent.held |= SpaceIntent.Command.PRIMARY
 		if pilot.cooldowns[1] == 0:
 			intent.pressed |= SpaceIntent.Command.SECONDARY
+	if pilot.boost_cooldown == 0 and _projectile_incoming(sim):
+		intent.thrust = -1.0
+		intent.pressed |= SpaceIntent.Command.BOOST
 	return intent
+
+
+func _projectile_incoming(sim: SpaceSimulation) -> bool:
+	var pilot: SpaceShipState = sim.ships[0]
+	for projectile in sim.projectiles:
+		if projectile.active and sim.ships[projectile.source].team != pilot.team and projectile.position.distance_to(pilot.position) < DODGE_RANGE:
+			return true
+	return false
+
+
+func _nearby_threat(sim: SpaceSimulation) -> int:
+	var pilot: SpaceShipState = sim.ships[0]
+	var nearest: int = -1
+	var distance: float = THREAT_RANGE
+	for index in range(1, sim.ships.size()):
+		var ship: SpaceShipState = sim.ships[index]
+		if ship.hull <= 0.0 or ship.team == pilot.team or ship.data.immobile:
+			continue
+		var candidate: float = ship.position.distance_to(pilot.position)
+		if candidate < distance:
+			distance = candidate
+			nearest = index
+	return nearest

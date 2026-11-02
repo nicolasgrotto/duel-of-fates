@@ -25,17 +25,34 @@ func test_purchase_caps_costs_refunds_and_changes_only_mode_stats() -> void:
 	assert_false(progress.buy(0))
 	assert_true(progress.buy(1))
 	assert_true(progress.buy(2))
-	assert_eq(progress.available(), 1)
+	assert_eq(progress.available(), 2)
 	var base: SpaceShipData = SpaceMode.MISSIONS[0].arena.ships[0].ship
 	var upgraded: SpaceShipData = progress.loadout().build_ship(SpaceProgress.CONFIG, base)
 	assert_almost(upgraded.primary.damage, base.primary.damage + 4.0)
 	assert_almost(upgraded.primary.interval, base.primary.interval - 0.04)
-	assert_almost(upgraded.shield, base.shield + 20.0)
+	assert_almost(upgraded.shield, base.shield + SpaceProgress.CONFIG.shield_capacity)
 	assert_almost(upgraded.speed, base.speed + 35.0)
 	assert_almost(base.primary.damage, 10.0)
 	progress.reset_upgrades()
-	assert_eq(progress.available(), 5)
+	assert_eq(progress.available(), SpaceProgress.IDS.size())
 	assert_eq(progress.loadout().weapon_level, 0)
+
+
+func test_chosen_ship_reaches_the_loadout_and_survives_a_save() -> void:
+	var progress: SpaceProgress = SpaceProgress.new()
+	assert_eq(progress.loadout().ship.id, SpaceProgress.SHIPS[0].id)
+	assert_true(progress.select_ship(&"anvil"))
+	assert_false(progress.select_ship(&"unknown"))
+	assert_eq(progress.loadout().ship.id, &"anvil")
+	var built: SpaceShipData = progress.loadout().build_ship(SpaceProgress.CONFIG, SpaceProgress.SHIPS[0])
+	assert_almost(built.hull, 150.0)
+	var restored: SpaceProgress = SpaceProgress.new()
+	restored.restore(progress.capture())
+	assert_eq(restored.selected_ship().id, &"anvil")
+	restored.restore({"ship": "unknown"})
+	assert_eq(restored.selected_ship().id, SpaceProgress.SHIPS[0].id)
+	restored.restore({})
+	assert_eq(restored.selected_ship().id, SpaceProgress.SHIPS[0].id)
 
 
 func test_upgrades_persist_without_changing_other_modes() -> void:
@@ -87,7 +104,7 @@ func test_external_run_reports_typed_result_once_without_save_or_navigation() ->
 	var service: Node = Engine.get_main_loop().root.get_node("SaveService")
 	var router: Node = Engine.get_main_loop().root.get_node("SceneRouter")
 	var before: Dictionary = service.space.capture()
-	var mode: SpaceMode = SpaceMode.new(SpaceMode.MISSIONS[4], SpaceLoadout.new(), true)
+	var mode: SpaceMode = SpaceMode.new(SpaceMode.MISSIONS[5], SpaceLoadout.new(), true)
 	var results: Array[SpaceMissionResult] = []
 	mode.finished.connect(func(value: SpaceMissionResult) -> void: results.append(value))
 	var sim: SpaceSimulation = mode.create_simulation()
@@ -107,7 +124,7 @@ func test_external_victory_keeps_progress_untouched_and_reports_phase_history() 
 	var before: Dictionary = service.space.capture()
 	var equipment: SpaceLoadout = SpaceLoadout.new()
 	equipment.weapon_level = 2
-	var mode: SpaceMode = SpaceMode.new(SpaceMode.MISSIONS[4], equipment, true)
+	var mode: SpaceMode = SpaceMode.new(SpaceMode.MISSIONS[5], equipment, true)
 	equipment.weapon_level = 0
 	var sim: SpaceSimulation = mode.create_simulation()
 	assert_almost(sim.ships[0].data.primary.damage, 14.0)

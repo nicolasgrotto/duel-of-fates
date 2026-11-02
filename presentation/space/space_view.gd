@@ -1,6 +1,8 @@
 class_name SpaceView
 extends Node2D
 
+const TRAIL_GAP: float = 8.0
+const ENGINE_GAP: float = 6.0
 const PALETTE: UiPalette = preload("res://ui/palette.tres")
 const FRAGMENTS: int = 8
 
@@ -65,7 +67,7 @@ func _process(delta: float) -> void:
 		var interval: float = sim.config.trail_interval * (2.0 if reduced else 1.0)
 		if _trail_time >= interval and ship.hull > 0.0 and ship.velocity.length_squared() > 25.0 and not _trail_left.is_empty():
 			_trail_time = 0.0
-			_trail_positions[_trail_next] = ship.previous.lerp(ship.position, alpha) - ship.forward() * 34.0
+			_trail_positions[_trail_next] = ship.previous.lerp(ship.position, alpha) - ship.forward() * (ship.data.radius + TRAIL_GAP)
 			_trail_angles[_trail_next] = ship.angle
 			_trail_left[_trail_next] = sim.config.trail_seconds
 			_trail_next = (_trail_next + 1) % _trail_left.size()
@@ -110,7 +112,7 @@ func _draw_ship(index: int) -> void:
 	var boosting: bool = ship.boost_tick >= 0
 	if not ship.data.immobile and (absf(ship.thrust) > 0.01 or boosting):
 		var length: float = sim.config.engine_length * (2.0 if boosting else absf(ship.thrust))
-		var base: Vector2 = point - direction * 32.0
+		var base: Vector2 = point - direction * (ship.data.radius + ENGINE_GAP)
 		var tail: Vector2 = base - direction * length
 		draw_line(_snap(base), _snap(tail), Color(PALETTE.menu_blade_b, 0.3), 12.0)
 		draw_line(_snap(base), _snap(tail), PALETTE.menu_blade_b, 6.0)

@@ -1,0 +1,21 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://data/space/space_ship_data.gd" id="1"]
+[ext_resource type="Resource" path="res://data/space/weapons/spear_primary.tres" id="2"]
+[ext_resource type="Resource" path="res://data/space/weapons/spear_missile.tres" id="3"]
+[ext_resource type="Texture2D" path="res://assets/space/spear.png" id="4"]
+
+[resource]
+script = ExtResource("1")
+id = &"spear"
+name_key = "SPACE_SHIP_SPEAR"
+description_key = "SPACE_SHIP_SPEAR_DESC"
+hull = 85.0
+shield = 24.0
+shield_delay = 3.0
+shield_regeneration = 8.0
+speed = 330.0
+rotation_degrees = 170.0
+primary = ExtResource("2")
+secondary = ExtResource("3")
+sprite = ExtResource("4")

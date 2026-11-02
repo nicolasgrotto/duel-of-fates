@@ -11,6 +11,7 @@ const MISSIONS: Array[SpaceMissionData] = [
 	preload("res://data/space/missions/ash_trail.tres"),
 	preload("res://data/space/missions/last_escort.tres"),
 	preload("res://data/space/missions/cut_network.tres"),
+	preload("res://data/space/missions/iron_graveyard.tres"),
 	preload("res://data/space/missions/tide_iron.tres"),
 ]
 

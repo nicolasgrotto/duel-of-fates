@@ -955,6 +955,31 @@ SPACE_M2_OBJECTIVE,Elimine os lançadores e a artilharia,Eliminate the launchers
 SPACE_M3_OBJECTIVE,Elimine as ondas e proteja a capital,Eliminate the waves and protect the capital
 SPACE_M4_OBJECTIVE,"Destrua gerador, motores e casco central","Destroy generator, engines and central hull"
 SPACE_M5_OBJECTIVE,Destrua as três aberturas do Ferro de maré,Destroy all three openings of Tide iron
+SPACE_M6_TITLE,Cemitério de ferro,Iron graveyard
+SPACE_M6_BRIEF,"Um campo de destroços esconde esquadrões à espreita. Eles surgem por trás da cobertura, de todos os lados: use os detritos a seu favor e não encoste em nenhuma nave.","A debris field hides waiting squadrons. They come from behind cover, on every side: use the wreckage to your advantage and do not touch any ship."
+SPACE_M6_OBJECTIVE,Sobreviva às nove emboscadas,Survive all nine ambushes
+SPACE_HANGAR,Hangar,Hangar
+SPACE_HANGAR_ROW,Hangar: {name},Hangar: {name}
+SPACE_HANGAR_INFO,"A nave escolhida vale para todas as missões, e as melhorias da Oficina somam-se a ela.","The chosen ship is used in every mission, and Workshop upgrades add to it."
+SPACE_CURRENT_SHIP,Nave: {name},Ship: {name}
+SPACE_STAT_HULL,Casco,Hull
+SPACE_STAT_SHIELD,Escudo,Shield
+SPACE_STAT_SPEED,Velocidade,Speed
+SPACE_STAT_AGILITY,Manobra,Handling
+SPACE_STAT_FIREPOWER,Poder de fogo,Firepower
+SPACE_SHIP_NEEDLE,Agulha,Needle
+SPACE_SHIP_ANVIL,Bigorna,Anvil
+SPACE_SHIP_SPEAR,Lança,Spear
+SPACE_SHIP_PILOT_DESC,"Equilibrada, sem pontos fracos nem fortes marcantes. Boa para aprender as missões.","Balanced, with no marked strengths or weaknesses. A good ship to learn the missions."
+SPACE_SHIP_NEEDLE_DESC,"Forte: a mais rápida e ágil, tiros em sequência e impulso frequente.
+Fraca: casco e escudo pequenos, míssil lento de recarregar e colisões custam mais escudo.","Strong: the fastest and nimblest, rapid shots and frequent boost.
+Weak: small hull and shield, a slow missile reload, and collisions cost more shield."
+SPACE_SHIP_ANVIL_DESC,"Forte: o maior casco e escudo, tiro pesado e colisões custam metade do escudo.
+Fraca: lenta, gira pouco, é um alvo grande e o impulso demora a voltar.","Strong: the largest hull and shield, heavy shots, and collisions cost half the shield.
+Weak: slow, turns poorly, a large target, and the boost takes long to return."
+SPACE_SHIP_SPEAR_DESC,"Forte: alcance longo, tiro veloz e mísseis fortes com recarga curta.
+Fraca: giro lento, cadência baixa e casco e escudo abaixo da média.","Strong: long range, fast shots, and strong missiles with a short reload.
+Weak: slow turning, a low fire rate, and below-average hull and shield."
 SPACE_BRIEF_RULES,"Limite: {limit}s · Tempo de referência: {par}s
 Avaliação: vitória + casco ≥75% + tempo de referência
 Primeira vitória: 1 ponto para a oficina","Limit: {limit}s · Par time: {par}s

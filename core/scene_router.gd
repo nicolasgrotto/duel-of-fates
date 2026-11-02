@@ -28,6 +28,7 @@ const SCREENS: Dictionary = {
 	&"space_mission": "res://screens/space/space_screen.tscn",
 	&"space_result": "res://screens/space/space_menu.tscn",
 	&"space_upgrades": "res://screens/space/space_menu.tscn",
+	&"space_ships": "res://screens/space/space_menu.tscn",
 }
 const FADE_SECONDS: float = 0.18
 const SETTLE_FRAMES: int = 2

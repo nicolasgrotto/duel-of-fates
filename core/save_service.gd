@@ -150,6 +150,13 @@ func record_space(id: StringName, ticks: int, rating: int) -> bool:
 	return earned
 
 
+func select_space_ship(id: StringName) -> bool:
+	if not space.select_ship(id):
+		return false
+	save_progress()
+	return true
+
+
 func buy_space_upgrade(track: int) -> bool:
 	if not space.buy(track):
 		return false

@@ -87,7 +87,7 @@ func test_navigation_counts_real_path_through_walls_and_cache_stays_consistent()
 	assert_eq(navigation.path_tiles(start, goal), tiles)
 
 
-func test_guarded_mission_previews_exist_at_native_size() -> void:
+func test_mission_previews_exist_at_native_size() -> void:
 	for mission in InfiltrationMode.MISSIONS:
 		assert_true(mission.preview != null, String(mission.id))
 		assert_eq(Vector2i(mission.preview.get_size()), Vector2i(480, 170), String(mission.id))

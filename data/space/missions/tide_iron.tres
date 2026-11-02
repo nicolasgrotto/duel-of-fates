@@ -9,10 +9,13 @@
 [ext_resource type="Script" path="res://data/space/space_boss_phase.gd" id="7"]
 [ext_resource type="Resource" path="res://data/space/weapons/missile.tres" id="8"]
 [ext_resource type="Resource" path="res://data/space/weapons/fan.tres" id="9"]
-[ext_resource type="Texture2D" path="res://assets/space/debris.png" id="10"]
-[ext_resource type="Script" path="res://data/space/space_obstacle_data.gd" id="11"]
-[ext_resource type="Script" path="res://data/space/space_arena_data.gd" id="12"]
-[ext_resource type="Script" path="res://data/space/space_wave_data.gd" id="13"]
+[ext_resource type="Resource" path="res://data/space/ships/fighter.tres" id="10"]
+[ext_resource type="Script" path="res://data/space/space_wave_data.gd" id="11"]
+[ext_resource type="Resource" path="res://data/space/ships/interceptor.tres" id="12"]
+[ext_resource type="Texture2D" path="res://assets/space/debris.png" id="13"]
+[ext_resource type="Script" path="res://data/space/space_obstacle_data.gd" id="14"]
+[ext_resource type="Script" path="res://data/space/space_arena_data.gd" id="15"]
+[ext_resource type="Texture2D" path="res://assets/space/previews/tide_iron.png" id="16"]
 
 [sub_resource type="Resource" id="Part_1"]
 script = ExtResource("3")
@@ -71,29 +74,134 @@ weakpoint = 1
 primary = ExtResource("9")
 
 [sub_resource type="Resource" id="Part_8"]
-script = ExtResource("11")
-position = Vector2(1150, 400)
-radius = 54.0
-sprite = ExtResource("10")
+script = ExtResource("3")
+ship = ExtResource("10")
+position = Vector2(2500, 300)
+team = 1
+angle = 3.1415927
+required = false
 
 [sub_resource type="Resource" id="Part_9"]
-script = ExtResource("11")
-position = Vector2(1350, 1400)
-radius = 68.0
-sprite = ExtResource("10")
+script = ExtResource("3")
+ship = ExtResource("10")
+position = Vector2(2500, 480)
+team = 1
+angle = 3.1415927
+required = false
 
 [sub_resource type="Resource" id="Part_10"]
 script = ExtResource("11")
-position = Vector2(650, 1350)
-radius = 42.0
-sprite = ExtResource("10")
+delay = 25.0
+ships = Array[ExtResource("3")]([SubResource("Part_8"), SubResource("Part_9")])
 
 [sub_resource type="Resource" id="Part_11"]
-script = ExtResource("12")
+script = ExtResource("3")
+ship = ExtResource("10")
+position = Vector2(2500, 1320)
+team = 1
+angle = 3.1415927
+required = false
+
+[sub_resource type="Resource" id="Part_12"]
+script = ExtResource("3")
+ship = ExtResource("10")
+position = Vector2(2500, 1500)
+team = 1
+angle = 3.1415927
+required = false
+
+[sub_resource type="Resource" id="Part_13"]
+script = ExtResource("11")
+delay = 25.0
+ships = Array[ExtResource("3")]([SubResource("Part_11"), SubResource("Part_12")])
+
+[sub_resource type="Resource" id="Part_14"]
+script = ExtResource("3")
+ship = ExtResource("10")
+position = Vector2(2500, 300)
+team = 1
+angle = 3.1415927
+required = false
+
+[sub_resource type="Resource" id="Part_15"]
+script = ExtResource("3")
+ship = ExtResource("10")
+position = Vector2(2500, 480)
+team = 1
+angle = 3.1415927
+required = false
+
+[sub_resource type="Resource" id="Part_16"]
+script = ExtResource("11")
+delay = 25.0
+ships = Array[ExtResource("3")]([SubResource("Part_14"), SubResource("Part_15")])
+
+[sub_resource type="Resource" id="Part_17"]
+script = ExtResource("3")
+ship = ExtResource("10")
+position = Vector2(2500, 1320)
+team = 1
+angle = 3.1415927
+required = false
+
+[sub_resource type="Resource" id="Part_18"]
+script = ExtResource("3")
+ship = ExtResource("10")
+position = Vector2(2500, 1500)
+team = 1
+angle = 3.1415927
+required = false
+
+[sub_resource type="Resource" id="Part_19"]
+script = ExtResource("11")
+delay = 25.0
+ships = Array[ExtResource("3")]([SubResource("Part_17"), SubResource("Part_18")])
+
+[sub_resource type="Resource" id="Part_20"]
+script = ExtResource("3")
+ship = ExtResource("12")
+position = Vector2(2600, 200)
+team = 1
+angle = 3.1415927
+required = false
+
+[sub_resource type="Resource" id="Part_21"]
+script = ExtResource("3")
+ship = ExtResource("12")
+position = Vector2(2600, 1600)
+team = 1
+angle = 3.1415927
+required = false
+
+[sub_resource type="Resource" id="Part_22"]
+script = ExtResource("11")
+delay = 30.0
+ships = Array[ExtResource("3")]([SubResource("Part_20"), SubResource("Part_21")])
+
+[sub_resource type="Resource" id="Part_23"]
+script = ExtResource("14")
+position = Vector2(1150, 400)
+radius = 54.0
+sprite = ExtResource("13")
+
+[sub_resource type="Resource" id="Part_24"]
+script = ExtResource("14")
+position = Vector2(1350, 1400)
+radius = 68.0
+sprite = ExtResource("13")
+
+[sub_resource type="Resource" id="Part_25"]
+script = ExtResource("14")
+position = Vector2(650, 1350)
+radius = 42.0
+sprite = ExtResource("13")
+
+[sub_resource type="Resource" id="Part_26"]
+script = ExtResource("15")
 title_key = "SPACE_M5_TITLE"
 size = Vector2(2800, 1800)
 ships = Array[ExtResource("3")]([SubResource("Part_1"), SubResource("Part_2"), SubResource("Part_3"), SubResource("Part_4")])
-obstacles = Array[ExtResource("11")]([SubResource("Part_8"), SubResource("Part_9"), SubResource("Part_10")])
+obstacles = Array[ExtResource("14")]([SubResource("Part_23"), SubResource("Part_24"), SubResource("Part_25")])
 
 [resource]
 script = ExtResource("1")
@@ -101,8 +209,10 @@ id = &"tide_iron"
 title_key = "SPACE_M5_TITLE"
 briefing_key = "SPACE_M5_BRIEF"
 objective_key = "SPACE_M5_OBJECTIVE"
-arena = SubResource("Part_11")
-waves = Array[ExtResource("13")]([])
+arena = SubResource("Part_26")
+waves = Array[ExtResource("11")]([SubResource("Part_10"), SubResource("Part_13"), SubResource("Part_16"), SubResource("Part_19"), SubResource("Part_22")])
 phases = Array[ExtResource("7")]([SubResource("Part_5"), SubResource("Part_6"), SubResource("Part_7")])
-par_seconds = 105.0
+par_seconds = 270.0
+limit_seconds = 600.0
+preview = ExtResource("16")
 boss = 1

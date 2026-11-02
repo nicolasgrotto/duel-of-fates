@@ -63,6 +63,8 @@ Todo asset do projeto (arte, fonte, som, música, shader de terceiros) tem uma l
 | `assets/infiltration/prisoner.png` | prisioneiro superior sem arma, 24×28 px | original, gerado por `tools/art/make_infiltration_tiles.py` | mesma licença do projeto | mesma silhueta humana, túnica clara da paleta; sem amostras |
 | Terminal, extração e marcador de escolta em `InfiltrationView` | geometria na grade superior | original do projeto | mesma licença do projeto | cores centrais e marcas por forma, inclusive com efeitos reduzidos |
 
+| `assets/space/needle.png`, `anvil.png`, `spear.png` | naves do jogador em vista superior | original, gerado por `tools/art/make_ships.py` | Próprio do projeto (CC0 sugerido) | Sem silhuetas de franquia |
+| `assets/space/previews/*.png` | imagem de cada missão de naves, 480×170 px | original, gerado por `tools/space/make_missions.py` a partir da nebulosa e das naves do projeto | Próprio do projeto (CC0 sugerido) | Composição com as naves de cada missão |
 | `assets/space/training_ship.png` | nave Trama, 40×40 px | original, gerada por `tools/art/make_ships.py::player` | mesma licença do projeto | placas e motores assimétricos, quatro tons da paleta central, sem referência de franquia |
 | `assets/space/target_drone.png` | drone-alvo, 32×32 px | original, gerado por `tools/art/make_ships.py::drone` | mesma licença do projeto | corpo octogonal e emissor lateral original |
 | `assets/space/nebula.png` | nebulosa periódica, 256×128 px | original, gerada por `tools/art/make_ships.py::nebula` | mesma licença do projeto | campo trigonométrico periódico em quatro opacidades, sem imagem externa |

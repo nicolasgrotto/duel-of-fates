@@ -1,0 +1,25 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://data/space/space_ship_data.gd" id="1"]
+[ext_resource type="Resource" path="res://data/space/weapons/anvil_primary.tres" id="2"]
+[ext_resource type="Resource" path="res://data/space/weapons/anvil_missile.tres" id="3"]
+[ext_resource type="Texture2D" path="res://assets/space/anvil.png" id="4"]
+
+[resource]
+script = ExtResource("1")
+id = &"anvil"
+name_key = "SPACE_SHIP_ANVIL"
+description_key = "SPACE_SHIP_ANVIL_DESC"
+hull = 150.0
+shield = 45.0
+shield_delay = 3.5
+shield_regeneration = 6.0
+acceleration = 420.0
+speed = 270.0
+rotation_degrees = 150.0
+radius = 34.0
+contact_ratio = 0.5
+boost_cooldown_ratio = 1.67
+primary = ExtResource("2")
+secondary = ExtResource("3")
+sprite = ExtResource("4")

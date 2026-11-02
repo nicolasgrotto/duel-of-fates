@@ -7,7 +7,7 @@
 script = ExtResource("1")
 id = &"weakpoint"
 name_key = "SPACE_WEAKPOINT"
-hull = 80.0
+hull = 500.0
 shield = 0.0
 shield_regeneration = 0.0
 speed = 0.0

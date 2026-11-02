@@ -9,6 +9,11 @@
 script = ExtResource("1")
 id = &"pilot"
 name_key = "SPACE_PLAYER"
+description_key = "SPACE_SHIP_PILOT_DESC"
+hull = 100.0
+shield = 28.0
+shield_delay = 3.0
+shield_regeneration = 8.0
 primary = ExtResource("2")
 secondary = ExtResource("3")
 sprite = ExtResource("4")

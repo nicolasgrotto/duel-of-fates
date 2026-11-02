@@ -12,6 +12,7 @@ extends Resource
 @export var protected_ship: int = -1
 @export var boss: int = -1
 @export var phases: Array[SpaceBossPhase] = []
+@export var preview: Texture2D
 
 
 func create_arena(loadout: SpaceLoadout, upgrades: SpaceUpgradeConfig) -> SpaceArenaData:

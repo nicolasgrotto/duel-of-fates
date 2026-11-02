@@ -122,7 +122,7 @@ func _highlight_mission(id: StringName) -> void:
 	var record: Dictionary = SaveService.infiltration_best.get(String(data.id), {})
 	var progress: String = tr("INF_NOT_COMPLETED")
 	if not record.is_empty():
-		progress = tr("INF_RECORD").format({"time": ChallengeMode.format_time(record.ticks * Ticks.DELTA)}) + "\n" + InfiltrationMode.bonus_text(record.bonuses)
+		progress = tr("INF_RECORD").format({"time": ChallengeMode.format_time(record.ticks * Ticks.DELTA)}) + "\n" + InfiltrationMode.bonus_text(record.bonuses).replace("\n", ControlHints.SEPARATOR)
 	var controls: String = ControlHints.line(PackedStringArray([ControlHints.hint(&"infiltration_interact", "INF_INTERACT"), ControlHints.hint(&"infiltration_takedown", "INFILTRATION_TAKEDOWN")]))
 	_show_panel(data.preview, null, tr(data.title_key).to_upper(), tr(data.briefing_key) + "\n\n" + tr("INF_BRIEF_RULES").format({"time": int(data.bonus_seconds)}) + "\n" + controls + "\n\n" + progress)
 

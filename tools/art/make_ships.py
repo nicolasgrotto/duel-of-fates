@@ -46,6 +46,69 @@ def player(colors):
     return image
 
 
+def needle(colors):
+    image = Image.new("RGBA", (32, 32))
+    draw = ImageDraw.Draw(image)
+    dark = colors["infiltration_seam"]
+    metal = colors["prosthetic_metal"]
+    edge = colors["accent"]
+    draw.polygon(((16, 1), (19, 9), (20, 22), (27, 28), (19, 27), (16, 30), (13, 27), (5, 28), (12, 22), (13, 9)), fill=dark)
+    draw.polygon(((16, 3), (18, 10), (18, 25), (16, 28), (14, 25), (14, 10)), fill=metal)
+    draw.line((16, 4, 17, 10, 17, 24), fill=shade(metal, 1.18))
+    draw.polygon(((13, 21), (7, 27), (13, 26)), fill=shade(metal, .65))
+    draw.polygon(((19, 21), (25, 27), (19, 26)), fill=shade(metal, .65))
+    draw.line((8, 27, 13, 22), fill=edge)
+    draw.line((24, 27, 19, 22), fill=edge)
+    draw.polygon(((16, 8), (17, 12), (16, 15), (15, 12)), fill=shade(colors["menu_blade_a"], .8))
+    draw.line((15, 29, 17, 29), fill=colors["menu_blade_b"])
+    return image
+
+
+def anvil(colors):
+    image = Image.new("RGBA", (56, 56))
+    draw = ImageDraw.Draw(image)
+    dark = colors["infiltration_seam"]
+    metal = colors["prosthetic_metal"]
+    edge = colors["accent"]
+    draw.polygon(((18, 5), (38, 5), (44, 14), (52, 20), (52, 42), (44, 50), (12, 50), (4, 42), (4, 20), (12, 14)), fill=dark)
+    draw.polygon(((19, 7), (37, 7), (42, 15), (49, 21), (49, 41), (43, 47), (13, 47), (7, 41), (7, 21), (14, 15)), fill=shade(metal, .6))
+    draw.polygon(((21, 9), (35, 9), (39, 18), (39, 40), (17, 40), (17, 18)), fill=metal)
+    draw.line((21, 9, 35, 9, 39, 18, 39, 39), fill=shade(metal, 1.18))
+    draw.rectangle((22, 15, 34, 26), fill=dark)
+    draw.rectangle((24, 17, 32, 23), fill=shade(colors["menu_blade_a"], .65))
+    draw.line((24, 17, 32, 17), fill=colors["menu_blade_a"])
+    for x in (7, 44):
+        draw.rectangle((x, 24, x + 5, 38), fill=dark)
+        draw.line((x + 1, 25, x + 4, 25), fill=edge)
+    for y in (31, 36):
+        draw.line((19, y, 37, y), fill=shade(metal, .7))
+    for x in (17, 34):
+        draw.rectangle((x, 46, x + 5, 53), fill=dark)
+        draw.line((x + 1, 53, x + 4, 53), fill=colors["menu_blade_b"])
+    return image
+
+
+def spear(colors):
+    image = Image.new("RGBA", (44, 44))
+    draw = ImageDraw.Draw(image)
+    dark = colors["infiltration_seam"]
+    metal = colors["prosthetic_metal"]
+    edge = colors["accent"]
+    draw.polygon(((22, 1), (25, 12), (26, 30), (33, 36), (26, 38), (22, 42), (18, 38), (11, 36), (18, 30), (19, 12)), fill=dark)
+    draw.polygon(((22, 3), (24, 13), (24, 36), (22, 39), (20, 36), (20, 13)), fill=metal)
+    draw.line((22, 4, 23, 13, 23, 35), fill=shade(metal, 1.18))
+    for x in (5, 33):
+        draw.rectangle((x, 14, x + 6, 34), fill=dark)
+        draw.rectangle((x + 1, 15, x + 5, 32), fill=shade(metal, .65))
+        draw.line((x + 2, 13, x + 4, 13), fill=colors["danger"])
+        draw.line((x + 1, 22, x + 5, 22), fill=edge)
+    draw.rectangle((11, 22, 33, 25), fill=dark)
+    draw.line((12, 23, 32, 23), fill=edge)
+    draw.polygon(((22, 12), (23, 17), (22, 20), (21, 17)), fill=shade(colors["menu_blade_a"], .8))
+    draw.line((21, 41, 23, 41), fill=colors["menu_blade_b"])
+    return image
+
+
 def drone(colors):
     image = Image.new("RGBA", (32, 32))
     draw = ImageDraw.Draw(image)
@@ -70,6 +133,9 @@ def main():
     folder = ROOT / "assets/space"
     folder.mkdir(parents=True, exist_ok=True)
     player(colors).save(folder / "training_ship.png", optimize=True)
+    needle(colors).save(folder / "needle.png", optimize=True)
+    anvil(colors).save(folder / "anvil.png", optimize=True)
+    spear(colors).save(folder / "spear.png", optimize=True)
     drone(colors).save(folder / "target_drone.png", optimize=True)
     nebula(colors).save(folder / "nebula.png", optimize=True)
     for kind in ("fighter", "interceptor", "gunship", "launcher", "turret", "capital", "boss", "generator", "engine", "weakpoint", "debris"):

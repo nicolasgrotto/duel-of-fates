@@ -1,0 +1,359 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://data/space/space_mission_data.gd" id="1"]
+[ext_resource type="Resource" path="res://data/space/ships/mission_ship.tres" id="2"]
+[ext_resource type="Script" path="res://data/space/space_ship_placement.gd" id="3"]
+[ext_resource type="Resource" path="res://data/space/ships/fighter.tres" id="4"]
+[ext_resource type="Script" path="res://data/space/space_formation_data.gd" id="5"]
+[ext_resource type="Script" path="res://data/space/space_wave_data.gd" id="6"]
+[ext_resource type="Resource" path="res://data/space/ships/interceptor.tres" id="7"]
+[ext_resource type="Resource" path="res://data/space/ships/launcher.tres" id="8"]
+[ext_resource type="Resource" path="res://data/space/ships/gunship.tres" id="9"]
+[ext_resource type="Texture2D" path="res://assets/space/debris.png" id="10"]
+[ext_resource type="Script" path="res://data/space/space_obstacle_data.gd" id="11"]
+[ext_resource type="Script" path="res://data/space/space_arena_data.gd" id="12"]
+[ext_resource type="Script" path="res://data/space/space_boss_phase.gd" id="13"]
+[ext_resource type="Texture2D" path="res://assets/space/previews/iron_graveyard.png" id="14"]
+
+[sub_resource type="Resource" id="Part_1"]
+script = ExtResource("3")
+ship = ExtResource("2")
+position = Vector2(500, 900)
+team = 0
+angle = 0.0
+
+[sub_resource type="Resource" id="Part_2"]
+script = ExtResource("5")
+ship = ExtResource("4")
+origin = Vector2(1500, 620)
+offsets = Array[Vector2]([Vector2(0, 0), Vector2(-80, -110)])
+target = -1
+
+[sub_resource type="Resource" id="Part_3"]
+script = ExtResource("6")
+delay = 1.0
+formations = Array[ExtResource("5")]([SubResource("Part_2")])
+
+[sub_resource type="Resource" id="Part_4"]
+script = ExtResource("5")
+ship = ExtResource("7")
+origin = Vector2(1250, 1180)
+offsets = Array[Vector2]([Vector2(0, -90), Vector2(0, 90)])
+target = -1
+
+[sub_resource type="Resource" id="Part_5"]
+script = ExtResource("5")
+ship = ExtResource("7")
+origin = Vector2(1250, 120)
+offsets = Array[Vector2]([Vector2(0, -40), Vector2(0, 40)])
+target = -1
+
+[sub_resource type="Resource" id="Part_6"]
+script = ExtResource("6")
+delay = 6.0
+formations = Array[ExtResource("5")]([SubResource("Part_4"), SubResource("Part_5")])
+
+[sub_resource type="Resource" id="Part_7"]
+script = ExtResource("5")
+ship = ExtResource("8")
+origin = Vector2(2360, 560)
+offsets = Array[Vector2]([Vector2(0, 0)])
+target = -1
+
+[sub_resource type="Resource" id="Part_8"]
+script = ExtResource("5")
+ship = ExtResource("8")
+origin = Vector2(2360, 1360)
+offsets = Array[Vector2]([Vector2(0, 0)])
+target = -1
+
+[sub_resource type="Resource" id="Part_9"]
+script = ExtResource("5")
+ship = ExtResource("4")
+origin = Vector2(1600, 1500)
+offsets = Array[Vector2]([Vector2(0, -90), Vector2(0, 90)])
+target = -1
+
+[sub_resource type="Resource" id="Part_10"]
+script = ExtResource("6")
+delay = 7.0
+formations = Array[ExtResource("5")]([SubResource("Part_7"), SubResource("Part_8"), SubResource("Part_9")])
+
+[sub_resource type="Resource" id="Part_11"]
+script = ExtResource("5")
+ship = ExtResource("9")
+origin = Vector2(1900, 900)
+offsets = Array[Vector2]([Vector2(0, 0)])
+target = -1
+
+[sub_resource type="Resource" id="Part_12"]
+script = ExtResource("5")
+ship = ExtResource("7")
+origin = Vector2(780, 160)
+offsets = Array[Vector2]([Vector2(0, -40), Vector2(0, 40)])
+target = -1
+
+[sub_resource type="Resource" id="Part_13"]
+script = ExtResource("6")
+delay = 8.0
+formations = Array[ExtResource("5")]([SubResource("Part_11"), SubResource("Part_12")])
+
+[sub_resource type="Resource" id="Part_14"]
+script = ExtResource("5")
+ship = ExtResource("4")
+origin = Vector2(760, 1660)
+offsets = Array[Vector2]([Vector2(0, -40), Vector2(-80, -40)])
+target = -1
+
+[sub_resource type="Resource" id="Part_15"]
+script = ExtResource("5")
+ship = ExtResource("4")
+origin = Vector2(2340, 120)
+offsets = Array[Vector2]([Vector2(0, -40), Vector2(0, 40)])
+target = -1
+
+[sub_resource type="Resource" id="Part_16"]
+script = ExtResource("5")
+ship = ExtResource("8")
+origin = Vector2(1560, 780)
+offsets = Array[Vector2]([Vector2(0, 0)])
+target = -1
+
+[sub_resource type="Resource" id="Part_17"]
+script = ExtResource("6")
+delay = 8.0
+formations = Array[ExtResource("5")]([SubResource("Part_14"), SubResource("Part_15"), SubResource("Part_16")])
+
+[sub_resource type="Resource" id="Part_18"]
+script = ExtResource("5")
+ship = ExtResource("9")
+origin = Vector2(2360, 1000)
+offsets = Array[Vector2]([Vector2(0, 0)])
+target = -1
+
+[sub_resource type="Resource" id="Part_19"]
+script = ExtResource("5")
+ship = ExtResource("9")
+origin = Vector2(1600, 1700)
+offsets = Array[Vector2]([Vector2(0, 0)])
+target = -1
+
+[sub_resource type="Resource" id="Part_20"]
+script = ExtResource("5")
+ship = ExtResource("7")
+origin = Vector2(1100, 1020)
+offsets = Array[Vector2]([Vector2(0, -60), Vector2(0, 60)])
+target = -1
+
+[sub_resource type="Resource" id="Part_21"]
+script = ExtResource("6")
+delay = 9.0
+formations = Array[ExtResource("5")]([SubResource("Part_18"), SubResource("Part_19"), SubResource("Part_20")])
+
+[sub_resource type="Resource" id="Part_22"]
+script = ExtResource("5")
+ship = ExtResource("9")
+origin = Vector2(2640, 860)
+offsets = Array[Vector2]([Vector2(0, 0)])
+target = -1
+
+[sub_resource type="Resource" id="Part_23"]
+script = ExtResource("5")
+ship = ExtResource("8")
+origin = Vector2(2340, 1700)
+offsets = Array[Vector2]([Vector2(0, 0)])
+target = -1
+
+[sub_resource type="Resource" id="Part_24"]
+script = ExtResource("5")
+ship = ExtResource("4")
+origin = Vector2(1900, 1040)
+offsets = Array[Vector2]([Vector2(0, 0), Vector2(-110, -130), Vector2(-110, 130)])
+target = -1
+
+[sub_resource type="Resource" id="Part_25"]
+script = ExtResource("5")
+ship = ExtResource("7")
+origin = Vector2(1540, 1250)
+offsets = Array[Vector2]([Vector2(0, -90), Vector2(0, 90)])
+target = -1
+
+[sub_resource type="Resource" id="Part_26"]
+script = ExtResource("6")
+delay = 9.0
+formations = Array[ExtResource("5")]([SubResource("Part_22"), SubResource("Part_23"), SubResource("Part_24"), SubResource("Part_25")])
+
+[sub_resource type="Resource" id="Part_27"]
+script = ExtResource("5")
+ship = ExtResource("8")
+origin = Vector2(1180, 1180)
+offsets = Array[Vector2]([Vector2(0, 0)])
+target = -1
+
+[sub_resource type="Resource" id="Part_28"]
+script = ExtResource("5")
+ship = ExtResource("7")
+origin = Vector2(2680, 240)
+offsets = Array[Vector2]([Vector2(0, -90), Vector2(0, 90)])
+target = -1
+
+[sub_resource type="Resource" id="Part_29"]
+script = ExtResource("5")
+ship = ExtResource("7")
+origin = Vector2(2680, 1640)
+offsets = Array[Vector2]([Vector2(0, -90), Vector2(0, 90)])
+target = -1
+
+[sub_resource type="Resource" id="Part_30"]
+script = ExtResource("6")
+delay = 9.0
+formations = Array[ExtResource("5")]([SubResource("Part_27"), SubResource("Part_28"), SubResource("Part_29")])
+
+[sub_resource type="Resource" id="Part_31"]
+script = ExtResource("5")
+ship = ExtResource("9")
+origin = Vector2(1900, 150)
+offsets = Array[Vector2]([Vector2(0, 0)])
+target = -1
+
+[sub_resource type="Resource" id="Part_32"]
+script = ExtResource("5")
+ship = ExtResource("9")
+origin = Vector2(1560, 1000)
+offsets = Array[Vector2]([Vector2(0, 0)])
+target = -1
+
+[sub_resource type="Resource" id="Part_33"]
+script = ExtResource("5")
+ship = ExtResource("4")
+origin = Vector2(2400, 1500)
+offsets = Array[Vector2]([Vector2(0, 0), Vector2(-110, -130), Vector2(-110, 130)])
+target = -1
+
+[sub_resource type="Resource" id="Part_34"]
+script = ExtResource("5")
+ship = ExtResource("4")
+origin = Vector2(2340, 300)
+offsets = Array[Vector2]([Vector2(0, -90), Vector2(0, 90)])
+target = -1
+
+[sub_resource type="Resource" id="Part_35"]
+script = ExtResource("6")
+delay = 10.0
+formations = Array[ExtResource("5")]([SubResource("Part_31"), SubResource("Part_32"), SubResource("Part_33"), SubResource("Part_34")])
+
+[sub_resource type="Resource" id="Part_36"]
+script = ExtResource("11")
+position = Vector2(860, 380)
+radius = 58.0
+sprite = ExtResource("10")
+
+[sub_resource type="Resource" id="Part_37"]
+script = ExtResource("11")
+position = Vector2(1040, 760)
+radius = 74.0
+sprite = ExtResource("10")
+
+[sub_resource type="Resource" id="Part_38"]
+script = ExtResource("11")
+position = Vector2(880, 1260)
+radius = 66.0
+sprite = ExtResource("10")
+
+[sub_resource type="Resource" id="Part_39"]
+script = ExtResource("11")
+position = Vector2(1280, 340)
+radius = 50.0
+sprite = ExtResource("10")
+
+[sub_resource type="Resource" id="Part_40"]
+script = ExtResource("11")
+position = Vector2(1420, 980)
+radius = 84.0
+sprite = ExtResource("10")
+
+[sub_resource type="Resource" id="Part_41"]
+script = ExtResource("11")
+position = Vector2(1300, 1500)
+radius = 60.0
+sprite = ExtResource("10")
+
+[sub_resource type="Resource" id="Part_42"]
+script = ExtResource("11")
+position = Vector2(1700, 560)
+radius = 70.0
+sprite = ExtResource("10")
+
+[sub_resource type="Resource" id="Part_43"]
+script = ExtResource("11")
+position = Vector2(1800, 1240)
+radius = 76.0
+sprite = ExtResource("10")
+
+[sub_resource type="Resource" id="Part_44"]
+script = ExtResource("11")
+position = Vector2(2080, 300)
+radius = 56.0
+sprite = ExtResource("10")
+
+[sub_resource type="Resource" id="Part_45"]
+script = ExtResource("11")
+position = Vector2(2180, 860)
+radius = 88.0
+sprite = ExtResource("10")
+
+[sub_resource type="Resource" id="Part_46"]
+script = ExtResource("11")
+position = Vector2(2100, 1560)
+radius = 62.0
+sprite = ExtResource("10")
+
+[sub_resource type="Resource" id="Part_47"]
+script = ExtResource("11")
+position = Vector2(2500, 520)
+radius = 64.0
+sprite = ExtResource("10")
+
+[sub_resource type="Resource" id="Part_48"]
+script = ExtResource("11")
+position = Vector2(2560, 1180)
+radius = 72.0
+sprite = ExtResource("10")
+
+[sub_resource type="Resource" id="Part_49"]
+script = ExtResource("11")
+position = Vector2(640, 620)
+radius = 44.0
+sprite = ExtResource("10")
+
+[sub_resource type="Resource" id="Part_50"]
+script = ExtResource("11")
+position = Vector2(620, 1540)
+radius = 48.0
+sprite = ExtResource("10")
+
+[sub_resource type="Resource" id="Part_51"]
+script = ExtResource("11")
+position = Vector2(1560, 180)
+radius = 40.0
+sprite = ExtResource("10")
+
+[sub_resource type="Resource" id="Part_52"]
+script = ExtResource("12")
+title_key = "SPACE_M6_TITLE"
+size = Vector2(2800, 1800)
+ships = Array[ExtResource("3")]([SubResource("Part_1")])
+obstacles = Array[ExtResource("11")]([SubResource("Part_36"), SubResource("Part_37"), SubResource("Part_38"), SubResource("Part_39"), SubResource("Part_40"), SubResource("Part_41"), SubResource("Part_42"), SubResource("Part_43"), SubResource("Part_44"), SubResource("Part_45"), SubResource("Part_46"), SubResource("Part_47"), SubResource("Part_48"), SubResource("Part_49"), SubResource("Part_50"), SubResource("Part_51")])
+
+[resource]
+script = ExtResource("1")
+id = &"iron_graveyard"
+title_key = "SPACE_M6_TITLE"
+briefing_key = "SPACE_M6_BRIEF"
+objective_key = "SPACE_M6_OBJECTIVE"
+arena = SubResource("Part_52")
+waves = Array[ExtResource("6")]([SubResource("Part_3"), SubResource("Part_6"), SubResource("Part_10"), SubResource("Part_13"), SubResource("Part_17"), SubResource("Part_21"), SubResource("Part_26"), SubResource("Part_30"), SubResource("Part_35")])
+phases = Array[ExtResource("13")]([])
+par_seconds = 240.0
+limit_seconds = 540.0
+preview = ExtResource("14")

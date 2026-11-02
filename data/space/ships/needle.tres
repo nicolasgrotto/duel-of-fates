@@ -1,0 +1,25 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://data/space/space_ship_data.gd" id="1"]
+[ext_resource type="Resource" path="res://data/space/weapons/needle_primary.tres" id="2"]
+[ext_resource type="Resource" path="res://data/space/weapons/needle_missile.tres" id="3"]
+[ext_resource type="Texture2D" path="res://assets/space/needle.png" id="4"]
+
+[resource]
+script = ExtResource("1")
+id = &"needle"
+name_key = "SPACE_SHIP_NEEDLE"
+description_key = "SPACE_SHIP_NEEDLE_DESC"
+hull = 70.0
+shield = 18.0
+shield_delay = 2.2
+shield_regeneration = 10.0
+acceleration = 800.0
+speed = 440.0
+rotation_degrees = 260.0
+radius = 20.0
+contact_ratio = 1.5
+boost_cooldown_ratio = 0.67
+primary = ExtResource("2")
+secondary = ExtResource("3")
+sprite = ExtResource("4")
