@@ -72,341 +72,370 @@ move = 1
 
 [sub_resource type="Resource" id="Resource_48ajs"]
 script = ExtResource("6_fjdkt")
-at = 150
+at = 172
 fighter = 1
-command = 128
-move = 1
-hold = 50
+command = 32
 
 [sub_resource type="Resource" id="Resource_2qhcr"]
 script = ExtResource("6_fjdkt")
-at = 222
+at = 177
 fighter = 1
-command = 2
+command = 32
 
 [sub_resource type="Resource" id="Resource_0uxrb"]
 script = ExtResource("6_fjdkt")
-at = 226
-command = 8
-hold = 8
+at = 182
+fighter = 1
+command = 32
 
 [sub_resource type="Resource" id="Resource_6q2i7"]
 script = ExtResource("6_fjdkt")
-at = 240
-command = 2
+at = 191
+fighter = 1
+command = 32
 
 [sub_resource type="Resource" id="Resource_y5l2c"]
 script = ExtResource("6_fjdkt")
-at = 240
+at = 196
 fighter = 1
-command = 8
-hold = 22
+command = 32
 
 [sub_resource type="Resource" id="Resource_vpxcp"]
 script = ExtResource("6_fjdkt")
-at = 247
-command = 2
+at = 202
+fighter = 1
+move = 1
+hold = 18
 
 [sub_resource type="Resource" id="Resource_g6i7i"]
 script = ExtResource("6_fjdkt")
-at = 266
-command = 8
-hold = 34
-
-[sub_resource type="Resource" id="Resource_5gyjn"]
-script = ExtResource("6_fjdkt")
-at = 268
+at = 228
 fighter = 1
 command = 2
 
+[sub_resource type="Resource" id="Resource_5gyjn"]
+script = ExtResource("6_fjdkt")
+at = 232
+command = 8
+hold = 8
+
 [sub_resource type="Resource" id="Resource_cigqx"]
 script = ExtResource("6_fjdkt")
-at = 275
-fighter = 1
+at = 246
 command = 2
 
 [sub_resource type="Resource" id="Resource_y0oxi"]
 script = ExtResource("6_fjdkt")
-at = 300
-command = 2
-
-[sub_resource type="Resource" id="Resource_b8gbu"]
-script = ExtResource("6_fjdkt")
-at = 302
+at = 246
 fighter = 1
 command = 8
 hold = 22
 
+[sub_resource type="Resource" id="Resource_b8gbu"]
+script = ExtResource("6_fjdkt")
+at = 253
+command = 2
+
 [sub_resource type="Resource" id="Resource_tdeg1"]
 script = ExtResource("6_fjdkt")
-at = 307
-command = 2
+at = 272
+command = 8
+hold = 34
 
 [sub_resource type="Resource" id="Resource_661ng"]
 script = ExtResource("6_fjdkt")
-at = 342
-command = 4
+at = 274
+fighter = 1
+command = 2
 
 [sub_resource type="Resource" id="Resource_p5xus"]
 script = ExtResource("6_fjdkt")
-at = 343
+at = 281
 fighter = 1
-command = 4
+command = 2
 
 [sub_resource type="Resource" id="Resource_ji06c"]
 script = ExtResource("6_fjdkt")
-at = 370
+at = 306
 command = 2
 
 [sub_resource type="Resource" id="Resource_dy30e"]
 script = ExtResource("6_fjdkt")
-at = 373
+at = 308
 fighter = 1
-command = 2
+command = 8
+hold = 22
 
 [sub_resource type="Resource" id="Resource_xgskh"]
+script = ExtResource("6_fjdkt")
+at = 313
+command = 2
+
+[sub_resource type="Resource" id="Resource_arjql"]
+script = ExtResource("6_fjdkt")
+at = 348
+command = 4
+
+[sub_resource type="Resource" id="Resource_dgfef"]
+script = ExtResource("6_fjdkt")
+at = 349
+fighter = 1
+command = 4
+
+[sub_resource type="Resource" id="Resource_8oon1"]
 script = ExtResource("6_fjdkt")
 at = 376
 command = 2
 
-[sub_resource type="Resource" id="Resource_arjql"]
+[sub_resource type="Resource" id="Resource_u0gci"]
 script = ExtResource("6_fjdkt")
 at = 379
 fighter = 1
 command = 2
 
-[sub_resource type="Resource" id="Resource_dgfef"]
+[sub_resource type="Resource" id="Resource_6t7fv"]
 script = ExtResource("6_fjdkt")
 at = 382
 command = 2
 
-[sub_resource type="Resource" id="Resource_8oon1"]
+[sub_resource type="Resource" id="Resource_rjkw0"]
 script = ExtResource("6_fjdkt")
 at = 385
 fighter = 1
 command = 2
 
-[sub_resource type="Resource" id="Resource_u0gci"]
+[sub_resource type="Resource" id="Resource_megyc"]
 script = ExtResource("6_fjdkt")
 at = 388
 command = 2
 
-[sub_resource type="Resource" id="Resource_6t7fv"]
+[sub_resource type="Resource" id="Resource_qpslh"]
 script = ExtResource("6_fjdkt")
 at = 391
 fighter = 1
 command = 2
 
-[sub_resource type="Resource" id="Resource_rjkw0"]
+[sub_resource type="Resource" id="Resource_5mc66"]
 script = ExtResource("6_fjdkt")
 at = 394
 command = 2
 
-[sub_resource type="Resource" id="Resource_megyc"]
+[sub_resource type="Resource" id="Resource_ap0gy"]
 script = ExtResource("6_fjdkt")
 at = 397
 fighter = 1
 command = 2
 
-[sub_resource type="Resource" id="Resource_qpslh"]
+[sub_resource type="Resource" id="Resource_gsaq4"]
 script = ExtResource("6_fjdkt")
-at = 402
+at = 400
+command = 2
+
+[sub_resource type="Resource" id="Resource_uaa8b"]
+script = ExtResource("6_fjdkt")
+at = 403
+fighter = 1
+command = 2
+
+[sub_resource type="Resource" id="Resource_6qu2n"]
+script = ExtResource("6_fjdkt")
+at = 408
 fighter = 1
 command = 4
 
-[sub_resource type="Resource" id="Resource_5mc66"]
+[sub_resource type="Resource" id="Resource_ko372"]
 script = ExtResource("6_fjdkt")
-at = 434
+at = 440
 command = 128
 
-[sub_resource type="Resource" id="Resource_ap0gy"]
+[sub_resource type="Resource" id="Resource_b1ksn"]
 script = ExtResource("6_fjdkt")
-at = 437
+at = 443
 fighter = 1
 move = -1
 hold = 22
 
-[sub_resource type="Resource" id="Resource_gsaq4"]
+[sub_resource type="Resource" id="Resource_spilj"]
 script = ExtResource("6_fjdkt")
-at = 485
+at = 491
 fighter = 1
 move = 1
 hold = 12
 
-[sub_resource type="Resource" id="Resource_uaa8b"]
+[sub_resource type="Resource" id="Resource_pq2nw"]
 script = ExtResource("6_fjdkt")
-at = 500
+at = 506
 fighter = 1
 command = 64
 move = 1
-
-[sub_resource type="Resource" id="Resource_6qu2n"]
-script = ExtResource("6_fjdkt")
-at = 520
-command = 2
-
-[sub_resource type="Resource" id="Resource_ko372"]
-script = ExtResource("6_fjdkt")
-at = 569
-fighter = 1
-command = 2
-
-[sub_resource type="Resource" id="Resource_b1ksn"]
-script = ExtResource("6_fjdkt")
-at = 579
-command = 2
-
-[sub_resource type="Resource" id="Resource_spilj"]
-script = ExtResource("6_fjdkt")
-at = 619
-fighter = 1
-command = 64
-move = -1
-
-[sub_resource type="Resource" id="Resource_pq2nw"]
-script = ExtResource("6_fjdkt")
-at = 641
-command = 2
 
 [sub_resource type="Resource" id="Resource_rkgi4"]
 script = ExtResource("6_fjdkt")
-at = 679
-fighter = 1
-command = 128
+at = 526
+command = 2
 
 [sub_resource type="Resource" id="Resource_0sgv2"]
 script = ExtResource("6_fjdkt")
-at = 774
+at = 575
+fighter = 1
+command = 2
+
+[sub_resource type="Resource" id="Resource_jywpw"]
+script = ExtResource("6_fjdkt")
+at = 585
+command = 2
+
+[sub_resource type="Resource" id="Resource_fjqpr"]
+script = ExtResource("6_fjdkt")
+at = 625
+fighter = 1
+command = 64
+move = -1
+
+[sub_resource type="Resource" id="Resource_tx1cm"]
+script = ExtResource("6_fjdkt")
+at = 647
+command = 2
+
+[sub_resource type="Resource" id="Resource_2lt2r"]
+script = ExtResource("6_fjdkt")
+at = 685
+fighter = 1
+command = 128
+
+[sub_resource type="Resource" id="Resource_3iw20"]
+script = ExtResource("6_fjdkt")
+at = 780
 fighter = 1
 command = 128
 move = -1
 
-[sub_resource type="Resource" id="Resource_jywpw"]
+[sub_resource type="Resource" id="Resource_l2mey"]
 script = ExtResource("6_fjdkt")
-at = 813
+at = 819
 command = 1
 move = 1
 hold = 14
 
-[sub_resource type="Resource" id="Resource_fjqpr"]
+[sub_resource type="Resource" id="Resource_04kin"]
 script = ExtResource("6_fjdkt")
-at = 827
+at = 833
 command = 1
 move = 1
 hold = 14
 
-[sub_resource type="Resource" id="Resource_tx1cm"]
+[sub_resource type="Resource" id="Resource_8cn4m"]
 script = ExtResource("6_fjdkt")
-at = 871
+at = 877
 move = 1
 hold = 22
 
-[sub_resource type="Resource" id="Resource_2lt2r"]
+[sub_resource type="Resource" id="Resource_nju35"]
 script = ExtResource("6_fjdkt")
-at = 871
+at = 877
 fighter = 1
 move = 1
 hold = 14
 
-[sub_resource type="Resource" id="Resource_3iw20"]
+[sub_resource type="Resource" id="Resource_nuvex"]
 script = ExtResource("6_fjdkt")
-at = 891
+at = 897
 fighter = 1
 command = 4
 move = 1
 
-[sub_resource type="Resource" id="Resource_l2mey"]
+[sub_resource type="Resource" id="Resource_16or0"]
 script = ExtResource("6_fjdkt")
-at = 901
+at = 907
 command = 16
 move = 1
 
-[sub_resource type="Resource" id="Resource_04kin"]
+[sub_resource type="Resource" id="Resource_oleby"]
 script = ExtResource("6_fjdkt")
-at = 925
+at = 931
 command = 64
 move = -1
 
-[sub_resource type="Resource" id="Resource_8cn4m"]
+[sub_resource type="Resource" id="Resource_3vuuw"]
 script = ExtResource("6_fjdkt")
-at = 963
+at = 969
 fighter = 1
 move = 1
 hold = 64
 
-[sub_resource type="Resource" id="Resource_nju35"]
+[sub_resource type="Resource" id="Resource_wkrpm"]
 script = ExtResource("6_fjdkt")
-at = 979
+at = 985
 move = 1
 hold = 20
 
-[sub_resource type="Resource" id="Resource_nuvex"]
-script = ExtResource("6_fjdkt")
-at = 1031
-fighter = 1
-command = 2
-
-[sub_resource type="Resource" id="Resource_16or0"]
-script = ExtResource("6_fjdkt")
-at = 1036
-command = 32
-
-[sub_resource type="Resource" id="Resource_oleby"]
-script = ExtResource("6_fjdkt")
-at = 1041
-command = 2
-
-[sub_resource type="Resource" id="Resource_3vuuw"]
-script = ExtResource("6_fjdkt")
-at = 1048
-command = 2
-
-[sub_resource type="Resource" id="Resource_wkrpm"]
-script = ExtResource("6_fjdkt")
-at = 1055
-command = 2
-
 [sub_resource type="Resource" id="Resource_qa3co"]
 script = ExtResource("6_fjdkt")
-at = 1091
-command = 4
+at = 1037
+fighter = 1
+command = 2
 
 [sub_resource type="Resource" id="Resource_luvmu"]
 script = ExtResource("6_fjdkt")
-at = 1091
-fighter = 1
-command = 64
+at = 1042
+command = 32
 
 [sub_resource type="Resource" id="Resource_m2wul"]
 script = ExtResource("6_fjdkt")
-at = 1164
+at = 1047
 command = 2
 
 [sub_resource type="Resource" id="Resource_jo12v"]
 script = ExtResource("6_fjdkt")
-at = 1164
-fighter = 1
+at = 1054
 command = 2
 
 [sub_resource type="Resource" id="Resource_1pevg"]
 script = ExtResource("6_fjdkt")
-at = 1189
+at = 1061
+command = 2
+
+[sub_resource type="Resource" id="Resource_c72mb"]
+script = ExtResource("6_fjdkt")
+at = 1097
+command = 4
+
+[sub_resource type="Resource" id="Resource_q7j5e"]
+script = ExtResource("6_fjdkt")
+at = 1097
+fighter = 1
+command = 64
+
+[sub_resource type="Resource" id="Resource_wdi7w"]
+script = ExtResource("6_fjdkt")
+at = 1170
+command = 2
+
+[sub_resource type="Resource" id="Resource_t3krb"]
+script = ExtResource("6_fjdkt")
+at = 1170
+fighter = 1
+command = 2
+
+[sub_resource type="Resource" id="Resource_dk00g"]
+script = ExtResource("6_fjdkt")
+at = 1195
 fighter = 1
 move = -1
 hold = 20
 
-[sub_resource type="Resource" id="Resource_c72mb"]
+[sub_resource type="Resource" id="Resource_y3ct6"]
 script = ExtResource("6_fjdkt")
-at = 1219
+at = 1225
 command = 128
 move = 1
 
-[sub_resource type="Resource" id="Resource_q7j5e"]
+[sub_resource type="Resource" id="Resource_bf1k2"]
 script = ExtResource("6_fjdkt")
-at = 1259
+at = 1265
 command = 4
 
-[sub_resource type="Resource" id="Resource_wdi7w"]
+[sub_resource type="Resource" id="Resource_72eox"]
 script = ExtResource("1_cgqsv")
 id = &"reflex"
 title_key = "EXHIBITION_REFLEX"
@@ -418,8 +447,8 @@ powers_right = Array[ExtResource("7_vmrbm")]([ExtResource("10_nu00d"), ExtResour
 start_health = PackedFloat32Array(1, 1)
 flow_levels = PackedInt32Array(8, 7)
 match_seed = 41
-cues = Array[ExtResource("6_fjdkt")]([SubResource("Resource_ibjip"), SubResource("Resource_iltbi"), SubResource("Resource_xebmf"), SubResource("Resource_wneb2"), SubResource("Resource_k6ec6"), SubResource("Resource_bxlqk"), SubResource("Resource_hr5j8"), SubResource("Resource_20qyj"), SubResource("Resource_u5dg6"), SubResource("Resource_48ajs"), SubResource("Resource_2qhcr"), SubResource("Resource_0uxrb"), SubResource("Resource_6q2i7"), SubResource("Resource_y5l2c"), SubResource("Resource_vpxcp"), SubResource("Resource_g6i7i"), SubResource("Resource_5gyjn"), SubResource("Resource_cigqx"), SubResource("Resource_y0oxi"), SubResource("Resource_b8gbu"), SubResource("Resource_tdeg1"), SubResource("Resource_661ng"), SubResource("Resource_p5xus"), SubResource("Resource_ji06c"), SubResource("Resource_dy30e"), SubResource("Resource_xgskh"), SubResource("Resource_arjql"), SubResource("Resource_dgfef"), SubResource("Resource_8oon1"), SubResource("Resource_u0gci"), SubResource("Resource_6t7fv"), SubResource("Resource_rjkw0"), SubResource("Resource_megyc"), SubResource("Resource_qpslh"), SubResource("Resource_5mc66"), SubResource("Resource_ap0gy"), SubResource("Resource_gsaq4"), SubResource("Resource_uaa8b"), SubResource("Resource_6qu2n"), SubResource("Resource_ko372"), SubResource("Resource_b1ksn"), SubResource("Resource_spilj"), SubResource("Resource_pq2nw"), SubResource("Resource_rkgi4"), SubResource("Resource_0sgv2"), SubResource("Resource_jywpw"), SubResource("Resource_fjqpr"), SubResource("Resource_tx1cm"), SubResource("Resource_2lt2r"), SubResource("Resource_3iw20"), SubResource("Resource_l2mey"), SubResource("Resource_04kin"), SubResource("Resource_8cn4m"), SubResource("Resource_nju35"), SubResource("Resource_nuvex"), SubResource("Resource_16or0"), SubResource("Resource_oleby"), SubResource("Resource_3vuuw"), SubResource("Resource_wkrpm"), SubResource("Resource_qa3co"), SubResource("Resource_luvmu"), SubResource("Resource_m2wul"), SubResource("Resource_jo12v"), SubResource("Resource_1pevg"), SubResource("Resource_c72mb"), SubResource("Resource_q7j5e")])
+cues = Array[ExtResource("6_fjdkt")]([SubResource("Resource_ibjip"), SubResource("Resource_iltbi"), SubResource("Resource_xebmf"), SubResource("Resource_wneb2"), SubResource("Resource_k6ec6"), SubResource("Resource_bxlqk"), SubResource("Resource_hr5j8"), SubResource("Resource_20qyj"), SubResource("Resource_u5dg6"), SubResource("Resource_48ajs"), SubResource("Resource_2qhcr"), SubResource("Resource_0uxrb"), SubResource("Resource_6q2i7"), SubResource("Resource_y5l2c"), SubResource("Resource_vpxcp"), SubResource("Resource_g6i7i"), SubResource("Resource_5gyjn"), SubResource("Resource_cigqx"), SubResource("Resource_y0oxi"), SubResource("Resource_b8gbu"), SubResource("Resource_tdeg1"), SubResource("Resource_661ng"), SubResource("Resource_p5xus"), SubResource("Resource_ji06c"), SubResource("Resource_dy30e"), SubResource("Resource_xgskh"), SubResource("Resource_arjql"), SubResource("Resource_dgfef"), SubResource("Resource_8oon1"), SubResource("Resource_u0gci"), SubResource("Resource_6t7fv"), SubResource("Resource_rjkw0"), SubResource("Resource_megyc"), SubResource("Resource_qpslh"), SubResource("Resource_5mc66"), SubResource("Resource_ap0gy"), SubResource("Resource_gsaq4"), SubResource("Resource_uaa8b"), SubResource("Resource_6qu2n"), SubResource("Resource_ko372"), SubResource("Resource_b1ksn"), SubResource("Resource_spilj"), SubResource("Resource_pq2nw"), SubResource("Resource_rkgi4"), SubResource("Resource_0sgv2"), SubResource("Resource_jywpw"), SubResource("Resource_fjqpr"), SubResource("Resource_tx1cm"), SubResource("Resource_2lt2r"), SubResource("Resource_3iw20"), SubResource("Resource_l2mey"), SubResource("Resource_04kin"), SubResource("Resource_8cn4m"), SubResource("Resource_nju35"), SubResource("Resource_nuvex"), SubResource("Resource_16or0"), SubResource("Resource_oleby"), SubResource("Resource_3vuuw"), SubResource("Resource_wkrpm"), SubResource("Resource_qa3co"), SubResource("Resource_luvmu"), SubResource("Resource_m2wul"), SubResource("Resource_jo12v"), SubResource("Resource_1pevg"), SubResource("Resource_c72mb"), SubResource("Resource_q7j5e"), SubResource("Resource_wdi7w"), SubResource("Resource_t3krb"), SubResource("Resource_dk00g"), SubResource("Resource_y3ct6"), SubResource("Resource_bf1k2")])
 
 [resource]
 script = ExtResource("13_nt8r3")
-bouts = Array[ExtResource("1_cgqsv")]([SubResource("Resource_wdi7w")])
+bouts = Array[ExtResource("1_cgqsv")]([SubResource("Resource_72eox")])

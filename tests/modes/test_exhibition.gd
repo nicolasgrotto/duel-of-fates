@@ -20,10 +20,11 @@ const SHOWCASE: Dictionary = {
 	},
 	&"reflex": {
 		"finisher": Finisher.Kind.CROSSED_EXECUTION,
-		"events": [CombatEvent.Type.BOLT_REFLECTED, CombatEvent.Type.BOLT_BLOCKED, CombatEvent.Type.POWER_BLOCKED, CombatEvent.Type.PARRY, CombatEvent.Type.BLOCK, CombatEvent.Type.CLASH, CombatEvent.Type.BLADE_LOCK_STARTED, CombatEvent.Type.DISENGAGE, CombatEvent.Type.EVADE_SUCCESS, CombatEvent.Type.PERFECT_PARRY, CombatEvent.Type.JUMP, CombatEvent.Type.BOLT_HIT],
+		"events": [CombatEvent.Type.BOLT_REFLECTED, CombatEvent.Type.BOLT_BLOCKED, CombatEvent.Type.PARRY, CombatEvent.Type.BLOCK, CombatEvent.Type.CLASH, CombatEvent.Type.BLADE_LOCK_STARTED, CombatEvent.Type.DISENGAGE, CombatEvent.Type.EVADE_SUCCESS, CombatEvent.Type.PERFECT_PARRY, CombatEvent.Type.JUMP, CombatEvent.Type.BOLT_HIT],
 		"dodges": [FighterState.DodgeKind.SPIN],
-		"powers": [&"higher_instinct", &"barrier", &"repulse", &"throw", &"pull"],
+		"powers": [&"higher_instinct", &"repulse", &"throw", &"pull"],
 		"instinct_evades": 3,
+		"precision_evades": 6,
 	},
 }
 
@@ -45,7 +46,7 @@ func _play(data: ExhibitionData, index: int) -> Dictionary:
 	sim.start_match()
 	var controllers: Array[ChoreographyController] = [ChoreographyController.new(setup.bout, 0), ChoreographyController.new(setup.bout, 1)]
 	var intents: Array[Intent] = [Intent.new(), Intent.new()]
-	var seen: Dictionary = {"events": {}, "dodges": {}, "powers": {}, "finisher": Finisher.Kind.NONE, "rejected": 0, "instinct_evades": 0, "ended": false}
+	var seen: Dictionary = {"events": {}, "dodges": {}, "powers": {}, "finisher": Finisher.Kind.NONE, "rejected": 0, "instinct_evades": 0, "precision_evades": 0, "ended": false}
 	for tick in MAX_TICKS:
 		for i in 2:
 			controllers[i].produce(sim, i, intents[i])
@@ -65,6 +66,8 @@ func _play(data: ExhibitionData, index: int) -> Dictionary:
 				CombatEvent.Type.EVADE_SUCCESS:
 					if event.power != null and event.power.id == &"higher_instinct":
 						seen["instinct_evades"] += 1
+					else:
+						seen["precision_evades"] += 1
 		if sim.phase == MatchSimulation.Phase.OVER:
 			seen["ended"] = true
 			break
@@ -82,6 +85,7 @@ func test_every_bout_plays_its_showcase_and_finisher() -> void:
 		assert_eq(seen["finisher"], expected["finisher"], "%s ends on its finisher" % id)
 		assert_eq(seen["rejected"], 0, "%s never asks for an action the fighter cannot do" % id)
 		assert_true(seen["instinct_evades"] >= expected.get("instinct_evades", 0), "%s shows every Higher Instinct evade" % id)
+		assert_true(seen["precision_evades"] >= expected.get("precision_evades", 0), "%s shows every precision evade" % id)
 		for type in expected["events"]:
 			assert_true(seen["events"].has(type), "%s shows %s" % [id, CombatEvent.Type.keys()[type]])
 		for kind in expected.get("dodges", []):
