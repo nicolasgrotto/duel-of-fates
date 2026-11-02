@@ -846,8 +846,8 @@ INFILTRATION_OBJECTIVE,Explore o setor sul · evite patrulhas ou devolva disparo
 INFILTRATION_MOVE,{up} {left} {down} {right} mover,{up} {left} {down} {right} move
 INFILTRATION_RUN,correr,run
 INFILTRATION_SNEAK,furtivo,sneak
-INFILTRATION_SWING,golpear,swing
-INFILTRATION_GUARD,guarda / parry,guard / parry
+INFILTRATION_MOUSE_SWING,Botão esquerdo / {key} golpear,Left button / {key} swing
+INFILTRATION_MOUSE_GUARD,Botão direito / {key} guarda / parry,Right button / {key} guard / parry
 INFILTRATION_AIM,Mouse / stick direito mirar,Mouse / right stick aim
 INFILTRATION_LEGEND,Cobertura corta visão · ? suspeita · ! alerta · abate pelas costas só despercebido,Cover blocks sight · ? suspicion · ! alert · rear takedown only while unaware
 INFILTRATION_DEFEATED,TREINO ENCERRADO,TRAINING ENDED
@@ -867,10 +867,8 @@ INF_NETWORK_BRIEF,"Interrompa a rede da base: inutilize os dois painéis no sul,
 INF_ARCHIVE_BRIEF,Copie os dados no terminal a sudeste e alcance a saída a noroeste. As estantes cortam a visão; o corredor ao sul permite contornar a patrulha. Desativar o painel central é opcional.,Copy the data at the southeastern terminal and reach the northwestern exit. Shelves block sight; the southern corridor offers a route around the patrol. Disabling the central alarm panel is optional.
 INF_RESCUE_BRIEF,"Encontre o prisioneiro a sudeste, recrute-o e conduza-o vivo à saída a noroeste. Use o corredor sul; a escolta anda mais devagar e não luta. Disparos podem atingi-la. O painel central é opcional.","Find the prisoner to the southeast, recruit them and escort them alive to the northwestern exit. Use the southern corridor; your escort moves more slowly and cannot fight. Bolts can hit them. The central alarm panel is optional."
 INF_BRIEF_RULES,"Bônus: sem alarme · sem abates · até {time} s
-Poderes indisponíveis. A ação Poder interage.
-Forte: abate por trás · Guarda: desviar/aparar disparos.","Bonuses: no alarm · no takedowns · within {time} s
-Powers unavailable. The Power action interacts.
-Heavy: rear takedown · Guard: deflect/parry bolts."
+Poderes indisponíveis. Guarda: desviar/aparar disparos.","Bonuses: no alarm · no takedowns · within {time} s
+Powers unavailable. Guard: deflect/parry bolts."
 INF_NOT_COMPLETED,Ainda não concluída,Not completed yet
 INF_RECORD,Concluída · melhor tempo {time},Completed · best time {time}
 INF_START,Confirmar: iniciar missão,Confirm: start mission

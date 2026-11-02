@@ -149,8 +149,8 @@ func _hints() -> String:
 		ControlHints.hint(&"infiltration_run", "INFILTRATION_RUN"),
 		ControlHints.hint(&"infiltration_sneak", "INFILTRATION_SNEAK"),
 	])) + "\n" + ControlHints.line(PackedStringArray([
-		ControlHints.hint(&"infiltration_attack", "INFILTRATION_SWING"),
-		ControlHints.hint(&"infiltration_guard", "INFILTRATION_GUARD"),
+		tr("INFILTRATION_MOUSE_SWING").format({"key": ControlHints.key_label(&"infiltration_attack")}),
+		tr("INFILTRATION_MOUSE_GUARD").format({"key": ControlHints.key_label(&"infiltration_guard")}),
 		tr("INFILTRATION_AIM"), ControlHints.hint(&"p1_pause", "HINT_PAUSE"),
 	]))
 

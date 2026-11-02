@@ -13,6 +13,18 @@ const COPIES: Dictionary = {
 	&"infiltration_takedown": &"p1_heavy_attack",
 	&"infiltration_interact": &"p1_power",
 }
+const KEYS: Dictionary = {
+	&"infiltration_left": [KEY_A, KEY_LEFT],
+	&"infiltration_right": [KEY_D, KEY_RIGHT],
+	&"infiltration_up": [KEY_W, KEY_UP],
+	&"infiltration_down": [KEY_S, KEY_DOWN],
+	&"infiltration_run": [KEY_SHIFT],
+	&"infiltration_sneak": [KEY_C],
+	&"infiltration_attack": [KEY_SPACE],
+	&"infiltration_guard": [KEY_Q],
+	&"infiltration_takedown": [KEY_F],
+	&"infiltration_interact": [KEY_E],
+}
 const AIM_AXES: Dictionary = {
 	&"infiltration_aim_left": [JOY_AXIS_RIGHT_X, -1.0],
 	&"infiltration_aim_right": [JOY_AXIS_RIGHT_X, 1.0],
@@ -30,8 +42,12 @@ static func install() -> void:
 	for action in COPIES:
 		InputMap.add_action(action, DEADZONE)
 		var vertical: bool = action == &"infiltration_up" or action == &"infiltration_down"
+		for keycode in KEYS[action]:
+			var key: InputEventKey = InputEventKey.new()
+			key.physical_keycode = keycode
+			InputMap.action_add_event(action, key)
 		for event in InputMap.action_get_events(COPIES[action]):
-			if not vertical or event is InputEventKey:
+			if not vertical and not event is InputEventKey:
 				InputMap.action_add_event(action, event.duplicate())
 		if vertical:
 			var direction: float = -1.0 if action == &"infiltration_up" else 1.0

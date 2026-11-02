@@ -12,6 +12,7 @@ var _result: bool = false
 
 
 func _ready() -> void:
+	InfiltrationBindings.install()
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_heading = _label("", &"ScreenTitleLabel")
 	_heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -73,7 +74,7 @@ func _highlight(id: StringName) -> void:
 	var progress: String = tr("INF_NOT_COMPLETED")
 	if not record.is_empty():
 		progress = tr("INF_RECORD").format({"time": ChallengeMode.format_time(record.ticks * Ticks.DELTA)}) + "\n" + InfiltrationMode.bonus_text(record.bonuses)
-	var controls: String = ControlHints.line(PackedStringArray([ControlHints.hint(&"p1_power", "INF_INTERACT"), ControlHints.hint(&"p1_heavy_attack", "INFILTRATION_TAKEDOWN")]))
+	var controls: String = ControlHints.line(PackedStringArray([ControlHints.hint(&"infiltration_interact", "INF_INTERACT"), ControlHints.hint(&"infiltration_takedown", "INFILTRATION_TAKEDOWN")]))
 	_detail.text = tr(data.title_key).to_upper() + "\n\n" + tr(data.briefing_key) + "\n\n" + tr("INF_BRIEF_RULES").format({"time": int(data.bonus_seconds)}) + "\n" + controls + "\n\n" + progress + "\n\n" + tr("INF_START")
 
 
@@ -110,6 +111,10 @@ func _choose(id: StringName) -> void:
 		_leave()
 	else:
 		_mode.start()
+
+
+func _exit_tree() -> void:
+	InfiltrationBindings.uninstall()
 
 
 func _leave() -> void:
