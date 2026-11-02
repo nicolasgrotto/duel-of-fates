@@ -264,7 +264,7 @@ Base da família Versáteis e dos inimigos da Infiltração (decisão do autor, 
 | Custo na guarda | 4 de Vigor |
 | Saída | 100 u de altura (peito) e 30 u à frente do corpo |
 
-- **Acerto**: dano e um **tranco** curto, só em quem está parado, andando ou na recovery de um golpe. Quem está no startup ou no active de um ataque, lançando um poder, no ar ou esquivando leva o dano e **continua o que fazia**: disparo nunca interrompe um ataque sozinho (regra do autor). Disparo mata, mas sem finalização cinematográfica.
+- **Acerto** (regra revista pelo autor): dano e um **tranco** de 0,25 s em quem está parado, andando, na recovery ou no **startup** de um golpe: o disparo cancela o golpe que ainda não saiu, inclusive o avanço de um Avanço com corte. Na recovery, o tranco nunca encurta a punição: vale o maior entre o tranco e o que restava. Quem está no active, com armadura, em postura, lançando um poder, no ar ou esquivando leva o dano e continua o que fazia. Depois de um tranco, o alvo fica **0,6 s imune a novos trancos**, para rajadas causarem dano sem travar ninguém. Disparo mata, mas sem finalização cinematográfica.
 - **Guarda de frente**: o disparo se desfaz na lâmina; o defensor perde 4 de Vigor, sem blockstun. Disparo não quebra a guarda: com o Vigor em zero, a guarda ainda segura e o defensor entra em exaustão. Guarda de costas não segura.
 - **Parry** (janela do toque, 0,08 a 0,20 s): o disparo volta **pela mesma linha**, agora do defensor. A janela não fecha ao desviar, então um toque bem colocado devolve uma rajada inteira.
 - **Parry perfeito** (0 a 0,08 s): o disparo volta **mirado no peito de quem atirou**, 25% mais rápido.
@@ -285,9 +285,9 @@ Os disparos da família vêm de golpes comuns com `MoveData.bolt` e seguem todas
 | Técnica de trás | Recuo com disparo: recua 110 u e dispara no início | Corte ascendente (sem disparo) |
 
 - **Recuo com disparo**: o golpe tem impulso negativo (`lunge` −110), então o corpo recua durante o ativo enquanto o disparo sai para a frente. É o "recuo que atira" da família, sem gancho novo na esquiva.
-- **Tiro de guarda** (`MoveData.from_guard`): com a guarda segura, Direção para frente + Habilidade dispara sem soltar a guarda antes. Bom contra avanços: o disparo dá tranco em quem está andando, mas não para um avanço com corte já no ativo.
-- **Prioridade da regra**: nenhum disparo da família interrompe o startup ou o ativo de um golpe. A distância força o rival a fechar, e o fechar é que expõe.
-- **Técnicas de disparo comuns** (`MoveData.required_sidearm`): Rajada Desestabilizadora, Disparo duplo e Recuo com disparo exigem blaster; o editor de técnicas e a Galeria só as dão a quem tem um. A Rajada encadeia o avanço sozinha (`MoveData.follow_up_auto`). Nenhuma desequilibra: a regra "disparo não interrompe ataque" vale sem exceção.
+- **Tiro de guarda** (`MoveData.from_guard`): com a guarda segura, Direção para frente + Habilidade dispara sem soltar a guarda antes. Bom contra avanços: o disparo cancela o avanço com corte ainda no startup, mas não um já no ativo.
+- **Prioridade da regra**: nenhum disparo da família interrompe o ativo de um golpe ou um golpe com armadura; o startup desarmado pode ser cancelado, uma vez a cada 0,6 s. A distância força o rival a fechar, e o fechar é que expõe.
+- **Técnicas de disparo comuns** (`MoveData.required_sidearm`): Rajada Desestabilizadora, Disparo duplo e Recuo com disparo exigem blaster; o editor de técnicas e a Galeria só as dão a quem tem um. A Rajada encadeia o avanço sozinha (`MoveData.follow_up_auto`). Nenhuma desequilibra além do tranco comum, com a mesma imunidade.
 
 ### Ser atingido
 
@@ -351,6 +351,7 @@ Com o poder Foco ativo, um lutador **parado em guarda, sem nenhum comando**, esq
 - No K.O. decisivo, golpes com finalização cinematográfica (tabela abaixo: forte, forte de avanço e técnicas) usam a cinemática; golpes fortes sem cinemática própria, como as habilidades, levam a cabeça (`ConsequenceConfig.head_on_deciding_heavy`).
 - Apresentação (não muda o resultado): pelas costas sai o membro de trás.
 - Golpe aéreo, lâmina arremessada, empurrão, poderes e dano periódico terminam num K.O. normal.
+- **Execuções sorteadas** (decisão do autor): quando o golpe forte decide a partida, a execução é sorteada entre as da **família** do lutador, com a mesma semente da partida, então o replay repete a mesma. Cada família tem a sua execução marcante e mais quatro exclusivas. Poderes, técnicas e a exibição coreografada seguem com a sua fixa. Golpe forte aéreo não tem execução.
 - **Finalizações cinematográficas** (fase 8, decisão do autor): só no K.O. que decide a partida e com a opção Finalizações ligada, quando o golpe ou o poder que mata tem uma cinemática própria. Ela substitui o corte de membro. Nos rounds anteriores, o K.O. corta o membro como antes, e o lutador volta no round seguinte com a parte robótica (apresentação).
 
 | Fonte | Finalização | Quando |
@@ -612,6 +613,24 @@ Modo completo em Jogar › Modos especiais › Combate de naves; a rota técnica
 ## Saga: premissa decidida pelo autor
 
 A campanha completa parte de dois pressupostos opostos. No **Eclipse**, a hierarquia é Soberano, Sombra Desperta como subordinada direta dele, e o protagonista como subordinado dela; a ordem de destruir os cavaleiros da Aurora desce por essa cadeia, e os prisioneiros a resgatar são agentes do Eclipse capturados pela ordem. Na **Aurora**, o Ancião envia o protagonista, cavaleiro da ordem, para derrubar o império do Soberano. Detalhes ficam para a task 19 do Codex.
+
+## Arsenal da História
+
+Decisão do autor. Tela **Arsenal** no hub, para qualquer estilo. **Créditos** vêm só da primeira vitória em cada encontro: repetir não rende nada, e saves antigos recebem pelos encontros já vencidos. Compram só blasters; não valem fora da História. O elenco do duelo não muda.
+
+Cada arma tem seu **padrão de disparo**, usado pelas técnicas de saque e pela habilidade:
+
+| Blaster | Mãos e porte | Tiros | Dano | Tranco | Saque | Preço |
+|---|---|---|---|---|---|---|
+| Pistola | 1, quadril | 2 | 4 | 0,25 s | 0,15 s | inicial no Coldre |
+| Revólver pesado | 1, coxa | 1 | 12 | 0,40 s | 0,22 s | 150 |
+| Carabina | 2, lombar | 2 | 6 | 0,25 s | 0,28 s | 200 |
+| Rifle | 2, costas | 3 | 6 | 0,20 s | 0,40 s | 300 |
+| Atirador | 2, costas | 1 | 22 | 0,50 s | 0,60 s | 450 |
+
+Disparo devolvido segue valendo: errar com o Atirador contra quem sabe aparar custa caro. O Vigor gasto e o tamanho do disparo sobem com a arma.
+
+**Estilos sem blaster:** quem tem um blaster equipado escolhe um dos espaços de técnica (Frente ou Trás) para o saque. Ele **substitui** a técnica daquele espaço, e essa é a contrapartida. Sem blaster equipado, nada muda. O estilo Coldre mantém seu kit e a habilidade Fogo de cobertura, que usa o padrão da arma equipada.
 
 ## Estilo Coldre da História (task 15)
 

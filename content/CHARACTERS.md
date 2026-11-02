@@ -251,7 +251,7 @@ O desafio vale em qualquer duelo vencido contra a IA (Duelar ou Arcade, qualquer
 
 ## Família Versáteis / Versatile
 
-Decisão do autor (tasks 07 e 08): lâmina numa mão e disparos de blaster. Mecânica da família: **Disparo Tático**, um disparo encaixado em certos recuos, reposicionamentos e passos da sequência (regras e números em GAME_DESIGN, "Disparo Tático"). Os disparos são projéteis que a guarda bloqueia e o parry devolve; **nunca interrompem um ataque sozinhos** (só dão um tranco em quem está parado, andando ou na recovery), para a família não ficar forte demais. A família não tem suprema própria (decisão do autor): as técnicas de disparo são técnicas de lâmina comuns que exigem blaster.
+Decisão do autor (tasks 07 e 08): lâmina numa mão e disparos de blaster. Mecânica da família: **Disparo Tático**, um disparo encaixado em certos recuos, reposicionamentos e passos da sequência (regras e números em GAME_DESIGN, "Disparo Tático"). Os disparos são projéteis que a guarda bloqueia e o parry devolve; **não interrompem golpe no ativo ou com armadura** (dão um tranco em quem está no startup desarmado, com imunidade curta; regra em GAME_DESIGN) (só dão um tranco em quem está parado, andando ou na recovery), para a família não ficar forte demais. A família não tem suprema própria (decisão do autor): as técnicas de disparo são técnicas de lâmina comuns que exigem blaster.
 
 | | Corsária (Duelista Armado) | Lince (Atirador de Lâmina) |
 | --- | --- | --- |

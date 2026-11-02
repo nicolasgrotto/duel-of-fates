@@ -124,7 +124,7 @@ Mecânicas descartadas de propósito (complexidade sem ganho):
 - juggles e combos no ar (um golpe aéreo por pulo);
 - dano por chip no bloqueio de lâmina;
 - números de dano na tela;
-- XP, moeda, loja, grind ou melhoria de atributos fora do protagonista da História;
+- XP, moeda, loja, grind ou melhoria de atributos fora do protagonista da História (decisão do autor: na História existe o Arsenal, com créditos que só vêm da primeira vitória em cada encontro e só compram blasters, sem como farmar);
 - perigos de arena que matam (ring-out).
 
 Fora do escopo inicial, possíveis no futuro: modo online, torneio, editor de personagens.
