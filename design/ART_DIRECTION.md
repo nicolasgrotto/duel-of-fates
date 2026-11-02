@@ -101,7 +101,7 @@ Decisões do autor para a revisão de combate e animação (ver ROADMAP, fase 7.
 | Colosso (pesado) | base larga, lâmina alta sobre o ombro | duas mãos sempre | descendentes pesados, peso caindo na perna da frente |
 | Dançarina (acrobático) | base alta e leve, lâmina para trás | troca de mão nos giros | arcos com o corpo inteiro, giros e piruetas |
 | Vespa (duas lâminas) | uma lâmina alta à frente, a outra baixa e invertida atrás | uma lâmina em cada mão, com posição própria | as duas alternam: uma corta enquanto a outra guarda, nunca as duas paradas no mesmo ângulo |
-| Versáteis (lâmina e disparo) | perfil de esgrimista, lâmina média à frente na altura do peito; mão livre baixa junto ao quadril | uma mão; a outra segura o blaster (Corsária) ou fica livre (Lince) | cortes curtos de punho; no tiro, o braço livre (ou o cabo, no Lince) estica na altura do peito com coice curto |
+| Versáteis (lâmina e disparo) | perfil de esgrimista, lâmina média à frente na altura do peito; mão livre baixa junto ao quadril | uma mão; a outra segura o blaster (Corsária) ou fica livre (Lince) | cortes curtos de punho com a lâmina atrasada em relação à mão e soltura em chicote (`wrist_lag` 1,6), follow-through maior; no tiro, o braço livre (ou o cabo, no Lince) estica na altura do peito com coice curto. Sequência da Corsária sem vaivém: o 1º rápido leva a lâmina por cima e para trás e sobe em concha, o 2º aproveita o fim alto para armar sobre o ombro e cortar à frente, o 3º recolhe e estoca |
 
 - Mão de trás presa ao cabo por IK nas empunhaduras de duas mãos; nas de uma mão, a mão livre tem pose própria (equilíbrio, palma aberta nos poderes).
 - **Revisão geral de braços e guardas (fase 8)**: as posições autoradas das mãos acompanham a rotação do tronco, no mesmo referencial anatômico dos ombros. O ângulo da lâmina continua no espaço do duelo para preservar a linha do corte e da defesa. Antes do IK, a empunhadura inteira cabe no alcance dos dois braços com folga; a mão de trás fica sobre o cabo, inclusive depois da mistura entre poses. Cotovelos têm preferência própria por braço, recolhidos na guarda e recuados na preparação. Só estocadas e a palma da Repulsão aproximam o braço da extensão completa. Guardas altas deixam espaço entre mão e rosto; guardas baixas conservam a dobra do cotovelo. As silhuetas aprovadas de cada personagem permanecem a referência.
@@ -201,7 +201,7 @@ Personagens com o mesmo jeito de lutar compartilham a base de animação.
 | Forte | preparação maior (lâmina bem atrás da cabeça, peso no pé de trás), corte longo com passo e quadril |
 | Guarda | lâmina quase vertical à frente do corpo, mãos adiantadas, base baixa |
 | Esquiva | corpo baixo e inclinado na direção da esquiva; rolamentos e saltos curtos conforme o personagem |
-| Esquiva de precisão | inclinação breve para trás, joelhos baixos, recuo mínimo; varia a cada sucesso seguido |
+| Esquiva de precisão | inclinação breve para trás, joelhos baixos, recuo mínimo; varia a cada sucesso seguido. Entra em 3 ticks, recolhe a lâmina para perto do corpo e a ergue, segura no sucesso e volta à guarda suavemente |
 | Atingido | tronco joga para trás, lâmina cai |
 | Desequilibrado | tronco aberto, lâmina tremulando, base desfeita |
 | Atordoado | corpo curvado, lâmina apontando para o chão, balanço lento |

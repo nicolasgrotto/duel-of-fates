@@ -211,6 +211,8 @@ Extras › Sequência de exibição (4c.1–4c.5) e Extras › Duelo de exibiç�
 | 4c.3 | Duelo **Dança** (Garça × Vespa) | pulo duplo por cima da Vespa, sequência de cinco da Vespa bloqueada, choque de fortes, esquiva com giro através da Rajada, punição e o giro da Garça no fim | idem |
 | 4c.4 | Entre os duelos e no fim | fade do roteador e o próximo cartão; depois do terceiro, volta ao menu | — |
 | 4c.5 | Confirmar durante um duelo; Pausa | Confirmar pula para o próximo; Pausa abre o menu de pausa e permite sair | — |
+| 4c.7 | Corsária: sequência de três rápidos, forte e forte de avanço (Treino ou Duelo de exibição) | 1º rápido passa a lâmina por cima e para trás e sobe em concha; 2º arma sobre o ombro e corta à frente; 3º estoca; sem vaivém nem giro de 160° num quadro; follow-through visível | `blade_angle_*` em `corsair.tres`; `wrist_lag`, `follow_through` em `data/families/versatile.tres` |
+| 4c.8 | Esquiva de precisão bem-sucedida e esquiva automática do Instinto Superior | brilho curto no peito na cor da lâmina, imagens residuais; a pose do Instinto entra rápido, segura e volta suave (~0,4 s); a de precisão segura e volta à guarda sem salto | `EffectsConfig.evade_glow_*`, `PowerVfxConfig.instinct_hold_*`, `PoseSolver.EVADE_*` |
 | 4c.6 | Extras › Duelo de exibição: **Reflexo** (Corsária × Espelho) | cartão REFLEXO com rodapé "pular"; pingue-pongue de disparos, Espelho esquivando dos cinco disparos da Rajada com a esquiva de precisão, parries e choques, disputa encerrada pelo desvencilhar, Instinto Superior com três esquivas e contra-ataques, Repulsão, pulo duplo sobre as pedras, giro por trás, esquiva de precisão, Postura de Espera e a execução cruzada; volta aos Extras | `data/exhibition/showcase.tres` (ticks dos `cues`) |
 
 ## 5. IA

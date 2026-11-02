@@ -55,8 +55,8 @@ HUD       → barras, avisos
 | Parry | parry | 10–14 faíscas para cima, anel, lâmina clareia | leve | — |
 | Parry perfeito | parry perfeito | 16–22 faíscas, anel maior, lâmina clareia, dessaturação, punch-in | médio | fraco |
 | Empurrão | empurrão | 4–6 faíscas baixas, luz pequena, poeira | muito leve | — |
-| Imagens residuais | esquiva e dash aéreo | 3 silhuetas transparentes que somem rápido; numa esquiva de precisão bem-sucedida, a pose e as silhuetas duram ~0,16 s mesmo que o sucesso aconteça no mesmo tick em que a esquiva começou | — | — |
-| Brilho de esquiva | esquiva de precisão bem-sucedida (golpe ou disparo) | luz curta no peito na cor da lâmina de quem esquivou, sem anel | — | — |
+| Imagens residuais | esquiva e dash aéreo | 3 silhuetas transparentes que somem rápido; numa esquiva de precisão bem-sucedida, a pose fica ~0,12 s e volta à guarda em ~0,2 s com suavização (0,32 s ao todo), com silhuetas enquanto a pose estiver acima de 30%, mesmo que o sucesso aconteça no mesmo tick em que a esquiva começou | — | — |
+| Brilho de esquiva | esquiva de precisão bem-sucedida (golpe ou disparo) e esquiva automática do Instinto Superior | luz curta no peito na cor da lâmina de quem esquivou, sem anel: três discos aditivos presos à grade (borda, meio e núcleo quase branco) que crescem um pouco e se apagam em degraus em 0,3 s (`EffectsConfig.evade_glow_*`, `EvadeGlow`) | — | — |
 | Ação recusada | falta Vigor/Fluxo | só HUD e som | — | — |
 
 **Faíscas**: saem do contato na direção do golpe, num leque inclinado para cima; caem com gravidade e atrito; riscos curtos na direção do movimento, aditivos.
@@ -175,7 +175,7 @@ Partículas e luzes usam pools e reaproveitamento; o orçamento é medido no pro
 
 ### Instinto Superior
 
-Ativação com pulso de letterbox de 0,3 s, sem câmera lenta, dessaturação ou flash de tela. Aura prateada original, que precisa ler de longe sem esconder o rig: (1) brilho interno suave, uma elipse em volta do corpo com dois degraus de opacidade baixa (0,08 a 0,14); (2) contorno contínuo de pixels presos à grade ao redor da silhueta, opacidade 0,6 a 0,8 em degraus, com pequenas pontas que tremulam só na metade de cima; (3) faíscas de 2 × 4 px que sobem pelas laterais do corpo e se apagam em degraus; (4) olhos claros discretos. Cor: texto claro do UiPalette misturado com pouco da cor do tier. Os sucessos usam os movimentos do rig e um rastro curto, sem anel de parry. Efeitos reduzidos mantêm o contorno estático e o brilho interno, sem pontas, faíscas ou cintilação. Parâmetros em PowerVfxConfig; nenhum efeito após a morte.
+Ativação com pulso de letterbox de 0,3 s, sem câmera lenta, dessaturação ou flash de tela. Aura prateada original, que precisa ler de longe sem esconder o rig: (1) brilho interno suave, uma elipse em volta do corpo com dois degraus de opacidade baixa (0,08 a 0,14); (2) contorno contínuo de pixels presos à grade ao redor da silhueta, opacidade 0,6 a 0,8 em degraus, com pequenas pontas que tremulam só na metade de cima; (3) faíscas de 2 × 4 px que sobem pelas laterais do corpo e se apagam em degraus; (4) olhos claros discretos. Cor: texto claro do UiPalette misturado com pouco da cor do tier. Os sucessos usam os movimentos do rig, o brilho de esquiva no peito e as imagens residuais, sem anel de parry. A pose da esquiva automática dura mais que a janela da simulação (0,42 s, `PowerVfxConfig.instinct_hold_*`): entra rápido, segura e volta suave, para a esquiva ser lida; um contra-ataque interrompe a pose na hora. Efeitos reduzidos mantêm o contorno estático e o brilho interno, sem pontas, faíscas ou cintilação. Parâmetros em PowerVfxConfig; nenhum efeito após a morte.
 
 ### Singularidade Devastadora (task 05)
 

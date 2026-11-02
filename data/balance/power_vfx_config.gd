@@ -133,6 +133,9 @@ extends Resource
 @export var instinct_shift: float = 12.0
 @export var instinct_step: float = 14.0
 @export var instinct_slide: float = 20.0
+@export var instinct_hold_time: float = 0.42
+@export_range(0.05, 0.5) var instinct_hold_rise: float = 0.16
+@export_range(0.3, 0.95) var instinct_hold_release: float = 0.55
 
 @export_group("Singularity")
 @export var singularity_radius: float = 18.0

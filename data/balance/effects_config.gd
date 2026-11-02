@@ -58,6 +58,12 @@ extends Resource
 @export var trail_duration: float = 0.12
 @export var parry_flare: float = 0.15
 
+@export_group("Evade")
+@export var evade_glow_duration: float = 0.3
+@export var evade_glow_radius: float = 22.0
+@export_range(0.0, 1.0) var evade_glow_alpha: float = 0.55
+@export var evade_glow_bloom: float = 0.35
+
 @export_group("Fighter intros")
 @export var hood_lower_time: float = 0.4
 @export var hood_lower_offset: Vector2 = Vector2(-6.0, 18.0)

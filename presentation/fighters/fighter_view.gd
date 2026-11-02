@@ -24,6 +24,7 @@ const TRAVEL_DEPTH: int = -1
 const PALETTE: UiPalette = preload("res://ui/palette.tres")
 const POWER_VFX: PowerVfxConfig = preload("res://data/balance/power_vfx_config.tres")
 const TREMOR_PATTERN: PackedFloat32Array = [1.0, -1.0, 0.0, 1.0, -1.0, -1.0, 1.0, 0.0, -1.0, 1.0, 1.0, -1.0]
+const CHEST_GLOW_DROP: float = 0.3
 
 var fighter: FighterState
 var opponent: FighterState
@@ -36,6 +37,7 @@ var reduced_effects: bool = false
 var rig: FighterRig
 var blade: BladeView
 var afterimages: Afterimages
+var evade_glow: EvadeGlow
 var _emitter_left: float = 0.0
 var _light: PointLight2D
 var _solver: PoseSolver = PoseSolver.new()
@@ -92,6 +94,7 @@ func set_blade_color(color: Color) -> void:
 	rig.set_hilt_button(color)
 	_light.color = color
 	afterimages.color = color
+	evade_glow.color = color
 
 
 func _build(glow_layer: Node) -> void:
@@ -108,6 +111,8 @@ func _build(glow_layer: Node) -> void:
 		glow_layer.add_child(blade)
 		afterimages = Afterimages.new()
 		glow_layer.add_child(afterimages)
+		evade_glow = EvadeGlow.new()
+		glow_layer.add_child(evade_glow)
 		_light = PointLight2D.new()
 		_light.texture = _light_gradient()
 		_light.texture_scale = effects.web_light_scale if OS.has_feature(WEB_FEATURE) else LIGHT_SCALE
@@ -118,6 +123,11 @@ func _build(glow_layer: Node) -> void:
 	blade.glint_duration = effects.heavy_glint
 	blade.width_scale = fighter.character.weapon.blade_width
 	blade.eyes_color = costume.color(CostumeData.Slot.EYES)
+	evade_glow.duration = effects.evade_glow_duration
+	evade_glow.radius = effects.evade_glow_radius
+	evade_glow.alpha = effects.evade_glow_alpha
+	evade_glow.bloom = effects.evade_glow_bloom
+	evade_glow.fade_steps = effects.fade_steps
 	set_blade_color(fighter.character.blade_colors[0])
 
 
@@ -125,6 +135,7 @@ func _exit_tree() -> void:
 	if blade != null:
 		blade.queue_free()
 		afterimages.queue_free()
+		evade_glow.queue_free()
 
 
 func snap() -> void:
@@ -183,6 +194,14 @@ func on_ticked() -> void:
 		rig.reset_cloths()
 
 
+func _on_evaded(event: CombatEvent) -> void:
+	evade_glow.flash()
+	if event.power == null:
+		_solver.start_evade_hold(int(event.amount))
+	elif event.power.kind == PowerData.Kind.HIGHER_INSTINCT:
+		_solver.start_instinct_hold(fighter.instinct_motion)
+
+
 func on_event(event: CombatEvent) -> void:
 	match event.type:
 		CombatEvent.Type.ROUND_STARTED:
@@ -192,8 +211,8 @@ func on_event(event: CombatEvent) -> void:
 				blade.flare = effects.parry_flare
 				_solver.guard_recoiled(event.heavy, true)
 		CombatEvent.Type.EVADE_SUCCESS:
-			if event.target == fighter.index and event.power == null:
-				_solver.start_evade_hold(int(event.amount))
+			if event.target == fighter.index:
+				_on_evaded(event)
 		CombatEvent.Type.BLOCK:
 			if event.target == fighter.index:
 				blade.flare = effects.parry_flare * fighter.character.family.block_parry_recoil
@@ -476,6 +495,7 @@ func _process(delta: float) -> void:
 	_update_cutter(delta)
 	if (fighter.state == FighterState.State.DODGING or _solver.afterimage or _solver.holds_evade(fighter)) and not reduced_effects:
 		afterimages.capture(rig, delta)
+	evade_glow.follow(rig.to_global(rig.chest.lerp(rig.pelvis_point, CHEST_GLOW_DROP)))
 
 
 func blade_segment() -> PackedVector2Array:

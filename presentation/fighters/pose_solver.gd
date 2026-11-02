@@ -130,7 +130,12 @@ const REBOUND_GRIP: Vector2 = Vector2(4.0, -50.0)
 const REBOUND_ANGLE: float = -125.0
 const HIT_LEAN: float = -26.0
 const CLASH_RECOIL_TIME: float = 0.22
-const EVADE_HOLD_TIME: float = 0.16
+const EVADE_HOLD_TIME: float = 0.32
+const EVADE_RELEASE_TIME: float = 0.2
+const EVADE_ENTRY_TICKS: float = 3.0
+const EVADE_GRIP_PULL: Vector2 = Vector2(-10.0, -6.0)
+const EVADE_BLADE_LIFT: float = -28.0
+const EVADE_TRAIL_WEIGHT: float = 0.3
 const CLASH_LEAN: float = 12.0
 const CLASH_SHIFT: float = 6.0
 const CLASH_BLADE: float = 22.0
@@ -191,6 +196,8 @@ var block_line: MoveData.Cut = MoveData.Cut.HORIZONTAL
 var afterimage: bool = false
 var evade_hold_left: float = 0.0
 var evade_hold_streak: int = 0
+var instinct_hold_left: float = 0.0
+var instinct_hold_motion: FighterState.InstinctMotion = FighterState.InstinctMotion.LEAN
 var guard: GuardTracker = GuardTracker.new()
 var bolt_contact: float = -1.0
 var rival_lock_style: CharacterData.LockStyle = CharacterData.LockStyle.BLADE
@@ -214,6 +221,7 @@ func advance(delta: float) -> void:
 	landing_left = maxf(landing_left - delta, 0.0)
 	clash_left = maxf(clash_left - delta, 0.0)
 	evade_hold_left = maxf(evade_hold_left - delta, 0.0)
+	instinct_hold_left = maxf(instinct_hold_left - delta, 0.0)
 	tumble_left = maxf(tumble_left - delta, 0.0)
 	finish_hold_left = maxf(finish_hold_left - delta, 0.0)
 	if motion_time >= 0.0:
@@ -363,13 +371,14 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 	if fighter.singularity_ticks > 0 and fighter.singularity_phase == FighterState.SingularityPhase.FORMATION and fighter.is_free():
 		pose.off_hand = CAST_HAND
 		pose.open_hand = true
-	if holds_evade(fighter):
-		var held: Vector3 = evade_pose_for(evade_hold_streak)
-		pose.back_foot.x += held.z
+	var held_weight: float = evade_hold_weight(fighter)
+	if held_weight > 0.0:
+		var held: Vector2 = _evade_pose(evade_hold_streak, held_weight, pose)
 		crouch += held.x
 		lean += held.y
-	if fighter.instinct_evade_ticks > 0 and fighter.is_alive() and not fighter.is_attacking():
-		var evade: Vector2 = _instinct_evade(fighter, pose)
+		afterimage = held_weight > EVADE_TRAIL_WEIGHT
+	if instinct_hold_left > 0.0 and fighter.is_alive() and not fighter.is_attacking():
+		var evade: Vector2 = _instinct_evade(pose)
 		crouch += evade.x
 		lean += evade.y
 	var staged_track: PoseTrack = null
@@ -665,10 +674,30 @@ func start_evade_hold(streak: int) -> void:
 	evade_hold_streak = maxi(streak - 1, 0)
 
 
-func holds_evade(fighter: FighterState) -> bool:
+func start_instinct_hold(motion: FighterState.InstinctMotion) -> void:
+	instinct_hold_left = POWER_VFX.instinct_hold_time
+	instinct_hold_motion = motion
+
+
+func evade_hold_weight(fighter: FighterState) -> float:
 	if evade_hold_left <= 0.0 or not fighter.is_alive():
-		return false
-	return fighter.state == FighterState.State.IDLE or fighter.state == FighterState.State.WALKING
+		return 0.0
+	if fighter.state != FighterState.State.IDLE and fighter.state != FighterState.State.WALKING:
+		return 0.0
+	return smoothstep(0.0, EVADE_RELEASE_TIME, evade_hold_left)
+
+
+func holds_evade(fighter: FighterState) -> bool:
+	return evade_hold_weight(fighter) > EVADE_TRAIL_WEIGHT
+
+
+func _evade_pose(streak: int, weight: float, pose: RigPose) -> Vector2:
+	var shape: Vector3 = evade_pose_for(streak)
+	pose.back_foot.x += shape.z * weight
+	pose.grip += EVADE_GRIP_PULL * weight
+	pose.blade_angle += EVADE_BLADE_LIFT * weight
+	_body_shift += shape.z * 0.5 * weight
+	return Vector2(shape.x, shape.y) * weight
 
 
 func start_tumble() -> void:
@@ -1191,9 +1220,9 @@ func _dodge(fighter: FighterState, pose: RigPose) -> Vector2:
 		FighterState.DodgeKind.DASH:
 			return Vector2(14.0, 26.0 if toward else -18.0)
 		FighterState.DodgeKind.EVADE:
-			var evade_pose: Vector3 = evade_pose_for(fighter.evade_streak)
-			pose.back_foot.x += evade_pose.z
-			return Vector2(evade_pose.x, evade_pose.y)
+			var entry: float = ease(clampf((fighter.state_ticks + 1.0) / EVADE_ENTRY_TICKS, 0.0, 1.0), 0.4)
+			afterimage = fighter.evade_succeeded
+			return _evade_pose(fighter.evade_streak, entry, pose)
 		FighterState.DodgeKind.SPIN:
 			var travel: float = clampf(float(fighter.state_ticks) / maxf(DodgeState.spin_travel_ticks(COMBAT), 1.0), 0.0, 1.0)
 			var low: float = 1.0 if travel < 1.0 else 1.0 - clampf(float(fighter.state_ticks - DodgeState.spin_travel_ticks(COMBAT)) / maxf(Ticks.from_seconds(COMBAT.spin_dodge_recovery), 1.0), 0.0, 1.0)
@@ -1290,13 +1319,12 @@ static func _progress(fighter: FighterState, move: MoveData) -> float:
 	return clampf(float(fighter.phase_ticks) / maxf(length, 1.0), 0.0, 1.0)
 
 
-func _instinct_evade(fighter: FighterState, pose: RigPose) -> Vector2:
-	if fighter.instinct_power == null:
-		return Vector2.ZERO
-	var progress: float = 1.0 - float(fighter.instinct_evade_ticks) / maxf(Ticks.from_seconds(fighter.instinct_power.evade_duration), 1)
-	var pulse: float = sin(clampf(progress, 0.0, 1.0) * PI)
-	afterimage = pulse > 0.4
-	match fighter.instinct_motion:
+func _instinct_evade(pose: RigPose) -> Vector2:
+	var progress: float = 1.0 - instinct_hold_left / maxf(POWER_VFX.instinct_hold_time, 0.001)
+	var pulse: float = instinct_envelope(progress)
+	afterimage = pulse > EVADE_TRAIL_WEIGHT
+	pose.blade_angle += EVADE_BLADE_LIFT * 0.5 * pulse
+	match instinct_hold_motion:
 		FighterState.InstinctMotion.LEAN:
 			_body_shift -= POWER_VFX.instinct_shift * pulse
 			pose.grip += Vector2(-POWER_VFX.instinct_shift, 0.0) * pulse
@@ -1316,3 +1344,9 @@ func _instinct_evade(fighter: FighterState, pose: RigPose) -> Vector2:
 			pose.back_foot.x -= POWER_VFX.instinct_step * pulse
 			return Vector2(POWER_VFX.instinct_slide * pulse, -POWER_VFX.instinct_lean * pulse * 0.6)
 	return Vector2.ZERO
+
+
+static func instinct_envelope(progress: float) -> float:
+	var rise: float = ease(clampf(progress / POWER_VFX.instinct_hold_rise, 0.0, 1.0), 0.35)
+	var fall: float = 1.0 - smoothstep(POWER_VFX.instinct_hold_release, 1.0, progress)
+	return minf(rise, fall)

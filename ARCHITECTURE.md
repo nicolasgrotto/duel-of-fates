@@ -239,7 +239,7 @@ Implementação:
 ## Apresentação
 
 - **`DuelScreen`**: monta arena, `FighterView` ×2, `CameraRig`, `Hud`, `EffectsDirector`; um executor de tick chama a simulação e despacha os eventos do tick para quem escuta (sinais).
-- **`FighterView`**: lê o `FighterState` e escolhe a animação e o ponto dela pela **fase e progresso do golpe** (a animação segue a simulação, nunca o contrário). Trajes trocam materiais e peças, não a lógica.
+- **`FighterView`**: lê o `FighterState` e escolhe a animação e o ponto dela pela **fase e progresso do golpe** (a animação segue a simulação, nunca o contrário). Trajes trocam materiais e peças, não a lógica. O brilho de esquiva (`EvadeGlow`, na camada aditiva) acende em `EVADE_SUCCESS` do próprio lutador; a esquiva de precisão e a do Instinto Superior seguram a pose por temporizadores do `PoseSolver` (`start_evade_hold`, `start_instinct_hold`), só de apresentação.
 - **Árvores da História**: `core/story_power_tree.gd` resolve os recursos e estados de Poderes e Lâmina sem depender da UI. Compra por pontos, requisitos, migração e equipamento estão descritos em “Pontos e árvores da História” e “Árvore de Lâmina”, ao fim deste documento. `screens/story/story_powers.gd` desenha os dois grafos e compartilha detalhe/seletor; tema, paleta e localização são centrais.
 - **`BladeView`**: camadas da lâmina, luz, rastro, ignição, apagar, tremulação.
 - **`EffectsDirector`**: receitas de efeito por evento, com pools de partículas e luzes; respeita "efeitos reduzidos".
