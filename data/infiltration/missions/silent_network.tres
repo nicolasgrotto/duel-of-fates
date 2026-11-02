@@ -10,46 +10,118 @@
 [ext_resource type="Texture2D" path="res://assets/infiltration/training_tiles.png" id="tiles"]
 [ext_resource type="Texture2D" path="res://assets/infiltration/training_sprites.png" id="sprites"]
 [ext_resource type="Texture2D" path="res://assets/infiltration/enemy_sprites.png" id="enemies"]
+[ext_resource type="Texture2D" path="res://assets/infiltration/previews/silent_network.png" id="preview"]
 
 [sub_resource type="Resource" id="panel_0"]
 script = ExtResource("panel")
-position = Vector2(352, 1056)
+position = Vector2(5024, 480)
 
 [sub_resource type="Resource" id="panel_1"]
 script = ExtResource("panel")
-position = Vector2(1632, 1056)
+position = Vector2(288, 1632)
 
-[sub_resource type="Resource" id="guard"]
+[sub_resource type="Resource" id="panel_2"]
+script = ExtResource("panel")
+position = Vector2(5024, 3104)
+
+[sub_resource type="Resource" id="enemy_0"]
 script = ExtResource("placement")
 enemy = ExtResource("sentry")
-position = Vector2(1056, 608)
-direction = Vector2(-1, 0)
+position = Vector2(2656, 608)
+direction = Vector2(1, 0)
 
-[sub_resource type="Resource" id="patrol"]
+[sub_resource type="Resource" id="enemy_1"]
 script = ExtResource("placement")
 enemy = ExtResource("trooper")
-position = Vector2(1120, 416)
+position = Vector2(2016, 288)
 direction = Vector2(1, 0)
-route = PackedVector2Array(1120, 416, 1248, 416, 1248, 608, 1120, 608)
+route = PackedVector2Array(2016, 288, 3296, 288, 3296, 928, 2016, 928)
 
-[sub_resource type="Resource" id="reserve"]
+[sub_resource type="Resource" id="enemy_2"]
+script = ExtResource("placement")
+enemy = ExtResource("trooper")
+position = Vector2(3872, 288)
+direction = Vector2(1, 0)
+route = PackedVector2Array(3872, 288, 5088, 288, 5088, 928, 3872, 928)
+
+[sub_resource type="Resource" id="enemy_3"]
+script = ExtResource("placement")
+enemy = ExtResource("sentry")
+position = Vector2(4512, 1568)
+direction = Vector2(0, 1)
+
+[sub_resource type="Resource" id="enemy_4"]
+script = ExtResource("placement")
+enemy = ExtResource("trooper")
+position = Vector2(3872, 1952)
+direction = Vector2(1, 0)
+route = PackedVector2Array(3872, 1952, 5088, 1952, 5088, 2144, 3872, 2144)
+
+[sub_resource type="Resource" id="enemy_5"]
+script = ExtResource("placement")
+enemy = ExtResource("trooper")
+position = Vector2(2016, 1568)
+direction = Vector2(1, 0)
+route = PackedVector2Array(2016, 1568, 3296, 1568, 3296, 2080, 2016, 2080)
+
+[sub_resource type="Resource" id="enemy_6"]
+script = ExtResource("placement")
+enemy = ExtResource("sentry")
+position = Vector2(416, 2016)
+direction = Vector2(1, 0)
+
+[sub_resource type="Resource" id="enemy_7"]
+script = ExtResource("placement")
+enemy = ExtResource("trooper")
+position = Vector2(288, 1568)
+direction = Vector2(1, 0)
+route = PackedVector2Array(288, 1568, 1440, 1568, 1440, 2080, 288, 2080)
+
+[sub_resource type="Resource" id="enemy_8"]
+script = ExtResource("placement")
+enemy = ExtResource("sentry")
+position = Vector2(2656, 3040)
+direction = Vector2(1, 0)
+
+[sub_resource type="Resource" id="enemy_9"]
+script = ExtResource("placement")
+enemy = ExtResource("trooper")
+position = Vector2(2016, 2720)
+direction = Vector2(1, 0)
+route = PackedVector2Array(2016, 2720, 3296, 2720, 3296, 3296, 2016, 3296)
+
+[sub_resource type="Resource" id="enemy_10"]
 script = ExtResource("placement")
 enemy = ExtResource("heavy")
-position = Vector2(1760, 224)
+position = Vector2(3872, 2720)
+direction = Vector2(1, 0)
+route = PackedVector2Array(3872, 2720, 5088, 2720, 5088, 3296, 3872, 3296)
+
+[sub_resource type="Resource" id="enemy_11"]
+script = ExtResource("placement")
+enemy = ExtResource("heavy")
+position = Vector2(1440, 2720)
 direction = Vector2(0, 1)
+reinforcement = true
+
+[sub_resource type="Resource" id="enemy_12"]
+script = ExtResource("placement")
+enemy = ExtResource("heavy")
+position = Vector2(5088, 1568)
+direction = Vector2(-1, 0)
 reinforcement = true
 
 [sub_resource type="Resource" id="layout"]
 script = ExtResource("map")
 id = &"silent_network"
 title_key = "INF_NETWORK"
-player_spawn = Vector2(224, 224)
-rows = PackedStringArray("##############################", "#............................#", "#............................#", "#...........#................#", "#...........#................#", "#...........#................#", "#...........#................#", "#...........#................#", "#...........#................#", "#...........#................#", "#...........#................#", "#...........#................#", "#...........#...CCCCCCCC.....#", "#...........#................#", "#...........#................#", "#............................#", "#............................#", "#............................#", "#............................#", "##############################")
-enemies = [SubResource("guard"), SubResource("patrol"), SubResource("reserve")]
-panels = [SubResource("panel_0"), SubResource("panel_1")]
+player_spawn = Vector2(352, 416)
+rows = PackedStringArray("####################################################################################", "####################################################################################", "##.......................####.........................####........................##", "##.......................####.........................####........................##", "##.......................####.........................####........................##", "##.......................####.........................####........................##", "##.......................####.........CCCCCC..........####........CC..............##", "##.......................####.........CCCCCC..........####........CC..............##", "##.......................====.........................====........CC..............##", "##.......................====.........................====........CC..............##", "##.......................====.........................====........CC..............##", "##.......................####.........CCCCCC..........####........CC..............##", "##.......................####.........CCCCCC..........####........CC..............##", "##.......................####.........................####........................##", "##.......................####.........................####........................##", "##.......................####.........................####........................##", "##.......................####.........................####........................##", "########################################====############################====########", "########################################====############################====########", "########################################====############################====########", "########################################====############################====########", "########################################====############################====########", "##.......................####.........................####........................##", "##.......................####.........................####........................##", "##.......................####.........................####........................##", "##.......................####.........................####........................##", "##.......................####.........CC....CC........####......CCCCCCCCCCCC......##", "##..........CCCCCC.......====.........CC....CC........====......CCCCCCCCCCCC......##", "##..........CCCCCC.......====.........CC....CC........====........................##", "##.......................====.........CC....CC........====........................##", "##.......................####.........CC....CC........####........................##", "##.......................####.........CC....CC........####........................##", "##.......................####.........................####........................##", "##.......................####.........................####........................##", "##.......................####.........................####........................##", "########====########################################################################", "########====########################################################################", "########====########################################################################", "########====########################################################################", "########====########################################################################", "##.......................####.........................####........................##", "##.......................####.........................####........................##", "##.......................####.........................####........................##", "##.......................####.........................####........................##", "##.......................####.......CC......CC........####........CC..............##", "##.......................####.......CC......CC........####........CC..............##", "##.......................====.......CC......CC........====........CC..............##", "##.......................====.......CC......CC........====........CC..............##", "##.......................====.......CC......CC........====........CC..............##", "##.......................####.......CC......CC........####........CC..............##", "##.......................####.......CC......CC........####........CC..............##", "##.......................####.........................####........................##", "##.......................####.........................####........................##", "##.......................####.........................####........................##", "####################################################################################", "####################################################################################")
+enemies = Array[ExtResource("placement")]([SubResource("enemy_0"), SubResource("enemy_1"), SubResource("enemy_2"), SubResource("enemy_3"), SubResource("enemy_4"), SubResource("enemy_5"), SubResource("enemy_6"), SubResource("enemy_7"), SubResource("enemy_8"), SubResource("enemy_9"), SubResource("enemy_10"), SubResource("enemy_11"), SubResource("enemy_12")])
+panels = Array[ExtResource("panel")]([SubResource("panel_0"), SubResource("panel_1"), SubResource("panel_2")])
+enemy_sprites = ExtResource("enemies")
 tiles = ExtResource("tiles")
 sprites = ExtResource("sprites")
-enemy_sprites = ExtResource("enemies")
 
 [resource]
 script = ExtResource("mission")
@@ -58,7 +130,6 @@ title_key = "INF_NETWORK"
 briefing_key = "INF_NETWORK_BRIEF"
 map = SubResource("layout")
 disable_alarms = true
-terminals = PackedVector2Array()
-prisoner_spawns = PackedVector2Array()
-extraction = Vector2(224, 352)
-bonus_seconds = 90.0
+extraction = Vector2(352, 3232)
+bonus_seconds = 300.0
+preview = ExtResource("preview")

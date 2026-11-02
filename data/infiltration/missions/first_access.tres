@@ -10,35 +10,62 @@
 [ext_resource type="Texture2D" path="res://assets/infiltration/training_tiles.png" id="tiles"]
 [ext_resource type="Texture2D" path="res://assets/infiltration/training_sprites.png" id="sprites"]
 [ext_resource type="Texture2D" path="res://assets/infiltration/enemy_sprites.png" id="enemies"]
+[ext_resource type="Texture2D" path="res://assets/infiltration/previews/first_access.png" id="preview"]
 
 [sub_resource type="Resource" id="panel_0"]
 script = ExtResource("panel")
-position = Vector2(544, 352)
+position = Vector2(3936, 1440)
 
-[sub_resource type="Resource" id="guard"]
+[sub_resource type="Resource" id="enemy_0"]
 script = ExtResource("placement")
 enemy = ExtResource("sentry")
-position = Vector2(1056, 416)
+position = Vector2(2080, 608)
+direction = Vector2(1, 0)
+
+[sub_resource type="Resource" id="enemy_1"]
+script = ExtResource("placement")
+enemy = ExtResource("trooper")
+position = Vector2(2976, 288)
+direction = Vector2(1, 0)
+route = PackedVector2Array(2976, 288, 3936, 288, 3936, 864, 2976, 864)
+
+[sub_resource type="Resource" id="enemy_2"]
+script = ExtResource("placement")
+enemy = ExtResource("sentry")
+position = Vector2(3040, 2016)
+direction = Vector2(0, -1)
+
+[sub_resource type="Resource" id="enemy_3"]
+script = ExtResource("placement")
+enemy = ExtResource("trooper")
+position = Vector2(1696, 1440)
+direction = Vector2(1, 0)
+route = PackedVector2Array(1696, 1440, 2464, 1440, 2464, 2016, 1696, 2016)
+
+[sub_resource type="Resource" id="enemy_4"]
+script = ExtResource("placement")
+enemy = ExtResource("sentry")
+position = Vector2(1120, 1440)
 direction = Vector2(-1, 0)
 
-[sub_resource type="Resource" id="reserve"]
+[sub_resource type="Resource" id="enemy_5"]
 script = ExtResource("placement")
 enemy = ExtResource("heavy")
-position = Vector2(1760, 224)
-direction = Vector2(0, 1)
+position = Vector2(3936, 2016)
+direction = Vector2(-1, 0)
 reinforcement = true
 
 [sub_resource type="Resource" id="layout"]
 script = ExtResource("map")
 id = &"first_access"
 title_key = "INF_FIRST"
-player_spawn = Vector2(224, 224)
-rows = PackedStringArray("##############################", "#............................#", "#............................#", "#............................#", "#............................#", "#............................#", "#............................#", "#............................#", "#.....CCCCCC.................#", "#............................#", "#............................#", "#............................#", "#............................#", "#............................#", "#............................#", "#............................#", "#............................#", "#............................#", "#............................#", "##############################")
-enemies = [SubResource("guard"), SubResource("reserve")]
-panels = [SubResource("panel_0")]
+player_spawn = Vector2(352, 416)
+rows = PackedStringArray("##################################################################", "##################################################################", "##...................###.................###....................##", "##...................###.................###....................##", "##...................###.................###....................##", "##...................###.................###....................##", "##...................###......CCCCC......###......CC............##", "##...................###......CCCCC......###......CC............##", "##...................===.................===......CC............##", "##...................===.................===......CC............##", "##...................===.................===......CC............##", "##...................###......CCCCC......###......CC............##", "##...................###......CCCCC......###....................##", "##...................###.................###....................##", "##...................###.................###....................##", "##...................###.................###....................##", "#########################################################====#####", "#########################################################====#####", "#########################################################====#####", "#########################################################====#####", "##...................###.................###....................##", "##...................###.................###....................##", "##...................###.................###....................##", "##...................###.................###....................##", "##......CCCCCC.......###......CC.........###....................##", "##......CCCCCC.......###......CC.........###............CC......##", "##...................===......CC.........===............CC......##", "##...................===......CC.........===............CC......##", "##...................===......CC.........===............CC......##", "##...................###......CC.........###............CC......##", "##...................###.................###............CC......##", "##...................###.................###....................##", "##...................###.................###....................##", "##...................###.................###....................##", "##################################################################", "##################################################################")
+enemies = Array[ExtResource("placement")]([SubResource("enemy_0"), SubResource("enemy_1"), SubResource("enemy_2"), SubResource("enemy_3"), SubResource("enemy_4"), SubResource("enemy_5")])
+panels = Array[ExtResource("panel")]([SubResource("panel_0")])
+enemy_sprites = ExtResource("enemies")
 tiles = ExtResource("tiles")
 sprites = ExtResource("sprites")
-enemy_sprites = ExtResource("enemies")
 
 [resource]
 script = ExtResource("mission")
@@ -47,7 +74,6 @@ title_key = "INF_FIRST"
 briefing_key = "INF_FIRST_BRIEF"
 map = SubResource("layout")
 disable_alarms = true
-terminals = PackedVector2Array()
-prisoner_spawns = PackedVector2Array()
-extraction = Vector2(224, 352)
-bonus_seconds = 45.0
+extraction = Vector2(352, 1952)
+bonus_seconds = 150.0
+preview = ExtResource("preview")
