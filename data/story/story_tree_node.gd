@@ -1,12 +1,13 @@
 extends Resource
 
-enum Kind { POWER, STYLE_FORWARD, STYLE_BACK, STYLE_AIR, STYLE_ABILITY, TECHNIQUE, ABILITY }
+enum Kind { POWER, STYLE_FORWARD, STYLE_BACK, STYLE_AIR, STYLE_ABILITY, TECHNIQUE, ABILITY, BLASTER_FORWARD, BLASTER_BACK, BLASTER_ABILITY }
 
 @export var id: StringName
 @export var kind: Kind = Kind.POWER
 @export var power: PowerData
 @export var technique: MoveData
 @export var ability: AbilityData
+@export var ability_key: String = ""
 @export var cost: int = 0
 @export var parent: int = -1
 @export var branch: int = 0
@@ -33,3 +34,12 @@ func ability_for(character: CharacterData) -> AbilityData:
 
 func style_slot() -> int:
 	return int(kind) - int(Kind.STYLE_FORWARD) if kind in [Kind.STYLE_FORWARD, Kind.STYLE_BACK, Kind.STYLE_AIR] else -1
+
+
+func draw_slot() -> int:
+	match kind:
+		Kind.BLASTER_FORWARD:
+			return 0
+		Kind.BLASTER_BACK:
+			return 1
+	return -1

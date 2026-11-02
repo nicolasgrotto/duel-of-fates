@@ -4,9 +4,10 @@ const PALETTE: UiPalette = preload("res://ui/palette.tres")
 const COMBAT: CombatConfig = preload("res://data/balance/combat_config.tres")
 const BLADE_SLOT_KEYS: Array[String] = ["TREE_BLADE_FORWARD", "TREE_BLADE_BACK", "TREE_BLADE_AIR"]
 const SLOT_KEYS: Array[String] = ["TREE_SLOT_NEUTRAL", "TREE_SLOT_FORWARD", "TREE_SLOT_BACK"]
-const STATE_KEYS: Array[String] = ["TREE_LOCKED", "TREE_AFFORDABLE", "TREE_EXPENSIVE", "TREE_TIER_BLOCKED", "TREE_LEARNED", "TREE_EQUIPPED"]
+const TAB_KEYS: Array[String] = ["TREE_TAB_POWERS", "TREE_TAB_BLADE", "TREE_TAB_BLASTER"]
+const STATE_KEYS: Array[String] = ["TREE_LOCKED", "TREE_AFFORDABLE", "TREE_EXPENSIVE", "TREE_TIER_BLOCKED", "TREE_LEARNED", "TREE_EQUIPPED", "TREE_NEEDS_BLASTER"]
 const PATH_KEYS: Array[String] = ["PATH_COMMON", "PATH_AURORA", "PATH_ECLIPSE"]
-const STATE_STYLES: Array[StringName] = [&"locked", &"next", &"locked", &"learned", &"learned", &"equipped"]
+const STATE_STYLES: Array[StringName] = [&"locked", &"next", &"locked", &"learned", &"learned", &"equipped", &"locked"]
 
 class NodeButton extends Button:
 	var frame: StringName = &"locked"
@@ -92,7 +93,7 @@ func _ready() -> void:
 	if campaign == null:
 		SceneRouter.change.call_deferred(&"story_new")
 		return
-	_trees = [StoryPowerTree.new(campaign), StoryPowerTree.new(campaign, true)]
+	_trees = [StoryPowerTree.new(campaign), StoryPowerTree.new(campaign, true), StoryPowerTree.new(campaign, false, true)]
 	tree = _trees[0]
 	_build()
 	_refresh()
@@ -130,7 +131,7 @@ func _build() -> void:
 	for tab in _trees.size():
 		tree = _trees[tab]
 		var panel: Control = Control.new()
-		panel.name = tr("TREE_TAB_BLADE" if tab == 1 else "TREE_TAB_POWERS")
+		panel.name = tr(TAB_KEYS[tab])
 		_tabs.add_child(panel)
 		_graph = TreeGraph.new()
 		_graph.tree = tree
@@ -259,7 +260,7 @@ func _refresh() -> void:
 		_graph.buttons[index].frame = STATE_STYLES[node.state]
 		_graph.buttons[index].cursor = index == selected
 		_icons[index].modulate = PALETTE.secondary if not node.owned else PALETTE.text
-		_icons[index].modulate.a = 0.45 if node.state == StoryPowerTree.State.LOCKED else 1.0
+		_icons[index].modulate.a = 0.45 if node.state in [StoryPowerTree.State.LOCKED, StoryPowerTree.State.NEEDS_BLASTER] else 1.0
 		_graph.buttons[index].queue_redraw()
 	_graph.queue_redraw()
 	_show_detail()
@@ -285,6 +286,8 @@ func _show_detail() -> void:
 	_requirement.text = tr("TREE_CREATION") if node.initial else tr("TREE_PARENT").format({"name": tr(tree.nodes[node.definition.parent].name_key)})
 	if not node.allowed and node.power != null:
 		_requirement.text += "\n" + tr("TREE_FLOW_REQUIRED").format({"level": node.power.min_level, "tier": node.power.min_tier(COMBAT.flow) + 1})
+	if tree.blaster:
+		_requirement.text = _blaster_requirement(node)
 	_status.text = tr("TREE_IN_SLOT").format({"slot": tr(_slot_keys()[node.slot])}) if node.slot >= 0 else _state_text(node)
 	_buy_button.visible = not node.owned
 	_buy_button.disabled = node.state != StoryPowerTree.State.AFFORDABLE
@@ -292,8 +295,8 @@ func _show_detail() -> void:
 	for slot in _slots.size():
 		_slots[slot].visible = slot < _slot_count()
 		var name: String = tr("TREE_EMPTY")
-		if tree.blade:
-			var move: MoveData = hero.get([&"technique_forward", &"technique_back", &"technique_air"][slot]) as MoveData
+		if tree.blade or tree.blaster:
+			var move: MoveData = hero.get(StoryCampaign.TECHNIQUE_SLOTS[slot]) as MoveData
 			if move != null:
 				name = tr(PowerCatalog.technique_key(move))
 		else:
@@ -303,8 +306,29 @@ func _show_detail() -> void:
 		_slots[slot].text = tr("TREE_SLOT_CONTENT").format({"slot": tr(_slot_keys()[slot]), "power": name})
 
 
+func _blaster_requirement(node: StoryPowerTree.PowerNode) -> String:
+	if not node.allowed:
+		return tr("TREE_BLASTER_REQUIRED")
+	var lines: PackedStringArray = []
+	if not node.owned:
+		lines.append(tr("TREE_FIRST_BLASTER") if node.initial else tr("TREE_PARENT").format({"name": tr(tree.nodes[node.definition.parent].name_key)}))
+	lines.append(_replaced_text(node))
+	return "\n".join(lines)
+
+
+func _replaced_text(node: StoryPowerTree.PowerNode) -> String:
+	var slot: int = node.definition.draw_slot()
+	if slot < 0:
+		return tr("TREE_REPLACES").format({"technique": tr("TREE_STYLE_ABILITY")})
+	var kinds: Array[StoryCampaign.TreeNodeData.Kind] = [StoryCampaign.TreeNodeData.Kind.STYLE_FORWARD, StoryCampaign.TreeNodeData.Kind.STYLE_BACK]
+	var saber: MoveData = campaign.style_character().get(StoryCampaign.TECHNIQUE_SLOTS[slot]) as MoveData
+	if saber == null or not campaign.blade_kind_owned(kinds[slot]):
+		return tr("TREE_REPLACES_NONE")
+	return tr("TREE_REPLACES").format({"technique": tr(PowerCatalog.technique_key(saber))})
+
+
 func _slot_keys() -> Array[String]:
-	return BLADE_SLOT_KEYS if tree.blade else SLOT_KEYS
+	return BLADE_SLOT_KEYS if tree.blade or tree.blaster else SLOT_KEYS
 
 
 func _slot_count() -> int:
@@ -370,8 +394,8 @@ func _confirm(index: int) -> void:
 	if not node.allowed:
 		AudioDirector.play_ui(&"rejected")
 		return
-	if tree.blade and node.definition.kind != StoryCampaign.TreeNodeData.Kind.TECHNIQUE:
-		if node.definition.style_slot() >= 0 and tree.equip(selected, node.definition.style_slot()):
+	if tree.blaster or (tree.blade and node.definition.kind != StoryCampaign.TreeNodeData.Kind.TECHNIQUE):
+		if tree.equip(selected, node.definition.style_slot()):
 			campaign.save()
 			AudioDirector.play_ui(&"ui_confirm")
 			_refresh()
@@ -421,7 +445,7 @@ func _input(event: InputEvent) -> void:
 	if tree == null or not is_visible_in_tree():
 		return
 	if event.is_action_pressed(&"menu_variant") or event.is_action_pressed(&"ui_focus_next"):
-		_tabs.current_tab = 1 - _tabs.current_tab
+		_tabs.current_tab = posmod(_tabs.current_tab + 1, _trees.size())
 		get_viewport().set_input_as_handled()
 		return
 	var step: int = 0

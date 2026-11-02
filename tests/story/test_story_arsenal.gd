@@ -3,8 +3,6 @@ extends TestCase
 const CAMPAIGN: CampaignData = preload("res://data/story/campaign.tres")
 const STYLE_TECHNIQUE: int = 0
 const STYLE_HOLSTER: int = 3
-const FORWARD: int = 0
-const BACK: int = 1
 
 
 func _story(style: int) -> StoryCampaign:
@@ -22,7 +20,7 @@ func _blaster(id: StringName) -> BlasterData:
 func _shots(blaster_id: StringName) -> int:
 	var story: StoryCampaign = _story(STYLE_HOLSTER)
 	story.blaster_id = blaster_id
-	return _fired(story.protagonist(), CAMPAIGN.draw_techniques[0])
+	return _fired(story.protagonist(), CAMPAIGN.blaster_tree[0].technique)
 
 
 func _fired(hero: CharacterData, move: MoveData) -> int:
@@ -74,7 +72,7 @@ func test_vigor_cost_scales_only_for_draws() -> void:
 	story.blaster_id = sniper.id
 	var duel: DuelFixture = DuelFixture.create(null, null, 7, [story.protagonist(), DuelFixture.character(&"guardian")] as Array[CharacterData])
 	var fighter: FighterState = duel.fighter(0)
-	var draw: MoveData = CAMPAIGN.draw_techniques[0]
+	var draw: MoveData = CAMPAIGN.blaster_tree[0].technique
 	assert_almost(fighter.vigor_cost_of(draw), draw.vigor_cost * sniper.vigor_multiplier)
 	var heavy: MoveData = fighter.character.heavy
 	assert_almost(fighter.vigor_cost_of(heavy), heavy.vigor_cost)
@@ -83,7 +81,7 @@ func test_vigor_cost_scales_only_for_draws() -> void:
 func test_buying_spends_credits_and_refuses_what_it_cannot_afford() -> void:
 	var story: StoryCampaign = _story(STYLE_TECHNIQUE)
 	var rifle: BlasterData = _blaster(&"back_rifle")
-	assert_true(story.owns_blaster(_blaster(&"holster_pistol")))
+	assert_false(story.owns_blaster(_blaster(&"holster_pistol")))
 	assert_false(story.owns_blaster(rifle))
 	assert_false(story.buy_blaster(rifle))
 	story.credits = rifle.price + 10
@@ -123,10 +121,11 @@ func test_old_saves_gain_credits_for_encounters_already_won() -> void:
 	var saved: Dictionary = story.to_dict()
 	saved.erase("credits")
 	saved.erase("owned_blasters")
-	saved.erase("blaster_slot")
+	saved.erase("blaster_carried")
+	saved.erase("blaster_bought")
+	saved.erase("blaster_active")
 	var loaded: StoryCampaign = StoryCampaign.from_dict(saved)
 	assert_eq(loaded.credits, story.credits_for(encounter))
-	assert_eq(loaded.blaster_slot, -1)
 	assert_false(loaded.blaster_equipped())
 
 
@@ -135,15 +134,15 @@ func test_purchases_and_slot_survive_a_save() -> void:
 	story.credits = 1000
 	var sniper: BlasterData = _blaster(&"back_sniper")
 	assert_true(story.buy_blaster(sniper))
-	assert_true(story.equip_blaster(sniper, BACK))
+	assert_true(story.equip_blaster(sniper))
 	var loaded: StoryCampaign = StoryCampaign.from_dict(story.to_dict())
 	assert_eq(loaded.credits, story.credits)
 	assert_eq(loaded.blaster_id, sniper.id)
-	assert_eq(loaded.blaster_slot, BACK)
+	assert_true(loaded.blaster_equipped())
 	assert_true(loaded.owns_blaster(sniper))
 
 
-func test_any_style_can_equip_a_blaster_in_a_technique_slot() -> void:
+func test_any_style_can_buy_equip_and_fire_a_blaster() -> void:
 	for style in CAMPAIGN.styles.size():
 		if CAMPAIGN.styles[style] == &"holster":
 			continue
@@ -151,40 +150,58 @@ func test_any_style_can_equip_a_blaster_in_a_technique_slot() -> void:
 		var plain: CharacterData = story.protagonist()
 		assert_true(plain.weapon.blaster == null, "no blaster until equipped")
 		var pistol: BlasterData = _blaster(&"holster_pistol")
-		assert_true(story.equip_blaster(pistol, FORWARD))
+		assert_false(story.equip_blaster(pistol), "the pistol must be bought first")
+		story.credits = pistol.price
+		assert_true(story.buy_blaster(pistol))
+		assert_eq(story.credits, 0)
+		assert_true(story.equip_blaster(pistol))
 		var armed: CharacterData = story.protagonist()
 		assert_eq(armed.weapon.sidearm, WeaponData.Sidearm.HOLSTER)
 		assert_eq(armed.weapon.blaster, pistol)
-		assert_eq(armed.technique_forward, CAMPAIGN.draw_techniques[FORWARD])
+		assert_eq(armed.technique_forward, CAMPAIGN.blaster_tree[0].technique)
 		assert_true(armed.technique_forward.usable_by(armed))
 		assert_gt(float(_fired(armed, armed.technique_forward)), 0.0)
 		story.unequip_blaster()
-		assert_true(story.protagonist().weapon.blaster == null)
+		var saber: CharacterData = story.protagonist()
+		assert_true(saber.weapon.blaster == null)
+		assert_eq(saber.technique_forward, story.style_character().technique_forward)
 
 
 func test_the_shared_character_data_is_never_changed() -> void:
 	var story: StoryCampaign = _story(STYLE_TECHNIQUE)
-	story.equip_blaster(_blaster(&"holster_pistol"), BACK)
+	story.credits = 1000
+	story.buy_blaster(_blaster(&"holster_pistol"))
+	story.equip_blaster(_blaster(&"holster_pistol"))
 	story.protagonist()
 	assert_true(DuelFixture.character(&"guardian").weapon.blaster == null)
 	assert_ne(DuelFixture.character(&"guardian").weapon.sidearm, WeaponData.Sidearm.HOLSTER)
 
 
-func test_blaster_and_projected_cut_share_a_slot_exclusively() -> void:
-	var story: StoryCampaign = _story(STYLE_TECHNIQUE)
-	story.projected_cut_slot = FORWARD
-	assert_true(story.equip_blaster(_blaster(&"holster_pistol"), FORWARD))
-	assert_eq(story.projected_cut_slot, -1)
-	assert_eq(story.blaster_slot, FORWARD)
+func test_only_the_holster_style_starts_with_the_pistol_equipped() -> void:
+	var holster: StoryCampaign = _story(STYLE_HOLSTER)
+	var pistol: BlasterData = _blaster(&"holster_pistol")
+	assert_eq(pistol.price, 150)
+	assert_true(holster.owns_blaster(pistol))
+	assert_eq(holster.credits, 0)
+	assert_eq(holster.protagonist().weapon.blaster, pistol)
+	assert_eq(holster.protagonist().technique_forward, CAMPAIGN.blaster_tree[0].technique)
+	assert_false(_story(STYLE_TECHNIQUE).owns_blaster(pistol))
 
 
-func test_holster_style_keeps_its_kit_and_needs_no_slot() -> void:
+func test_prices_follow_the_author_table() -> void:
+	var expected: Dictionary = {&"holster_pistol": 150, &"thigh_revolver": 200, &"lumbar_carbine": 250, &"back_rifle": 350, &"back_sniper": 450}
+	for id in expected:
+		assert_eq(_blaster(id).price, expected[id])
+
+
+func test_holster_style_keeps_the_weapon_and_can_turn_its_skills_off() -> void:
 	var story: StoryCampaign = _story(STYLE_HOLSTER)
 	var base: CharacterData = story.style_character()
 	story.credits = 1000
 	var rifle: BlasterData = _blaster(&"back_rifle")
 	story.buy_blaster(rifle)
-	assert_true(story.equip_blaster(rifle, -1))
-	assert_eq(story.blaster_slot, -1)
+	assert_true(story.equip_blaster(rifle))
 	assert_eq(story.protagonist().weapon.blaster, rifle)
-	assert_eq(base.technique_forward, story.style_character().technique_forward)
+	assert_true(story.toggle_blaster_skill(CAMPAIGN.blaster_tree[0]))
+	assert_eq(story.protagonist().technique_forward, base.technique_forward)
+	assert_eq(story.protagonist().weapon.blaster, rifle)

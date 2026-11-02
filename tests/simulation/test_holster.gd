@@ -10,6 +10,11 @@ const COVER: MoveData = preload("res://data/techniques/covering_fire.tres")
 func _duel(blaster: BlasterData = PISTOL) -> DuelFixture:
 	var story: StoryCampaign = StoryCampaign.create("Iria", 0, 3, 0, 0, 1)
 	story.skill_points = 10
+	for node in StoryCampaign.CAMPAIGN.blaster_tree:
+		if not story.blaster_bought.has(node.node_id()):
+			story.blaster_bought.append(node.node_id())
+		if not story.blaster_active.has(node.node_id()):
+			story.blaster_active.append(node.node_id())
 	for node in StoryCampaign.CAMPAIGN.blade_tree:
 		story.buy(node)
 	var hero: CharacterData = story.protagonist()

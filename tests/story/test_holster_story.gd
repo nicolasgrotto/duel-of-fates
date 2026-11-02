@@ -42,10 +42,9 @@ func test_holster_blade_tree_buys_moves_and_restores_projected_cut_slots() -> vo
 	var story: StoryCampaign = _campaign()
 	story.skill_points = 10
 	var tree: StoryPowerTree = StoryPowerTree.new(story, true)
-	assert_eq(tree.nodes[0].technique.id, &"double_draw")
-	assert_eq(tree.nodes[1].technique.id, &"retreat_draw")
+	for index in tree.nodes.size():
+		assert_false(tree.nodes[index].technique != null and tree.nodes[index].technique.draws_sidearm, tree.nodes[index].name_key)
 	assert_eq(tree.nodes[2].technique.id, &"plunge")
-	assert_eq(tree.nodes[3].ability.move.id, &"covering_fire")
 	for index in range(1, tree.nodes.size()):
 		assert_true(tree.buy(index))
 	assert_eq(story.skill_points, 0)
@@ -55,7 +54,7 @@ func test_holster_blade_tree_buys_moves_and_restores_projected_cut_slots() -> vo
 		var restored: StoryCampaign = StoryCampaign.from_dict(story.to_dict())
 		assert_eq(restored.projected_cut_slot, slot)
 		assert_true(tree.equip(slot, slot))
-	assert_eq(story.protagonist().technique_back.id, &"retreat_draw")
+	assert_eq(story.protagonist().technique_back, story.style_character().technique_back)
 	assert_eq(story.protagonist().technique_air.id, &"plunge")
 
 

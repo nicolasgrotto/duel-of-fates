@@ -1114,12 +1114,15 @@ ARSENAL_BUY,Confirmar: comprar,Confirm: buy
 ARSENAL_NOT_ENOUGH,Créditos insuficientes,Not enough credits
 ARSENAL_EQUIP,Confirmar: equipar,Confirm: equip
 ARSENAL_UNEQUIP,Confirmar: guardar o blaster,Confirm: put the blaster away
-ARSENAL_SLOT,Espaço da técnica: {slot},Technique slot: {slot}
-ARSENAL_REPLACES,Substitui: {technique},Replaces: {technique}
-ARSENAL_REPLACES_NONE,O espaço está vazio,The slot is empty
-ARSENAL_SLOT_FORWARD,Frente,Forward
-ARSENAL_SLOT_BACK,Trás,Back
-ARSENAL_HINT_SLOT,← → espaço,← → slot
+ARSENAL_SKILL_NOTE,"Técnicas de blaster: Habilidades, aba Blaster. Elas ocupam espaços de técnica; guardar a arma devolve o sabre.","Blaster techniques: Skills, Blaster tab. They take technique slots; putting the weapon away gives the slot back to the saber."
+TREE_TAB_BLASTER,Blaster,Blaster
+TREE_NEEDS_BLASTER,Exige blaster,Needs a blaster
+TREE_BLASTER_REQUIRED,Equipe um blaster no Arsenal para abrir esta árvore.,Equip a blaster in the Arsenal to open this tree.
+TREE_FIRST_BLASTER,Vem com o primeiro blaster,Comes with your first blaster
+TREE_BLASTER_TEXT,Técnica de blaster. Dispara no padrão da arma equipada. Confirme para ligar ou desligar.,Blaster technique. Fires in the equipped weapon's pattern. Confirm to turn it on or off.
+TREE_BLASTER_ABILITY_TEXT,Habilidade de blaster: uma rajada em avanço no padrão da arma equipada. Confirme para ligar ou desligar.,Blaster ability: an advancing burst in the equipped weapon's pattern. Confirm to turn it on or off.
+TREE_REPLACES,Substitui: {technique},Replaces: {technique}
+TREE_REPLACES_NONE,O espaço está vazio,The slot is empty
 BOPS_TITLE,Operações de blaster,Blaster Operations
 BOPS_TRAINING,Pátio de calibração,Calibration Yard
 BOPS_KEYS_TITLE,CONTROLES · OPERAÇÕES DE BLASTER,CONTROLS · BLASTER OPERATIONS

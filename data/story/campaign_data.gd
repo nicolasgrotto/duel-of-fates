@@ -31,7 +31,8 @@ const TreeNodeData = preload("res://data/story/story_tree_node.gd")
 	preload("res://data/blasters/lumbar_carbine.tres"), preload("res://data/blasters/back_rifle.tres"),
 	preload("res://data/blasters/back_sniper.tres"),
 ]
-@export var draw_techniques: Array[MoveData] = [preload("res://data/techniques/double_draw.tres"), preload("res://data/techniques/retreat_draw.tres")]
+@export var blaster_tree: Array[TreeNodeData] = []
+@export var holster_blade_source: StringName = &"guardian"
 @export var credits_win: int = 100
 @export var credits_milestone: int = 50
 @export var style_keys: PackedStringArray = DEFAULT_STYLE_KEYS

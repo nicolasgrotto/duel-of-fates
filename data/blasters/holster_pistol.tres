@@ -12,6 +12,7 @@ script = ExtResource("1")
 id = &"holster_pistol"
 name_key = "BLASTER_HOLSTER_PISTOL"
 description_key = "BLASTER_HOLSTER_PISTOL_DESC"
+price = 150
 bolt = ExtResource("2")
 draw_time = 0.15
 holster_time = 0.15

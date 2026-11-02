@@ -8,6 +8,8 @@ const ATTRIBUTES: Array[StringName] = [&"health", &"vigor", &"blade", &"defense"
 const DIFFICULTIES: Array[StringName] = [&"easy", &"normal", &"hard"]
 const SLOTS: int = 3
 const TreeNodeData = preload("res://data/story/story_tree_node.gd")
+const TECHNIQUE_SLOTS: Array[StringName] = [&"technique_forward", &"technique_back", &"technique_air"]
+const LEGACY_HOLSTER_NODES: Dictionary = {&"blaster_retreat": &"style_back", &"blaster_cover": &"style_ability"}
 const CATALOG: PowerCatalog = preload("res://data/powers/catalog.tres")
 
 var name: String = ""
@@ -16,7 +18,9 @@ var style: int = 0
 var blaster_id: StringName = &"holster_pistol"
 var credits: int = 0
 var owned_blasters: Array[StringName] = []
-var blaster_slot: int = -1
+var blaster_carried: bool = false
+var blaster_bought: Array[StringName] = []
+var blaster_active: Array[StringName] = []
 var look: int = 0
 var hair: int = CAMPAIGN.default_hair
 var beard: int = 0
@@ -63,6 +67,12 @@ static func create(player_name: String, flow_path: int, style_index: int, look_i
 	campaign.learned = [first]
 	campaign.blade_bought = [CAMPAIGN.blade_tree[0].node_id()]
 	campaign.equipped = [first, &"", &""]
+	var free_skill: StringName = CAMPAIGN.blaster_tree[0].node_id()
+	campaign.blaster_bought = [free_skill]
+	if campaign.uses_blaster_style():
+		campaign.blaster_id = CAMPAIGN.blasters[0].id
+		campaign.owned_blasters = [campaign.blaster_id]
+		campaign.blaster_active = [free_skill]
 	return campaign
 
 
@@ -78,22 +88,34 @@ func power_tree() -> Array[TreeNodeData]:
 
 
 func can_buy(node: TreeNodeData) -> bool:
-	var is_blade: bool = CAMPAIGN.blade_tree.has(node)
-	var nodes: Array[TreeNodeData] = CAMPAIGN.blade_tree if is_blade else power_tree()
-	var owned: Array[StringName] = blade_bought if is_blade else learned
+	var nodes: Array[TreeNodeData] = _tree_of(node)
+	var owned: Array[StringName] = _bought_in(node)
 	if not nodes.has(node) or owned.has(node.node_id()) or skill_points < node.cost:
 		return false
+	if nodes == CAMPAIGN.blaster_tree and not blaster_equipped():
+		return false
 	return node.parent < 0 or owned.has(nodes[node.parent].node_id())
+
+
+func _tree_of(node: TreeNodeData) -> Array[TreeNodeData]:
+	if CAMPAIGN.blade_tree.has(node):
+		return CAMPAIGN.blade_tree
+	return CAMPAIGN.blaster_tree if CAMPAIGN.blaster_tree.has(node) else power_tree()
+
+
+func _bought_in(node: TreeNodeData) -> Array[StringName]:
+	if CAMPAIGN.blade_tree.has(node):
+		return blade_bought
+	return blaster_bought if CAMPAIGN.blaster_tree.has(node) else learned
 
 
 func buy(node: TreeNodeData) -> bool:
 	if not can_buy(node):
 		return false
 	skill_points -= node.cost
-	if CAMPAIGN.blade_tree.has(node):
-		blade_bought.append(node.node_id())
-	else:
-		learned.append(node.node_id())
+	_bought_in(node).append(node.node_id())
+	if CAMPAIGN.blaster_tree.has(node) and (node.draw_slot() < 0 or node.draw_slot() != projected_cut_slot):
+		_activate_blaster_skill(node)
 	_fill_slots()
 	return true
 
@@ -108,6 +130,8 @@ func blade_kind_owned(kind: TreeNodeData.Kind) -> bool:
 func equip_blade(node: TreeNodeData, slot: int) -> bool:
 	if not CAMPAIGN.blade_tree.has(node) or not blade_bought.has(node.node_id()):
 		return false
+	if node.kind == TreeNodeData.Kind.STYLE_ABILITY:
+		return _release_blaster_ability()
 	if node.kind == TreeNodeData.Kind.TECHNIQUE:
 		if slot < 0 or slot >= 3:
 			return false
@@ -115,14 +139,63 @@ func equip_blade(node: TreeNodeData, slot: int) -> bool:
 		if not blade_bought.has(style_node.node_id()):
 			return false
 		projected_cut_slot = slot
-		if blaster_slot == slot:
-			blaster_slot = -1
+		_release_draw(slot)
 		return true
 	if slot != node.style_slot() or slot < 0:
 		return false
 	if projected_cut_slot == slot:
 		projected_cut_slot = -1
+	_release_draw(slot)
 	return true
+
+
+func toggle_blaster_skill(node: TreeNodeData) -> bool:
+	if not blaster_equipped() or not CAMPAIGN.blaster_tree.has(node) or not blaster_bought.has(node.node_id()):
+		return false
+	if blaster_active.has(node.node_id()):
+		blaster_active.erase(node.node_id())
+	else:
+		_activate_blaster_skill(node)
+	return true
+
+
+func blaster_skill_on(node: TreeNodeData) -> bool:
+	return blaster_equipped() and blaster_active.has(node.node_id())
+
+
+func draw_in_slot(slot: int) -> bool:
+	for node in CAMPAIGN.blaster_tree:
+		if node.draw_slot() == slot and slot >= 0 and blaster_skill_on(node):
+			return true
+	return false
+
+
+func blaster_ability_on() -> bool:
+	for node in CAMPAIGN.blaster_tree:
+		if node.kind == TreeNodeData.Kind.BLASTER_ABILITY and blaster_skill_on(node):
+			return true
+	return false
+
+
+func _activate_blaster_skill(node: TreeNodeData) -> void:
+	if node.draw_slot() >= 0 and projected_cut_slot == node.draw_slot():
+		projected_cut_slot = -1
+	if not blaster_active.has(node.node_id()):
+		blaster_active.append(node.node_id())
+
+
+func _release_draw(slot: int) -> void:
+	for node in CAMPAIGN.blaster_tree:
+		if node.draw_slot() == slot:
+			blaster_active.erase(node.node_id())
+
+
+func _release_blaster_ability() -> bool:
+	for node in CAMPAIGN.blaster_tree:
+		if node.kind == TreeNodeData.Kind.BLASTER_ABILITY and blaster_active.has(node.node_id()):
+			blaster_active.erase(node.node_id())
+			return true
+	return false
 
 
 func award_points(encounter: EncounterData, won: bool) -> int:
@@ -288,6 +361,8 @@ func attribute_total() -> int:
 func style_character() -> CharacterData:
 	var id: StringName = CAMPAIGN.styles[style]
 	var base: CharacterData = load(CHARACTER_PATH % [id, id]) as CharacterData
+	if uses_blaster_style():
+		return _holster_blade_kit(base)
 	if base.technique_forward != null and base.technique_air != null:
 		return base
 	var resolved: CharacterData = base.duplicate() as CharacterData
@@ -298,12 +373,22 @@ func style_character() -> CharacterData:
 	return resolved
 
 
+func _holster_blade_kit(base: CharacterData) -> CharacterData:
+	var source: CharacterData = load(CHARACTER_PATH % [CAMPAIGN.holster_blade_source, CAMPAIGN.holster_blade_source]) as CharacterData
+	var resolved: CharacterData = base.duplicate() as CharacterData
+	resolved.technique_forward = source.technique_forward
+	resolved.technique_back = source.technique_back
+	resolved.ability = source.ability
+	resolved.ability_key = source.ability_key
+	return resolved
+
+
 func uses_blaster_style() -> bool:
 	return CAMPAIGN.styles[style] == &"holster"
 
 
 func blaster_equipped() -> bool:
-	return uses_blaster_style() or blaster_slot >= 0
+	return uses_blaster_style() or blaster_carried
 
 
 func credits_for(encounter: EncounterData) -> int:
@@ -311,7 +396,7 @@ func credits_for(encounter: EncounterData) -> int:
 
 
 func owns_blaster(blaster: BlasterData) -> bool:
-	return blaster.price == 0 or owned_blasters.has(blaster.id)
+	return owned_blasters.has(blaster.id)
 
 
 func can_buy_blaster(blaster: BlasterData) -> bool:
@@ -326,21 +411,18 @@ func buy_blaster(blaster: BlasterData) -> bool:
 	return true
 
 
-func equip_blaster(blaster: BlasterData, slot: int) -> bool:
+func equip_blaster(blaster: BlasterData) -> bool:
 	if not CAMPAIGN.blasters.has(blaster) or not owns_blaster(blaster):
 		return false
-	if not uses_blaster_style():
-		if slot < 0 or slot >= CAMPAIGN.draw_techniques.size():
-			return false
-		blaster_slot = slot
-		if projected_cut_slot == slot:
-			projected_cut_slot = -1
 	blaster_id = blaster.id
+	blaster_carried = true
+	if blaster_active.is_empty():
+		_activate_blaster_skill(CAMPAIGN.blaster_tree[0])
 	return true
 
 
 func unequip_blaster() -> void:
-	blaster_slot = -1
+	blaster_carried = false
 
 
 func blaster_data() -> BlasterData:
@@ -374,9 +456,9 @@ func protagonist() -> CharacterData:
 	if projected_cut_slot >= 0:
 		for node in CAMPAIGN.blade_tree:
 			if node.kind == TreeNodeData.Kind.TECHNIQUE and blade_bought.has(node.node_id()):
-				data.set([&"technique_forward", &"technique_back", &"technique_air"][projected_cut_slot], node.technique)
-	if blaster_slot >= 0 and not uses_blaster_style():
-		data.set([&"technique_forward", &"technique_back"][blaster_slot], CAMPAIGN.draw_techniques[blaster_slot])
+				data.set(TECHNIQUE_SLOTS[projected_cut_slot], node.technique)
+	if blaster_equipped():
+		_apply_blaster_skills(data)
 	data.id = &"protagonist"
 	data.name_key = name
 	data.path = CharacterData.Path.AURORA if path == 0 else CharacterData.Path.ECLIPSE
@@ -441,11 +523,62 @@ func _credits_from_cleared() -> int:
 	return total
 
 
+func _apply_blaster_skills(data: CharacterData) -> void:
+	for node in CAMPAIGN.blaster_tree:
+		if not blaster_active.has(node.node_id()):
+			continue
+		if node.draw_slot() >= 0:
+			data.set(TECHNIQUE_SLOTS[node.draw_slot()], node.technique)
+		else:
+			data.ability = node.ability
+			data.ability_key = node.ability_key
+
+
+func _load_blaster_state(data: Dictionary) -> void:
+	var legacy_slot: int = data.get("blaster_slot", -1)
+	blaster_carried = data.get("blaster_carried", legacy_slot >= 0)
+	owned_blasters.assign(data.get("owned_blasters", []))
+	if uses_blaster_style() and not owned_blasters.has(CAMPAIGN.blasters[0].id):
+		owned_blasters.append(CAMPAIGN.blasters[0].id)
+	if blaster_equipped() and not owned_blasters.has(blaster_id):
+		owned_blasters.append(blaster_id)
+	var free_skill: StringName = CAMPAIGN.blaster_tree[0].node_id()
+	blaster_bought = [free_skill]
+	blaster_active = []
+	if data.has("blaster_bought"):
+		for node in CAMPAIGN.blaster_tree:
+			if _saved_has(data["blaster_bought"], node.node_id()) and not blaster_bought.has(node.node_id()):
+				blaster_bought.append(node.node_id())
+			if _saved_has(data.get("blaster_active", []), node.node_id()) and blaster_bought.has(node.node_id()):
+				blaster_active.append(node.node_id())
+		return
+	for node in CAMPAIGN.blaster_tree:
+		if uses_blaster_style():
+			_load_legacy_holster_skill(node, data)
+		elif node.draw_slot() == legacy_slot and legacy_slot >= 0:
+			blaster_bought.append(node.node_id())
+			blaster_active.append(node.node_id())
+
+
+func _load_legacy_holster_skill(node: TreeNodeData, data: Dictionary) -> void:
+	var legacy_blade: StringName = LEGACY_HOLSTER_NODES.get(node.node_id(), &"")
+	if legacy_blade == &"":
+		blaster_active.append(node.node_id())
+	elif not data.has("blade_bought") or _saved_has(data["blade_bought"], legacy_blade):
+		blaster_bought.append(node.node_id())
+		blaster_active.append(node.node_id())
+
+
+static func _saved_has(saved: Array, id: StringName) -> bool:
+	return saved.has(id) or saved.has(String(id))
+
+
 func to_dict() -> Dictionary:
 	return {
 		"name": name, "path": path, "style": style, "look": look, "color": color, "difficulty": difficulty,
 		"hair": hair, "beard": beard, "hair_color": hair_color, "skin": skin, "blaster_id": blaster_data().id,
-		"credits": credits, "owned_blasters": owned_blasters.duplicate(), "blaster_slot": blaster_slot,
+		"credits": credits, "owned_blasters": owned_blasters.duplicate(), "blaster_carried": blaster_carried,
+		"blaster_bought": blaster_bought.duplicate(), "blaster_active": blaster_active.duplicate(),
 		"blade_bought": blade_bought.duplicate(), "projected_cut_slot": projected_cut_slot,
 		"attributes": attributes.duplicate(), "free_points": free_points, "skill_points": skill_points, "cleared": cleared.duplicate(), "learned": learned.duplicate(),
 		"equipped": equipped.duplicate(), "slots_open": slots_open, "secret_pending": secret_pending, "ending": ending,
@@ -459,10 +592,7 @@ static func from_dict(data: Dictionary) -> StoryCampaign:
 	campaign.style = clampi(data.get("style", 0), 0, CAMPAIGN.styles.size() - 1)
 	campaign.blaster_id = StringName(data.get("blaster_id", "holster_pistol"))
 	campaign.blaster_id = campaign.blaster_data().id
-	campaign.owned_blasters.assign(data.get("owned_blasters", []))
-	if campaign.blaster_data().price > 0 and not campaign.owned_blasters.has(campaign.blaster_id):
-		campaign.owned_blasters.append(campaign.blaster_id)
-	campaign.blaster_slot = clampi(data.get("blaster_slot", -1), -1, CAMPAIGN.draw_techniques.size() - 1)
+	campaign._load_blaster_state(data)
 	campaign.look = data.get("look", 0)
 	campaign.hair = data.get("hair", CAMPAIGN.default_hair)
 	campaign.beard = data.get("beard", 0)

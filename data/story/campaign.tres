@@ -47,6 +47,35 @@
 [ext_resource type="Resource" path="res://data/powers/singularity.tres" id="p_eclipse_11"]
 [ext_resource type="Resource" path="res://data/techniques/projected_cut.tres" id="projected_cut"]
 
+[ext_resource type="Resource" path="res://data/techniques/double_draw.tres" id="t_double_draw"]
+[ext_resource type="Resource" path="res://data/techniques/retreat_draw.tres" id="t_retreat_draw"]
+[ext_resource type="Resource" path="res://data/characters/holster/covering_fire_ability.tres" id="a_covering_fire"]
+
+[sub_resource type="Resource" id="blaster_0"]
+script = ExtResource("tree_node")
+id = &"blaster_draw"
+kind = 7
+technique = ExtResource("t_double_draw")
+cost = 0
+parent = -1
+
+[sub_resource type="Resource" id="blaster_1"]
+script = ExtResource("tree_node")
+id = &"blaster_retreat"
+kind = 8
+technique = ExtResource("t_retreat_draw")
+cost = 2
+parent = 0
+
+[sub_resource type="Resource" id="blaster_2"]
+script = ExtResource("tree_node")
+id = &"blaster_cover"
+kind = 9
+ability = ExtResource("a_covering_fire")
+ability_key = "ABILITY_COVERING_FIRE"
+cost = 3
+parent = 1
+
 [sub_resource type="Resource" id="aurora_0"]
 script = ExtResource("tree_node")
 power = ExtResource("p_aurora_0")
@@ -269,6 +298,7 @@ skill_points_win = 3
 skill_points_loss = 1
 skill_points_milestone = 1
 skill_points_secret = 3
+blaster_tree = Array[ExtResource("tree_node")]([SubResource("blaster_0"), SubResource("blaster_1"), SubResource("blaster_2")])
 blade_tree = Array[ExtResource("tree_node")]([SubResource("blade_0"), SubResource("blade_1"), SubResource("blade_2"), SubResource("blade_3"), SubResource("blade_4")])
 
 milestone_points = Array[PackedInt32Array]([PackedInt32Array(3, 3), PackedInt32Array(3, 2), PackedInt32Array(2, 2)])

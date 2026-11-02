@@ -23,7 +23,7 @@
 [ext_resource type="Texture2D" path="res://assets/ui/blade/ability_stance.png" id="blade_icon"]
 
 [ext_resource type="Resource" path="res://data/blasters/holster_pistol.tres" id="blaster"]
-[ext_resource type="Resource" path="res://data/techniques/covering_fire.tres" id="covering"]
+[ext_resource type="Resource" path="res://data/characters/holster/covering_fire_ability.tres" id="covering_ability"]
 [ext_resource type="Resource" path="res://data/techniques/plunge.tres" id="plunge"]
 
 [sub_resource type="Resource" id="guardian_light_1"]
@@ -132,13 +132,6 @@ blade_angle_strike = 60.0
 cut = 1
 cinematic_finisher = 9
 
-[sub_resource type="Resource" id="guardian_ability"]
-script = ExtResource("12_ability")
-icon = ExtResource("blade_icon")
-id = &"covering_fire"
-kind = 0
-move = ExtResource("covering")
-
 [sub_resource type="Resource" id="guardian_weapon"]
 script = ExtResource("3_weapon")
 kind = 0
@@ -197,7 +190,7 @@ aerial_heavy = ExtResource("8_aerial_heavy")
 guard_break_stun = 1.2
 block_cost_multiplier = 1.0
 blade_damage_multiplier = 0.9
-ability = SubResource("guardian_ability")
+ability = ExtResource("covering_ability")
 powers = Array[ExtResource("14_power")]([ExtResource("p_repulse"), ExtResource("p_heal"), ExtResource("p_barrier")])
 technique_forward = ExtResource("t_dash_slash")
 technique_back = ExtResource("t_blade_throw")

@@ -8,7 +8,6 @@ const DETAIL_GAP: int = 16
 const PREVIEW_SCALE: float = 6.0
 const PREVIEW_HEIGHT: float = 240.0
 const BACK_ROW: StringName = &"back"
-const SLOT_KEYS: Array[String] = ["ARSENAL_SLOT_FORWARD", "ARSENAL_SLOT_BACK"]
 
 var campaign: StoryCampaign
 var _list: MenuList
@@ -16,12 +15,10 @@ var _credits: Label
 var _preview: TextureRect
 var _title: Label
 var _detail: Label
-var _slot: int = 0
 
 
 func _ready() -> void:
 	campaign = StoryCampaign.current()
-	_slot = maxi(campaign.blaster_slot, 0)
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	var heading: Label = _label(tr("ARSENAL_TITLE").to_upper(), &"ScreenTitleLabel")
 	heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -46,7 +43,6 @@ func _ready() -> void:
 	columns.add_child(_list)
 	_list.chosen.connect(_choose)
 	_list.highlighted.connect(_highlight)
-	_list.adjusted.connect(_adjust)
 	var detail: VBoxContainer = VBoxContainer.new()
 	detail.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	detail.add_theme_constant_override(&"separation", DETAIL_GAP)
@@ -64,8 +60,6 @@ func _ready() -> void:
 	_detail.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	detail.add_child(_detail)
 	var hints: PackedStringArray = ["↑ ↓  " + tr("HINT_CHANGE")]
-	if not campaign.uses_blaster_style():
-		hints.append(tr("ARSENAL_HINT_SLOT"))
 	hints.append(ControlHints.hint(&"ui_accept", "HINT_CONFIRM"))
 	hints.append(ControlHints.hint(&"ui_cancel", "HINT_BACK"))
 	var footer: Label = _label(ControlHints.line(hints), &"HuntHintLabel")
@@ -113,9 +107,7 @@ func _highlight(id: StringName) -> void:
 	_preview.texture = ImageTexture.create_from_image(image)
 	_title.text = tr(blaster.name_key).to_upper()
 	var lines: PackedStringArray = [tr(blaster.description_key), _stats(blaster), ""]
-	if not campaign.uses_blaster_style():
-		lines.append(tr("ARSENAL_SLOT").format({"slot": tr(SLOT_KEYS[_slot])}))
-		lines.append(_replaces())
+	lines.append(tr("ARSENAL_SKILL_NOTE"))
 	lines.append(_action(blaster))
 	_detail.text = "\n".join(lines)
 
@@ -127,28 +119,13 @@ func _stats(blaster: BlasterData) -> String:
 	})
 
 
-func _replaces() -> String:
-	var current: MoveData = campaign.style_character().get([&"technique_forward", &"technique_back"][_slot]) as MoveData
-	var owned: bool = campaign.blade_kind_owned(StoryCampaign.TreeNodeData.Kind.STYLE_FORWARD if _slot == 0 else StoryCampaign.TreeNodeData.Kind.STYLE_BACK)
-	if current == null or not owned:
-		return tr("ARSENAL_REPLACES_NONE")
-	return tr("ARSENAL_REPLACES").format({"technique": tr(PowerCatalog.technique_key(current))})
-
-
 func _action(blaster: BlasterData) -> String:
 	if not campaign.owns_blaster(blaster):
 		return tr("ARSENAL_BUY" if campaign.can_buy_blaster(blaster) else "ARSENAL_NOT_ENOUGH")
-	var equipped: bool = campaign.blaster_equipped() and campaign.blaster_id == blaster.id and (campaign.uses_blaster_style() or campaign.blaster_slot == _slot)
+	var equipped: bool = campaign.blaster_equipped() and campaign.blaster_id == blaster.id
 	if not equipped:
 		return tr("ARSENAL_EQUIP")
 	return "" if campaign.uses_blaster_style() else tr("ARSENAL_UNEQUIP")
-
-
-func _adjust(id: StringName, step: int) -> void:
-	if campaign.uses_blaster_style() or _blaster(id) == null:
-		return
-	_slot = posmod(_slot + step, SLOT_KEYS.size())
-	_highlight(id)
 
 
 func _choose(id: StringName) -> void:
@@ -158,10 +135,10 @@ func _choose(id: StringName) -> void:
 		return
 	if not campaign.owns_blaster(blaster):
 		campaign.buy_blaster(blaster)
-	elif not campaign.uses_blaster_style() and campaign.blaster_slot == _slot and campaign.blaster_id == blaster.id:
+	elif not campaign.uses_blaster_style() and campaign.blaster_equipped() and campaign.blaster_id == blaster.id:
 		campaign.unequip_blaster()
 	else:
-		campaign.equip_blaster(blaster, _slot)
+		campaign.equip_blaster(blaster)
 	campaign.save()
 	_refresh_rows()
 	_highlight(id)
