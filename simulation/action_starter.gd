@@ -176,6 +176,8 @@ static func start_attack(sim: MatchSimulation, fighter: FighterState, move: Move
 	fighter.chain_index = chain_index
 	fighter.move_hit_done = false
 	fighter.move_connected = false
+	fighter.move_landed = false
+	fighter.heavy_chain_queued = false
 	fighter.armor_used = 0
 	fighter.charge_ticks = 0
 	fighter.charge_level = 1

@@ -153,6 +153,7 @@ static func _block(sim: MatchSimulation, attacker: FighterState, defender: Fight
 	if move.kind == MoveData.Kind.LIGHT:
 		cost += attacker.character.light_block_drain
 	attacker.move_connected = true
+	attacker.move_landed = true
 	if _guard_gives_way(defender, cost) or _breaks_guard(attacker, move):
 		sim.drain_vigor(defender, defender.vigor)
 		var break_event: CombatEvent = _event(sim, CombatEvent.Type.GUARD_BREAK, attacker, defender, move)
@@ -284,6 +285,7 @@ static func _hit(sim: MatchSimulation, attacker: FighterState, defender: Fighter
 		return
 	var combo: int = defender.combo_taken + 1 if _is_recoiling(defender) else 1
 	attacker.move_connected = true
+	attacker.move_landed = true
 	var event: CombatEvent = _event(sim, CombatEvent.Type.HIT, attacker, defender, move)
 	var lethal: bool = sim.apply_damage(defender, damage)
 	event.amount = damage

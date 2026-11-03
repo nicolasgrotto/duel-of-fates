@@ -53,6 +53,7 @@ PAUSE_MOVES_PLAYER,Lista de golpes · J{player},Move list · P{player}
 MOVES_TITLE,GOLPES · {name},MOVES · {name}
 MOVES_LIGHT_CHAIN,Sequência de rápidos ({count}),Light chain ({count})
 MOVES_FORWARD_HEAVY,Forte de avanço,Forward heavy
+MOVES_HEAVY_CHAIN,Forte em sequência (se acertar ou for bloqueado),Heavy sequence (on hit or block)
 MOVES_AERIAL,Golpe aéreo,Aerial attack
 MOVES_IN_AIR,no ar: {key},in the air: {key}
 MOVES_COUNTER,Contra-ataque,Counterattack

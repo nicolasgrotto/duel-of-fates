@@ -67,6 +67,8 @@ var move_phase: Phase = Phase.NONE
 var phase_ticks: int = 0
 var move_hit_done: bool = false
 var move_connected: bool = false
+var move_landed: bool = false
+var heavy_chain_queued: bool = false
 var chain_index: int = 0
 var bolts_left: int = 0
 var bolt_ticks: int = 0
@@ -393,6 +395,8 @@ func clear_move() -> void:
 	phase_ticks = 0
 	move_hit_done = false
 	move_connected = false
+	move_landed = false
+	heavy_chain_queued = false
 	armor_used = 0
 	charge_ticks = 0
 	charge_level = 0

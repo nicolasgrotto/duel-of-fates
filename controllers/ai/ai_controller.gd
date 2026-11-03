@@ -29,6 +29,7 @@ var _after_press_plan: Plan = Plan.WAIT
 var _after_press_ticks: int = 0
 var _chain_left: int = 0
 var _wants_follow_up: bool = false
+var _wants_heavy_chain: bool = false
 var _lock_press_ticks: int = 0
 var _hold_command: int = 0
 var _hold_until_gap: float = 0.0
@@ -400,6 +401,7 @@ func _try_punish(sim: MatchSimulation, me: FighterState, opponent: FighterState,
 		_schedule(Intent.Command.LIGHT, 0, 0, Plan.WAIT, 0, "counter")
 	elif _heavy_fits(me, heavy, opening, gap) and (opponent.state == FighterState.State.STUNNED or difficulty.smart_punish):
 		_schedule(Intent.Command.HEAVY, 0, 0, Plan.WAIT, 0, "punish heavy")
+		_plan_heavy_chain(heavy)
 	else:
 		_schedule(Intent.Command.LIGHT, 0, 0, Plan.WAIT, 0, "punish")
 		_chain_left = me.character.light_chain.size() - 1
@@ -456,6 +458,7 @@ func _try_attack(me: FighterState, gap: float) -> bool:
 	var wants_heavy: bool = rng.randf() < profile.heavy_ratio and me.vigor >= heavy.vigor_cost
 	if wants_heavy:
 		_schedule(Intent.Command.HEAVY, warning, 0, Plan.WAIT, 0, "heavy")
+		_plan_heavy_chain(heavy)
 		var feint_chance: float = profile.feint_bias * (0.5 + difficulty.habit_weight + memory.guard_share())
 		if me.character.can_feint and rng.randf() < feint_chance:
 			_followup_command = Intent.Command.BLOCK
@@ -574,8 +577,17 @@ func _try_disengage(sim: MatchSimulation, me: FighterState, intent: Intent) -> b
 	return true
 
 
+func _plan_heavy_chain(heavy: MoveData) -> void:
+	_wants_heavy_chain = heavy.heavy_chain != null and rng.randf() < profile.heavy_chain_ratio
+
+
 func _continue_chain(me: FighterState, intent: Intent) -> void:
 	if me.move == null:
+		return
+	if _wants_heavy_chain and me.move.heavy_chain != null and me.move_landed and me.move_phase == FighterState.Phase.RECOVERY:
+		intent.press(Intent.Command.HEAVY)
+		_wants_heavy_chain = false
+		decision = "heavy sequence"
 		return
 	if _wants_follow_up and me.move.follow_up != null and me.move_phase == FighterState.Phase.RECOVERY:
 		intent.press(Intent.Command.SPECIAL)

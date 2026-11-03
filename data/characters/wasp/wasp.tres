@@ -155,6 +155,34 @@ blade_angle_strike = 12.0
 cut = 6
 blade_hand = 3
 
+[sub_resource type="Resource" id="wasp_heavy_chain"]
+script = ExtResource("2_move")
+id = &"wasp_heavy_chain"
+kind = 1
+startup = 0.2
+active = 0.1
+recovery = 0.4
+damage = 13.0
+vigor_cost = 14.0
+block_vigor_cost = 18.0
+knockback = 100.0
+block_push = 45.0
+hitstun = 0.4
+blockstun = 0.26
+lunge = 90.0
+reach = 105.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 70.0
+can_blade_lock = false
+wound_limb = 0
+finisher_limb = 1
+blade_angle_windup = 70.0
+blade_angle_strike = -90.0
+cut = 2
+blade_hand = 2
+cinematic_finisher = 10
+
 [sub_resource type="Resource" id="wasp_heavy"]
 script = ExtResource("2_move")
 id = &"wasp_heavy"
@@ -180,6 +208,7 @@ finisher_limb = 1
 blade_angle_windup = -170.0
 blade_angle_strike = 40.0
 cut = 1
+heavy_chain = SubResource("wasp_heavy_chain")
 blade_hand = 2
 cinematic_finisher = 10
 
@@ -208,6 +237,7 @@ finisher_limb = 2
 blade_angle_windup = -160.0
 blade_angle_strike = 60.0
 cut = 1
+heavy_chain = SubResource("wasp_heavy_chain")
 blade_hand = 2
 cinematic_finisher = 10
 

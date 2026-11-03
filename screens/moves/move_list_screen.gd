@@ -80,6 +80,8 @@ func rows() -> Array:
 		[tr(_character.ability_key), special],
 		[tr(_character.trait_key), tr("MOVES_PASSIVE")],
 	]
+	if _character.heavy.heavy_chain != null:
+		list.insert(2, [tr("MOVES_HEAVY_CHAIN"), "%s %s" % [heavy, heavy]])
 	if not _show_powers:
 		return list
 	var techniques: Array = [[_character.technique_forward, _forward(special)], [_character.technique_back, _back(special)], [_character.technique_air, tr("MOVES_IN_AIR").format({"key": special})]]

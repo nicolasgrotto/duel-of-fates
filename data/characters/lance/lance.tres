@@ -74,6 +74,33 @@ blade_angle_windup = 60.0
 blade_angle_strike = -60.0
 cut = 2
 
+[sub_resource type="Resource" id="lance_heavy_chain"]
+script = ExtResource("2_move")
+id = &"lance_heavy_chain"
+kind = 1
+startup = 0.18
+active = 0.1
+recovery = 0.42
+damage = 14.0
+vigor_cost = 14.0
+block_vigor_cost = 18.0
+knockback = 90.0
+block_push = 40.0
+hitstun = 0.4
+blockstun = 0.26
+lunge = 70.0
+reach = 150.0
+hitbox_bottom = 30.0
+hitbox_top = 150.0
+blade_reach = 70.0
+can_blade_lock = false
+wound_limb = 0
+finisher_limb = 1
+blade_angle_windup = -15.0
+blade_angle_strike = -5.0
+cut = 4
+cinematic_finisher = 12
+
 [sub_resource type="Resource" id="lance_heavy"]
 script = ExtResource("2_move")
 id = &"lance_heavy"
@@ -99,6 +126,7 @@ finisher_limb = 1
 blade_angle_windup = -160.0
 blade_angle_strike = 30.0
 cut = 1
+heavy_chain = SubResource("lance_heavy_chain")
 cinematic_finisher = 12
 
 [sub_resource type="Resource" id="lance_forward_heavy"]
@@ -126,6 +154,7 @@ finisher_limb = 2
 blade_angle_windup = -160.0
 blade_angle_strike = 60.0
 cut = 1
+heavy_chain = SubResource("lance_heavy_chain")
 cinematic_finisher = 11
 
 [sub_resource type="Resource" id="lance_ability_move"]

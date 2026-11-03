@@ -29,6 +29,7 @@ extends Resource
 
 @export_group("Input")
 @export var input_buffer: float = 0.15
+@export var heavy_chain_gap: float = 0.1
 
 @export_group("Vigor")
 @export var vigor_regen: float = 25.0

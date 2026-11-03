@@ -85,6 +85,7 @@ func test_rendered_guard_meets_real_block_events_for_the_cast() -> void:
 	for data in _characters():
 		var moves: Array[MoveData] = data.light_chain.duplicate()
 		moves.append_array([data.heavy, data.forward_heavy, data.aerial_light, data.aerial_heavy, data.technique_forward])
+		moves.append(data.heavy.heavy_chain)
 		if data.ability != null and data.ability.move != null and data.ability.move.technique_style == MoveData.TechniqueStyle.LUNGE:
 			moves.append(data.ability.move)
 		for move in moves:

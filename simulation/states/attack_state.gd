@@ -155,6 +155,8 @@ func _try_chain(sim: MatchSimulation, fighter: FighterState) -> bool:
 	var move: MoveData = fighter.move
 	if _try_follow_up(sim, fighter, move):
 		return true
+	if _try_heavy_chain(sim, fighter, move):
+		return true
 	if move.kind != MoveData.Kind.LIGHT or not fighter.move_connected:
 		return false
 	if fighter.buffered_action != FighterState.Action.LIGHT:
@@ -166,6 +168,21 @@ func _try_chain(sim: MatchSimulation, fighter: FighterState) -> bool:
 	ActionStarter.consume(fighter)
 	ActionStarter.start_attack(sim, fighter, chain[next_index], next_index)
 	return true
+
+
+func _try_heavy_chain(sim: MatchSimulation, fighter: FighterState, move: MoveData) -> bool:
+	if move.heavy_chain == null or not fighter.move_landed:
+		return false
+	if fighter.buffered_action == FighterState.Action.HEAVY:
+		ActionStarter.consume(fighter)
+		fighter.heavy_chain_queued = true
+	if not fighter.heavy_chain_queued:
+		return false
+	var rival: FighterState = sim.opponent_of(fighter)
+	if not rival.is_alive() or rival.stun_ticks + Ticks.from_seconds(sim.config.heavy_chain_gap) > move.heavy_chain.startup_ticks():
+		return false
+	fighter.heavy_chain_queued = false
+	return ActionStarter.start_attack(sim, fighter, move.heavy_chain, fighter.chain_index + 1) == ActionStarter.Result.STARTED
 
 
 func _try_follow_up(sim: MatchSimulation, fighter: FighterState, move: MoveData) -> bool:
