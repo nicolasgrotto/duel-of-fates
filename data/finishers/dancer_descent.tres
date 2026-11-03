@@ -10,24 +10,24 @@
 [sub_resource type="Resource" id="key_0"]
 script = ExtResource("2_key")
 time = 0.18
-grip = Vector2(10, -14)
-blade_angle = 40
+grip = Vector2(10, -22)
+blade_angle = -40
 crouch = 14
 lean = 4
 
 [sub_resource type="Resource" id="key_1"]
 script = ExtResource("2_key")
 time = 0.5
-grip = Vector2(-10, -74)
-blade_angle = -150
+grip = Vector2(-6, -74)
+blade_angle = -120
 crouch = -18
 lean = -8
 
 [sub_resource type="Resource" id="key_2"]
 script = ExtResource("2_key")
 time = 0.72
-grip = Vector2(-8, -78)
-blade_angle = -145
+grip = Vector2(-6, -78)
+blade_angle = -115
 crouch = -20
 lean = -8
 
@@ -49,7 +49,6 @@ crouch = 4
 lean = 10
 step = 8
 trail = true
-accent = true
 
 [sub_resource type="Resource" id="key_5"]
 script = ExtResource("2_key")

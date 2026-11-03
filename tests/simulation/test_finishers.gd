@@ -247,6 +247,27 @@ func test_the_corsair_holds_the_blaster_up_at_every_finisher_shot() -> void:
 			assert_true(key.sidearm >= 0.7, "%d at %f raises the weapon" % [kind, shot])
 
 
+func test_plain_strikes_never_pick_up_a_style_spin() -> void:
+	var cases: Dictionary = {
+		Finisher.Kind.DANCER_DESCENT: [&"heron"],
+		Finisher.Kind.VERSATILE_SHOT_CUT: [&"corsair", &"lynx"],
+		Finisher.Kind.VERSATILE_TWO_SHOTS: [&"corsair", &"lynx"],
+	}
+	for kind in cases:
+		for id in cases[kind]:
+			var motion: FinisherMotion = FinisherMotion.for_kind(kind, DuelFixture.character(id).finisher_style)
+			for key in motion.keys:
+				assert_eq(key.turn, 0.0, "%d %s turns" % [kind, id])
+				assert_eq(key.twirl, 0.0, "%d %s twirls" % [kind, id])
+
+
+func test_windups_stay_short_of_a_half_turn_of_the_blade() -> void:
+	for kind in [Finisher.Kind.DANCER_DESCENT, Finisher.Kind.VERSATILE_SHOT_CUT]:
+		var keys: Array[PoseKey] = FinisherMotion.for_kind(kind).keys
+		for index in range(1, keys.size()):
+			assert_lt(absf(keys[index].blade_angle - keys[index - 1].blade_angle), 125.0, "%d step %d" % [kind, index])
+
+
 func test_the_slow_dancer_cuts_swing_through_a_readable_arc() -> void:
 	var descent: FinisherMotion = FinisherMotion.for_kind(Finisher.Kind.DANCER_DESCENT)
 	var low: FinisherMotion = FinisherMotion.for_kind(Finisher.Kind.DANCER_LOW)

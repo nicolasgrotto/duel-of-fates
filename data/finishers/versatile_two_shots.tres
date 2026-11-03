@@ -57,7 +57,6 @@ crouch = 8
 lean = 16
 step = 16
 trail = true
-accent = true
 places_off_hand = true
 off_hand = Vector2(6, 4)
 off_blade_angle = 120
