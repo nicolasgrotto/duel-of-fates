@@ -4,6 +4,22 @@ Roteiro para o autor validar, jogando, o que entrou na fase 7.5 (revisão de com
 
 Legenda: ✅ ficou bom · ⚠️ funciona mas a sensação ou o número precisa de ajuste · ❌ não funciona.
 
+## 22. Operações unificadas (task 17)
+
+| Passo | Verificar | Resultado esperado |
+| --- | --- | --- |
+| 22.1 | Jogar › Modos especiais › Operações, PT/EN e 720p/1080p | Uma lista; cada missão mostra Infiltração, imagem, briefing e recorde antigo; Personagem permanece disponível. |
+| 22.2 | WASD, Shift, C/Ctrl, Espaço, E, F, R e mouse | Corrida, furtivo, esquiva, interação, corte/abate, poder e ataque usam o mesmo layout no treino e nas missões; Q/botão direito guarda. |
+| 22.3 | Corsária com pistola: mover, mirar, disparar, guardar e cortar | Blaster numa mão e lâmina acesa na outra; guarda não troca as armas. F corta quando não há abate possível. |
+| 22.4 | Guardião sem blaster nas seis missões | Mouse esquerdo e F cortam; guarda, esquiva e poderes permitem concluir sem arma temporária. Caixas destrutíveis cedem ao corte. |
+| 22.5 | Conjunto explícito com rifle no treino técnico | Rifle recebe mão de apoio e lâmina apagada no cinto; guarda/corte recolhe rifle e mostra lâmina. Rajadas respeitam a arma da História e param ao soltar/defender. |
+| 22.6 | Esquivar e lançar poder perto de patrulha | Esquiva faz ruído; poder emitido faz ruído e alerta testemunhas, sem enxergar através de parede. Infiltração usa recarga tripla, visível na HUD. |
+| 22.7 | Poder perto de prisioneiro; tiro na fila | Poder não fere/desloca escolta; disparos continuam perigosos. Matar inimigo com poder remove Sem abates. Painéis ainda destravam celas e mínimos de resgate continuam valendo. |
+| 22.8 | Personagem → voltar, pausa → reiniciar/voltar, vitória/derrota → resultado | Foco da missão é mantido; reinício zera calor/recargas/objetivos e mantém câmera; banner continua e registros usam os mesmos IDs. |
+| 22.9 | Controles e Teclas e botões › Operações, teclado e gamepad | Todos os verbos aparecem; rolagem chega a Voltar; remapeamento vale para ambos os objetivos e não altera duelo. C funciona na Web sem Ctrl+W. |
+
+**Validação automatizada:** 738 testes passando, zero falhas (721 anteriores + 17); as seis missões foram concluídas pelo piloto de intenção no núcleo novo. 19 verificações do fluxo roteado, 180 verificações gráficas (90 por resolução) e 28 scripts válidos pelo MCP. 114 capturas nativas 720p/1080p em `build/task17_renders/`, oito folhas `sheet_*` inspecionadas; três capturas do banner/resultado em `build/task17_flow_renders/` e cinco capturas nativas 1600×900 iniciadas pelo editor em `build/task17_editor_renders/`. Matriz de 936 duelos idêntica antes/depois: 25.266 acertos, 1.163 choques, 57 disputas, zero pressões (`build/task17_matrix_comparison.log`). Saves de teste isolados; 37 arquivos locais prévios preservados byte a byte. Avisos ambientais de certificado e recursos no encerramento da suíte permanecem iguais ao baseline. Controle físico, áudio ouvido, build Web e desempenho sustentado não foram validados nesta tarefa.
+
 ## 21. Execuções sorteadas, Arsenal e tranco dos disparos
 
 | Passo | Verificar | Resultado esperado |
