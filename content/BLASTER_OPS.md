@@ -1,24 +1,28 @@
 # Operações de blaster
 
-Fundação de tiro em visão superior (task 16), sobre a geometria, atores e navegação da Infiltração. O duelo e as missões de Infiltração conservam suas regras. Esta entrega contém **Pátio de calibração / Calibration Yard**, treino reiniciável, sem vitória, recompensa, save de progresso ou entrada pública. Rota técnica `blaster_ops_training`, cena `screens/blaster_ops/blaster_ops_training.tscn`; pode ser executada no editor. As tasks 17 e 18 unificam o modo com a Infiltração e acrescentam as missões em Jogar › Modos especiais › Operações de blaster.
+Núcleo superior de Operações, iniciado na task 16 e compartilhado com Infiltração na task 17. **Pátio de calibração / Calibration Yard** permanece treino reiniciável, sem vitória, recompensa, save de progresso ou entrada pública. Rota técnica `blaster_ops_training`, cena `screens/blaster_ops/blaster_ops_training.tscn`; pode ser executada no editor. As missões de resgate usam o mesmo núcleo em Jogar › Modos especiais › Operações. A task 18 acrescenta as Incursões. O duelo não muda.
 
 **Operações (task 17):** o núcleo atende Infiltração e Incursão no menu único Operações. As missões de Incursão chegam na task 18; o Pátio continua treino técnico, com o mesmo moveset das missões. Espaço esquiva, Shift corre, Ctrl/C anda furtivamente, E interage, F corta ou abate, R lança poder, mouse esquerdo dispara/corta e direito/Q guarda. Nenhum personagem recebe arma temporária. Armas explícitas da História mantêm shot_count, shot_interval e vigor_multiplier (escala de calor); preço não tem função neste modo. As seções históricas abaixo da task 16 são substituídas por GAME_DESIGN, "Operações: Infiltração e Incursão", nestes pontos.
 
 ## Jogador e controles
 
-Movimento livre normalizado em oito direções, 240 u/s, aceleração 2.200 u/s², desaceleração 2.800 u/s², corpo de raio 18 u e vida 100. Mira independente: mouse ou stick direito; ao soltar o stick, mantém a última mira. Sem mira explícita, o primeiro movimento define a direção inicial. Sem pulo, furtividade, abate silencioso ou interação nesta etapa.
+Movimento livre normalizado em oito direções, 240 u/s, aceleração 2.200 u/s², desaceleração 2.800 u/s², corpo de raio 18 u e vida 100. Mira independente: mouse ou stick direito; ao soltar o stick, mantém a última mira. Sem mira explícita, o primeiro movimento define a direção inicial. Corrida, furtivo, abate e interação seguem a Infiltração; sem pulo.
 
 | Ação | Teclado e mouse padrão | Controle padrão |
 | --- | --- | --- |
 | Mover | WASD / setas | stick esquerdo / D-pad |
 | Mirar | mouse | stick direito |
-| Disparar | botão esquerdo / Espaço | botão oeste (Rápido) |
+| Disparar / cortar sem blaster | botão esquerdo | botão oeste (Rápido) |
 | Guarda / parry | botão direito / Q | botão de guarda do J1 |
-| Esquivar | Shift | botão de esquiva do J1 |
-| Poder equipado | E | gatilho de poder do J1 |
+| Esquivar | Espaço | botão de esquiva do J1 |
+| Correr | Shift | stick esquerdo pressionado |
+| Furtivo | Ctrl/C | habilidade do J1 |
+| Corte / abate | F | forte do J1 |
+| Interagir | E | A/Cruz |
+| Poder equipado | R | gatilho de poder do J1 |
 | Pausa | ação de pausa do J1 | Start |
 
-Ações `blaster_ops_*` próprias pelo InputMap. Teclas e botões são remapeáveis em **Teclas e botões › Operações de blaster**; mouse e eixos de mira permanecem disponíveis. Botões padrão copiam os bindings do J1, sem alterar o duelo. A tela Controles tem uma página do modo e as dicas vêm de ControlHints. Na pausa do treino é possível reiniciar com outro personagem (Corsária, Lince, Coldre ou Guardião) e outro poder; toda troca reinicia, sem mudar recurso compartilhado ou campanha.
+Ações `blaster_ops_*` próprias pelo InputMap, com aliases `infiltration_*` para compatibilidade. Teclas e botões são remapeáveis em **Teclas e botões › Operações**; mouse e eixos de mira permanecem disponíveis. Botões padrão copiam os bindings do J1, sem alterar o duelo. A tela Controles tem uma página do modo e as dicas vêm de ControlHints. Na pausa do treino é possível reiniciar com outro personagem (Corsária, Lince, Coldre ou Guardião) e outro poder; toda troca reinicia, sem mudar recurso compartilhado ou campanha.
 
 ## Tiro e calor
 
@@ -28,12 +32,12 @@ Armas usam `BlasterData` e `BoltData`. O conjunto do modo define escala de dano,
 | --- | --- | --- | --- | --- |
 | Pistola (Corsária e Coldre) | 10 (4 × 2,5) | 900 / 1.100 u | 0,16 s | 20 |
 | Emissor (Lince) | 10 (4 × 2,5) | 900 / 1.100 u | 0,16 s | 20 |
-| Rifle de dorso (conjunto explícito da futura Saga) | 20 (8 × 2,5) | 650 / 1.500 u | 0,42 s | 30 |
-| Pistola temporária (personagem só de lâmina) | 6 | 850 / 1.000 u | 0,22 s | 25 |
+| Rifle de dorso (conjunto explícito da futura Saga) | 15 por tiro (6 × 2,5), rajada de 3 | 650 / 1.500 u | 0,12 s entre tiros; 0,42 s entre rajadas | 37,5 (30 × 1,25) |
+| Personagem só de lâmina | corte 10 | alcance 88 u | ciclo 0,40 s | sem calor |
 
 Capacidade de calor 100, resfriamento 30/s após 0,25 s sem tiro. Atingir 100 trava a arma por **ao menos 1 s e até chegar a 40**, com resfriamento imediato durante a trava. Soltar e reapertar não limpa a trava. Guarda, esquiva, preparação do poder e tranco impedem tiro. Pool cheio ou saída dentro da parede recusa sem cobrar calor/cadência; não sobrescreve disparos. Sem munição, recarga manual, itens ou dano de contato.
 
-Disparos são varridos contra paredes, caixas e corpos; só acertam o primeiro obstáculo. Inimigos não se acertam. O dano de um disparo devolvido continua o do projétil original. Guarda frontal cobre 140° e gasta o Vigor do BoltData; Vigor 100, regeneração 25/s após 0,6 s. Janela de parry/recarga vem do CombatConfig (0,20 / 0,40 s); perfeito nos primeiros 0,08 s aumenta velocidade a 125%, mas a direção continua sendo **a mira do jogador**. Não há mira automática no emissor. Todos os personagens com lâmina podem desviar; os sem blaster pagam com primária mais fraca. Guarda reduz movimento a 60% e exclui tiro.
+Disparos são varridos contra paredes, caixas, corpos e prisioneiros; só acertam o primeiro obstáculo. Inimigos não se acertam. O dano de um disparo devolvido continua o do projétil original. Guarda frontal cobre 140° e gasta o Vigor do BoltData; Vigor 100, regeneração 25/s após 0,6 s. Janela de parry/recarga vem do CombatConfig (0,20 / 0,40 s); perfeito nos primeiros 0,08 s aumenta velocidade a 125%, mas a direção continua sendo **a mira do jogador**. Não há mira automática no emissor. Todos os personagens com lâmina podem desviar. Guarda reduz movimento a 60% e exclui tiro.
 
 ## Esquiva e poderes
 

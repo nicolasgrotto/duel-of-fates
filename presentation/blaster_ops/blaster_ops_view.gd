@@ -1,6 +1,7 @@
 class_name BlasterOpsView
 extends InfiltrationView
 
+enum WeaponState { BLADE = 1, BLASTER = 2, BELT_HILT = 4, SUPPORT_HAND = 8 }
 var operations: BlasterOpsSimulation
 var emitter: bool = false
 var _precision_left: float = 0.0
@@ -13,6 +14,14 @@ var _power_aim: Vector2 = Vector2.RIGHT
 func setup(simulation: InfiltrationSimulation, look: InfiltrationLook) -> void:
 	super.setup(simulation, look)
 	operations = simulation as BlasterOpsSimulation
+
+
+static func weapon_state(loadout: BlasterOpsLoadout, guard: bool, striking: bool, integrated: bool = false) -> int:
+	if loadout.blaster == null:
+		return WeaponState.BLADE
+	if not loadout.blaster.two_handed():
+		return WeaponState.BLADE | (0 if integrated else WeaponState.BLASTER)
+	return WeaponState.BLADE if guard or striking else WeaponState.BLASTER | WeaponState.BELT_HILT | WeaponState.SUPPORT_HAND
 
 
 func on_event(event: InfiltrationEvent) -> void:
@@ -41,6 +50,9 @@ func _process(delta: float) -> void:
 func _draw() -> void:
 	if operations == null:
 		return
+	_draw_security()
+	if sim.mission != null:
+		_draw_mission()
 	_draw_telegraphs()
 	_draw_powers()
 	for index in sim.targets.size():
@@ -50,8 +62,9 @@ func _draw() -> void:
 		if index < sim.map.targets.size():
 			_draw_actor(actor, SPRITE_DUMMY)
 		else:
-			var data: BlasterOpsEnemyData = sim.target_data[index] as BlasterOpsEnemyData
+			var data: InfiltrationEnemyData = sim.target_data[index] as InfiltrationEnemyData
 			_draw_actor(actor, data.sprite, true, data.texture)
+			_draw_awareness(actor)
 			var point: Vector2 = _snap(actor.previous.lerp(actor.position, alpha))
 			if data.front_damage_ratio < 1.0:
 				draw_arc(point, actor.radius + 8.0, actor.aim.angle() - deg_to_rad(data.front_degrees * 0.5), actor.aim.angle() + deg_to_rad(data.front_degrees * 0.5), 8, PALETTE.infiltration_edge, sim.config.units_per_pixel * 2.0)
@@ -60,10 +73,15 @@ func _draw() -> void:
 	if sim.player.health > 0.0:
 		_draw_dodge()
 		_draw_actor(sim.player, SPRITE_PLAYER)
-		if sim.player.guard:
+		var weapons: int = weapon_state(operations.loadout, sim.player.guard, sim.player.swing_tick >= 0, emitter)
+		if (weapons & WeaponState.BLADE) != 0:
 			_draw_blade()
-		else:
+		if (weapons & WeaponState.BLASTER) != 0:
 			_draw_weapon()
+		if (weapons & WeaponState.BELT_HILT) != 0:
+			_draw_belt_hilt()
+		if emitter:
+			_draw_emitter()
 	_draw_operations_bolts()
 	_draw_sparks()
 	if debug:
@@ -76,7 +94,8 @@ func _draw() -> void:
 func _draw_weapon() -> void:
 	var actor: InfiltrationActor = sim.player
 	var point: Vector2 = _snap(actor.previous.lerp(actor.position, alpha))
-	var hand: Vector2 = _snap(point + actor.aim * 18.0 + actor.aim.orthogonal() * 12.0)
+	_blade.compose(sim.config, actor.aim, _guard_blend, 0.0, 0.0)
+	var hand: Vector2 = _snap(point + _blade.off_hand)
 	var length: float = operations.loadout.blaster.muzzle.x
 	var metal: Color = _look.hilt_color
 	draw_set_transform(hand, actor.aim.angle())
@@ -85,15 +104,29 @@ func _draw_weapon() -> void:
 	draw_line(Vector2(-2, -4), Vector2(length - 4, -4), metal.lightened(0.2), sim.config.units_per_pixel)
 	draw_rect(Rect2(length - 2, -4, 4, 8), PALETTE.bolt)
 	draw_rect(Rect2(-4, 0, 8, 12), _look.skin_color)
-	if emitter:
-		draw_line(Vector2(-4, 10), Vector2(12, 10), _look.blade_color, sim.config.units_per_pixel)
+	if operations.loadout.blaster.two_handed():
+		draw_rect(Rect2(length * 0.5, 2, 8, 8), _look.skin_color)
 	draw_set_transform(Vector2.ZERO)
-	var base: Vector2 = _snap(point - actor.aim.orthogonal() * 16.0 - actor.aim * 10.0)
-	draw_line(base, _snap(base - actor.aim * 42.0), Color(_look.blade_color, 0.4), sim.config.units_per_pixel)
 	if operations.state.overheated:
 		for index in 2:
 			var offset: Vector2 = Vector2(index * 8.0, -38.0 - fmod(_time * 20.0, 10.0))
 			draw_line(_snap(point + offset), _snap(point + offset + Vector2(0, -8)), PALETTE.secondary, sim.config.units_per_pixel)
+
+
+func _draw_belt_hilt() -> void:
+	var actor: InfiltrationActor = sim.player
+	var point: Vector2 = _snap(actor.previous.lerp(actor.position, alpha))
+	var grip: Vector2 = point - actor.aim * sim.config.blade_hand_forward + actor.aim.orthogonal() * sim.config.blade_hand_side
+	_blade._draw_hilt(self, grip - actor.aim * sim.config.blade_hilt_half, grip + actor.aim * sim.config.blade_hilt_half, _look, sim.config)
+
+
+func _draw_emitter() -> void:
+	var actor: InfiltrationActor = sim.player
+	var point: Vector2 = _snap(actor.previous.lerp(actor.position, alpha) + _blade.hand)
+	draw_set_transform(point, actor.aim.angle())
+	draw_rect(Rect2(-4, -8, 18, 8), _look.hilt_color)
+	draw_rect(Rect2(12, -6, 4, 4), PALETTE.bolt)
+	draw_set_transform(Vector2.ZERO)
 
 
 func _draw_operations_bolts() -> void:
@@ -118,6 +151,8 @@ func _draw_telegraphs() -> void:
 		if actor.health <= 0.0 or actor.telegraph_ticks < 0:
 			continue
 		var data: BlasterOpsEnemyData = sim.target_data[index] as BlasterOpsEnemyData
+		if data == null:
+			continue
 		var origin: Vector2 = _snap(actor.position)
 		var aim: Vector2 = actor.telegraph_aim
 		if data.melee_damage > 0.0:

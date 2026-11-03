@@ -3,6 +3,7 @@ extends RefCounted
 
 var data: BlasterOpsCoverData
 var health: float
+var last_swing_id: int = -1
 
 
 func _init(definition: BlasterOpsCoverData) -> void:

@@ -1,6 +1,9 @@
 class_name InfiltrationMissionData
 extends Resource
 
+enum Objective { INFILTRATION, INCURSION }
+
+@export var objective: Objective = Objective.INFILTRATION
 @export var id: StringName
 @export var title_key: String
 @export var briefing_key: String
@@ -17,7 +20,13 @@ extends Resource
 
 
 func required_prisoners() -> int:
+	if objective == Objective.INCURSION:
+		return minimum_prisoners
 	return minimum_prisoners if minimum_prisoners > 0 else prisoner_spawns.size()
+
+
+func objective_key() -> String:
+	return "OPS_INFILTRATION" if objective == Objective.INFILTRATION else "OPS_INCURSION"
 
 
 func objective_count() -> int:

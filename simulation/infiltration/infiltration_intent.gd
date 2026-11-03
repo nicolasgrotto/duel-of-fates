@@ -1,6 +1,10 @@
 class_name InfiltrationIntent
 extends RefCounted
 
+const RUN: int = 1 << 8
+const SNEAK: int = 1 << 9
+const INTERACT: int = 1 << 10
+
 var movement: Vector2 = Vector2.ZERO
 var aim: Vector2 = Vector2.ZERO
 var held: int = 0

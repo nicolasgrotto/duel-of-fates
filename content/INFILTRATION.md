@@ -2,7 +2,7 @@
 
 **Operações (task 17):** a Infiltração integra Jogar › Modos especiais › Operações, com rótulo de objetivo Infiltração e controles compartilhados com Incursão. Esquiva faz ruído; poderes têm recarga tripla, fazem ruído ao sair e alertam quem vê o jogador. Não ferem prisioneiros, mas mortes inimigas contam contra Sem abates. Blaster depende do personagem/conjunto explícito; todos podem jogar só de lâmina. Esta decisão substitui as restrições históricas de poderes e aparência abaixo. Ver GAME_DESIGN, "Operações: Infiltração e Incursão".
 
-Seis operações independentes, disponíveis desde o início em Jogar, com **resgate de prisioneiros como foco**: toda missão tem ao menos um prisioneiro para libertar e levar vivo à saída, pensando na união das fases numa História. A primeira também ensina o modo e é repetível. Nenhuma concede moeda, atributos ou cosméticos nesta etapa. Poderes do Fluxo ficam desligados: a ação de interação é exclusiva, preservando a leitura de guarda, abate e cobertura. O duelo não muda.
+Seis operações independentes, disponíveis desde o início em Jogar › Modos especiais › Operações, com **resgate de prisioneiros como foco**: toda missão tem ao menos um prisioneiro para libertar e levar vivo à saída, pensando na união das fases numa História. A primeira também ensina o modo e é repetível. Nenhuma concede moeda, atributos ou cosméticos nesta etapa. Repulsão, Puxão e Barreira usam o núcleo comum, com recarga tripla; interação tem ação própria. O duelo não muda.
 
 Duração-alvo de uma primeira jogada cuidadosa: **3 a 6 minutos**. O percurso mínimo andando, sem esperar patrulha, é medido em teste. Mapas têm de 66×36 a 96×64 tiles, com alas ligadas por passagens estreitas, e início e extração são distantes. A dica de objetivo segue o caminho real, não a linha reta, e aponta para o objetivo pendente mais próximo.
 
@@ -37,9 +37,9 @@ Escudeiro, atirador, drone e andador não correm até o painel; soldados e pesad
 
 ## Controles e personagem
 
-O teclado do modo é próprio e fixo, porque a mão direita fica no mouse: mover **WASD** ou setas, correr **Shift**, agachar/furtivo **Ctrl** (ou **C**), interagir **E**, abate silencioso **F**, golpe **botão esquerdo** ou **Espaço**, guarda **botão direito** ou **Q**. Não acompanha o remapeamento do duelo; o controle continua copiando os botões do duelo.
+Os controles são compartilhados e remapeáveis em Operações: mover **WASD** ou setas, correr **Shift**, furtivo **Ctrl/C**, esquivar **Espaço**, interagir **E**, corte/abate **F**, poder **R**, atacar **botão esquerdo** (dispara com blaster; corta sem ele), guarda **botão direito/Q**. O controle conserva os botões do duelo, com interação em A/Cruz e corrida no stick esquerdo pressionado.
 
-A linha **Personagem** do menu escolhe entre personagens e trajes liberados, e a escolha fica salva. Muda só a aparência: silhueta vista de cima, cores do traje e cor e tipo da lâmina. Atributos, alcance e regras da simulação são iguais para todos. Peças opcionais de traje (como capuz) não mudam a silhueta vista de cima.
+A linha **Personagem** do menu escolhe entre personagens e trajes liberados, e a escolha fica salva. Preserva silhueta vista de cima, cores do traje e cor e tipo da lâmina; possuir blaster muda a primária para tiro. Vida, alcance da lâmina e regras de resgate são iguais para todos. Conjunto explícito pode fornecer protagonista e arma da História sem alterar sua campanha. Peças opcionais de traje (como capuz) não mudam a silhueta vista de cima.
 
 ## Regras
 

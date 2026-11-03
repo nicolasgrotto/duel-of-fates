@@ -23,7 +23,7 @@ var _blade: int = 0
 
 
 func _ready() -> void:
-	InfiltrationBindings.install()
+	InfiltrationBindings.install(Settings.blaster_ops_keys, Settings.blaster_ops_buttons)
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_heading = _label("", &"ScreenTitleLabel")
 	_heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -90,9 +90,9 @@ func open(params: Dictionary) -> void:
 	if params.get("panel", &"") == &"characters":
 		_show_characters()
 		return
-	_heading.text = tr("MENU_INFILTRATION").to_upper()
+	_heading.text = tr("MENU_OPERATIONS").to_upper()
 	for mission in InfiltrationMode.MISSIONS:
-		_list.add_item(mission.id, tr(mission.title_key))
+		_list.add_item(mission.id, tr(mission.title_key) + "\n" + tr(mission.objective_key()))
 	_list.add_item(CHARACTER_ROW, tr("INF_CHARACTER").format({"name": tr(InfiltrationMode.look_character().name_key)}))
 	_list.add_item(BACK_ROW, tr("MENU_BACK"))
 	_list.select_id(_mission)
@@ -123,8 +123,8 @@ func _highlight_mission(id: StringName) -> void:
 	var progress: String = tr("INF_NOT_COMPLETED")
 	if not record.is_empty():
 		progress = tr("INF_RECORD").format({"time": ChallengeMode.format_time(record.ticks * Ticks.DELTA)}) + "\n" + InfiltrationMode.bonus_text(record.bonuses).replace("\n", ControlHints.SEPARATOR)
-	var controls: String = ControlHints.line(PackedStringArray([ControlHints.hint(&"infiltration_interact", "INF_INTERACT"), ControlHints.hint(&"infiltration_takedown", "INFILTRATION_TAKEDOWN")]))
-	_show_panel(data.preview, null, tr(data.title_key).to_upper(), tr(data.briefing_key) + "\n\n" + tr("INF_BRIEF_RULES").format({"time": int(data.bonus_seconds)}) + "\n" + controls + "\n\n" + progress)
+	var controls: String = ControlHints.line(PackedStringArray([ControlHints.blaster_ops_hint("interact"), ControlHints.blaster_ops_hint("strike"), ControlHints.blaster_ops_hint("power")]))
+	_show_panel(data.preview, null, tr(data.title_key).to_upper(), tr(data.objective_key()) + "\n\n" + tr(data.briefing_key) + "\n\n" + tr("INF_BRIEF_RULES").format({"time": int(data.bonus_seconds)}) + "\n" + controls + "\n\n" + progress)
 
 
 func _show_panel(image: Texture2D, look: InfiltrationLook, title: String, body: String) -> void:
@@ -217,7 +217,7 @@ func _choose(id: StringName) -> void:
 			&"next":
 				_mode.next()
 			&"missions":
-				SceneRouter.change(&"infiltration", {"mission": _mode.data.id})
+				SceneRouter.change(&"operations", {"mission": _mode.data.id})
 	elif _characters_panel:
 		if id != BACK_ROW:
 			SaveService.set_infiltration_look(id, _costume, _blade)
@@ -225,7 +225,7 @@ func _choose(id: StringName) -> void:
 	elif id == BACK_ROW:
 		_leave()
 	elif id == CHARACTER_ROW:
-		SceneRouter.change(&"infiltration_characters", {"panel": &"characters", "mission": _mission})
+		SceneRouter.change(&"operations_characters", {"panel": &"characters", "mission": _mission})
 	else:
 		_mode.start()
 
@@ -236,11 +236,11 @@ func _exit_tree() -> void:
 
 func _leave() -> void:
 	if _result:
-		SceneRouter.change(&"infiltration", {"mission": _mode.data.id})
+		SceneRouter.change(&"operations", {"mission": _mode.data.id})
 	elif _characters_panel:
-		SceneRouter.change(&"infiltration", {"mission": _mission})
+		SceneRouter.change(&"operations", {"mission": _mission})
 	else:
-		SceneRouter.change(&"menu", {"group": &"special", "focus": &"infiltration"})
+		SceneRouter.change(&"menu", {"group": &"special", "focus": &"operations"})
 
 
 func _unhandled_input(event: InputEvent) -> void:

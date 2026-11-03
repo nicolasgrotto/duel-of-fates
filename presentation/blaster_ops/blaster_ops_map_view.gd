@@ -28,4 +28,4 @@ func _draw() -> void:
 	for cover in operations.arena.covers:
 		var position: Vector2 = Vector2(cover.data.cell) * map.tile_size
 		var source: Rect2 = Rect2(Vector2(cover.damage_stage() * config.atlas_tile_pixels, 0), Vector2.ONE * config.atlas_tile_pixels)
-		draw_texture_rect_region(operations.arena.source.cover_atlas, Rect2(position, Vector2.ONE * map.tile_size), source)
+		draw_texture_rect_region((operations.arena.source as BlasterOpsArenaData).cover_atlas, Rect2(position, Vector2.ONE * map.tile_size), source)

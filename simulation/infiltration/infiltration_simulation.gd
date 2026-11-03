@@ -560,14 +560,7 @@ func _apply_enemy_intent(index: int, intent: InfiltrationIntent) -> void:
 	if actor.walked >= config.step_distance:
 		actor.walked -= config.step_distance
 		_emit(InfiltrationEvent.Type.FOOTSTEP, index + 1, -1, actor.position)
-	var placement: InfiltrationEnemyPlacement = enemy_placement(index)
-	if actor.awareness == InfiltrationActor.Awareness.UNAWARE and not placement.route.is_empty() and actor.position.distance_to(placement.route[actor.waypoint]) <= config.waypoint_radius:
-		actor.waypoint = (actor.waypoint + 1) % placement.route.size()
-	if actor.awareness == InfiltrationActor.Awareness.ALERTED and intent.panel >= 0 and intent.panel < panels.size() and not panels[intent.panel].disabled and not panels[intent.panel].active:
-		actor.decision = InfiltrationActor.Decision.ALARM
-		var point: Vector2 = map.panels[intent.panel].position
-		if actor.position.distance_to(point) <= config.panel_activation_range and InfiltrationGeometry.wall_fraction(map, actor.position, point) == INF:
-			_panel_requests[intent.panel] = 1
+	_advance_enemy_mission_intent(index, intent)
 	actor.fire_ticks = maxi(actor.fire_ticks - 1, 0)
 	if data.melee_damage > 0.0:
 		_step_melee(index, data, intent)
@@ -586,6 +579,18 @@ func _apply_enemy_intent(index: int, intent: InfiltrationIntent) -> void:
 			actor.burst_ticks = data.bolt.interval_ticks()
 			if actor.burst_left == 0:
 				actor.fire_ticks = Ticks.from_seconds(data.fire_interval)
+
+
+func _advance_enemy_mission_intent(index: int, intent: InfiltrationIntent) -> void:
+	var actor: InfiltrationActor = targets[index]
+	var placement: InfiltrationEnemyPlacement = enemy_placement(index)
+	if actor.awareness == InfiltrationActor.Awareness.UNAWARE and not placement.route.is_empty() and actor.position.distance_to(placement.route[actor.waypoint]) <= config.waypoint_radius:
+		actor.waypoint = (actor.waypoint + 1) % placement.route.size()
+	if actor.awareness == InfiltrationActor.Awareness.ALERTED and intent.panel >= 0 and intent.panel < panels.size() and not panels[intent.panel].disabled and not panels[intent.panel].active:
+		actor.decision = InfiltrationActor.Decision.ALARM
+		var point: Vector2 = map.panels[intent.panel].position
+		if actor.position.distance_to(point) <= config.panel_activation_range and InfiltrationGeometry.wall_fraction(map, actor.position, point) == INF:
+			_panel_requests[intent.panel] = 1
 
 
 func _turned_aim(actor: InfiltrationActor, data: InfiltrationEnemyData, desired: Vector2) -> Vector2:

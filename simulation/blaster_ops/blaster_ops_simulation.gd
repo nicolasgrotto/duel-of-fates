@@ -8,15 +8,15 @@ var state: BlasterOpsState = BlasterOpsState.new()
 var cover_revision: int = 0
 
 
-func _init(configuration: BlasterOpsConfig, data: BlasterOpsArenaData, equipment: BlasterOpsLoadout) -> void:
+func _init(configuration: BlasterOpsConfig, data: InfiltrationMapData, equipment: BlasterOpsLoadout, mission_data: InfiltrationMissionData = null) -> void:
 	operations = configuration
 	arena = BlasterOpsMap.new(data)
 	loadout = equipment
-	super(configuration, arena)
+	super(configuration, arena, mission_data)
 	for index in targets.size():
 		var actor: BlasterOpsActor = BlasterOpsActor.new()
 		actor.restore(targets[index].capture())
-		if data.enemies_alerted:
+		if data is BlasterOpsArenaData and (data as BlasterOpsArenaData).enemies_alerted:
 			actor.awareness = InfiltrationActor.Awareness.ALERTED
 			actor.suspicion = 1.0
 			actor.memory_ticks = Ticks.from_seconds(config.alert_memory)
@@ -26,9 +26,9 @@ func _init(configuration: BlasterOpsConfig, data: BlasterOpsArenaData, equipment
 		bolts[index] = BlasterOpsBolt.new()
 
 
-func step(intent: InfiltrationIntent, enemy_intents: Array[InfiltrationIntent] = [], _escort_intents: Array[InfiltrationIntent] = []) -> void:
+func step(intent: InfiltrationIntent, enemy_intents: Array[InfiltrationIntent] = [], escort_intents: Array[InfiltrationIntent] = []) -> void:
 	event_count = 0
-	if player.health <= 0.0:
+	if (mission != null and mission.outcome != InfiltrationMissionState.Outcome.ACTIVE) or (mission == null and player.health <= 0.0):
 		return
 	tick += 1
 	player.previous = player.position
@@ -37,11 +37,18 @@ func step(intent: InfiltrationIntent, enemy_intents: Array[InfiltrationIntent] =
 	_advance_player_timers()
 	_advance_operations()
 	_apply_intent(intent)
+	_step_targets()
+	_resolve_swing()
 	_step_bolts()
 	if player.health <= 0.0:
+		if mission != null:
+			mission.advance(self, escort_intents)
 		return
 	InfiltrationPerception.step(self)
 	_step_enemies(enemy_intents)
+	_step_panels()
+	if mission != null:
+		mission.advance(self, escort_intents)
 
 
 func _advance_operations() -> void:
@@ -71,32 +78,96 @@ func _apply_intent(intent: InfiltrationIntent) -> void:
 	if (intent.pressed & Intent.Command.DODGE) != 0 and state.dodge_age < 0 and state.dodge_cooldown == 0 and player.stun_ticks == 0:
 		_start_dodge(intent)
 	if state.dodge_age >= 0:
+		_cancel_burst()
 		_close_parry()
 		_move_player(state.dodge_direction * operations.dodge_speed, true)
 		return
 	if player.stun_ticks > 0:
+		_cancel_burst()
 		state.power_ticks = 0
 		_close_parry()
 		player.velocity = Vector2.ZERO
 		return
+	if (intent.pressed & InfiltrationIntent.INTERACT) != 0:
+		if nearby_panel() >= 0:
+			_disable_panel()
+		elif mission != null:
+			mission.interact(self)
+	var blade_requested: bool = (intent.pressed & Intent.Command.HEAVY) != 0
+	if blade_requested and player.swing_tick < 0 and state.power_ticks == 0:
+		var victim: int = takedown_target()
+		if victim >= 0:
+			_emit(InfiltrationEvent.Type.TAKEDOWN_LANDED, 0, victim + 1, targets[victim].position)
+			_damage_target(victim, targets[victim].health, true)
+			blade_requested = false
+	if loadout.blaster == null and ((intent.held | intent.pressed) & Intent.Command.LIGHT) != 0:
+		blade_requested = true
+	if blade_requested and player.swing_tick < 0 and state.power_ticks == 0 and state.power_recovery_ticks == 0 and player.vigor >= config.swing_vigor:
+		player.swing_tick = 0
+		player.swing_id += 1
+		player.swing_aim = player.aim
+		_spend_vigor(config.swing_vigor)
+		_close_parry()
+		_emit(InfiltrationEvent.Type.SWING_STARTED, 0, -1, player.position)
+		InfiltrationPerception.noise(self, player.position, config.combat_noise, 0)
 	if state.power_ticks > 0:
 		state.power_ticks -= 1
 		if state.power_ticks == 0:
 			_release_power()
-	elif (intent.pressed & Intent.Command.POWER) != 0 and state.power_cooldown == 0:
+	elif (intent.pressed & Intent.Command.POWER) != 0 and state.power_cooldown == 0 and player.swing_tick < 0 and loadout.power != null:
 		_start_power()
-	if state.power_ticks == 0 and (intent.held & Intent.Command.BLOCK) != 0 and loadout.can_deflect:
+	if state.power_ticks == 0 and player.swing_tick < 0 and (intent.held & Intent.Command.BLOCK) != 0 and loadout.can_deflect:
 		player.guard = true
 		if (intent.pressed & Intent.Command.BLOCK) != 0 and player.parry_cooldown == 0:
 			player.parry_age = 0
 	elif player.parry_age >= 0:
 		_close_parry()
 	var speed: float = config.walk_speed
+	player.locomotion = InfiltrationActor.Locomotion.WALK
+	if (intent.held & InfiltrationIntent.SNEAK) != 0:
+		speed = config.sneak_speed
+		player.locomotion = InfiltrationActor.Locomotion.SNEAK
+	elif (intent.held & InfiltrationIntent.RUN) != 0:
+		speed = config.run_speed
+		player.locomotion = InfiltrationActor.Locomotion.RUN
 	if player.guard or state.power_ticks > 0:
-		speed *= config.guard_speed_ratio
+		speed = minf(speed, config.walk_speed * config.guard_speed_ratio)
+		if player.locomotion == InfiltrationActor.Locomotion.RUN:
+			player.locomotion = InfiltrationActor.Locomotion.WALK
 	_move_player(intent.movement.limit_length() * speed)
-	if (intent.held & Intent.Command.LIGHT) != 0 and not player.guard and state.power_ticks == 0 and state.power_recovery_ticks == 0:
+	if (intent.held & Intent.Command.LIGHT) != 0 and loadout.blaster != null and player.swing_tick < 0 and not player.guard and state.power_ticks == 0 and state.power_recovery_ticks == 0:
 		_fire_primary()
+	else:
+		_cancel_burst()
+
+
+func _cancel_burst() -> void:
+	state.burst_left = 0
+	state.burst_ticks = 0
+
+
+func _resolve_swing() -> void:
+	super._resolve_swing()
+	if not swing_active():
+		return
+	var progress: float = float(player.swing_tick - config.startup_ticks()) / config.active_ticks()
+	var first: float = lerpf(-config.swing_degrees * 0.5, config.swing_degrees * 0.5, progress)
+	var last: float = first + config.swing_degrees / config.active_ticks()
+	for index in arena.covers.size():
+		var cover: BlasterOpsCover = arena.covers[index]
+		if cover.health <= 0.0 or cover.last_swing_id == player.swing_id:
+			continue
+		var point: Vector2 = (Vector2(cover.data.cell) + Vector2.ONE * 0.5) * map.tile_size
+		if not InfiltrationGeometry.in_sector(player.position, player.swing_aim, point, config.swing_reach, config.swing_degrees, map.tile_size * 0.5):
+			continue
+		var angle: float = rad_to_deg(player.swing_aim.angle_to(point - player.position))
+		if angle < first - InfiltrationGeometry.EPSILON or angle > last + InfiltrationGeometry.EPSILON:
+			continue
+		var near_edge: Vector2 = point - (point - player.position).normalized() * (map.tile_size * 0.5 + InfiltrationGeometry.EPSILON)
+		if InfiltrationGeometry.wall_fraction(map, player.position, near_edge) != INF:
+			continue
+		cover.last_swing_id = player.swing_id
+		_damage_cover(index, config.swing_damage, near_edge)
 
 
 func _move_player(desired: Vector2, dash: bool = false) -> void:
@@ -107,7 +178,14 @@ func _move_player(desired: Vector2, dash: bool = false) -> void:
 	player.walked += player.position.distance_to(player.previous)
 	if player.walked >= config.step_distance:
 		player.walked -= config.step_distance
-		_emit(InfiltrationEvent.Type.FOOTSTEP, 0, -1, player.position)
+		_emit(InfiltrationEvent.Type.FOOTSTEP, 0, -1, player.position, float(player.locomotion))
+		if not dash:
+			var radius: float = config.walk_noise
+			if player.locomotion == InfiltrationActor.Locomotion.RUN:
+				radius = config.run_noise
+			elif player.locomotion == InfiltrationActor.Locomotion.SNEAK:
+				radius = config.sneak_noise
+			InfiltrationPerception.noise(self, player.position, radius, 0)
 
 
 func _start_dodge(intent: InfiltrationIntent) -> void:
@@ -116,7 +194,9 @@ func _start_dodge(intent: InfiltrationIntent) -> void:
 	state.dodge_direction = intent.movement.normalized() if intent.movement.length_squared() > 0.0 else player.aim
 	state.precision_succeeded = false
 	state.power_ticks = 0
+	player.swing_tick = -1
 	_emit(InfiltrationEvent.Type.DODGED, 0, -1, player.position)
+	InfiltrationPerception.noise(self, player.position, operations.dodge_noise, 0)
 
 
 func dodge_invulnerable() -> bool:
@@ -124,14 +204,24 @@ func dodge_invulnerable() -> bool:
 
 
 func _fire_primary() -> void:
-	if state.overheated or state.fire_ticks > 0:
+	if state.overheated:
+		_cancel_burst()
+		return
+	if state.burst_left == 0:
+		if state.fire_ticks > 0:
+			return
+		state.burst_left = maxi(loadout.blaster.shot_count, 1)
+	state.burst_ticks = maxi(state.burst_ticks - 1, 0)
+	if state.burst_ticks > 0:
 		return
 	var bolt: BlasterOpsBolt = _spawn_bolt(-1, loadout.blaster.bolt, player.aim, loadout.damage_scale)
 	if bolt == null:
 		return
+	state.burst_left -= 1
+	state.burst_ticks = maxi(Ticks.from_seconds(loadout.blaster.shot_interval), 1)
 	state.fire_ticks = maxi(Ticks.from_seconds(loadout.fire_interval), 1)
 	state.cooling_ticks = Ticks.from_seconds(operations.cooling_delay)
-	state.heat = minf(state.heat + loadout.heat_per_shot, operations.heat_capacity)
+	state.heat = minf(state.heat + loadout.heat_per_shot * loadout.blaster.vigor_multiplier, operations.heat_capacity)
 	if state.heat >= operations.heat_capacity:
 		state.overheated = true
 		state.overheat_ticks = Ticks.from_seconds(operations.overheat_seconds)
@@ -166,9 +256,13 @@ func _spawn_bolt(shooter: int, data: BoltData, aim: Vector2, scale: float = 1.0)
 	return null
 
 
+func fire_bolt(shooter: int) -> InfiltrationBolt:
+	return _spawn_bolt(shooter, target_data[shooter].bolt, targets[shooter].aim)
+
+
 func _step_bolts() -> void:
 	for candidate in bolts:
-		if player.health <= 0.0:
+		if player.health <= 0.0 and not aftermath:
 			return
 		var bolt: BlasterOpsBolt = candidate as BlasterOpsBolt
 		if not bolt.active:
@@ -192,6 +286,13 @@ func _step_bolts() -> void:
 				if impact < fraction:
 					fraction = impact
 					victim = index + 1
+		for index in prisoners.size():
+			if aftermath or prisoners[index].health <= 0.0 or (mission != null and mission.extracted[index] != 0):
+				continue
+			var impact: float = _actor_impact(bolt, end, prisoners[index])
+			if impact < fraction:
+				fraction = impact
+				victim = targets.size() + index + 1
 		if fraction != INF:
 			bolt.position = bolt.position.lerp(end, fraction)
 			bolt.travelled += bolt.previous.distance_to(bolt.position)
@@ -199,7 +300,11 @@ func _step_bolts() -> void:
 				_resolve_player_bolt(bolt)
 			else:
 				bolt.active = false
-				if victim > 0:
+				if victim > targets.size():
+					var prisoner: InfiltrationActor = prisoners[victim - targets.size() - 1]
+					prisoner.health = maxf(prisoner.health - bolt.damage, 0.0)
+					_emit(InfiltrationEvent.Type.BOLT_HIT, bolt.owner, victim, bolt.position, bolt.damage)
+				elif victim > 0:
 					var damage: float = _armored_damage(victim - 1, bolt.damage, bolt.origin)
 					_emit(InfiltrationEvent.Type.BOLT_HIT, bolt.owner, victim, bolt.position, damage)
 					_damage_target(victim - 1, damage, false, bolt.origin)
@@ -242,6 +347,9 @@ func _damage_cover(index: int, damage: float, point: Vector2) -> void:
 
 func _resolve_player_bolt(candidate: InfiltrationBolt) -> void:
 	var bolt: BlasterOpsBolt = candidate as BlasterOpsBolt
+	if aftermath:
+		bolt.active = false
+		return
 	if dodge_invulnerable():
 		bolt.evaded = true
 		if state.dodge_age < operations.precision_until and not state.precision_succeeded:
@@ -251,6 +359,7 @@ func _resolve_player_bolt(candidate: InfiltrationBolt) -> void:
 		return
 	var front: bool = InfiltrationGeometry.in_sector(Vector2.ZERO, player.aim, -bolt.velocity, INF, config.guard_degrees)
 	if player.guard and front:
+		InfiltrationPerception.noise(self, bolt.position, config.combat_noise, 0)
 		if player.parry_age >= 0:
 			var perfect: bool = player.parry_age < Ticks.from_seconds(config.duel_config.perfect_parry_window)
 			bolt.owner = 0
@@ -277,6 +386,8 @@ func _resolve_player_bolt(candidate: InfiltrationBolt) -> void:
 
 
 func _hurt_player(damage: float, flinch_ticks: int, source: int, point: Vector2) -> void:
+	if aftermath:
+		return
 	super._hurt_player(damage, flinch_ticks, source, point)
 	state.power_ticks = 0
 	if player.health <= 0.0:
@@ -286,6 +397,17 @@ func _hurt_player(damage: float, flinch_ticks: int, source: int, point: Vector2)
 func _apply_enemy_intent(index: int, intent: InfiltrationIntent) -> void:
 	var actor: BlasterOpsActor = targets[index] as BlasterOpsActor
 	var data: BlasterOpsEnemyData = target_data[index] as BlasterOpsEnemyData
+	if data == null:
+		actor.stun_ticks = maxi(actor.stun_ticks - 1, 0)
+		if actor.impulse_ticks > 0:
+			actor.impulse_ticks -= 1
+			actor.position = InfiltrationGeometry.move_body(map, actor.position, actor.impulse * Ticks.DELTA, actor.radius, targets, actor, player)
+		if actor.stun_ticks > 0:
+			actor.burst_left = 0
+			actor.velocity = (actor.position - actor.previous) / Ticks.DELTA
+			return
+		super._apply_enemy_intent(index, intent)
+		return
 	actor.fire_ticks = maxi(actor.fire_ticks - 1, 0)
 	actor.stun_ticks = maxi(actor.stun_ticks - 1, 0)
 	if actor.impulse_ticks > 0:
@@ -299,9 +421,13 @@ func _apply_enemy_intent(index: int, intent: InfiltrationIntent) -> void:
 	if intent.aim.length_squared() > 0.0 and actor.telegraph_ticks < 0:
 		actor.aim = _turned_aim(actor, data, intent.aim.normalized())
 	actor.decision = InfiltrationActor.Decision.FIGHT if actor.awareness == InfiltrationActor.Awareness.ALERTED else InfiltrationActor.Decision.INVESTIGATE
+	if actor.awareness == InfiltrationActor.Awareness.UNAWARE:
+		actor.decision = InfiltrationActor.Decision.PATROL
 	if actor.telegraph_ticks < 0:
-		actor.position = InfiltrationGeometry.move_body(map, actor.position, intent.movement.limit_length() * data.speed * Ticks.DELTA, actor.radius, targets, actor, player)
+		var speed: float = data.speed * (data.alarm_speed_ratio if (intent.held & Intent.Command.DODGE) != 0 else 1.0)
+		actor.position = InfiltrationGeometry.move_body(map, actor.position, intent.movement.limit_length() * speed * Ticks.DELTA, actor.radius, targets, actor, player)
 	actor.velocity = (actor.position - actor.previous) / Ticks.DELTA
+	_advance_enemy_mission_intent(index, intent)
 	if actor.awareness != InfiltrationActor.Awareness.ALERTED or (intent.held & Intent.Command.LIGHT) == 0:
 		actor.telegraph_ticks = -1
 		actor.burst_left = 0
@@ -324,7 +450,8 @@ func _apply_enemy_intent(index: int, intent: InfiltrationIntent) -> void:
 
 func _release_enemy_attack(index: int, data: BlasterOpsEnemyData, actor: BlasterOpsActor) -> void:
 	actor.telegraph_ticks = -1
-	if player.health <= 0.0 or InfiltrationGeometry.wall_fraction(map, actor.position, player.position) != INF:
+	var victim: InfiltrationActor = prisoners[actor.target_prisoner] if actor.target_prisoner >= 0 else player
+	if victim.health <= 0.0 or InfiltrationGeometry.wall_fraction(map, actor.position, victim.position) != INF:
 		actor.burst_left = 0
 		return
 	if data.melee_damage > 0.0:
@@ -340,6 +467,12 @@ func _release_enemy_attack(index: int, data: BlasterOpsEnemyData, actor: Blaster
 
 
 func _resolve_enemy_melee(index: int, data: BlasterOpsEnemyData, actor: BlasterOpsActor) -> void:
+	if actor.target_prisoner >= 0:
+		var prisoner: InfiltrationActor = prisoners[actor.target_prisoner]
+		if not aftermath and InfiltrationGeometry.in_sector(actor.position, actor.telegraph_aim, prisoner.position, data.melee_range, data.attack_degrees, prisoner.radius):
+			prisoner.health = maxf(prisoner.health - data.melee_damage, 0.0)
+			_emit(InfiltrationEvent.Type.BOLT_HIT, index + 1, targets.size() + actor.target_prisoner + 1, prisoner.position, data.melee_damage)
+		return
 	if dodge_invulnerable() or not InfiltrationGeometry.in_sector(actor.position, actor.telegraph_aim, player.position, data.melee_range, data.attack_degrees, player.radius):
 		return
 	if player.guard and InfiltrationGeometry.in_sector(player.position, player.aim, actor.position, INF, config.guard_degrees):
@@ -353,9 +486,16 @@ func _resolve_enemy_melee(index: int, data: BlasterOpsEnemyData, actor: BlasterO
 	_hurt_player(data.melee_damage, Ticks.from_seconds(data.melee_flinch), index + 1, player.position)
 
 
+func _step_melee(index: int, data: InfiltrationEnemyData, intent: InfiltrationIntent) -> void:
+	if targets[index].target_prisoner < 0 and dodge_invulnerable():
+		return
+	super._step_melee(index, data, intent)
+
+
 func _start_power() -> void:
 	state.power_ticks = maxi(loadout.power.power.startup_ticks(), 1)
-	state.power_cooldown = Ticks.from_seconds(loadout.power.cooldown)
+	var multiplier: float = operations.stealth_power_cooldown_multiplier if stealth_objective() else 1.0
+	state.power_cooldown = Ticks.from_seconds(loadout.power.cooldown * multiplier)
 	state.power_aim = player.aim
 	_close_parry()
 	_emit(InfiltrationEvent.Type.POWER_PREPARED, 0, -1, player.position)
@@ -365,6 +505,11 @@ func _release_power() -> void:
 	var power: PowerData = loadout.power.power
 	state.power_recovery_ticks = power.recovery_ticks()
 	_emit(InfiltrationEvent.Type.POWER_RELEASED, 0, -1, player.position, float(power.kind))
+	InfiltrationPerception.noise(self, player.position, operations.power_noise, 0)
+	if stealth_objective():
+		for index in range(map.targets.size(), targets.size()):
+			if InfiltrationPerception.sees(self, index):
+				InfiltrationPerception.alert(self, index, player.position)
 	if power.kind == PowerData.Kind.BARRIER:
 		state.barrier_health = power.strength
 		state.barrier_ticks = Ticks.from_seconds(power.max_channel)
@@ -386,6 +531,10 @@ func _release_power() -> void:
 		_affect_enemy(nearest, power)
 
 
+func stealth_objective() -> bool:
+	return mission != null and mission.data.objective == InfiltrationMissionData.Objective.INFILTRATION
+
+
 func _affect_enemy(index: int, power: PowerData) -> void:
 	var actor: BlasterOpsActor = targets[index] as BlasterOpsActor
 	_damage_target(index, power.damage)
@@ -401,9 +550,12 @@ func capture() -> Dictionary:
 	var snapshot: Dictionary = super.capture()
 	snapshot["operations"] = state.capture()
 	var health: PackedFloat32Array = []
+	var swings: PackedInt32Array = []
 	for cover in arena.covers:
 		health.append(cover.health)
+		swings.append(cover.last_swing_id)
 	snapshot["covers"] = health
+	snapshot["cover_swings"] = swings
 	return snapshot
 
 
@@ -412,4 +564,5 @@ func restore(snapshot: Dictionary) -> void:
 	state.restore(snapshot.operations)
 	for index in arena.covers.size():
 		arena.covers[index].health = snapshot.covers[index]
+		arena.covers[index].last_swing_id = snapshot.cover_swings[index]
 	cover_revision += 1

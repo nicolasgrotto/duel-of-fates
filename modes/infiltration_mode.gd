@@ -12,6 +12,9 @@ const MISSIONS: Array[InfiltrationMissionData] = [
 
 var data: InfiltrationMissionData
 var result: Dictionary = {}
+var character: CharacterData
+var equipment: BlasterOpsLoadout
+var look: InfiltrationLook
 
 
 static func look_character() -> CharacterData:
@@ -41,13 +44,28 @@ static func current_look() -> InfiltrationLook:
 	return InfiltrationLook.create(character, look_costume(character), look_blade(character))
 
 
-func _init(mission: InfiltrationMissionData) -> void:
+func _init(mission: InfiltrationMissionData, fighter: CharacterData = null, loadout: BlasterOpsLoadout = null, appearance: InfiltrationLook = null) -> void:
 	data = mission
+	character = fighter
+	equipment = loadout
+	look = appearance
+
+
+func create_simulation() -> BlasterOpsSimulation:
+	var fighter: CharacterData = character if character != null else look_character()
+	var loadout: BlasterOpsLoadout = equipment if equipment != null else BlasterOpsTraining.equipment(fighter, 0)
+	return BlasterOpsSimulation.new(BlasterOpsTraining.CONFIG, data.map, loadout, data)
+
+
+func mission_look() -> InfiltrationLook:
+	if look != null:
+		return look
+	return BlasterOpsTraining.look(character) if character != null else current_look()
 
 
 func start() -> void:
 	result = {}
-	SceneRouter.change(&"infiltration_mission", {"mode": self})
+	SceneRouter.change(&"operations_mission", {"mode": self})
 
 
 func finish(sim: InfiltrationSimulation) -> void:
@@ -76,7 +94,7 @@ func objective_lines(sim: InfiltrationSimulation) -> Array[Dictionary]:
 
 func next() -> void:
 	var index: int = MISSIONS.find(data)
-	SceneRouter.change(&"infiltration", {"mission": MISSIONS[index + 1].id if index >= 0 and index + 1 < MISSIONS.size() else data.id})
+	SceneRouter.change(&"operations", {"mission": MISSIONS[index + 1].id if index >= 0 and index + 1 < MISSIONS.size() else data.id})
 
 
 static func bonus_text(mask: int) -> String:

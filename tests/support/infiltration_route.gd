@@ -37,6 +37,25 @@ func _init(sim: InfiltrationSimulation, aggressive: bool = false) -> void:
 
 
 func produce(sim: InfiltrationSimulation) -> InfiltrationIntent:
+	var result: InfiltrationIntent = _produce(sim)
+	if sim is BlasterOpsSimulation:
+		result.held = _operations_commands(result.held)
+		result.pressed = _operations_commands(result.pressed)
+	return result
+
+
+func _operations_commands(commands: int) -> int:
+	var result: int = commands & ~(Intent.Command.POWER | Intent.Command.DODGE | Intent.Command.SPECIAL)
+	if (commands & Intent.Command.POWER) != 0:
+		result |= InfiltrationIntent.INTERACT
+	if (commands & Intent.Command.DODGE) != 0:
+		result |= InfiltrationIntent.RUN
+	if (commands & Intent.Command.SPECIAL) != 0:
+		result |= InfiltrationIntent.SNEAK
+	return result
+
+
+func _produce(sim: InfiltrationSimulation) -> InfiltrationIntent:
 	intent.clear()
 	_flank_ticks = maxi(_flank_ticks - FLANK_RECOVERY, 0) if _flank_ticks <= FLANK_PATIENCE_TICKS else _flank_ticks - 1
 	var threat: int = _threat(sim)

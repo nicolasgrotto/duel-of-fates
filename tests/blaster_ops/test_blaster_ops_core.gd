@@ -62,7 +62,7 @@ func test_full_pool_does_not_charge_heat_or_cadence_and_never_overwrites_a_bolt(
 
 
 func test_cadence_damage_and_range_come_from_the_equipped_data() -> void:
-	for loadout in [BlasterOpsTraining.PISTOL, BlasterOpsTraining.RIFLE, BlasterOpsTraining.TEMPORARY]:
+	for loadout in [BlasterOpsTraining.PISTOL, BlasterOpsTraining.RIFLE]:
 		var fixture: BlasterOpsFixture = BlasterOpsFixture.create(null, loadout)
 		fixture.intent.held = Intent.Command.LIGHT
 		fixture.step()
@@ -72,7 +72,7 @@ func test_cadence_damage_and_range_come_from_the_equipped_data() -> void:
 		assert_almost(bolt.velocity.length(), loadout.blaster.bolt.speed)
 		assert_eq(bolt.shooter, -1)
 		assert_eq(fixture.sim.state.fire_ticks, Ticks.from_seconds(loadout.fire_interval))
-	assert_lt(BlasterOpsTraining.TEMPORARY.blaster.bolt.damage * BlasterOpsTraining.TEMPORARY.damage_scale, 10.0)
+	assert_eq(BlasterOpsTraining.equipment(DuelMode.character(&"guardian"), 0).blaster, null)
 
 
 func test_dodge_locks_direction_and_requires_a_new_ready_activation() -> void:

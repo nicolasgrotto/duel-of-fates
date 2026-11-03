@@ -2,12 +2,14 @@ class_name BlasterOpsBindings
 extends RefCounted
 
 const PREFIX: String = "blaster_ops_"
-const ACTIONS: Array[String] = ["left", "right", "up", "down", "fire", "guard", "dodge", "power"]
+const ACTIONS: Array[String] = ["left", "right", "up", "down", "fire", "guard", "dodge", "power", "run", "sneak", "strike", "interact"]
 const KEYS: Dictionary = {
 	"left": [KEY_A, KEY_LEFT], "right": [KEY_D, KEY_RIGHT], "up": [KEY_W, KEY_UP], "down": [KEY_S, KEY_DOWN],
-	"fire": [KEY_SPACE], "guard": [KEY_Q], "dodge": [KEY_SHIFT], "power": [KEY_E],
+	"fire": [], "guard": [KEY_Q], "dodge": [KEY_SPACE], "power": [KEY_R],
+	"run": [KEY_SHIFT], "sneak": [KEY_CTRL, KEY_C], "strike": [KEY_F], "interact": [KEY_E],
 }
-const COPIES: Dictionary = {"fire": &"p1_light_attack", "guard": &"p1_block", "dodge": &"p1_dodge", "power": &"p1_power"}
+const COPIES: Dictionary = {"fire": &"p1_light_attack", "guard": &"p1_block", "dodge": &"p1_dodge", "power": &"p1_power", "sneak": &"p1_special", "strike": &"p1_heavy_attack"}
+const BUTTONS: Dictionary = {"run": JOY_BUTTON_LEFT_STICK, "interact": JOY_BUTTON_A}
 const MOVE_AXES: Dictionary = {"left": [JOY_AXIS_LEFT_X, -1.0], "right": [JOY_AXIS_LEFT_X, 1.0], "up": [JOY_AXIS_LEFT_Y, -1.0], "down": [JOY_AXIS_LEFT_Y, 1.0]}
 const AIM_AXES: Dictionary = {"aim_left": [JOY_AXIS_RIGHT_X, -1.0], "aim_right": [JOY_AXIS_RIGHT_X, 1.0], "aim_up": [JOY_AXIS_RIGHT_Y, -1.0], "aim_down": [JOY_AXIS_RIGHT_Y, 1.0]}
 const DPAD: Dictionary = {"left": JOY_BUTTON_DPAD_LEFT, "right": JOY_BUTTON_DPAD_RIGHT, "up": JOY_BUTTON_DPAD_UP, "down": JOY_BUTTON_DPAD_DOWN}
@@ -40,6 +42,8 @@ static func apply(keys: Dictionary, buttons: Dictionary) -> void:
 				_add_button(action, code)
 		elif DPAD.has(suffix):
 			_add_button(action, DPAD[suffix])
+		elif BUTTONS.has(suffix):
+			_add_button(action, BUTTONS[suffix])
 		else:
 			for event in InputMap.action_get_events(COPIES[suffix]):
 				if event is InputEventJoypadButton:

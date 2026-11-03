@@ -139,6 +139,8 @@ func _update_hints() -> void:
 	_footer.text = ControlHints.line(PackedStringArray([move, tr("BOPS_AIM_CONTROLS"), ControlHints.blaster_ops_hint("fire")]))
 	_footer.text += "\n" + ControlHints.line(PackedStringArray([ControlHints.blaster_ops_hint("guard"), ControlHints.blaster_ops_hint("dodge"), ControlHints.blaster_ops_hint("power"), ControlHints.hint(&"p1_pause", "HINT_PAUSE")]))
 
+	_footer.text += "\n" + ControlHints.line(PackedStringArray([ControlHints.blaster_ops_hint("run"), ControlHints.blaster_ops_hint("sneak"), ControlHints.blaster_ops_hint("strike"), ControlHints.blaster_ops_hint("interact")]))
+	_footer.offset_top = -138.0
 
 func _build_pause() -> void:
 	_pause_layer = CanvasLayer.new()
@@ -199,6 +201,8 @@ func _update_presentation(alpha: float) -> void:
 	_camera.position = desired.clamp(half, sim.map.world_size() - half)
 	_health.ratio = sim.player.health / CONFIG.health
 	_heat.ratio = sim.state.heat / CONFIG.heat_capacity
+	_heat.visible = sim.loadout.blaster != null
+	_heat_text.visible = _heat.visible
 	_vigor.ratio = sim.player.vigor / CONFIG.vigor
 	_heat.fill_color = PALETTE.danger if sim.state.overheated else PALETTE.potential
 	_heat_text.text = tr("BOPS_COOLING" if sim.state.overheated else "BOPS_HEAT")
@@ -265,7 +269,7 @@ func _on_pause_chosen(option: StringName) -> void:
 	if option == &"continue":
 		_set_paused(false)
 	elif option == &"back":
-		SceneRouter.change(&"menu", {"group": &"special"})
+		SceneRouter.change(&"menu", {"group": &"special", "focus": &"operations"})
 	else:
 		if option == &"character":
 			_character_index = (_character_index + 1) % BlasterOpsTraining.CHARACTERS.size()

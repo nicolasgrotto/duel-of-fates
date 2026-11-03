@@ -16,7 +16,7 @@ const GROUPS: Dictionary = {
 	&"play": {"title": "MENU_PLAY", "items": [[&"story", "MENU_STORY"], [&"duel", "MENU_DUEL"], [&"battles", "MENU_BATTLES"], [&"special", "MENU_SPECIAL"]]},
 	&"duel": {"title": "MENU_DUEL", "parent": &"play", "items": [[&"versus", "MENU_ONE_PLAYER"], [&"two_players", "MENU_TWO_PLAYERS"], [&"spectate", "MENU_CPU_VS_CPU"]]},
 	&"battles": {"title": "MENU_BATTLES", "parent": &"play", "items": [[&"arcade", "MENU_ARCADE"], [&"survival", "MENU_SURVIVAL"], [&"hunts", "MENU_HUNTS"]]},
-	&"special": {"title": "MENU_SPECIAL", "parent": &"play", "items": [[&"infiltration", "MENU_INFILTRATION"], [&"space", "MENU_SPACE"]]},
+	&"special": {"title": "MENU_SPECIAL", "parent": &"play", "items": [[&"operations", "MENU_OPERATIONS"], [&"space", "MENU_SPACE"]]},
 	&"learn": {"title": "MENU_LEARN", "items": [[&"tutorial", "MENU_TUTORIAL"], [&"guided", "MENU_GUIDED"], [&"training", "MENU_TRAINING"], [&"parry_challenge", "MENU_PARRY_CHALLENGE"], [&"controls", "MENU_CONTROLS"]]},
 	&"extras": {"title": "MENU_EXTRAS", "items": [[&"challenges", "MENU_CHALLENGES"], [&"gallery", "MENU_GALLERY"], [&"story_gallery", "MENU_STORY_GALLERY"], [&"exhibitions", "MENU_EXHIBITION"]]},
 	&"exhibitions": {"title": "MENU_EXHIBITION", "parent": &"extras", "items": [[&"exhibition_duel", "MENU_EXHIBITION_DUEL"], [&"exhibition", "MENU_EXHIBITION_SEQUENCE"]]},
@@ -152,8 +152,8 @@ func _on_chosen(id: StringName) -> void:
 			SceneRouter.change(&"hunts")
 		&"space":
 			SceneRouter.change(&"space")
-		&"infiltration":
-			SceneRouter.change(&"infiltration")
+		&"operations":
+			SceneRouter.change(&"operations")
 		&"gallery_powers":
 			GalleryMode.new().start()
 		&"gallery_finishers":

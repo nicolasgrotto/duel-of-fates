@@ -83,7 +83,13 @@ Arquivos e pastas em `snake_case`; classes com `class_name` em `PascalCase`.
 
 Os bindings compartilham tabela em `BlasterOpsBindings`; `InfiltrationBindings` fornece aliases de compatibilidade com o mesmo layout. Intenções têm bits próprios de correr/furtivo/interagir, sem confundir Poder com interação ou Esquiva com corrida. O modo monta o equipamento real do personagem ou recebe conjunto explícito; não consulta nem altera a campanha durante os ticks. `InfiltrationMode.create_simulation()` é o ponto de montagem comum para testes e tela. `operations*` são as rotas públicas; aliases antigos continuam válidos para ferramentas. Save mantém `infiltration_best` e `infiltration_look`, com migração por ausência e sem renomear IDs publicados.
 
+`BlasterOpsMap` aceita mapas antigos sem cobertura destrutível; conserva Resource fonte e cria somente estado runtime. Inimigos antigos e novos compartilham `_advance_enemy_mission_intent` para rotas e pedidos de alarme. O controlador derivado invalida navegação ao quebrar/restaurar cobertura. `BlasterOpsState` inclui tiros restantes/intervalo de rajada; `BlasterOpsCover.last_swing_id` entra no snapshot para impedir dano repetido no mesmo corte. Poderes não atingem escoltas; projéteis dos dois lados mantêm colisão com prisioneiros e prioridade sobre a extração.
+
+`BlasterOpsView.weapon_state` fornece os estados de apresentação testáveis (lâmina, blaster, cabo no cinto e mão de apoio); desenho usa `InfiltrationBlade` e `InfiltrationLook`, incluindo roupa/cor escolhidas. Reiniciar a missão substitui simulação, controladores, navegador e referências de mapa/vista, preservando World2D/câmera. Settings marca `blaster_ops/operations_layout`: sem o campo, só o teclado antigo desse modo volta ao novo padrão, conservando botões e configurações do duelo.
+
 ### Núcleo de Operações de blaster (task 16)
+
+Registro da fundação: a task 17 acima substitui sua separação entre treino e missões de Infiltração.
 
 `BlasterOpsSimulation` **estende** `InfiltrationSimulation`; reutiliza atores, pools/eventos, geometria, percepção, navegação e intenção. Não modifica o duelo nem ativa regras novas nas instâncias comuns da Infiltração. `simulation/blaster_ops/` contém estado adicional de calor/esquiva/poder, atores com preparação travada, projéteis com dano/retorno/esquiva e mapa de colisão por instância com caixas destrutíveis. A simulação recebe intenções externas, em 60 Hz; não conhece Input, arte ou nós. Não executa o controlador por dentro.
 

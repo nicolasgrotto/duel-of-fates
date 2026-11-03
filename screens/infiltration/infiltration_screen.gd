@@ -1,6 +1,6 @@
 extends Node2D
 
-const CONFIG: InfiltrationConfig = preload("res://data/balance/infiltration_config.tres")
+const CONFIG: BlasterOpsConfig = BlasterOpsTraining.CONFIG
 const TRAINING_MAP: InfiltrationMapData = preload("res://data/infiltration/patrol_map.tres")
 const MUSIC: MusicData = preload("res://data/audio/duel_music.tres")
 const SUSPICION_SOUND: AudioStream = preload("res://assets/audio/infiltration/suspicion.wav")
@@ -20,7 +20,7 @@ const SOUNDS: Dictionary = {
 	InfiltrationEvent.Type.FOOTSTEP: &"step",
 }
 
-var sim: InfiltrationSimulation
+var sim: BlasterOpsSimulation
 var mode: InfiltrationMode
 var escort_controller: InfiltrationEscortController
 var _objective: Label
@@ -30,7 +30,9 @@ var enemy_controller: InfiltrationEnemyController
 var intent: InfiltrationIntent = InfiltrationIntent.new()
 var paused: bool = false
 var _stage: PixelStage
-var _view: InfiltrationView
+var _view: BlasterOpsView
+var _map_view: BlasterOpsMapView
+var _operations_status: Label
 var _camera: Camera2D
 var _health: HudBar
 var _vigor: HudBar
@@ -59,23 +61,24 @@ func required_resources(_params: Dictionary) -> PackedStringArray:
 
 
 func open(params: Dictionary) -> void:
-	InfiltrationBindings.install()
+	InfiltrationBindings.install(Settings.blaster_ops_keys, Settings.blaster_ops_buttons)
 	controller = InfiltrationPlayerController.new()
 	mode = params.get("mode")
 	var mission_data: InfiltrationMissionData = mode.data if mode != null else null
-	sim = InfiltrationSimulation.new(CONFIG, mission_data.map if mission_data != null else params.get("map", TRAINING_MAP), mission_data)
-	enemy_controller = InfiltrationEnemyController.new(sim.map, sim.targets.size())
+	sim = mode.create_simulation() if mode != null else BlasterOpsSimulation.new(CONFIG, params.get("map", TRAINING_MAP), BlasterOpsTraining.equipment(InfiltrationMode.look_character(), 0), mission_data)
+	enemy_controller = BlasterOpsEnemyController.new(sim.map, sim.targets.size())
 	escort_controller = InfiltrationEscortController.new(sim)
 	_guide_navigation = InfiltrationNavigation.new(sim.map)
 	_stage = PixelStage.new(CONFIG.units_per_pixel)
 	_stage.viewport.world_2d = World2D.new()
 	add_child(_stage)
-	var map_view: InfiltrationMapView = InfiltrationMapView.new()
-	_stage.viewport.add_child(map_view)
-	map_view.setup(sim.map, CONFIG)
-	_view = InfiltrationView.new()
+	_map_view = BlasterOpsMapView.new()
+	_stage.viewport.add_child(_map_view)
+	_map_view.attach(sim)
+	_view = BlasterOpsView.new()
 	_stage.viewport.add_child(_view)
-	_view.setup(sim, InfiltrationMode.current_look())
+	_view.setup(sim, mode.mission_look() if mode != null else InfiltrationMode.current_look())
+	_view.emitter = (mode.character if mode != null and mode.character != null else InfiltrationMode.look_character()).weapon.sidearm == WeaponData.Sidearm.HILT_EMITTER
 	_view.reduced = Settings.reduced_effects
 	_camera = Camera2D.new()
 	_camera.zoom = Vector2.ONE * CONFIG.camera_zoom
@@ -112,6 +115,9 @@ func _build_hud() -> void:
 	hud.add_child(_status)
 	_health = _bar(hud, 40.0, PALETTE.text)
 	_vigor = _bar(hud, 66.0, PALETTE.accent)
+	_operations_status = _label("", &"InfiltrationLabel")
+	_operations_status.position = Vector2(HUD_MARGIN, 88.0)
+	hud.add_child(_operations_status)
 	var objective: Label = _label(tr("INFILTRATION_OBJECTIVE"), &"InfiltrationLabel")
 	objective.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 	objective.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -159,12 +165,12 @@ func _hints() -> String:
 	})
 	return ControlHints.line(PackedStringArray([
 		movement,
-		ControlHints.hint(&"infiltration_run", "INFILTRATION_RUN"),
-		ControlHints.hint(&"infiltration_sneak", "INFILTRATION_SNEAK"),
+		ControlHints.blaster_ops_hint("run"), ControlHints.blaster_ops_hint("sneak"),
+		ControlHints.blaster_ops_hint("dodge"),
 	])) + "\n" + ControlHints.line(PackedStringArray([
-		tr("INFILTRATION_MOUSE_SWING").format({"key": ControlHints.key_label(&"infiltration_attack")}),
-		tr("INFILTRATION_MOUSE_GUARD").format({"key": ControlHints.key_label(&"infiltration_guard")}),
-		tr("INFILTRATION_AIM"), ControlHints.hint(&"p1_pause", "HINT_PAUSE"),
+		ControlHints.blaster_ops_hint("fire"), ControlHints.blaster_ops_hint("guard"),
+		ControlHints.blaster_ops_hint("strike"), ControlHints.blaster_ops_hint("interact"),
+		ControlHints.blaster_ops_hint("power"),
 	]))
 
 
@@ -187,8 +193,8 @@ func _build_pause() -> void:
 	column.add_child(_pause_title)
 	var legend: Label = _label(tr("INFILTRATION_LEGEND"), &"InfiltrationLabel")
 	legend.text += "\n" + ControlHints.line(PackedStringArray([
-		ControlHints.hint(&"infiltration_takedown", "INFILTRATION_TAKEDOWN"),
-		ControlHints.hint(&"infiltration_interact", "INF_INTERACT"),
+		ControlHints.blaster_ops_hint("strike"), ControlHints.blaster_ops_hint("interact"),
+		ControlHints.blaster_ops_hint("power"),
 	]))
 	legend.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(legend)
@@ -250,6 +256,11 @@ func _present_events() -> void:
 	for index in sim.event_count:
 		var event: InfiltrationEvent = sim.events[index]
 		_view.on_event(event)
+		if BlasterOpsAudio.SOUNDS.has(event.type) and not SOUNDS.has(event.type):
+			AudioDirector.play(BlasterOpsAudio.SOUNDS[event.type], event.position, CONFIG.effects_db)
+		elif event.type == InfiltrationEvent.Type.POWER_RELEASED:
+			var sound: StringName = &"power_repulse" if int(event.amount) == PowerData.Kind.REPULSE else (&"power_pull" if int(event.amount) == PowerData.Kind.PULL else &"power_barrier_absorb")
+			AudioDirector.play(sound, event.position, CONFIG.effects_db)
 		if event.type == InfiltrationEvent.Type.AWARENESS_CHANGED and event.amount > 0.0:
 			_notice.play()
 		elif event.type == InfiltrationEvent.Type.TAKEDOWN_LANDED:
@@ -285,7 +296,7 @@ func _closure_detail(won: bool) -> String:
 
 
 func _show_result() -> void:
-	SceneRouter.change(&"infiltration_result", {"mode": mode, "result": true})
+	SceneRouter.change(&"operations_result", {"mode": mode, "result": true})
 
 
 func _update_presentation(alpha: float) -> void:
@@ -302,6 +313,12 @@ func _update_presentation(alpha: float) -> void:
 	_vigor.ratio = sim.player.vigor / CONFIG.vigor
 	_vigor.ghost_ratio = _vigor.ratio
 	_vigor.queue_redraw()
+	var cooldowns: PackedStringArray = [tr("BOPS_COOLDOWN").format({"action": tr("BOPS_ACTION_DODGE"), "time": _cooldown(sim.state.dodge_cooldown)})]
+	if sim.loadout.power != null:
+		cooldowns.append(tr("BOPS_COOLDOWN").format({"action": tr(sim.loadout.power.power.name_key), "time": _cooldown(sim.state.power_cooldown)}))
+	if sim.loadout.blaster != null:
+		cooldowns.append(tr("OPS_HEAT_STATE").format({"value": tr("BOPS_COOLING") if sim.state.overheated else str(roundi(sim.state.heat))}))
+	_operations_status.text = ControlHints.line(cooldowns)
 	_update_security_hud()
 	if mode != null:
 		_objective.text = tr("INF_PROGRESS").format({"done": sim.mission.completed_objectives(sim), "total": mode.data.objective_count(), "time": ChallengeMode.format_time(sim.tick * Ticks.DELTA)})
@@ -313,11 +330,16 @@ func _update_presentation(alpha: float) -> void:
 			player.parry_age, player.parry_cooldown, player.swing_tick, player.health, player.vigor, sim.dropped_events,
 		]
 		_debug.text += "\nalarm %s  reinforcements %d" % [sim.alarm_active(), sim.reinforcement_ticks]
+		_debug.text += "\nheat %.1f  burst %d / %d  dodge %d / %d  power %d / %d" % [sim.state.heat, sim.state.burst_left, sim.state.burst_ticks, sim.state.dodge_age, sim.state.dodge_cooldown, sim.state.power_ticks, sim.state.power_cooldown]
 		if sim.mission != null:
 			_debug.text += "\nmission %s  alarm history %s  takedowns %d  copied %s  recruited %s  extracted %s" % [InfiltrationMissionState.Outcome.keys()[sim.mission.outcome], sim.mission.alarm_raised, sim.mission.takedowns, sim.mission.copied, sim.mission.recruited, sim.mission.extracted]
 		for index in range(sim.map.targets.size(), sim.targets.size()):
 			var actor: InfiltrationActor = sim.targets[index]
 			_debug.text += "\n%d %s %.3f  %s  waypoint %d" % [index + 1, InfiltrationActor.Awareness.keys()[actor.awareness], actor.suspicion, InfiltrationActor.Decision.keys()[actor.decision], actor.waypoint]
+
+
+func _cooldown(ticks: int) -> String:
+	return tr("BOPS_READY") if ticks == 0 else tr("BOPS_SECONDS").format({"seconds": snappedf(ticks * Ticks.DELTA, 0.1)})
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -367,16 +389,19 @@ func _on_pause_chosen(option: StringName) -> void:
 		&"continue":
 			_set_paused(false)
 		&"restart":
-			sim = InfiltrationSimulation.new(CONFIG, sim.map, mode.data if mode != null else null)
-			enemy_controller = InfiltrationEnemyController.new(sim.map, sim.targets.size())
+			sim = mode.create_simulation() if mode != null else BlasterOpsSimulation.new(CONFIG, sim.arena.source, sim.loadout)
+			enemy_controller = BlasterOpsEnemyController.new(sim.map, sim.targets.size())
 			escort_controller = InfiltrationEscortController.new(sim)
-			_view.setup(sim, InfiltrationMode.current_look())
+			_guide_navigation = InfiltrationNavigation.new(sim.map)
+			_guide_text = ""
+			_map_view.attach(sim)
+			_view.setup(sim, mode.mission_look() if mode != null else InfiltrationMode.current_look())
 			_set_paused(false)
 		&"back":
 			if mode != null:
-				SceneRouter.change(&"infiltration", {"mission": mode.data.id})
+				SceneRouter.change(&"operations", {"mission": mode.data.id})
 			else:
-				SceneRouter.change(&"menu", {"group": &"special", "focus": &"infiltration"})
+				SceneRouter.change(&"menu", {"group": &"special", "focus": &"operations"})
 
 
 func _exit_tree() -> void:

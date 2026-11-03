@@ -135,11 +135,11 @@ Fora do escopo inicial, possíveis no futuro: modo online, torneio, editor de pe
 
 O duelo continua sendo o coração do jogo. O autor aprovou modos que saem do formato "dois combatentes, vista lateral", desde que cada um mantenha a mesma identidade (pixel art na grade do mundo, paleta e UI do tema, lâminas com peso, leitura antes de velocidade, sem gore, sem nada da franquia):
 
-- **Infiltração**: missões em mapas **top-down 2D** dentro de bases, com patrulhas armadas de blasters, furtividade, alarmes e combate limitado. A lâmina **desvia e devolve disparos** (guarda e parry). Uma tela própria, não o duelo.
+- **Operações**: missões em mapas **top-down 2D** dentro de bases. Objetivo Infiltração privilegia resgate, furtividade e alarmes; Incursão privilegia combate. Lâmina, blaster quando equipado, esquiva e poderes usam os mesmos controles. A lâmina **desvia e devolve disparos** (guarda e parry). Uma tela própria, não o duelo.
 - **Combate de naves**: missões **top-down 2D** de pilotagem (esquadrões, mísseis, naves capitais, chefe), com melhorias de arma, escudo e velocidade entre missões. Essas melhorias valem só dentro desse modo; fora dele continua valendo a regra de não ter progressão fora do protagonista da História.
 - **Caçada a chefes**: duelos contra chefes únicos com fases, padrões próprios e condições especiais de vitória, no motor do duelo.
 - **Família Versáteis**: lâmina numa mão e blaster na outra ou integrado ao cabo. Disparos existem também no duelo, como projéteis que a guarda e o parry desviam.
-- **Operações de blaster** (tasks 16–18, viram Incursões no menu único de Operações): tiro em visão superior nas bases da Infiltração, com mira independente, calor, esquiva e um poder equipado. Várias missões, incluindo defesa de objetivo; leitura de preparação, paredes e cobertura vem antes da velocidade. A task 16 entrega só o treino, sem progressão.
+- **Incursões** (task 18, no menu único de Operações): combate em visão superior nas bases da Infiltração, com mira independente, calor para quem tem blaster, esquiva e um poder equipado. Várias missões, incluindo defesa de objetivo; leitura de preparação, paredes e cobertura vem antes da velocidade. A task 16 entregou o treino; a 17 unificou o núcleo e os controles.
 
 Descartados por enquanto: Exploração e Relíquias (plataforma e puzzles) e Defesa de Objetivo. A Sobrevivência já existe no menu Jogar.
 Cada modo novo documenta suas regras em GAME_DESIGN e sua tela em design/UI_UX **antes** de ser implementado.

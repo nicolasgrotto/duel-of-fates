@@ -1,19 +1,22 @@
 class_name BlasterOpsMap
 extends InfiltrationMapData
 
-var source: BlasterOpsArenaData
+var source: InfiltrationMapData
 var covers: Array[BlasterOpsCover] = []
 var _cells: PackedInt32Array = []
 
 
-func _init(data: BlasterOpsArenaData) -> void:
+func _init(data: InfiltrationMapData) -> void:
 	source = data
 	for property in data.get_property_list():
 		if (property.usage & PROPERTY_USAGE_SCRIPT_VARIABLE) != 0 and property.name not in [&"covers", &"cover_atlas", &"enemies_alerted"]:
 			set(property.name, data.get(property.name))
 	_cells.resize(width() * rows.size())
 	_cells.fill(-1)
-	for definition in source.covers:
+	var arena: BlasterOpsArenaData = data as BlasterOpsArenaData
+	if arena == null:
+		return
+	for definition in arena.covers:
 		_cells[definition.cell.y * width() + definition.cell.x] = covers.size()
 		covers.append(BlasterOpsCover.new(definition))
 

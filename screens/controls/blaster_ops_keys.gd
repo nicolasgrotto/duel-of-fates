@@ -13,12 +13,20 @@ func _ready() -> void:
 	title.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 	title.offset_top = 90.0
 	var holder: VBoxContainer = VBoxContainer.new()
-	holder.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	holder.offset_top = 220.0
+	holder.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	holder.offset_top = 180.0
+	holder.offset_bottom = -190.0
 	add_child(holder)
+	var scroll: ScrollContainer = ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	holder.add_child(scroll)
 	_list = MenuList.new()
 	_list.centered = true
-	holder.add_child(_list)
+	_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(_list)
+	_list.highlighted.connect(func(id: StringName) -> void: scroll.ensure_control_visible(_list.get_child(_list._ids.find(id))))
 	for action in BlasterOpsBindings.ACTIONS:
 		_list.add_item(StringName(action), "")
 	_list.add_item(&"restore", tr("KEYS_RESTORE"))
@@ -84,6 +92,7 @@ func _input(event: InputEvent) -> void:
 
 func _commit() -> void:
 	BlasterOpsBindings.apply(Settings.blaster_ops_keys, Settings.blaster_ops_buttons)
+	InfiltrationBindings.refresh()
 	Settings.save_settings()
 	AudioDirector.play_ui(&"ui_confirm")
 	_finish()

@@ -17,6 +17,11 @@ extends InfiltrationConfig
 @export var precision_until: int = 9
 @export var melee_parry_stun: float = 0.4
 
+@export_group("Infiltration policy")
+@export var stealth_power_cooldown_multiplier: float = 3.0
+@export var dodge_noise: float = 220.0
+@export var power_noise: float = 300.0
+
 @export_group("Operations presentation")
 @export var dodge_echo_offset: float = 22.0
 @export var precision_flash_seconds: float = 0.24
