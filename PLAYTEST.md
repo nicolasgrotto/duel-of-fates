@@ -4,6 +4,24 @@ Roteiro para o autor validar, jogando, o que entrou na fase 7.5 (revisão de com
 
 Legenda: ✅ ficou bom · ⚠️ funciona mas a sensação ou o número precisa de ajuste · ❌ não funciona.
 
+## 24. Coreografia da Vespa e da Brasa, e forte em sequência
+
+| Passo | Verificar | Resultado esperado |
+| --- | --- | --- |
+| 24.1 | Vespa: sequência completa de rápidos em quem bloqueia | Cinco golpes diferentes: de cima, reverso com a lâmina de trás, estocada, horizontal com a de trás, tesoura com as duas |
+| 24.2 | Vespa: forte e forte de avanço | Corte de cima para baixo com as duas lâminas e dois rastros |
+| 24.3 | Vespa: bloquear sequência de rápidos e depois um forte | Lâmina de trás nos golpes baixos, lâminas alternando, X contra o forte, sem salto de pose |
+| 24.4 | Brasa: parada e caminhada, comparando com o Eco | Lâmina longa invertida e curta erguida à frente; as duas não podem parecer uma lâmina dupla; Eco sem mudança |
+| 24.5 | Brasa: rápidos, forte e Brasa Viva | Curta dá o segundo tempo no 1º rápido, acompanha a estocada e desce enquanto a longa sobe no forte |
+| 24.6 | Brasa: bloquear rápidos e forte | Apara com a curta e mantém a longa baixa; X contra o forte |
+| 24.7 | Brasa: execuções, principalmente a Tesoura, no último round | Lâmina curta não atrapalha nenhuma; contra a Vespa, nenhuma execução de pegar a segunda lâmina do rival |
+| 24.8 | Vespa e Haste: forte, acertar ou ser bloqueado, forte de novo | Segundo forte sai bem mais rápido, com menos dano, e só uma vez |
+| 24.9 | Tentar o mesmo depois de errar ou ser aparado | Não encadeia; a recovery continua punível |
+| 24.10 | Levar o primeiro forte e reagir na hora | Dá para segurar a guarda, aparar ou esquivar o segundo; deve parecer pressão, não combo garantido. Números em `heavy_chain` de `wasp.tres` e `lance.tres`, e em `CombatConfig.heavy_chain_gap` |
+| 24.11 | Lista de golpes de Vespa, Haste e outro personagem, PT e EN | Linha Forte em sequência só em Vespa e Haste |
+
+**Validação automatizada:** 771 testes passando, zero falhas. Matriz idêntica nos commits só de apresentação; depois do forte em sequência, só os confrontos de Vespa e Haste mudam. A sensação dos golpes e o tempo do segundo forte só jogando.
+
 ## 23. Incursões, rival e chefe (task 18)
 
 | Passo | Verificar | Resultado esperado |
