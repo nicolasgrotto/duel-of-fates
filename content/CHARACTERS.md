@@ -150,10 +150,10 @@ O desafio vale em qualquer duelo vencido contra a IA (Duelar ou Arcade, qualquer
 
 - **Traço**: sequência de 5 rápidos; cada rápido bloqueado drena Vigor extra de quem defende. Pulo duplo mais forte (90%) e dash aéreo mais barato.
 - **Habilidade — Zumbido**: avanço invulnerável que atravessa o oponente e troca de lado.
-- **Sequência**: 5 rápidos (de cima; reverso; estocada; reverso; o 5º fecha com giro da lâmina e empurra mais).
+- **Sequência**: 5 rápidos (de cima com a lâmina da frente; reverso subindo com a de trás; estocada; horizontal com a de trás; o 5º fecha as duas em tesoura e empurra mais). **Forte em sequência**: o forte desce com as duas lâminas; forte de novo sobe com as duas, mais rápido e com menos dano.
 - **IA**: pressiona com sequências e usa o Zumbido para atravessar fortes.
 - **Visual**: túnica curta cor de areia (`#5c4a33`), corpo `#2a2219`; sem capuz; rabo de cavalo castanho-claro; faixas nos antebraços. Muito inclinada para a frente, baixa. **Duas lâminas curtas e finas**: uma à frente, outra invertida para trás. Cabos com empunhadura.
-- **Família — Vespa**: base leve e inquieta, cortes que avançam o tronco, arcos alternados entre as duas lâminas (a de trás conduz o corte reverso), follow-through solto e giro curto depois do 5º rápido e do forte. Passos longos. Disputa com tronco à frente e tremor maior; vitória larga com giro completo da lâmina.
+- **Família — Vespa**: base leve e inquieta, cortes que avançam o tronco, cada golpe com a sua lâmina, follow-through solto e giro curto depois do 5º rápido. Na guarda, a lâmina de trás para os golpes baixos, as lâminas se alternam nos rápidos seguidos e cruzam em X contra fortes. Passos longos. Disputa com tronco à frente e tremor maior; vitória larga com giro completo da lâmina.
 
 ## Espelho / Mirror
 
@@ -176,7 +176,7 @@ O desafio vale em qualquer duelo vencido contra a IA (Duelar ou Arcade, qualquer
 
 - **Traço — Ponto doce**: acerto com a ponta (último terço do alcance) dá +50% de dano; de muito perto (primeiro quarto), 60%.
 - **Habilidade — Investida da Haste**: lunge longo com a ponta (substitui a Varredura, removida do jogo).
-- **Sequência**: 2 rápidos (estocada; ascendente).
+- **Sequência**: 2 rápidos (estocada; ascendente). **Forte em sequência**: o forte desce a haste; forte de novo estoca reto, com passo longo, mais rápido e com menos dano.
 - **IA**: mantém distância para acertar com a ponta.
 - **Visual**: túnica cinza-violeta (`#3b3348`), corpo `#1c1924`; sem capuz; cabelo curto; cinto na cor do acabamento. Ereta, longe do oponente. **Cabo de mais de um metro**, como uma lança, com faixas escuras ao longo. Lâmina violeta.
 - **Família — Esgrimista**: como o Espelho, com a estocada da Haste virando um lunge longo e a Investida da Haste longa e reta.
@@ -191,8 +191,8 @@ O desafio vale em qualquer duelo vencido contra a IA (Duelar ou Arcade, qualquer
 - **Habilidade — Brasa Viva**: postura de resposta (0,5 s); o golpe de resposta é um corte rápido e forte (startup 0,08 s), não o contra-ataque comum.
 - **Sequência**: 3 rápidos (de baixo; de cima; estocada).
 - **IA**: espera golpes para usar a postura e pune tudo.
-- **Visual**: túnica curta vermelho-queimado (`#5a2c1e`), corpo `#24140f`; capuz levantado, sem capa; faixa na cintura com pontas, ataduras claras nos antebraços. Baixa, à espreita. **Empunhadura invertida**: lâmina para trás e para baixo. Cabo com empunhadura.
-- **Família — Golpeador**: base baixa e contida a partir da guarda baixa; o rápido sobe de baixo até a linha do peito, o forte é um corte ascendente com o corpo subindo junto. Disputa baixa, vitória curta.
+- **Visual**: túnica curta vermelho-queimado (`#5a2c1e`), corpo `#24140f`; capuz levantado, sem capa; faixa na cintura com pontas, ataduras claras nos antebraços. Baixa, à espreita. **Empunhadura invertida**: lâmina longa para trás e para baixo. **Lâmina curta na outra mão**, alta, à frente do peito, nas mesmas cores. Cabos com empunhadura.
+- **Família — Golpeador**: base baixa e contida a partir da guarda baixa; o rápido sobe de baixo até a linha do peito, o forte é um corte ascendente com o corpo subindo junto. Disputa baixa, vitória curta. **Na Brasa**, a lâmina curta é apresentação: só a longa acerta. Ela dá um segundo tempo curto depois do 1º rápido, acompanha a estocada, desce enquanto a longa sobe no forte, apara os rápidos e cruza com a longa contra fortes. Introduzida porque Brasa e Eco eram quase iguais de ver.
 
 ## Forja / Forge
 
@@ -245,7 +245,7 @@ O desafio vale em qualquer duelo vencido contra a IA (Duelar ou Arcade, qualquer
 - **Sequência**: 2 rápidos.
 - **IA**: finta fortes contra quem apara muito e usa o passo-reflexo para escapar de punições.
 - **Visual**: túnica escura curta (`#23202b`), corpo `#121017`; capuz e máscara lisa; manga rasgada só no braço da frente; cinto escuro. Baixa e torta, imprevisível. Lâmina baixa à frente. Cabo com empunhadura.
-- **Família — Golpeador**: como a Brasa.
+- **Família — Golpeador**: como a Brasa, sem a lâmina curta.
 
 ---
 

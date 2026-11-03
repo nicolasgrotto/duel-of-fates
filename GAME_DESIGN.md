@@ -117,6 +117,7 @@ Bloquear um rápido custa ~8 de Vigor ao defensor; um forte, ~30.
 
 - **Forte**: caro, lento, muito dano e knockback. Pode ser aparado por reação.
 - **Forte de avanço** (frente + forte): lunge maior, mais custo e mais recovery.
+- **Forte em sequência** (só personagens de pouco dano por golpe: Vespa e Haste; `MoveData.heavy_chain`): apertar forte de novo depois que o forte **acertou ou foi bloqueado** solta um segundo forte, uma única vez. Não abre em golpe no vazio, aparado ou cortado por choque. O segundo causa cerca de 60% do dano, custa cerca de 60% do Vigor e prepara bem mais rápido que o primeiro (0,18 a 0,2 s contra 0,32 s). **Não é combo garantido**: ele só sai quando o rival vai recuperar o controle pelo menos `CombatConfig.heavy_chain_gap` (0,1 s) antes da lâmina chegar, então dá para aparar, esquivar ou segurar a guarda. O forte de avanço também abre a sequência. Quem bloqueia os dois perde bastante Vigor; quem apara o segundo pune a recovery.
 - **Golpe aéreo**: rápido ou forte no ar, um por pulo, mantendo a trajetória. Não altera a velocidade vertical do alvo (sem juggle).
 
 ### Guarda
