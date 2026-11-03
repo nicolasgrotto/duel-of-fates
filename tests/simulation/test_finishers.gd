@@ -271,7 +271,8 @@ func test_windups_stay_short_of_a_half_turn_of_the_blade() -> void:
 func test_the_slow_dancer_cuts_swing_through_a_readable_arc() -> void:
 	var descent: FinisherMotion = FinisherMotion.for_kind(Finisher.Kind.DANCER_DESCENT)
 	var low: FinisherMotion = FinisherMotion.for_kind(Finisher.Kind.DANCER_LOW)
-	assert_gt(descent.reaction.split_at, 1.0)
+	assert_gt(descent.reaction.split_at, 0.8)
+	assert_lt(descent.reaction.split_at - descent.keys[2].time, 0.3, "the slash itself stays quick")
 	assert_gt(float(descent.keys.size()), 6.0)
 	for index in range(2, 7):
 		assert_gt(descent.keys[index].blade_angle, descent.keys[index - 1].blade_angle - 1.0, "the blade never rises during the descent")
