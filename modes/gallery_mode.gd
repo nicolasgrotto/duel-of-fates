@@ -3,6 +3,7 @@ extends DuelMode
 
 var caster_id: StringName = &"guardian"
 var entry_index: int = 0
+var section: GalleryPanel.Section = GalleryPanel.Section.POWERS
 
 
 func steps() -> Array[StringName]:

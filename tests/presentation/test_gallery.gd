@@ -158,21 +158,19 @@ func test_entry_names_take_their_category_color() -> void:
 
 func test_every_family_finisher_has_a_named_entry_and_a_wielder_of_that_family() -> void:
 	var entries: Array[MoveData] = GalleryPanel.family_finisher_entries()
-	assert_eq(entries.size(), GalleryPanel.FINISHER_WIELDERS.size() * 4)
+	assert_eq(entries.size(), 32)
 	var kinds: Dictionary = {}
 	for entry in entries:
-		assert_true(GalleryPanel.is_family_finisher(entry))
+		assert_true(GalleryPanel.is_finisher_entry(entry))
 		assert_true(GalleryPanel.has_finisher(entry))
 		var key: String = "FINISHER_%s" % Finisher.Kind.keys()[entry.cinematic_finisher]
 		assert_ne(TranslationServer.translate(key), key)
 		kinds[entry.cinematic_finisher] = true
-		var wielder: StringName = GalleryPanel.wielder_for(entry, DuelFixture.GUARDIAN)
-		var family: MotionFamily = DuelMode.character(entry.get_meta(GalleryPanel.FINISHER_WIELDER)).family
-		assert_true(family.finisher_pool.has(entry.cinematic_finisher))
-		if family == DuelFixture.GUARDIAN.family:
-			assert_eq(wielder, &"")
-		else:
-			assert_eq(DuelMode.character(wielder).family, family)
+		var owner: StringName = entry.get_meta(GalleryPanel.FINISHER_WIELDER)
+		assert_true(DuelMode.character(owner).family.finisher_pool.has(entry.cinematic_finisher))
+		assert_eq(GalleryPanel.wielder_for(entry, DuelMode.character(owner)), &"")
+		if owner != &"guardian":
+			assert_eq(GalleryPanel.wielder_for(entry, DuelMode.character(&"guardian")), owner)
 	assert_eq(kinds.size(), entries.size())
 
 
@@ -183,4 +181,31 @@ func test_family_finisher_entries_never_change_the_shared_heavy() -> void:
 	GalleryPanel.family_finisher_entries()
 	assert_eq(heavy.cinematic_finisher, before)
 	assert_eq(heavy.kind, kind)
-	assert_false(GalleryPanel.is_family_finisher(heavy))
+	assert_false(GalleryPanel.is_finisher_entry(heavy))
+
+
+func test_the_original_executions_are_all_in_the_gallery_with_names() -> void:
+	var expected: Array[Finisher.Kind] = [Finisher.Kind.EXECUTION, Finisher.Kind.SCISSORS, Finisher.Kind.STAB, Finisher.Kind.TWIN_BLADES, Finisher.Kind.OVERHEAD, Finisher.Kind.DOUBLE_ROTATION, Finisher.Kind.WHIRL, Finisher.Kind.CROSSED_EXECUTION, Finisher.Kind.PRECISE_SENTENCE]
+	var entries: Array[MoveData] = GalleryPanel.signature_finisher_entries()
+	assert_eq(entries.size(), expected.size())
+	for entry in entries:
+		assert_true(expected.has(entry.cinematic_finisher), str(entry.cinematic_finisher))
+		assert_true(entry.has_meta(GalleryPanel.FINISHER_SIGNATURE))
+		var key: String = "FINISHER_%s" % Finisher.Kind.keys()[entry.cinematic_finisher]
+		assert_ne(TranslationServer.translate(key), key)
+		assert_true(FinisherMotion.for_kind(entry.cinematic_finisher) != null, key)
+
+
+func test_powers_and_finishers_live_in_separate_sections() -> void:
+	var powers: GalleryPanel = GalleryPanel.new()
+	powers.collect_entries()
+	var finishers: GalleryPanel = GalleryPanel.new()
+	finishers.section = GalleryPanel.Section.FINISHERS
+	finishers.collect_entries()
+	for entry in powers._entries:
+		assert_false(GalleryPanel.is_finisher_entry(entry))
+	for entry in finishers._entries:
+		assert_true(GalleryPanel.is_finisher_entry(entry))
+	assert_eq(finishers._entries.size(), 41)
+	powers.free()
+	finishers.free()

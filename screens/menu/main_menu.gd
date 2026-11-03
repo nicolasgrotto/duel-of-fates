@@ -19,6 +19,7 @@ const GROUPS: Dictionary = {
 	&"special": {"title": "MENU_SPECIAL", "parent": &"play", "items": [[&"infiltration", "MENU_INFILTRATION"], [&"space", "MENU_SPACE"]]},
 	&"learn": {"title": "MENU_LEARN", "items": [[&"tutorial", "MENU_TUTORIAL"], [&"guided", "MENU_GUIDED"], [&"training", "MENU_TRAINING"], [&"parry_challenge", "MENU_PARRY_CHALLENGE"], [&"controls", "MENU_CONTROLS"]]},
 	&"extras": {"title": "MENU_EXTRAS", "items": [[&"challenges", "MENU_CHALLENGES"], [&"gallery", "MENU_GALLERY"], [&"story_gallery", "MENU_STORY_GALLERY"], [&"exhibition_duel", "MENU_EXHIBITION_DUEL"], [&"exhibition", "MENU_EXHIBITION_SEQUENCE"]]},
+	&"gallery": {"title": "MENU_GALLERY", "parent": &"extras", "items": [[&"gallery_powers", "MENU_GALLERY_POWERS"], [&"gallery_finishers", "MENU_GALLERY_FINISHERS"]]},
 	&"guided": {"title": "MENU_GUIDED", "parent": &"learn", "items": [[&"guided_evade", "LESSON_GUIDED_EVADE"], [&"guided_exhaustion", "LESSON_GUIDED_EXHAUSTION"], [&"guided_lock", "LESSON_GUIDED_LOCK"]]},
 	&"challenges": {"title": "MENU_CHALLENGES", "parent": &"extras", "items": [[&"salt_flats_bladework", "CHALLENGE_SALT"], [&"storm_on_deck", "CHALLENGE_STORM"], [&"last_breath", "CHALLENGE_LAST_BREATH"], [&"under_the_eclipse", "CHALLENGE_ECLIPSE"]]},
 }
@@ -152,8 +153,12 @@ func _on_chosen(id: StringName) -> void:
 			SceneRouter.change(&"space")
 		&"infiltration":
 			SceneRouter.change(&"infiltration")
-		&"gallery":
+		&"gallery_powers":
 			GalleryMode.new().start()
+		&"gallery_finishers":
+			var gallery: GalleryMode = GalleryMode.new()
+			gallery.section = GalleryPanel.Section.FINISHERS
+			gallery.start()
 		&"exhibition":
 			ExhibitionMode.new().start()
 		&"exhibition_duel":

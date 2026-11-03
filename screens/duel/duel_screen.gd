@@ -179,15 +179,18 @@ func _restart_gallery(character_id: StringName, entry_index: int) -> void:
 	var next: GalleryMode = GalleryMode.new()
 	next.caster_id = character_id
 	next.entry_index = entry_index
+	next.section = _gallery.section
 	next.start()
 
 
 func _build_controllers() -> Array[FighterController]:
 	if setup.gallery:
 		_gallery = GalleryPanel.new()
+		var gallery_mode: GalleryMode = mode as GalleryMode
+		if gallery_mode != null:
+			_gallery.section = gallery_mode.section
 		add_child(_gallery)
 		_gallery.setup(_runner, TRAINING)
-		var gallery_mode: GalleryMode = mode as GalleryMode
 		if gallery_mode != null:
 			_gallery.start_at(gallery_mode.entry_index)
 			_gallery.caster_required.connect(_restart_gallery)

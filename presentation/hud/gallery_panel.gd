@@ -5,7 +5,11 @@ signal caster_changed(index: int)
 signal entry_staged(index: int)
 signal caster_required(character_id: StringName, entry_index: int)
 
+enum Section { POWERS, FINISHERS }
+
 const FINISHER_WIELDER: StringName = &"finisher_wielder"
+const FINISHER_SIGNATURE: StringName = &"finisher_signature"
+const SIGNATURE_WIELDERS: Array[StringName] = [&"guardian", &"wasp", &"mirror", &"bastion", &"reaper", &"heron", &"corsair", &"lynx"]
 const FINISHER_WIELDERS: Array[StringName] = [&"guardian", &"shadow", &"bastion", &"wasp", &"mirror", &"ember", &"heron", &"reaper", &"corsair"]
 const PALETTE: UiPalette = preload("res://ui/palette.tres")
 const CATALOG: PowerCatalog = preload("res://data/powers/catalog.tres")
@@ -33,6 +37,7 @@ const SIDE_KEYS: Dictionary = {
 }
 const LOCKED_ALPHA: float = 0.35
 
+var section: Section = Section.POWERS
 var runner: TickRunner
 var config: TrainingConfig
 var caster: GalleryCaster = GalleryCaster.new()
@@ -61,10 +66,17 @@ func setup(tick_runner: TickRunner, training_config: TrainingConfig) -> void:
 	layer = 11
 	runner = tick_runner
 	config = training_config
-	_entries.assign(CATALOG.powers)
-	_entries.append_array(CATALOG.techniques)
-	_entries.append_array(family_finisher_entries())
+	collect_entries()
 	_build()
+
+
+func collect_entries() -> void:
+	if section == Section.FINISHERS:
+		_entries.assign(signature_finisher_entries())
+		_entries.append_array(family_finisher_entries())
+	else:
+		_entries.assign(CATALOG.powers)
+		_entries.append_array(CATALOG.techniques)
 
 
 static func family_finisher_entries() -> Array[MoveData]:
@@ -72,15 +84,33 @@ static func family_finisher_entries() -> Array[MoveData]:
 	for id in FINISHER_WIELDERS:
 		var character: CharacterData = DuelMode.character(id)
 		for value in character.family.finisher_pool:
-			var move: MoveData = character.heavy.duplicate() as MoveData
-			move.kind = MoveData.Kind.TECHNIQUE
-			move.cinematic_finisher = value as Finisher.Kind
-			move.set_meta(FINISHER_WIELDER, id)
-			entries.append(move)
+			entries.append(_finisher_entry(character.heavy, value as Finisher.Kind, id))
 	return entries
 
 
-static func is_family_finisher(entry: Resource) -> bool:
+static func signature_finisher_entries() -> Array[MoveData]:
+	var entries: Array[MoveData] = []
+	var seen: Array[int] = []
+	for id in SIGNATURE_WIELDERS:
+		var character: CharacterData = DuelMode.character(id)
+		for move in [character.heavy, character.forward_heavy]:
+			if move.cinematic_finisher != Finisher.Kind.NONE and not seen.has(move.cinematic_finisher):
+				seen.append(move.cinematic_finisher)
+				var entry: MoveData = _finisher_entry(move, move.cinematic_finisher, id)
+				entry.set_meta(FINISHER_SIGNATURE, true)
+				entries.append(entry)
+	return entries
+
+
+static func _finisher_entry(source: MoveData, kind: Finisher.Kind, wielder: StringName) -> MoveData:
+	var move: MoveData = source.duplicate() as MoveData
+	move.kind = MoveData.Kind.TECHNIQUE
+	move.cinematic_finisher = kind
+	move.set_meta(FINISHER_WIELDER, wielder)
+	return move
+
+
+static func is_finisher_entry(entry: Resource) -> bool:
 	return entry != null and entry.has_meta(FINISHER_WIELDER)
 
 
@@ -104,6 +134,7 @@ func _build() -> void:
 	var chips: HBoxContainer = HBoxContainer.new()
 	chips.alignment = BoxContainer.ALIGNMENT_CENTER
 	chips.add_theme_constant_override(&"separation", CHIP_GAP)
+	chips.visible = section == Section.POWERS
 	column.add_child(chips)
 	for tier in PALETTE.flow_tiers.size():
 		var chip: VBoxContainer = VBoxContainer.new()
@@ -127,13 +158,24 @@ func _build() -> void:
 	_footer.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	_footer.offset_bottom = -BOTTOM_MARGIN
 	add_child(_footer)
-	_footer.text = ControlHints.line(PackedStringArray([
+	_footer.text = ControlHints.line(_footer_hints())
+
+
+func _footer_hints() -> PackedStringArray:
+	if section == Section.FINISHERS:
+		return PackedStringArray([
+			"← →  " + tr("HINT_GALLERY_FINISHER_ENTRY"),
+			ControlHints.hint(&"gallery_repeat", "HINT_GALLERY_REPEAT"),
+			ControlHints.hint(&"ui_accept", "HINT_GALLERY_REPLAY"),
+			ControlHints.hint(&"p1_pause", "HINT_PAUSE"),
+		])
+	return PackedStringArray([
 		"← →  " + tr("HINT_GALLERY_ENTRY"), "↑ ↓  " + tr("HINT_GALLERY_TIER"),
 		ControlHints.hint(&"gallery_target", "HINT_GALLERY_TARGET"), ControlHints.hint(&"gallery_repeat", "HINT_GALLERY_REPEAT"),
 		ControlHints.hint(&"gallery_swap", "HINT_GALLERY_SWAP"), ControlHints.hint(&"gallery_finisher", "HINT_GALLERY_FINISHER"),
 		ControlHints.hint(&"ui_accept", "HINT_GALLERY_CAST"),
 		ControlHints.hint(&"p1_pause", "HINT_PAUSE"),
-	]))
+	])
 
 
 func _centered(parent: Control, variation: StringName) -> Label:
@@ -144,7 +186,16 @@ func _centered(parent: Control, variation: StringName) -> Label:
 	return label
 
 
+func _powers_only(event: InputEvent) -> bool:
+	for action in [&"ui_up", &"ui_down", &"gallery_target", &"gallery_finisher", &"gallery_swap"]:
+		if event.is_action_pressed(action):
+			return true
+	return false
+
+
 func _unhandled_input(event: InputEvent) -> void:
+	if section == Section.FINISHERS and _powers_only(event):
+		return
 	if event.is_action_pressed(&"ui_right"):
 		_select(_entry_index + 1)
 	elif event.is_action_pressed(&"ui_left"):
@@ -191,9 +242,9 @@ func start_at(index: int) -> void:
 
 
 static func wielder_for(technique: MoveData, current: CharacterData) -> StringName:
-	if is_family_finisher(technique):
+	if is_finisher_entry(technique):
 		var wielder: StringName = technique.get_meta(FINISHER_WIELDER)
-		return &"" if DuelMode.character(wielder).family == current.family else wielder
+		return &"" if current.id == wielder else wielder
 	if technique == null or technique.usable_by(current):
 		return &""
 	for id in DuelMode.CAST:
@@ -263,7 +314,7 @@ func _stage(sim: MatchSimulation) -> void:
 		_close_in(sim, power.targeted_reach(fighter.flow_tier))
 	elif not technique.throws_blade and technique.projectile_range <= 0.0:
 		_close_in(sim, technique.reach + technique.lunge)
-	var finishing: bool = (_finishers or is_family_finisher(entry)) and has_finisher(entry)
+	var finishing: bool = (_finishers or is_finisher_entry(entry)) and has_finisher(entry)
 	sim.rules.endless_finishers = finishing
 	target.finishing = finishing
 	if finishing:
@@ -316,7 +367,7 @@ func _close_in(sim: MatchSimulation, reach: float) -> void:
 func _entry_name(entry: Resource, power: PowerData) -> String:
 	if power != null:
 		return power.name_key
-	if is_family_finisher(entry):
+	if is_finisher_entry(entry):
 		return "FINISHER_%s" % Finisher.Kind.keys()[(entry as MoveData).cinematic_finisher]
 	return PowerCatalog.technique_key(entry as MoveData)
 
@@ -327,7 +378,7 @@ func _refresh(sim: MatchSimulation) -> void:
 	_name.text = "‹ %s ›" % tr(_entry_name(entry, power))
 	_name.add_theme_color_override(&"font_color", category_color(entry))
 	_description.text = tr(power.description_key) if power != null else ""
-	_side.text = tr(SIDE_KEYS[power.path] if power != null else "GALLERY_SIDE_FINISHER" if is_family_finisher(entry) else "GALLERY_SIDE_TECHNIQUE")
+	_side.text = tr(_side_key(entry, power))
 	var lowest: int = power.min_tier(sim.config.flow) if power != null else 0
 	for tier in _chips.size():
 		var active: bool = tier == _tier
@@ -340,6 +391,16 @@ func _refresh(sim: MatchSimulation) -> void:
 	])
 	if lowest > 0:
 		details.insert(0, tr("POWER_TIER_REQUIRED").format({"tier": lowest + 1, "level": power.min_level}))
-	if has_finisher(entry):
+	if section == Section.FINISHERS:
+		details = PackedStringArray([tr("GALLERY_REPEAT_ON" if _repeat else "GALLERY_REPEAT_OFF")])
+	elif has_finisher(entry):
 		details.append(tr("GALLERY_FINISHER_ON" if _finishers else "GALLERY_FINISHER_OFF"))
 	_details.text = ControlHints.line(details)
+
+
+func _side_key(entry: Resource, power: PowerData) -> String:
+	if power != null:
+		return SIDE_KEYS[power.path]
+	if entry.has_meta(FINISHER_SIGNATURE):
+		return "GALLERY_SIDE_SIGNATURE"
+	return "GALLERY_SIDE_FINISHER" if is_finisher_entry(entry) else "GALLERY_SIDE_TECHNIQUE"
