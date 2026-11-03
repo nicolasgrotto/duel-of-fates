@@ -96,7 +96,7 @@ func _guard_run(id: StringName, attacker_id: StringName, move_of: Callable, line
 
 
 func test_two_blades_cross_against_heavies() -> void:
-	for id in [&"wasp"]:
+	for id in [&"wasp", &"ember"]:
 		var solver: PoseSolver = _guard_run(id, &"guardian", func(data: CharacterData) -> MoveData: return data.heavy)
 		assert_eq(solver.guard_hand, PoseSolver.GuardHand.BOTH, String(id))
 

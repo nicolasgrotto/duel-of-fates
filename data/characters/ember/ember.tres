@@ -47,6 +47,7 @@ finisher_limb = 1
 blade_angle_windup = 120.0
 blade_angle_strike = -40.0
 cut = 2
+blade_hand = 4
 
 [sub_resource type="Resource" id="ember_light_2"]
 script = ExtResource("2_move")
@@ -99,6 +100,7 @@ finisher_limb = 2
 blade_angle_windup = -10.0
 blade_angle_strike = 0.0
 cut = 4
+blade_hand = 2
 
 [sub_resource type="Resource" id="ember_heavy"]
 script = ExtResource("2_move")
@@ -125,7 +127,8 @@ finisher_limb = 1
 blade_angle_windup = 140.0
 blade_angle_strike = -80.0
 cut = 2
-cinematic_finisher = 12
+blade_hand = 3
+cinematic_finisher = 10
 
 [sub_resource type="Resource" id="ember_forward_heavy"]
 script = ExtResource("2_move")
@@ -152,6 +155,7 @@ finisher_limb = 2
 blade_angle_windup = -160.0
 blade_angle_strike = 60.0
 cut = 1
+blade_hand = 2
 cinematic_finisher = 9
 
 [sub_resource type="Resource" id="ember_ability_move"]
@@ -178,6 +182,7 @@ wound_limb = 0
 finisher_limb = 1
 blade_angle_windup = 140.0
 blade_angle_strike = -60.0
+blade_hand = 3
 
 [sub_resource type="Resource" id="ember_ability"]
 script = ExtResource("12_ability")
@@ -192,11 +197,12 @@ stance_stagger = 0.35
 
 [sub_resource type="Resource" id="ember_weapon"]
 script = ExtResource("3_weapon")
-kind = 0
+kind = 1
 hilt = 2
 blade_length = 88.0
 blade_width = 1.0
 hilt_length = 12.0
+second_blade_length = 34.0
 hum_pitch = 0.98
 
 [sub_resource type="Resource" id="ember_costume_0"]
