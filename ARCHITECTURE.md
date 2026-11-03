@@ -77,6 +77,12 @@ Arquivos e pastas em `snake_case`; classes com `class_name` em `PascalCase`.
 
 ## Simulação
 
+### Operações compartilhadas (task 17)
+
+`BlasterOpsSimulation` é o núcleo comum das missões de Operações e do treino técnico. Estende os primitivos de `InfiltrationSimulation`, mas executa também objetivos, painéis, escoltas e inimigos antigos, preservando seus dados. Dodge/precisão, poderes, calor, stun e impulso vivem uma única vez neste núcleo. `InfiltrationMissionData.objective` seleciona a política Infiltração/Incursão; imagem e campos de resgate continuam no mesmo Resource. O núcleo base permanece fixture das regras anteriores e geometria compartilhada, sem alterar o duelo.
+
+Os bindings compartilham tabela em `BlasterOpsBindings`; `InfiltrationBindings` fornece aliases de compatibilidade com o mesmo layout. Intenções têm bits próprios de correr/furtivo/interagir, sem confundir Poder com interação ou Esquiva com corrida. O modo monta o equipamento real do personagem ou recebe conjunto explícito; não consulta nem altera a campanha durante os ticks. `InfiltrationMode.create_simulation()` é o ponto de montagem comum para testes e tela. `operations*` são as rotas públicas; aliases antigos continuam válidos para ferramentas. Save mantém `infiltration_best` e `infiltration_look`, com migração por ausência e sem renomear IDs publicados.
+
 ### Núcleo de Operações de blaster (task 16)
 
 `BlasterOpsSimulation` **estende** `InfiltrationSimulation`; reutiliza atores, pools/eventos, geometria, percepção, navegação e intenção. Não modifica o duelo nem ativa regras novas nas instâncias comuns da Infiltração. `simulation/blaster_ops/` contém estado adicional de calor/esquiva/poder, atores com preparação travada, projéteis com dano/retorno/esquiva e mapa de colisão por instância com caixas destrutíveis. A simulação recebe intenções externas, em 60 Hz; não conhece Input, arte ou nós. Não executa o controlador por dentro.

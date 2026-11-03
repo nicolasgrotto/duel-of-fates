@@ -542,6 +542,18 @@ Idioma (Português/English), dificuldade, efeitos (Completos/Reduzidos), som, m�
 
 ## Operações de blaster (tasks 16–18)
 
+### Operações: Infiltração e Incursão (task 17)
+
+Jogar › Modos especiais › **Operações** substitui Infiltração. Cada missão identifica seu objetivo como **Infiltração** ou **Incursão**, com imagem, briefing e recorde. As seis missões de resgate existentes conservam IDs, painéis que destravam celas, mínimos de prisioneiros, extração e registros. As novas missões de Incursão entram na task 18.
+
+Um único moveset: WASD/setas movem, Shift corre, Ctrl/C anda furtivamente, Espaço esquiva, E interage, F abate silenciosamente quando possível ou inicia corte, R lança o poder; botão esquerdo dispara com blaster ou corta sem ele; botão direito/Q guarda. Controle copia os botões do duelo: rápido ataca, forte corta/abate, esquiva esquiva, habilidade anda furtivamente, poder lança poder; A/Cruz interage e stick esquerdo pressionado corre. Mira independente pelo mouse/stick direito. Os dois objetivos usam os mesmos remapeamentos; configurações antigas sem versão de layout recebem os novos padrões por ausência, sem afetar o duelo.
+
+Esquiva e poderes funcionam em ambos. Na Infiltração, esquiva produz ruído de 220 u; todo disparo produz ruído de combate de 300 u. Poder emitido produz ruído de 300 u e alerta imediatamente quem vê o jogador; recarga multiplicada por 3 (Repulsão 18 s, Puxão 21 s, Barreira 24 s). Incursão usa recarga normal. Preparação cancelada não emite o efeito nem seu ruído, mas conserva a recarga gasta. Poderes não ferem nem deslocam prisioneiros; tiros de qualquer lado continuam perigosos para eles. Toda morte inimiga por poder, corte, tiro ou devolução conta contra Sem abates. Incursões não dão bônus de furtividade; resgate é secundário e os bônus de tempo/dano/base são definidos por suas missões na task 18.
+
+Sem blaster, a primária repete o corte existente ao segurar, e F também o aciona; não há pistola substituta. Com blaster, F permite lutar de lâmina sem mudar equipamento. Guarda devolve disparos na direção da mira nos dois objetivos. A arma explícita de um protagonista da História é preservada, inclusive número e intervalo de tiros de BlasterData; cada tiro custa calor multiplicado por vigor_multiplier. Soltar a primária, guardar, cortar, esquivar ou lançar poder interrompe os tiros restantes da rajada. Preço só se aplica ao Arsenal da História, nunca cobra créditos numa Operação.
+
+Esta seção substitui as descrições históricas abaixo que desligavam poderes, separavam controles ou atribuíam uma pistola temporária.
+
 Modo de tiro top-down que estende a fundação da Infiltração, com regras próprias e sem alterar o duelo. Regras, números e arquétipos em [content/BLASTER_OPS.md](content/BLASTER_OPS.md). A task 16 entrega um treino por rota técnica, sem missões, menu público ou progresso; a 17 colocará a seleção em **Jogar › Modos especiais › Operações de blaster**.
 
 Defesa de base é um tipo de missão deste modo, não outro modo. Veículos terrestres repetem a pilotagem das naves; comando de esquadrão, corrida e aventura lateral com motor próprio exigiriam movimento ou IA novos com pouco reaproveitamento, e ficam descartados. A decisão posterior do autor sobre **Fases de ação** (tasks 21–22), reaproveitando os controles e o núcleo do duelo, continua válida; não é implementada nesta tarefa.

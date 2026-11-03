@@ -131,6 +131,8 @@ Fora do escopo inicial, possíveis no futuro: modo online, torneio, editor de pe
 
 ## Além do duelo (decisão do autor, fase 9)
 
+**Operações (task 17):** Infiltração e Incursão compartilham uma tela, um moveset e o menu Jogar › Modos especiais › Operações. O objetivo da missão muda as regras, nunca as teclas. Infiltração privilegia resgate sem ser visto; Incursão privilegia combate. Todo personagem pode concluir operações apenas com lâmina, guarda, esquiva e um poder. Não existe arma temporária para quem não possui blaster.
+
 O duelo continua sendo o coração do jogo. O autor aprovou modos que saem do formato "dois combatentes, vista lateral", desde que cada um mantenha a mesma identidade (pixel art na grade do mundo, paleta e UI do tema, lâminas com peso, leitura antes de velocidade, sem gore, sem nada da franquia):
 
 - **Infiltração**: missões em mapas **top-down 2D** dentro de bases, com patrulhas armadas de blasters, furtividade, alarmes e combate limitado. A lâmina **desvia e devolve disparos** (guarda e parry). Uma tela própria, não o duelo.

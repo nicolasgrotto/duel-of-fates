@@ -24,6 +24,12 @@ Português (padrão) e inglês, escolhidos nas Opções e salvos. Todo texto de 
 
 ## Telas
 
+### Operações unificadas (task 17)
+
+Entrada Jogar › Modos especiais › **Operações**, substituindo Infiltração. Lista única com rótulo Infiltração/Incursão em cada item, imagem de missão, briefing e recorde no painel adjacente, como o Hangar. A linha Personagem permanece com trajes e cores liberados; trocar personagem determina também se há blaster. Todos os retornos (pausa, resultado, personagem e opções) conservam o foco na missão/Operações. Registros antigos são lidos pelos mesmos IDs, com campos novos opcionais por ausência.
+
+HUD de missão mantém objetivos, direção, alarmes e banner de encerramento; acrescenta calor somente com blaster e texto de recarga de esquiva/poder. Dicas e configuração usam a mesma tabela para os dois objetivos, com F corte/abate, E interação, R poder e Espaço esquiva. Página de remapeamento e Controles passa a se chamar Operações. Título, textos e rótulos PT/EN na tabela central; nenhuma entrada pública chamada Operações de blaster. A descrição histórica da task 16 abaixo não define outro layout de teclas.
+
 ### Treino de Operações de blaster (task 16)
 
 Somente cena/rota técnica nesta etapa; a entrada pública será Jogar › Modos especiais › Operações na task 17. Mundo na grade superior; HUD fino com Vida, Calor, Vigor, recarga da Esquiva e nome/recarga do único poder, no tema atual. Calor bloqueado mostra **Resfriando / Cooling** além da cor; pronto/segundos distinguem recargas. Título e objetivo curto no alto, dicas de mira, tiro, guarda, esquiva e poder em duas linhas no rodapé. Sem minimapa, munição, tabela de dano ou itens.
