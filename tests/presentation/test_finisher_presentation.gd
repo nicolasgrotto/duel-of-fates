@@ -48,6 +48,20 @@ func test_finisher_kinds_choose_how_the_body_moves() -> void:
 	player.free()
 
 
+func test_x_cut_is_a_split_and_reaches_the_second_clip() -> void:
+	var player: FinisherPlayer = FinisherPlayer.new()
+	player.config = load("res://data/balance/effects_config.tres")
+	player.kind = Finisher.Kind.X_CUT
+	assert_true(player.is_split())
+	player.free()
+	var rig: FighterRig = _rig()
+	rig.set_second_clip(true, Vector2(1.0, 2.0), Vector2.UP)
+	assert_true(rig.shader_material.get_shader_parameter(&"clip2_enabled"))
+	assert_eq(rig.prosthetic_material.get_shader_parameter(&"clip2_normal"), Vector2.UP)
+	rig.free()
+	assert_eq(FinisherMotion.for_kind(Finisher.Kind.REAPER_X).reaction.split_as, Finisher.Kind.X_CUT)
+
+
 func test_cleared_finisher_stops_drawing_the_cut() -> void:
 	var player: FinisherPlayer = FinisherPlayer.new()
 	player.rig = _rig()

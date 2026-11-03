@@ -48,7 +48,7 @@ blade_angle = 100
 [sub_resource type="Resource" id="reaction"]
 script = ExtResource("3_reaction")
 split_at = 0.74
-split_as = 4
+split_as = 50
 fall_at = 0.78
 
 [sub_resource type="Resource" id="effects"]

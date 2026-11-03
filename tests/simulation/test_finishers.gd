@@ -209,12 +209,12 @@ func test_heron_whirls_behind_the_opponent() -> void:
 	assert_almost(duel.fighter(0).x - duel.fighter(1).x, gap, 0.5)
 
 
-func test_each_family_offers_four_exclusive_finishers_that_fit_the_knockout() -> void:
+func test_each_family_offers_exclusive_finishers_that_fit_the_knockout() -> void:
 	var seen: Dictionary = {}
 	var config: CombatConfig = DuelFixture.CONFIG
 	for id in DuelMode.CAST + [&"awakened_shadow", &"sovereign", &"elder", &"foretold", &"foretold_eclipse", &"holster"]:
 		var data: CharacterData = DuelFixture.character(id)
-		assert_eq(data.family.finisher_pool.size(), 4, String(id))
+		assert_true(data.family.finisher_pool.size() >= 3, String(id))
 		for value in data.family.finisher_pool:
 			var kind: Finisher.Kind = value as Finisher.Kind
 			assert_true(Finisher.is_staged(kind), String(id))
@@ -224,7 +224,37 @@ func test_each_family_offers_four_exclusive_finishers_that_fit_the_knockout() ->
 			var extra: float = config.consequences.long_cinematic_ko_time if Finisher.is_long(kind) else config.consequences.cinematic_ko_time
 			var done: float = maxf(motion.end_time(), motion.reaction.fall_at + FighterView.KNEEL_TIME + FighterView.FALL_DURATION)
 			assert_lt(done, config.ko_duration + extra, "%s %d fits the knockout" % [id, value])
-	assert_eq(seen.size(), 36)
+	assert_eq(seen.size(), 32)
+
+
+func test_finishers_the_author_removed_stay_out() -> void:
+	for name in ["AGGRESSOR_KICK", "COLOSSUS_SHOVE", "DANCER_PIROUETTE", "VERSATILE_BUTT"]:
+		assert_false(Finisher.Kind.has(name), name)
+
+
+func test_the_corsair_holds_the_blaster_up_at_every_finisher_shot() -> void:
+	for kind in [Finisher.Kind.VERSATILE_SHOT_CUT, Finisher.Kind.VERSATILE_TWO_SHOTS, Finisher.Kind.VERSATILE_POINT_BLANK, Finisher.Kind.CROSSED_EXECUTION]:
+		var motion: FinisherMotion = FinisherMotion.for_kind(kind)
+		assert_false(motion.effects.shots.is_empty(), str(kind))
+		for shot in motion.effects.shots:
+			var key: PoseKey = motion.keys[0]
+			for candidate in motion.keys:
+				key = candidate
+				if candidate.time >= shot:
+					break
+			assert_true(key.places_off_hand, "%d at %f places the hand" % [kind, shot])
+			assert_true(key.off_hand.x > 25.0 and key.off_hand.y < -25.0, "%d at %f aims forward" % [kind, shot])
+			assert_true(key.sidearm >= 0.7, "%d at %f raises the weapon" % [kind, shot])
+
+
+func test_the_slow_dancer_cuts_swing_through_a_readable_arc() -> void:
+	var descent: FinisherMotion = FinisherMotion.for_kind(Finisher.Kind.DANCER_DESCENT)
+	var low: FinisherMotion = FinisherMotion.for_kind(Finisher.Kind.DANCER_LOW)
+	assert_gt(descent.reaction.split_at, 1.0)
+	assert_gt(float(descent.keys.size()), 6.0)
+	for index in range(2, 7):
+		assert_gt(descent.keys[index].blade_angle, descent.keys[index - 1].blade_angle - 1.0, "the blade never rises during the descent")
+	assert_gt(low.reaction.back_leg_at - low.reaction.front_leg_at, 0.3)
 
 
 func test_family_finishers_never_restore_a_limb_through_a_split() -> void:

@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_script")
-finisher_pool = PackedInt32Array(42, 43, 44, 45)
+finisher_pool = PackedInt32Array(40, 41, 42)
 id = &"dancer"
 grip = 0
 stance_width = 26.0

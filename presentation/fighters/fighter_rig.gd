@@ -384,6 +384,12 @@ func set_clip(enabled: bool, point: Vector2 = Vector2.ZERO, normal: Vector2 = Ve
 	_set_parameter(&"clip_normal", normal)
 
 
+func set_second_clip(enabled: bool, point: Vector2 = Vector2.ZERO, normal: Vector2 = Vector2.DOWN) -> void:
+	_set_parameter(&"clip2_enabled", enabled)
+	_set_parameter(&"clip2_point", point)
+	_set_parameter(&"clip2_normal", normal)
+
+
 func set_charred(amount: float) -> void:
 	_set_parameter(&"charred", amount)
 

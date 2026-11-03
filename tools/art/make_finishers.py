@@ -16,6 +16,8 @@ HEADER = '''[gd_resource type="Resource" script_class="FinisherMotion" format=3]
 WAIST = 2
 VERTICAL = 3
 DIAGONAL = 4
+ORDER = [name.strip() for name in re.search(r"enum Kind \{(.*?)\}", (ROOT / KIND_ORDER).read_text(encoding="utf-8"), re.S).group(1).split(",") if name.strip()]
+X_CUT = ORDER.index("X_CUT")
 WIND = "swing_light"
 HEAVY_WIND = "swing_heavy"
 LIGHT_HIT = "hit_light"
@@ -84,16 +86,6 @@ FAMILIES = {
         ], dict(split_at=0.4, split_as=VERTICAL, fall_at=0.45),
             streaks=[0.4],
             cues=[(0.2, HEAVY_WIND, 0, 1.2), (0.4, HEAVY_HIT, 0, 0.95)]),
-        "AGGRESSOR_KICK": motion([
-            k(0.1, -2, -30, -60, lean=-8),
-            k(0.3, -4, -30, -60, lean=-12, step=14),
-            k(0.6, -8, -24, 2, crouch=6),
-            k(0.95, 44, -22, 2, crouch=10, lean=16, step=34, trail=True, accent=True),
-            k(1.5, 44, -22, 2, crouch=8, lean=14, step=34),
-            k(1.95, 16, -18, 105, step=12),
-        ], dict(push_back=34, push_at=0.26, push_time=0.22, fall_at=1.2, fall_backward=True),
-            streaks=[0.93], holes=[0.93],
-            cues=[(0.28, HEAVY_HIT, -4, 0.7), (0.7, WIND, 0, 0.9), (0.93, HEAVY_HIT, 0, 1.0)]),
         "AGGRESSOR_THREE": motion([
             k(0.08, 8, -50, -120, lean=-2),
             k(0.24, 30, -14, 50, lean=10, step=6, trail=True),
@@ -132,16 +124,6 @@ FAMILIES = {
         ], dict(split_at=0.7, split_as=DIAGONAL, fall_at=0.75),
             streaks=[0.7],
             cues=[(0.42, HEAVY_WIND, 0, 0.75), (0.7, HEAVY_HIT, 0, 0.75)]),
-        "COLOSSUS_SHOVE": motion([
-            k(0.15, 6, -24, -50),
-            k(0.35, 26, -28, -60, lean=16, step=16),
-            k(0.75, -8, -22, 2, crouch=6),
-            k(1.0, 44, -22, 2, crouch=10, lean=18, step=32, trail=True, accent=True),
-            k(1.7, 44, -22, 2, crouch=8, lean=14, step=32),
-            k(2.1, 16, -18, 105, step=10),
-        ], dict(push_back=30, push_at=0.33, push_time=0.25, fall_at=1.45, fall_backward=True),
-            streaks=[0.98], holes=[0.98],
-            cues=[(0.33, HEAVY_HIT, -2, 0.65), (0.8, HEAVY_WIND, 0, 0.8), (0.98, HEAVY_HIT, 0, 0.8)]),
         "COLOSSUS_LEG": motion([
             k(0.25, -10, -10, 170, crouch=14, lean=4),
             k(0.52, 32, 4, 18, crouch=22, lean=14, step=8, trail=True, accent=True),
@@ -275,29 +257,28 @@ FAMILIES = {
             streaks=[0.4, 0.6], travel=(0.1, 0.55),
             cues=[(0.16, WIND, 0, 1.3), (0.42, WIND, 0, 1.5), (0.6, HEAVY_HIT, 0, 1.2)]),
         "DANCER_LOW": motion([
-            k(0.12, 14, -10, 40, crouch=18),
-            k(0.42, 32, 6, 10, crouch=26, twirl=1, turn=1, trail=True, accent=True),
-            k(0.62, 30, 6, 6, crouch=26, turn=1, trail=True),
-            k(1.2, 14, -16, 110, crouch=8),
-        ], dict(front_leg_at=0.4, back_leg_at=0.6, fall_at=0.65),
-            streaks=[0.4, 0.6],
-            cues=[(0.2, WIND, 0, 1.3), (0.4, LIGHT_HIT, 0, 1.0), (0.6, HEAVY_HIT, 0, 1.2)]),
+            k(0.2, -6, -8, 150, crouch=12, lean=-6),
+            k(0.34, -8, 0, 165, crouch=24, lean=-2),
+            k(0.66, 32, 8, 12, twirl=1, crouch=28, lean=10, turn=1, trail=True, accent=True),
+            k(0.86, -8, 4, 170, crouch=28, lean=-2),
+            k(1.12, 36, 8, 6, crouch=28, lean=14, step=10, trail=True),
+            k(1.34, 34, 6, 8, crouch=24, lean=10, step=10),
+            k(1.85, 14, -18, 110, crouch=4),
+        ], dict(front_leg_at=0.64, back_leg_at=1.1, fall_at=1.14),
+            streaks=[0.64, 1.1],
+            cues=[(0.36, WIND, 0, 1.2), (0.64, LIGHT_HIT, 0, 1.0), (0.9, WIND, 0, 1.3), (1.1, HEAVY_HIT, 0, 1.15)]),
         "DANCER_DESCENT": motion([
-            k(0.2, 2, -80, -100, crouch=-16, lean=-6),
-            k(0.62, 26, -4, 70, crouch=20, lean=14, step=12, trail=True, accent=True),
-            k(1.3, 18, -12, 105, crouch=6),
-        ], dict(split_at=0.6, split_as=VERTICAL, fall_at=0.64),
-            streaks=[0.6],
-            cues=[(0.28, HEAVY_WIND, 0, 1.3), (0.6, HEAVY_HIT, 0, 1.1)]),
-        "DANCER_PIROUETTE": motion([
-            k(0.12, 20, -22, -10, crouch=8),
-            k(0.35, 20, -26, 0, twirl=1, turn=1, trail=True),
-            k(0.6, 20, -26, 0, twirl=1, turn=1, trail=True),
-            k(0.9, 36, -22, 4, lean=12, step=10, trail=True, accent=True),
-            k(1.5, 14, -20, 105),
-        ], dict(split_at=0.88, split_as=WAIST, fall_at=0.92),
-            streaks=[0.35, 0.6, 0.88],
-            cues=[(0.2, WIND, 0, 1.3), (0.45, WIND, 0, 1.45), (0.7, WIND, 0, 1.6), (0.88, HEAVY_HIT, 0, 1.2)]),
+            k(0.18, 10, -14, 40, crouch=14, lean=4),
+            k(0.5, -10, -74, -150, crouch=-18, lean=-8),
+            k(0.72, -8, -78, -145, crouch=-20, lean=-8),
+            k(0.92, 12, -74, -70, crouch=-10, lean=-2, trail=True),
+            k(1.08, 30, -46, -12, crouch=4, lean=10, step=8, trail=True, accent=True),
+            k(1.22, 30, -14, 44, crouch=16, lean=16, step=12, trail=True),
+            k(1.38, 26, -2, 76, crouch=22, lean=16, step=12),
+            k(1.95, 16, -14, 105, crouch=4),
+        ], dict(split_at=1.14, split_as=VERTICAL, fall_at=1.18),
+            streaks=[1.14],
+            cues=[(0.2, WIND, -2, 1.0), (0.86, HEAVY_WIND, 0, 1.15), (1.14, HEAVY_HIT, 0, 1.1)]),
     },
     "reaper": {
         "REAPER_WHEEL": motion([
@@ -322,7 +303,7 @@ FAMILIES = {
             k(0.52, 0, -14, 135, crouch=4),
             k(0.76, 32, -56, -50, lean=10, step=10, trail=True, accent=True),
             k(1.4, 14, -20, 100),
-        ], dict(split_at=0.74, split_as=DIAGONAL, fall_at=0.78),
+        ], dict(split_at=0.74, split_as=X_CUT, fall_at=0.78),
             streaks=[0.34, 0.74], both=True,
             cues=[(0.14, WIND, 0, 1.2), (0.34, LIGHT_HIT, 0, 1.0), (0.54, WIND, 0, 1.3), (0.74, HEAVY_HIT, 0, 1.05)]),
         "REAPER_CHEST": motion([
@@ -338,41 +319,35 @@ FAMILIES = {
     },
     "versatile": {
         "VERSATILE_SHOT_CUT": motion([
-            k(0.1, 10, -24, 40, sidearm=0.7),
-            k(0.35, 10, -24, 40, sidearm=0.7, lean=-4),
-            k(0.55, -4, -52, -140, lean=-4),
-            k(0.85, 38, -50, 6, lean=12, step=10, trail=True, accent=True),
-            k(1.4, 18, -16, 110),
-        ], dict(head_at=0.83, kneel_at=0.5, fall_at=1.0),
-            streaks=[0.83], shots=[0.3],
-            cues=[(0.3, SHOT, 0, 1.0), (0.3, "bolt_hit", 0, 1.0), (0.6, WIND, 0, 1.2), (0.83, HEAVY_HIT, 0, 1.1)]),
+            k(0.12, 6, -8, 35, off=(20, -26, 120), sidearm=0.4, crouch=2),
+            k(0.26, 4, -6, 35, off=(38, -38, 120), sidearm=1.0, lean=-2),
+            k(0.46, 4, -6, 35, off=(35, -37, 120), sidearm=1.0, lean=-4),
+            k(0.64, -4, -52, -140, off=(6, 4, 120), lean=-4),
+            k(0.92, 38, -50, 6, off=(6, 4, 120), lean=12, step=10, trail=True, accent=True),
+            k(1.45, 18, -16, 110, off=(6, 4, 120)),
+        ], dict(head_at=0.9, kneel_at=0.38, fall_at=1.05),
+            streaks=[0.9], shots=[0.32],
+            cues=[(0.32, SHOT, 0, 1.0), (0.32, "bolt_hit", 0, 1.0), (0.68, WIND, 0, 1.2), (0.9, HEAVY_HIT, 0, 1.1)]),
         "VERSATILE_TWO_SHOTS": motion([
-            k(0.1, 8, -20, 60, sidearm=0.7),
-            k(0.5, 8, -20, 60, sidearm=0.7, lean=-2),
-            k(0.68, -8, -22, 2, crouch=6),
-            k(0.92, 44, -22, 2, crouch=8, lean=16, step=16, trail=True, accent=True),
-            k(1.5, 44, -22, 2, crouch=6, lean=12, step=16),
-            k(1.9, 14, -18, 105),
-        ], dict(kneel_at=1.05, fall_at=1.3),
-            streaks=[0.9], shots=[0.25, 0.45], holes=[0.9],
-            cues=[(0.25, SHOT, 0, 1.0), (0.45, SHOT, 0, 1.05), (0.7, WIND, 0, 1.1), (0.9, HEAVY_HIT, 0, 1.1)]),
-        "VERSATILE_BUTT": motion([
-            k(0.2, 18, -30, -60),
-            k(0.34, 26, -32, -66, lean=14, step=14, accent=True),
-            k(0.72, 12, -22, 60, sidearm=0.7, lean=-4, step=6),
-            k(1.3, 12, -22, 60, sidearm=0.7, step=6),
-            k(1.7, 14, -18, 105),
-        ], dict(push_back=26, push_at=0.32, push_time=0.25, fall_at=1.05, fall_backward=True),
-            shots=[0.82], holes=[0.82],
-            cues=[(0.32, HEAVY_HIT, -2, 0.75), (0.82, SHOT, 0, 0.85), (0.82, "bolt_hit", 0, 0.9)]),
+            k(0.12, 6, -8, 35, off=(20, -26, 120), sidearm=0.4),
+            k(0.26, 4, -6, 35, off=(38, -38, 120), sidearm=1.0),
+            k(0.56, 4, -6, 35, off=(35, -37, 120), sidearm=1.0, lean=-3),
+            k(0.74, -8, -22, 2, off=(6, 4, 120), crouch=6),
+            k(0.98, 44, -22, 2, off=(6, 4, 120), crouch=8, lean=16, step=16, trail=True, accent=True),
+            k(1.55, 44, -22, 2, off=(6, 4, 120), crouch=6, lean=12, step=16),
+            k(1.95, 14, -18, 105, off=(6, 4, 120)),
+        ], dict(kneel_at=1.1, fall_at=1.35),
+            streaks=[0.96], shots=[0.32, 0.5], holes=[0.96],
+            cues=[(0.32, SHOT, 0, 1.0), (0.5, SHOT, 0, 1.05), (0.76, WIND, 0, 1.1), (0.96, HEAVY_HIT, 0, 1.1)]),
         "VERSATILE_POINT_BLANK": motion([
-            k(0.14, 8, -20, 60, sidearm=0.7, step=14),
-            k(0.75, 8, -20, 60, sidearm=0.7, step=14, lean=-4),
-            k(1.3, 8, -20, 60, sidearm=0.7, step=12),
-            k(1.7, 14, -18, 105, step=6),
-        ], dict(fall_at=0.9, fall_backward=True),
-            shots=[0.3, 0.42, 0.54, 0.66], holes=[0.3, 0.54, 0.66],
-            cues=[(0.3, SHOT, 0, 1.0), (0.42, SHOT, 0, 1.05), (0.54, SHOT, 0, 1.1), (0.66, SHOT, 0, 0.9), (0.66, "bolt_hit", 0, 0.9)]),
+            k(0.12, 6, -8, 35, off=(20, -26, 120), sidearm=0.4, step=8),
+            k(0.26, 4, -6, 35, off=(32, -36, 120), sidearm=1.0, step=14),
+            k(0.8, 4, -6, 35, off=(29, -35, 120), sidearm=1.0, step=14, lean=-4),
+            k(1.3, 4, -6, 35, off=(29, -34, 120), sidearm=1.0, step=12),
+            k(1.7, 14, -18, 105, off=(6, 4, 120), step=6),
+        ], dict(fall_at=0.95, fall_backward=True),
+            shots=[0.32, 0.44, 0.56, 0.68], holes=[0.32, 0.56, 0.68],
+            cues=[(0.32, SHOT, 0, 1.0), (0.44, SHOT, 0, 1.05), (0.56, SHOT, 0, 1.1), (0.68, SHOT, 0, 0.9), (0.68, "bolt_hit", 0, 0.9)]),
     },
 }
 NEVER_FIELDS = ("front_arm_at", "back_arm_at", "front_leg_at", "back_leg_at", "kneel_at", "head_at", "split_at", "turn_at")
@@ -465,8 +440,7 @@ def set_pool(family, names, order):
 
 
 def main():
-    source = (ROOT / KIND_ORDER).read_text(encoding="utf-8")
-    order = [name.strip() for name in re.search(r"enum Kind \{(.*?)\}", source, re.S).group(1).split(",") if name.strip()]
+    order = ORDER
     for family, finishers in FAMILIES.items():
         for name, data in finishers.items():
             validate(name, data)

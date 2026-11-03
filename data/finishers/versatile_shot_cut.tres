@@ -9,84 +9,111 @@
 
 [sub_resource type="Resource" id="key_0"]
 script = ExtResource("2_key")
-time = 0.1
-grip = Vector2(10, -24)
-blade_angle = 40
-sidearm = 0.7
+time = 0.12
+grip = Vector2(6, -8)
+blade_angle = 35
+sidearm = 0.4
+crouch = 2
+places_off_hand = true
+off_hand = Vector2(20, -26)
+off_blade_angle = 120
 
 [sub_resource type="Resource" id="key_1"]
 script = ExtResource("2_key")
-time = 0.35
-grip = Vector2(10, -24)
-blade_angle = 40
-sidearm = 0.7
-lean = -4
+time = 0.26
+grip = Vector2(4, -6)
+blade_angle = 35
+sidearm = 1.0
+lean = -2
+places_off_hand = true
+off_hand = Vector2(38, -38)
+off_blade_angle = 120
 
 [sub_resource type="Resource" id="key_2"]
 script = ExtResource("2_key")
-time = 0.55
-grip = Vector2(-4, -52)
-blade_angle = -140
+time = 0.46
+grip = Vector2(4, -6)
+blade_angle = 35
+sidearm = 1.0
 lean = -4
+places_off_hand = true
+off_hand = Vector2(35, -37)
+off_blade_angle = 120
 
 [sub_resource type="Resource" id="key_3"]
 script = ExtResource("2_key")
-time = 0.85
+time = 0.64
+grip = Vector2(-4, -52)
+blade_angle = -140
+lean = -4
+places_off_hand = true
+off_hand = Vector2(6, 4)
+off_blade_angle = 120
+
+[sub_resource type="Resource" id="key_4"]
+script = ExtResource("2_key")
+time = 0.92
 grip = Vector2(38, -50)
 blade_angle = 6
 lean = 12
 step = 10
 trail = true
 accent = true
+places_off_hand = true
+off_hand = Vector2(6, 4)
+off_blade_angle = 120
 
-[sub_resource type="Resource" id="key_4"]
+[sub_resource type="Resource" id="key_5"]
 script = ExtResource("2_key")
-time = 1.4
+time = 1.45
 grip = Vector2(18, -16)
 blade_angle = 110
+places_off_hand = true
+off_hand = Vector2(6, 4)
+off_blade_angle = 120
 
 [sub_resource type="Resource" id="reaction"]
 script = ExtResource("3_reaction")
-head_at = 0.83
-kneel_at = 0.5
-fall_at = 1.0
+head_at = 0.9
+kneel_at = 0.38
+fall_at = 1.05
 
 [sub_resource type="Resource" id="effects"]
 script = ExtResource("4_effects")
-streaks = PackedFloat32Array(0.83)
-shots = PackedFloat32Array(0.3)
+streaks = PackedFloat32Array(0.9)
+shots = PackedFloat32Array(0.32)
 
 [sub_resource type="Resource" id="cue_0"]
 script = ExtResource("5_cue")
-time = 0.3
+time = 0.32
 sound = &"bolt_shot"
 volume_db = 0.0
 pitch = 1.0
 
 [sub_resource type="Resource" id="cue_1"]
 script = ExtResource("5_cue")
-time = 0.3
+time = 0.32
 sound = &"bolt_hit"
 volume_db = 0.0
 pitch = 1.0
 
 [sub_resource type="Resource" id="cue_2"]
 script = ExtResource("5_cue")
-time = 0.6
+time = 0.68
 sound = &"swing_light"
 volume_db = 0.0
 pitch = 1.2
 
 [sub_resource type="Resource" id="cue_3"]
 script = ExtResource("5_cue")
-time = 0.83
+time = 0.9
 sound = &"hit_heavy"
 volume_db = 0.0
 pitch = 1.1
 
 [resource]
 script = ExtResource("1_script")
-keys = Array[ExtResource("2_key")]([SubResource("key_0"), SubResource("key_1"), SubResource("key_2"), SubResource("key_3"), SubResource("key_4")])
+keys = Array[ExtResource("2_key")]([SubResource("key_0"), SubResource("key_1"), SubResource("key_2"), SubResource("key_3"), SubResource("key_4"), SubResource("key_5")])
 lead_in = true
 reaction = SubResource("reaction")
 effects = SubResource("effects")

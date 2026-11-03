@@ -11,6 +11,10 @@ const WAIST_SHARE: float = 0.3
 const DIAGONAL_SHARE: float = 0.8
 const DIAGONAL_NORMAL: Vector2 = Vector2(0.5, -0.87)
 const EDGE_HALF: float = 16.0
+const X_SHARE: float = 0.72
+const X_RISING: Vector2 = Vector2(0.64, -0.77)
+const X_FALLING: Vector2 = Vector2(-0.64, -0.77)
+const X_EDGE: float = 24.0
 const VERTICAL_EDGE_HALF: float = 46.0
 const SMOKE_RISE: float = 30.0
 const SMOKE_LIFE: float = 1.1
@@ -25,6 +29,7 @@ var config: EffectsConfig
 var view: FighterView
 var rig: FighterRig
 var half: FighterRig
+var sides: Array[FighterRig] = []
 var age: float = 0.0
 var slide: float = 1.0
 
@@ -80,7 +85,7 @@ func start(owner_view: FighterView, finisher: Finisher.Kind, killer_x: float, st
 
 
 func is_split() -> bool:
-	return (_split_as if _split_as != Finisher.Kind.NONE else kind) in [Finisher.Kind.DASH_THROUGH, Finisher.Kind.WAIST, Finisher.Kind.VERTICAL, Finisher.Kind.DIAGONAL, Finisher.Kind.PULL_CUT]
+	return (_split_as if _split_as != Finisher.Kind.NONE else kind) in [Finisher.Kind.X_CUT, Finisher.Kind.DASH_THROUGH, Finisher.Kind.WAIST, Finisher.Kind.VERTICAL, Finisher.Kind.DIAGONAL, Finisher.Kind.PULL_CUT]
 
 
 func moves_body() -> bool:
@@ -106,7 +111,11 @@ func clear() -> void:
 	if half != null:
 		half.queue_free()
 		half = null
+	for piece in sides:
+		piece.queue_free()
+	sides.clear()
 	rig.set_clip(false)
+	rig.set_second_clip(false)
 	rig.set_charred(0.0)
 	rig.set_xray(0.0)
 	rig.show_hilt(true)
@@ -124,16 +133,38 @@ func _prepare_split() -> void:
 		Finisher.Kind.DIAGONAL:
 			_cut_point = rig.pelvis_point.lerp(rig.chest, DIAGONAL_SHARE)
 			_cut_normal = DIAGONAL_NORMAL
+		Finisher.Kind.X_CUT:
+			_cut_point = rig.pelvis_point.lerp(rig.chest, X_SHARE)
+			_cut_normal = X_RISING
 		_:
 			_cut_point = rig.pelvis_point.lerp(rig.chest, WAIST_SHARE)
 			_cut_normal = Vector2.UP
-	half = FighterRig.new()
-	view.add_child(half)
-	half.build(view.fighter.character, view.costume)
-	half.wind = rig.wind
+	half = _new_piece()
+	if _split_as == Finisher.Kind.X_CUT:
+		_prepare_sides()
+		return
 	var hand_in_half: bool = (rig.front_hand - _cut_point).dot(_cut_normal) > 0.0
 	half.show_hilt(hand_in_half)
 	rig.show_hilt(not hand_in_half)
+
+
+func _new_piece() -> FighterRig:
+	var piece: FighterRig = FighterRig.new()
+	view.add_child(piece)
+	piece.build(view.fighter.character, view.costume)
+	piece.wind = rig.wind
+	return piece
+
+
+func _prepare_sides() -> void:
+	sides = [_new_piece(), _new_piece()]
+	var to_hand: Vector2 = rig.front_hand - _cut_point
+	var rising: bool = to_hand.dot(X_RISING) > 0.0
+	var falling: bool = to_hand.dot(X_FALLING) > 0.0
+	half.show_hilt(rising and falling)
+	rig.show_hilt(not rising and not falling)
+	sides[0].show_hilt(rising and not falling)
+	sides[1].show_hilt(not rising and falling)
 
 
 func update(delta: float, pose: RigPose, facing: int) -> void:
@@ -151,6 +182,8 @@ func update(delta: float, pose: RigPose, facing: int) -> void:
 		rig.transform = _rest_motion(base) * base
 		_apply_clip(rig, -_cut_normal)
 		_apply_clip(half, _cut_normal)
+		if _split_as == Finisher.Kind.X_CUT:
+			_update_sides(base, pose, facing, delta)
 		_emit_smoke(delta)
 	match kind:
 		Finisher.Kind.BLAST:
@@ -192,6 +225,31 @@ func _fire(before: float, now: float) -> void:
 
 func _split_clock() -> float:
 	return age - _split_offset
+
+
+func _update_sides(base: Transform2D, pose: RigPose, facing: int, delta: float) -> void:
+	_apply_second_clip(rig, -X_FALLING)
+	_apply_second_clip(half, X_FALLING)
+	for index in sides.size():
+		var outward: float = 1.0 if index == 0 else -1.0
+		sides[index].transform = _side_motion(base, outward) * base
+		sides[index].apply(pose, facing, delta)
+		_apply_clip(sides[index], X_RISING * outward)
+		_apply_second_clip(sides[index], -X_FALLING * outward)
+
+
+func _side_motion(base: Transform2D, outward: float) -> Transform2D:
+	var pivot: Vector2 = _pivot(base, _cut_point)
+	var after: float = maxf(_split_clock() - config.finisher_hold, 0.0)
+	var offset: Vector2 = Vector2(outward * config.finisher_slide_distance, 0.0) * smoothstep(0.0, config.finisher_slide_time, after)
+	var falling: float = maxf(after - config.finisher_slide_time, 0.0)
+	offset.y += minf(0.5 * config.finisher_drop_gravity * falling * falling, -pivot.y * 0.85)
+	return _rotation_about(pivot, outward * minf(falling * config.finisher_topple_speed, FALL_ANGLE), offset)
+
+
+func _apply_second_clip(target: FighterRig, normal: Vector2) -> void:
+	var global_pose: Transform2D = target.get_global_transform()
+	target.set_second_clip(true, global_pose * _cut_point, global_pose.basis_xform(normal).normalized())
 
 
 func _apply_clip(target: FighterRig, normal: Vector2) -> void:
@@ -299,7 +357,9 @@ func _step_particles(delta: float) -> void:
 
 
 func _draw() -> void:
-	if is_split():
+	if _split_as == Finisher.Kind.X_CUT and half != null:
+		_draw_x_edges()
+	elif is_split():
 		_draw_edge(rig)
 		_draw_edge(half)
 	if kind == Finisher.Kind.CHARRED and age < config.xray_time and int(age * config.xray_flicker) % 2 == 0:
@@ -321,6 +381,28 @@ func _draw() -> void:
 		if progress >= 1.0:
 			continue
 		draw_circle(_smoke_at[i] + Vector2(0.0, -SMOKE_RISE * progress), 4.0 + 6.0 * progress, Color(PALETTE.smoke, 0.3 * _banded(1.0 - progress)))
+
+
+func _draw_x_edges() -> void:
+	var rising_edge: Vector2 = X_RISING.orthogonal() * signf(X_RISING.orthogonal().dot(X_FALLING))
+	var falling_edge: Vector2 = X_FALLING.orthogonal() * signf(X_FALLING.orthogonal().dot(X_RISING))
+	_draw_ray(half, rising_edge)
+	_draw_ray(half, falling_edge)
+	_draw_ray(rig, -rising_edge)
+	_draw_ray(rig, -falling_edge)
+	if sides.size() == 2:
+		_draw_ray(sides[0], -rising_edge)
+		_draw_ray(sides[0], falling_edge)
+		_draw_ray(sides[1], rising_edge)
+		_draw_ray(sides[1], -falling_edge)
+
+
+func _draw_ray(piece: FighterRig, direction: Vector2) -> void:
+	var from: Vector2 = to_local(piece.to_global(_cut_point))
+	var to: Vector2 = to_local(piece.to_global(_cut_point + direction * X_EDGE / piece.scale.y))
+	var color: Color = _cooling_color()
+	draw_line(from, to, Color(color, 0.35), config.finisher_edge_width * 2.0)
+	draw_line(from, to, color, config.finisher_edge_width)
 
 
 func _draw_edge(piece: FighterRig) -> void:

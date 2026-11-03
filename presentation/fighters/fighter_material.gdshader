@@ -6,6 +6,9 @@ uniform vec4 flash_color = vec4(1.0);
 uniform bool clip_enabled = false;
 uniform vec2 clip_point = vec2(0.0);
 uniform vec2 clip_normal = vec2(0.0, 1.0);
+uniform bool clip2_enabled = false;
+uniform vec2 clip2_point = vec2(0.0);
+uniform vec2 clip2_normal = vec2(0.0, 1.0);
 uniform float charred : hint_range(0.0, 1.0) = 0.0;
 uniform vec4 charred_color = vec4(0.16, 0.11, 0.09, 1.0);
 uniform float xray : hint_range(0.0, 1.0) = 0.0;
@@ -23,6 +26,9 @@ void vertex() {
 
 void fragment() {
 	if (clip_enabled && dot(world_position - clip_point, clip_normal) < 0.0) {
+		discard;
+	}
+	if (clip2_enabled && dot(world_position - clip2_point, clip2_normal) < 0.0) {
 		discard;
 	}
 	vec4 data = texture(TEXTURE, UV);

@@ -495,6 +495,9 @@ func _stage(track: PoseTrack, at: float, pose: RigPose, crouch: float, lean: flo
 	pose.off_trail = pose.off_trail or (to.off_trail and weight < 1.0 and keep < 0.5)
 	pose.front_foot.x += lerpf(from.step, to.step, weight) * (1.0 - keep)
 	pose.sidearm_raise = lerpf(from.sidearm, to.sidearm, weight) * (1.0 - keep)
+	if character.weapon.sidearm == WeaponData.Sidearm.HILT_EMITTER and pose.sidearm_raise > 0.0:
+		pose.grip = pose.grip.lerp(SHOT_GRIP, pose.sidearm_raise)
+		pose.blade_angle = lerpf(pose.blade_angle, SHOT_BLADE_ANGLE, pose.sidearm_raise)
 	if to.turn != 0.0 and weight < 1.0:
 		pose.turn = TAU * to.turn * weight
 	_head_snap = deg_to_rad(lerpf(from.head, to.head, weight)) * (1.0 - keep)
@@ -504,6 +507,8 @@ func _stage(track: PoseTrack, at: float, pose: RigPose, crouch: float, lean: flo
 func _stage_off_hand(pose: RigPose) -> void:
 	var from: PoseKey = _stage_from
 	var to: PoseKey = _stage_to
+	if character.weapon.sidearm == WeaponData.Sidearm.HILT_EMITTER and (from.sidearm > 0.0 or to.sidearm > 0.0 or from.places_off_hand or to.places_off_hand):
+		return
 	var kept_hand: Vector2 = pose.off_hand - pose.pelvis
 	var start: Vector2 = from.off_hand if from.places_off_hand else kept_hand
 	var end: Vector2 = to.off_hand if to.places_off_hand else kept_hand

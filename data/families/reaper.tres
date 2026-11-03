@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_script")
-finisher_pool = PackedInt32Array(46, 47, 48, 49)
+finisher_pool = PackedInt32Array(43, 44, 45, 46)
 id = &"reaper"
 grip = 3
 stance_width = 32.0
