@@ -8,7 +8,8 @@ Legenda: ✅ ficou bom · ⚠️ funciona mas a sensação ou o número precisa 
 
 | Passo | Verificar | Resultado esperado |
 | --- | --- | --- |
-| 21.1 | Treino › Galeria (`F`): passar pelas execuções de cada família | Cada família mostra quatro execuções novas, com nome. Pode ajustar em `tools/art/make_finishers.py`. A sensação de cada uma só jogando dá para julgar |
+| 21.1 | Extras › Galeria de poderes e execuções › Execuções: passar por todas | Nove marcantes do elenco, depois as das famílias, com nome. Pode ajustar em `tools/art/make_finishers.py`. A sensação de cada uma só jogando dá para julgar |
+| 21.1b | Na mesma lista: Giro baixo, Corte na descida, Corte duplo em X, Tiro e corte, Dois tiros e estocada, Rajada à queima-roupa | Giro e descida com arco de lâmina legível; X corta em quatro pedaços; a Corsária ergue o blaster na mão antes de cada tiro |
 | 21.2 | Vencer várias lutas com o forte no último golpe | A execução varia, com a marcante da família entre as opções. Em rounds anteriores segue o corte de membro |
 | 21.3 | Duelo contra Corsária ou Lince: atirar em quem inicia o avanço com corte | O avanço é cancelado no startup com um tranco. Com o golpe já no ativo, ou com armadura, ele segue |
 | 21.4 | Atirar em rajada no mesmo rival | Só o primeiro tiro trava; os seguintes ferem durante a imunidade de 0,6 s. Ajuste em `CombatConfig.bolt_flinch_immunity` e em `flinch` de cada disparo |

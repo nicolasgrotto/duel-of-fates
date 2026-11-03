@@ -187,7 +187,9 @@ Título no alto, lista à esquerda, detalhe à direita (nome e até seis linhas)
 
 Cinematográfica e sem HUD: letterbox ligado o tempo todo, as entradas dos lutadores no começo de cada duelo e um cartão de título no centro (nome do duelo em `ScreenTitleLabel`, os dois lutadores em `InfoLabel`), que entra e sai em fade enquanto a entrada acontece. Rodapé discreto em `HintLabel` com `Confirmar  próximo · Pausa  sair`, gerado dos bindings; no último (ou único) duelo, `Confirmar  pular`. Entre um duelo e outro, o fade do `SceneRouter`. O Duelo de exibição usa a mesma composição, com um só cartão.
 
-### Galeria de poderes
+### Galeria de poderes e execuções
+
+O item de Extras abre um submenu com **Poderes** e **Execuções**. A seção Execuções usa a mesma cena, sem linha de tier, alvo ou ligar a finalização: ← → troca a execução e cada entrada troca o lutador pelo dono do golpe. A linha do lado diz se é execução marcante ou da família.
 
 Cena de duelo sem rounds, sem a introdução do round nem barras de vida: entra direto na demonstração. Só o medidor de Fluxo de quem lança, com a marca de custo do poder exibido (qualquer poder, não só os caros; os comuns em cor de texto). Painel no topo: nome do poder entre `‹ ›` na cor da categoria (Aurora azul, Eclipse vermelho, Comum na cor do texto, técnicas de lâmina, que gastam Vigor, em cinza secundário), descrição curta, linha do lado ("Aurora · lado da luz"), tier, alvo e repetição; tiers como quatro chips sublinhados na cor do tier. Comandos no rodapé. Ao chegar numa técnica que exige blaster, a Galeria reabre com a dona da arma lançando (Corsária ou Lince) no mesmo item; ela continua lançando os próximos até outra troca ser necessária. `F` (gamepad: ombro esquerdo) liga a **Finalização**: nos poderes e técnicas que têm finalização cinematográfica, a linha de detalhes mostra "Finalização · ligada/desligada" e, ligada, o alvo fica parado com a vida baixa e morre na cinemática; o round recomeça sozinho e, com a repetição, a demonstração volta.
 

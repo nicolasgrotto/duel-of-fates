@@ -4,6 +4,10 @@ Ordem de construção do jogo. Cada fase termina jogável e testada. Marque `[x]
 
 ## Ponto de continuidade
 
+- [x] **Galeria de execuções e ajustes pedidos pelo autor** (branch `1.x`): o item do menu virou **Galeria de poderes e execuções**, com as opções Poderes e Execuções. A seção Execuções traz as 9 marcantes do elenco, que nunca tinham aparecido na Galeria, e as 32 das famílias. Saíram Chute e estocada, Empurrão e estocada, Pirueta final e Coronhada e tiro. Giro baixo e Corte na descida foram recoreografados; Corte duplo em X agora divide o corpo em quatro pedaços; a Corsária ergue o blaster na mão antes dos tiros nas execuções, e o Lince atira pelo cabo.
+  - **719 testes passando, zero falhas** (`build/final_tests4.log`). As 9 marcantes e as 6 alteradas capturadas pela própria Galeria, com a execução pedida confirmada em todas (`build/gallery_sheet_*.png`); as três do Lince em `build/finishers_lynx.png`. As execuções marcantes não foram alteradas e seguem no sorteio, agora uma entre quatro ou cinco opções.
+  - Avaliar em **PLAYTEST 21.1 e 21.1b**.
+
 - [x] **Árvore de Blaster, preços e Corsária** (pedido do autor, branch `1.x`): as técnicas que exigem blaster saíram da árvore de Lâmina para uma aba própria, que só abre com arma equipada; ligar, desligar ou guardar a arma devolve o sabre ao espaço. Preços: Pistola 150, Revólver 200, Carabina 250, Rifle 350, Precisão 450; a Pistola só vem de graça e equipada no Coldre. Saves antigos do Coldre recebem sem custo os nós equivalentes.
   - **Corsária**: Lâmina e Defesa +1, rápidos +2 de dano, fortes +4. Nos testes com 144 duelos por variante, disparos, distância e uso de técnica quase não mudaram o resultado ou pioraram; só a combinação de corpo a corpo e atributos subiu de 32% para 42%. Na matriz de 6 duelos por par ela foi de 16,7% para 29,2%; a diferença entre as duas medições mostra quanto a amostra pequena pesa. Lince segue alto, 81,9%, sem ajuste nesta entrega. O duelo de exibição usa `ExhibitionBout.blade_scale` para manter o roteiro.
   - Avaliar em **PLAYTEST 21**: passos 21.5 a 21.7. Em aberto: se o Coldre compensa 10% a menos de dano agora que todos podem usar blaster.

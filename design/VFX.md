@@ -123,6 +123,10 @@ Sempre na cor do tier de quem lança. Tiers mais altos mudam a **forma** (mais f
 
 Usam o rastro, o som e o impacto dos golpes fortes. O **choque entre técnicas** é o maior choque do jogo: clarão, tremor forte, anel e faíscas nas duas cores, os dois recuando visivelmente.
 
+## Corte em X
+
+O Corte duplo em X do Ceifador divide o corpo em quatro pedaços: o de cima tomba, os laterais abrem para os lados e o de baixo cede. Cada pedaço leva as duas bordas quentes do corte.
+
 ## Disparos
 
 No duelo, o traço cresce com `BoltData.size`: largura e comprimento escalam em relação ao disparo padrão (`PowerVfxConfig.bolt_reference_size`). O Revólver pesado fica um pouco maior e o Rifle de precisão, o dobro.
