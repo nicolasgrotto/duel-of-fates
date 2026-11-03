@@ -1,7 +1,7 @@
 class_name ConsequenceConfig
 extends Resource
 
-const DEFAULT_CUT_HEIGHTS: PackedFloat32Array = [100.0, 132.0, 66.0, 104.0, 96.0, 100.0]
+const DEFAULT_CUT_HEIGHTS: PackedFloat32Array = [100.0, 132.0, 66.0, 104.0, 96.0, 100.0, 100.0]
 
 @export_group("Exhaustion")
 @export var exhaustion_enter_ratio: float = 0.05

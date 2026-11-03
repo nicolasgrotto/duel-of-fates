@@ -39,3 +39,4 @@ block_angle_offset = -22.0
 block_anticipation = 6.0
 block_recoil = 4.0
 block_stance = 1.15
+block_light_guard = 2

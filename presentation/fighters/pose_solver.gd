@@ -7,6 +7,8 @@ const FLOW_HELD_SHORT: float = 16.0
 const FLOW_HOLD_GRIP: Vector2 = Vector2(-4.0, -12.0)
 const FLOW_HOLD_ANGLE: float = 125.0
 const FLOW_CLASH_HAND: Vector2 = Vector2(40.0, -50.0)
+enum GuardHand { MAIN, OFF, BOTH }
+
 const POWER_VFX: PowerVfxConfig = preload("res://data/balance/power_vfx_config.tres")
 
 const COMBAT: CombatConfig = preload("res://data/balance/combat_config.tres")
@@ -71,6 +73,7 @@ const CUT_WINDUP: Dictionary = {
 	MoveData.Cut.HORIZONTAL: Vector2(14.0, -36.0),
 	MoveData.Cut.THRUST: Vector2(0.0, -34.0),
 	MoveData.Cut.SPIN: Vector2(18.0, -36.0),
+	MoveData.Cut.SCISSOR: Vector2(10.0, -58.0),
 }
 const CUT_STRIKE: Dictionary = {
 	MoveData.Cut.DESCENDING: Vector2(24.0, -18.0),
@@ -78,6 +81,7 @@ const CUT_STRIKE: Dictionary = {
 	MoveData.Cut.HORIZONTAL: Vector2(28.0, -34.0),
 	MoveData.Cut.THRUST: Vector2(42.0, -32.0),
 	MoveData.Cut.SPIN: Vector2(26.0, -34.0),
+	MoveData.Cut.SCISSOR: Vector2(30.0, -42.0),
 }
 const HEAVY_CUT_LIFT: float = 8.0
 const HORIZONTAL_TWIST: float = 2.5
@@ -160,6 +164,7 @@ const EVADE_POSES: Array[Vector3] = [Vector3(12.0, -24.0, -8.0), Vector3(30.0, 6
 const SKID_CROUCH: float = 22.0
 const SKID_LEAN: float = -20.0
 const SKID_HAND: Vector2 = Vector2(-22.0, -2.0)
+const GUARD_BLEND_FLOOR: float = 0.01
 
 var character: CharacterData
 var family: MotionFamily
@@ -204,6 +209,11 @@ var rival_lock_style: CharacterData.LockStyle = CharacterData.LockStyle.BLADE
 var _guard_prediction: RigPose = RigPose.new()
 var _guard_weapon: WeaponPose = WeaponPose.new()
 var _guard_heavy: bool = false
+var guard_hand: GuardHand = GuardHand.MAIN
+var _guard_threat_id: int = 0
+var _guard_blows: int = 0
+var _guard_off_weight: float = 0.0
+var _guard_cross_weight: float = 0.0
 
 
 func setup(data: CharacterData, art: FighterArt) -> void:
@@ -238,6 +248,7 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 		guard.begin(ArmGeometry.to_body(pose.grip, pose), pose.blade_angle)
 	else:
 		guard.active = false
+		_reset_guard_hand()
 	var guard_angle: float = character.guard_angle
 	var guard_grip: Vector2 = character.guard_grip
 	if fighter.exhausted:
@@ -406,7 +417,7 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 	if fighter.blade_out and (fighter.is_free() or fighter.state == FighterState.State.BLOCKING):
 		pose.grip = pose.grip.lerp(THROW_CATCH_HAND, CATCH_REACH)
 		pose.open_hand = true
-		if family.grip == MotionFamily.Grip.DUAL:
+		if _holds_two_blades():
 			pose.off_hand = THROW_CATCH_HAND + DUAL_THROW_OFFSET
 	if fighter.is_airborne() and fighter.state != FighterState.State.JUMPING:
 		_tuck(pose, 0.7)
@@ -433,7 +444,7 @@ func solve(fighter: FighterState, opponent: FighterState, pose: RigPose) -> void
 		_place_off_hand(fighter, pose)
 	else:
 		pose.off_hand += pose.pelvis
-	if family.grip == MotionFamily.Grip.DUAL:
+	if _holds_two_blades():
 		_place_second_blade(fighter, pose, off_free)
 	if staged_track != null and _stage_keep < 1.0:
 		_stage_off_hand(pose)
@@ -518,7 +529,7 @@ func _stage_off_hand(pose: RigPose) -> void:
 		var free: float = lerpf(float(from.places_off_hand), float(to.places_off_hand), _stage_weight) * (1.0 - _stage_keep)
 		if free > 0.0:
 			pose.hand_spacing = 0.0
-	if family.grip == MotionFamily.Grip.DUAL or placed:
+	if _holds_two_blades() or placed:
 		var angle: float = lerpf(from.off_blade_angle, to.off_blade_angle + 360.0 * to.off_twirl, _stage_weight)
 		pose.off_blade_angle = rad_to_deg(lerp_angle(deg_to_rad(angle), deg_to_rad(pose.off_blade_angle), _stage_keep))
 
@@ -533,15 +544,19 @@ func _block(fighter: FighterState, opponent: FighterState, pose: RigPose, crouch
 	if bolt_contact >= 0.0:
 		threatened = true
 		_guard_heavy = false
+		guard_hand = GuardHand.MAIN
 		contact = bolt_contact
 		guard.predicted_base = guard.live_base
 		guard.predicted_tip = guard.live_tip
 	elif threatened:
 		_guard_heavy = opponent.move.is_heavy()
+		_choose_guard_hand(opponent.move)
 		contact = Ticks.to_seconds(maxi(opponent.move.startup_ticks() - opponent.phase_ticks, 0)) if opponent.move_phase == FighterState.Phase.STARTUP else 0.0
 		_forecast_guard(fighter, opponent)
 	elif fighter.stun_ticks <= 0:
 		_guard_heavy = false
+		guard_hand = GuardHand.MAIN
+		_guard_threat_id = 0
 	var pelvis: Vector2 = Vector2(0.0, -hip_height + crouch)
 	guard.follow(rest, rest_angle, pelvis, deg_to_rad(lean), character.art.dim("scale"), character.weapon, threatened, fighter.stun_ticks > 0, contact)
 	_guard_prediction.pelvis = pelvis
@@ -609,18 +624,20 @@ func _forecast_guard(fighter: FighterState, opponent: FighterState) -> void:
 
 func guard_recoiled(heavy: bool, parry: bool) -> void:
 	guard.recoil(heavy, parry)
+	_guard_blows += 1
 
 
 func guard_debug_lines() -> PackedStringArray:
 	return PackedStringArray([
 		"guard intercept %.1f, %.1f  contact %.3f s" % [guard.intercept.x, guard.intercept.y, guard.contact_time],
 		"guard velocity %.1f, %.1f  angle velocity %.1f" % [guard.velocity.x, guard.velocity.y, rad_to_deg(guard.angular_velocity)],
+		"guard hand %s" % GuardHand.keys()[guard_hand],
 	])
 
 
 static func threat_line(move: MoveData) -> MoveData.Cut:
 	if move.cut != MoveData.Cut.ARC:
-		return MoveData.Cut.HORIZONTAL if move.cut == MoveData.Cut.SPIN else move.cut
+		return MoveData.Cut.HORIZONTAL if move.cut == MoveData.Cut.SPIN or move.cut == MoveData.Cut.SCISSOR else move.cut
 	if move.technique_style == MoveData.TechniqueStyle.THRUST or move.technique_style == MoveData.TechniqueStyle.LUNGE or move.technique_style == MoveData.TechniqueStyle.FLURRY:
 		return MoveData.Cut.THRUST
 	if move.blade_angle_windup <= HIGH_WINDUP_LIMIT:
@@ -962,7 +979,7 @@ func _technique(fighter: FighterState, pose: RigPose, move: MoveData, guard_angl
 			strike_grip = THROW_RELEASE_GRIP
 			angle = lerpf(move.blade_angle_windup, move.blade_angle_strike, swing)
 			pose.off_hand = RELAXED_HAND.lerp(THROW_CATCH_HAND, ramp * swing)
-			if family.grip == MotionFamily.Grip.DUAL:
+			if _holds_two_blades():
 				pose.off_hand = THROW_WINDUP_GRIP.lerp(THROW_RELEASE_GRIP, swing).lerp(RELAXED_HAND, 1.0 - ramp) + DUAL_THROW_OFFSET
 			pose.open_hand = swing > 0.0
 			lean = lerpf(-8.0, 16.0, swing) * ramp
@@ -1296,6 +1313,9 @@ func _place_off_hand(fighter: FighterState, pose: RigPose) -> void:
 		pose.hand_spacing = family.lance_hand_spacing
 		pose.off_hand = pose.grip - direction * pose.hand_spacing
 		return
+	if _holds_two_blades():
+		pose.off_hand = family.off_guard_hand + pose.pelvis
+		return
 	match family.grip:
 		MotionFamily.Grip.TWO_HANDED:
 			pose.hand_spacing = minf(family.back_hand_spacing, character.weapon.hilt_length * 0.5)
@@ -1303,8 +1323,6 @@ func _place_off_hand(fighter: FighterState, pose: RigPose) -> void:
 		MotionFamily.Grip.STAFF:
 			pose.hand_spacing = family.staff_hand_spacing
 			pose.off_hand = pose.grip - direction * pose.hand_spacing
-		MotionFamily.Grip.DUAL:
-			pose.off_hand = family.off_guard_hand + pose.pelvis
 		MotionFamily.Grip.ONE_HANDED:
 			var armed: bool = character.weapon.sidearm == WeaponData.Sidearm.BLASTER
 			pose.off_hand = (family.sidearm_hand if armed else family.free_hand) + pose.pelvis + Vector2(sin(time * 1.1) * 1.5, 0.0)
@@ -1312,27 +1330,161 @@ func _place_off_hand(fighter: FighterState, pose: RigPose) -> void:
 				pose.off_hand = (family.walk_sidearm_hand if armed else family.walk_free_hand) + pose.pelvis + Vector2(sin(walk_phase) * family.sway, 0.0)
 
 
+func _holds_two_blades() -> bool:
+	return character.weapon.kind == WeaponData.Kind.DUAL
+
+
 func _place_second_blade(fighter: FighterState, pose: RigPose, off_free: bool) -> void:
 	var sway: float = sin(time * 1.7 + 1.3) * family.sway * 2.0
 	pose.off_blade_angle = family.off_guard_angle + sway
-	if fighter.state == FighterState.State.BLOCKING and guard.active and _guard_heavy:
-		pose.off_hand = pose.grip + family.block_off_hand
-		pose.off_blade_angle = -180.0 - pose.blade_angle
+	if fighter.state == FighterState.State.BLOCKING and guard.active:
+		_place_guard_blades(pose)
 		return
 	if not fighter.is_attacking() or fighter.move == null or off_free:
 		return
 	var move: MoveData = fighter.move
-	if move.kind == MoveData.Kind.LIGHT and fighter.chain_index % 2 == 1:
-		pose.off_hand = pose.grip + Vector2(-2.0, 4.0)
-		pose.off_blade_angle = pose.blade_angle
-		pose.off_trail = pose.trail
-		pose.grip = _guard_grip + pose.pelvis + Vector2(-OFF_SWAY, -OFF_SWAY)
-		pose.blade_angle = _guard_angle - OFF_SWING * 0.5
-		pose.trail = false
-		return
+	match move.blade_hand:
+		MoveData.BladeHand.OFF:
+			_strike_with_off(pose)
+		MoveData.BladeHand.BOTH:
+			_strike_with_both(fighter, pose, move)
+		MoveData.BladeHand.CROSS:
+			_strike_crossed(fighter, pose, move)
+		MoveData.BladeHand.FOLLOW:
+			_strike_then_follow(fighter, pose, move)
+		_:
+			_sway_off_blade(fighter, pose, move)
+
+
+func _sway_off_blade(fighter: FighterState, pose: RigPose, move: MoveData) -> void:
 	var swing: float = _progress(fighter, move) if fighter.move_phase == FighterState.Phase.ACTIVE else 0.0
 	pose.off_hand += Vector2(-OFF_SWAY * swing, OFF_SWAY * 0.5 * swing)
 	pose.off_blade_angle = family.off_guard_angle + OFF_SWING * swing
+
+
+func _strike_with_off(pose: RigPose) -> void:
+	pose.off_hand = pose.grip + Vector2(-2.0, 4.0)
+	pose.off_blade_angle = pose.blade_angle
+	pose.off_trail = pose.trail
+	pose.grip = _guard_grip + pose.pelvis + Vector2(-OFF_SWAY, -OFF_SWAY)
+	pose.blade_angle = _guard_angle - OFF_SWING * 0.5
+	pose.trail = false
+
+
+func _strike_with_both(fighter: FighterState, pose: RigPose, move: MoveData) -> void:
+	var weight: float = _strike_weight(fighter, move)
+	var sweep: float = signf(move.blade_angle_strike - move.blade_angle_windup)
+	pose.off_hand = pose.off_hand.lerp(pose.grip + family.both_hand_offset, weight)
+	pose.off_blade_angle = _blend_angle(pose.off_blade_angle, pose.blade_angle - sweep * family.both_blade_lag, weight)
+	pose.off_trail = pose.trail
+
+
+func _strike_crossed(fighter: FighterState, pose: RigPose, move: MoveData) -> void:
+	var weight: float = _strike_weight(fighter, move)
+	var mirrored_height: float = 2.0 * (pose.pelvis.y + family.cross_height) - pose.grip.y
+	pose.off_hand = pose.off_hand.lerp(Vector2(pose.grip.x + family.both_hand_offset.x, mirrored_height), weight)
+	pose.off_blade_angle = _blend_angle(pose.off_blade_angle, -pose.blade_angle, weight)
+	pose.off_trail = pose.trail
+
+
+func _strike_then_follow(fighter: FighterState, pose: RigPose, move: MoveData) -> void:
+	if fighter.move_phase != FighterState.Phase.RECOVERY:
+		_sway_off_blade(fighter, pose, move)
+		return
+	var beat: float = _progress(fighter, move) / family.off_follow_share
+	if beat >= 1.0:
+		return
+	var reach: float = sin(beat * PI)
+	pose.off_hand = pose.off_hand.lerp(pose.pelvis + family.off_follow_hand, reach)
+	var cut: float = lerpf(family.off_follow_angles.x, family.off_follow_angles.y, beat)
+	pose.off_blade_angle = _blend_angle(pose.off_blade_angle, cut, reach)
+	pose.off_trail = reach > 0.25
+
+
+func _strike_weight(fighter: FighterState, move: MoveData) -> float:
+	match fighter.move_phase:
+		FighterState.Phase.STARTUP:
+			return smoothstep(0.0, 0.7, _progress(fighter, move))
+		FighterState.Phase.RECOVERY:
+			return 1.0 - smoothstep(family.recover_share * 0.6, 1.0, _progress(fighter, move))
+	return 1.0
+
+
+func _blend_angle(from: float, to: float, weight: float) -> float:
+	return rad_to_deg(lerp_angle(deg_to_rad(from), deg_to_rad(to), weight))
+
+
+func _reset_guard_hand() -> void:
+	guard_hand = GuardHand.MAIN
+	_guard_threat_id = 0
+	_guard_blows = 0
+	_guard_off_weight = 0.0
+	_guard_cross_weight = 0.0
+
+
+func _choose_guard_hand(move: MoveData) -> void:
+	if not _holds_two_blades() or move.get_instance_id() == _guard_threat_id:
+		return
+	_guard_threat_id = move.get_instance_id()
+	guard_hand = _guard_hand_for(move)
+
+
+func _guard_hand_for(move: MoveData) -> GuardHand:
+	if move.is_heavy():
+		return GuardHand.BOTH
+	match family.block_light_guard:
+		MotionFamily.LightGuard.OFF:
+			return GuardHand.OFF
+		MotionFamily.LightGuard.ALTERNATE:
+			return GuardHand.OFF if block_line == MoveData.Cut.RISING or _guard_blows % 2 == 1 else GuardHand.MAIN
+	return GuardHand.MAIN
+
+
+func _place_guard_blades(pose: RigPose) -> void:
+	var step: float = 1.0 - exp(-family.block_frequency * guard.delta)
+	var aimed: bool = guard.has_live
+	_guard_off_weight = lerpf(_guard_off_weight, 1.0 if guard_hand == GuardHand.OFF and aimed else 0.0, step)
+	_guard_cross_weight = lerpf(_guard_cross_weight, 1.0 if guard_hand == GuardHand.BOTH else 0.0, step)
+	var recoil: Vector2 = guard.spring_offset()
+	if _guard_cross_weight > GUARD_BLEND_FLOOR:
+		_cross_guard_blades(pose, _guard_cross_weight)
+	if _guard_off_weight > GUARD_BLEND_FLOOR:
+		_guard_with_off(pose, _guard_off_weight, recoil)
+
+
+func _cross_guard_blades(pose: RigPose, weight: float) -> void:
+	var torso: float = pose.torso_angle
+	var main: Vector2 = Vector2.from_angle(deg_to_rad(pose.blade_angle) - torso)
+	var weapon: WeaponData = character.weapon
+	var cross_point: Vector2 = (pose.grip - pose.pelvis) + main * (weapon.blade_length * family.block_blade_share + weapon.hilt_length * 0.5)
+	var depth: float = _off_blade_depth()
+	var spread: float = deg_to_rad(family.block_cross_angle)
+	var first: Vector2 = cross_point - main.rotated(spread) * depth
+	var second: Vector2 = cross_point - main.rotated(-spread) * depth
+	var hand: Vector2 = _within_off_reach(first if first.x < second.x else second)
+	pose.off_hand = pose.off_hand.lerp(pose.pelvis + hand, weight)
+	pose.off_blade_angle = _blend_angle(pose.off_blade_angle, rad_to_deg((cross_point - hand).angle() + torso), weight)
+
+
+func _guard_with_off(pose: RigPose, weight: float, recoil: Vector2) -> void:
+	var hand: Vector2 = _within_off_reach(guard.in_envelope(guard.intercept - guard.upright * _off_blade_depth()))
+	pose.off_hand = pose.off_hand.lerp(pose.pelvis + hand + recoil, weight)
+	var angle: float = (guard.intercept - hand).angle() + pose.torso_angle
+	pose.off_blade_angle = _blend_angle(pose.off_blade_angle, rad_to_deg(angle), weight)
+	var rest: Vector2 = pose.pelvis + _guard_grip + family.block_grip_offset + recoil
+	pose.grip = pose.grip.lerp(rest, weight)
+	pose.blade_angle = _blend_angle(pose.blade_angle, _guard_angle + family.block_angle_offset, weight)
+
+
+func _off_blade_depth() -> float:
+	return character.weapon.second_blade_length * family.block_blade_share + WeaponPose.DUAL_HILT * 0.5
+
+
+func _within_off_reach(hand: Vector2) -> Vector2:
+	var art: FighterArt = character.art
+	var shoulder: Vector2 = Vector2.UP * art.dim("torso_length") + ArmGeometry.BACK_SHOULDER
+	var radius: float = (art.dim("upper_arm") + art.dim("forearm")) * family.arm_reach
+	return shoulder + (hand - shoulder).limit_length(radius)
 
 
 func _visual_phase(fighter: FighterState, move: MoveData) -> FighterState.Phase:

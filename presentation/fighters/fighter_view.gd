@@ -515,7 +515,11 @@ func active_blade_tip() -> Vector2:
 
 
 func _uses_off_blade() -> bool:
-	return _geometry.has_second and fighter.character.weapon.kind == WeaponData.Kind.DUAL and fighter.is_attacking() and fighter.move != null and fighter.move.kind == MoveData.Kind.LIGHT and fighter.chain_index % 2 == 1
+	if not _geometry.has_second or fighter.character.weapon.kind != WeaponData.Kind.DUAL:
+		return false
+	if fighter.state == FighterState.State.BLOCKING:
+		return _solver.guard_hand == PoseSolver.GuardHand.OFF
+	return fighter.is_attacking() and fighter.move != null and fighter.move.blade_hand == MoveData.BladeHand.OFF
 
 
 func _observe_guard() -> void:

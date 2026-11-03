@@ -5,7 +5,8 @@ const DEFAULT_PROJECTILE_TIER_SCALES: PackedFloat32Array = [1.0]
 
 enum Kind { LIGHT, HEAVY, FORWARD_HEAVY, COUNTER, SHOVE, AERIAL_LIGHT, AERIAL_HEAVY, LOCK_FINISH, ABILITY, STANCE, TECHNIQUE, DISENGAGE }
 enum Limb { NONE, ARM, LEG, HEAD }
-enum Cut { ARC, DESCENDING, RISING, HORIZONTAL, THRUST, SPIN }
+enum Cut { ARC, DESCENDING, RISING, HORIZONTAL, THRUST, SPIN, SCISSOR }
+enum BladeHand { MAIN, OFF, BOTH, CROSS, FOLLOW }
 enum TechniqueStyle { ARC, DASH, THROW, THRUST, RISING, FLURRY, LUNGE, PLUNGE, WAVE, SHOT }
 
 @export var id: StringName
@@ -75,6 +76,7 @@ enum TechniqueStyle { ARC, DASH, THROW, THRUST, RISING, FLURRY, LUNGE, PLUNGE, W
 @export var blade_angle_strike: float = 30.0
 @export var technique_style: TechniqueStyle = TechniqueStyle.ARC
 @export var cut: Cut = Cut.ARC
+@export var blade_hand: BladeHand = BladeHand.MAIN
 
 
 func projectile_scale(tier: int) -> float:

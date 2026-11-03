@@ -57,7 +57,7 @@ func _exchange(data: CharacterData, move: MoveData, facing: int = 1, blocking: C
 		attack_weapon.compute(data.weapon, attack_pose)
 		var base: Vector2 = attack_weapon.blade_base
 		var tip: Vector2 = attack_weapon.tip()
-		if data.weapon.kind == WeaponData.Kind.DUAL and attacker.chain_index % 2 == 1:
+		if data.weapon.kind == WeaponData.Kind.DUAL and move.blade_hand == MoveData.BladeHand.OFF:
 			base = attack_weapon.second_base
 			tip = base + attack_weapon.second_direction * attack_weapon.second_length
 		var a: Vector2 = _world(base, attacker)
@@ -71,7 +71,12 @@ func _exchange(data: CharacterData, move: MoveData, facing: int = 1, blocking: C
 			if fixture.sim.events[index].type == CombatEvent.Type.BLOCK:
 				contacts += 1
 				var haft: bool = defender.character.weapon.kind == WeaponData.Kind.STAFF or defender.character.weapon.kind == WeaponData.Kind.LANCE
-				var distance: float = _distance(a, b, _world(defense_weapon.hilt_from if haft else defense_weapon.blade_base, defender), _world(defense_weapon.hilt_to if haft else defense_weapon.tip(), defender))
+				var guard_from: Vector2 = defense_weapon.hilt_from if haft else defense_weapon.blade_base
+				var guard_to: Vector2 = defense_weapon.hilt_to if haft else defense_weapon.tip()
+				if defense_solver.guard_hand == PoseSolver.GuardHand.OFF:
+					guard_from = defense_weapon.second_base
+					guard_to = defense_weapon.second_base + defense_weapon.second_direction * defense_weapon.second_length
+				var distance: float = _distance(a, b, _world(guard_from, defender), _world(guard_to, defender))
 				assert_true(distance <= CONTACT_TOLERANCE, "%s %s against %s facing %d distance %.1f" % [data.id, move.id, defender.character.id, facing, distance])
 	assert_gt(contacts, 0.0, "%s %s actually blocks" % [data.id, move.id])
 
@@ -180,8 +185,8 @@ func test_wasp_chain_and_light_heavy_string_remain_continuous() -> void:
 					attack.advance(Ticks.DELTA)
 					attack.solve(attacker, defender, first)
 					weapon.compute(data.weapon, first)
-					var base: Vector2 = weapon.second_base if id == &"wasp" and attacker.chain_index % 2 == 1 else weapon.blade_base
-					var tip: Vector2 = base + weapon.second_direction * weapon.second_length if id == &"wasp" and attacker.chain_index % 2 == 1 else weapon.tip()
+					var base: Vector2 = weapon.second_base if move.blade_hand == MoveData.BladeHand.OFF else weapon.blade_base
+					var tip: Vector2 = base + weapon.second_direction * weapon.second_length if move.blade_hand == MoveData.BladeHand.OFF else weapon.tip()
 					guard.guard.observe_segment((_world(base, attacker) - Vector2(defender.x, 0.0)) * Vector2(-1.0, 1.0), (_world(tip, attacker) - Vector2(defender.x, 0.0)) * Vector2(-1.0, 1.0))
 					guard.advance(Ticks.DELTA)
 					guard.solve(defender, attacker, second)

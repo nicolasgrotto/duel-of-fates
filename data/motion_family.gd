@@ -2,6 +2,7 @@ class_name MotionFamily
 extends Resource
 
 enum Grip { TWO_HANDED, ONE_HANDED, DUAL, STAFF }
+enum LightGuard { MAIN, OFF, ALTERNATE }
 
 @export var id: StringName
 @export var grip: Grip = Grip.TWO_HANDED
@@ -18,6 +19,12 @@ enum Grip { TWO_HANDED, ONE_HANDED, DUAL, STAFF }
 @export var free_hand: Vector2 = Vector2(-4.0, -30.0)
 @export var off_guard_hand: Vector2 = Vector2(-6.0, -34.0)
 @export var off_guard_angle: float = 150.0
+@export var both_hand_offset: Vector2 = Vector2(-6.0, 8.0)
+@export var both_blade_lag: float = 14.0
+@export var cross_height: float = -34.0
+@export var off_follow_hand: Vector2 = Vector2(20.0, -34.0)
+@export var off_follow_angles: Vector2 = Vector2(-70.0, 30.0)
+@export_range(0.2, 1.0) var off_follow_share: float = 0.6
 
 @export_group("Arms")
 @export_range(0.5, 0.98) var arm_reach: float = 0.92
@@ -55,7 +62,8 @@ enum Grip { TWO_HANDED, ONE_HANDED, DUAL, STAFF }
 @export var block_thrust_grip: Vector2 = Vector2(22.0, -32.0)
 @export var block_line_angles: Vector4 = Vector4(-14.0, 74.0, -46.0, -84.0)
 @export var block_reverse: bool = false
-@export var block_off_hand: Vector2 = Vector2(-8.0, 10.0)
+@export var block_light_guard: LightGuard = LightGuard.MAIN
+@export var block_cross_angle: float = 55.0
 
 @export_group("Walk")
 @export var stride: float = 10.0

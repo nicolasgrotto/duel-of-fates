@@ -14,6 +14,7 @@ var velocity: Vector2 = Vector2.ZERO
 var angle: float = 0.0
 var angular_velocity: float = 0.0
 var intercept: Vector2 = Vector2.ZERO
+var upright: Vector2 = Vector2.UP
 var contact_time: float = 0.0
 var engagement: float = 0.0
 var lean: float = 0.0
@@ -78,7 +79,7 @@ func follow(rest: Vector2, rest_angle: float, pelvis: Vector2, torso: float, sca
 		if has_live:
 			var height: float = ((live_base + live_tip) * 0.5 / scale - pelvis).rotated(-torso).y
 			target_position.y = lerpf(rest.y, height, family.block_drift)
-	target_position = _in_envelope(target_position)
+	target_position = in_envelope(target_position)
 
 
 func fit_grip(grip: Vector2, torso: float, aim: bool) -> void:
@@ -98,6 +99,7 @@ func _target_interception(pelvis: Vector2, torso: float, scale: float, weapon: W
 	var transverse: Vector2 = _incoming.orthogonal()
 	if transverse.y > 0.0:
 		transverse = -transverse
+	upright = transverse
 	if reverse and transverse.x > 0.0:
 		transverse = -transverse
 	var depth: float = weapon.blade_length * family.block_blade_share + weapon.hilt_length * 0.5
@@ -107,9 +109,13 @@ func _target_interception(pelvis: Vector2, torso: float, scale: float, weapon: W
 	var anticipation: float = smoothstep(0.0, family.block_live_lead, contact_time) * family.block_anticipation
 	target_position -= _incoming * anticipation
 	target_angle = transverse.angle() + torso
-	var reachable: Vector2 = _in_envelope(target_position)
+	var reachable: Vector2 = in_envelope(target_position)
 	if not reverse and depth > 0.0 and reachable.distance_squared_to(intercept) > 1.0:
 		target_angle = (intercept - reachable).angle() + torso
+
+
+func spring_offset() -> Vector2:
+	return position - target_position
 
 
 func fallback(grip: Vector2, blade_angle: float) -> void:
@@ -121,7 +127,7 @@ func fallback(grip: Vector2, blade_angle: float) -> void:
 	target_angle = angle
 
 
-func _in_envelope(point: Vector2) -> Vector2:
+func in_envelope(point: Vector2) -> Vector2:
 	return point.clamp(family.block_envelope.position, family.block_envelope.end)
 
 
