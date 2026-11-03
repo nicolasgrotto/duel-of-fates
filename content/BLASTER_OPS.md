@@ -6,6 +6,30 @@ Núcleo superior de Operações, iniciado na task 16 e compartilhado com Infiltr
 
 ## Jogador e controles
 
+## Missões de Incursão (task 18)
+
+Todas disponíveis em Operações, com personagem livre e possíveis só com lâmina. Ciclo: entrada → ondas/objetivo → última onda → extração → resultado. A última onda tem rótulo próprio; a extração só abre quando objetivos e ondas terminam. Morte do jogador ou do protegido prevalece sobre vitória no mesmo tick. Inimigos e tiros continuam vivos durante o banner, sem dano posterior ao resultado.
+
+| Missão | Objetivo | Variação |
+| --- | --- | --- |
+| Pátio cercado | Vencer três ondas | Arena aberta, soldados, investidor e pesado |
+| Linha de ruptura | Destruir três torres e resistir ao reforço | Assalto em corredor largo, coberturas destrutíveis |
+| Nó de defesa | Proteger terminal durante três ondas | Até duas barreiras implantáveis por tentativa |
+| Janela de extração | Resistir 45 s e vencer a última onda | Início da onda final espera o relógio, sem exigir eliminar antes todos os inimigos |
+| Corredor dos aliados | Escoltar aliado vivo à saída e resistir ao reforço | Aliado anda a 90 u/s enquanto acompanhado a até 320 u |
+| Vetor de recuo | Vencer rival e sua guarda final | Rival com tiro dirigido, leque e avanço corpo a corpo |
+| Núcleo de cerco | Vencer chefe em três fases e sua última guarda | Limiar inclusivo em 65% e 30%, sem cura ou retorno de fase |
+
+Ondas têm slots fixos pré-alocados; ponto ocupado adia entrada, nunca teleporta um corpo sobre outro. Intervalo de montagem de 6 s antes da primeira onda e entre ondas, configurável. Defesa permite E/Interagir para implantar barreira 96 u à frente da mira somente nesse intervalo: tile vazio, quatro vizinhos livres, sem corpo no local, no máximo duas implantações por tentativa. Cada barreira absorve 60 de dano, bloqueia movimento/tiros dos dois lados e não concede reembolso; sua destruição reabre a navegação.
+
+Defesa usa terminal de 240 de vida; Escolta usa aliado de 180. Prisioneiros secundários têm 60 e não são exigidos para vencer. E liberta antes de tentar construir. Aliados usam o controlador de escolta existente e intenção de tiro simples contra alvo visível a até 480 u: dano 4, intervalo 1,2 s. Não disparam por conta própria na simulação; não ferem jogador ou outros aliados. Poderes do jogador continuam sem ferir aliados. Precisão conta cortes conectados e tiros do jogador que atingem inimigo; leques/rajadas contam cada projétil, sem incluir tiros aliados ou devoluções. Sem ataques, precisão é zero.
+
+Rival e chefe têm fases por Resource: configuração de ataque, limiar e título. Cada ataque prepara antes de sair, inclusive leques. Troca de fase interrompe preparação antiga, preserva projéteis já disparados e processa limiares vivos em ordem; não muda vida. A IA só produz intenção, incluindo aproximação e passos laterais do rival. Torres são inimigos imóveis, vulneráveis ao corte e ao disparo.
+
+Avaliação de sucesso: 1 ponto por tempo até o limite inclusivo da missão, dano recebido até 25, precisão de pelo menos 50% e bônus de missão (todos os prisioneiros secundários vivos e libertados, ou protegido com pelo menos metade da vida; sem secundário, destruir todas as defesas). S = 4 pontos, A = 3, B = 2, C = 0–1; derrota não recebe nota ou recompensa. Save conserva menor tempo, melhor nota e união de bônus por ID, com migração por ausência. Primeira vitória concede cor do Arcade do Guardião; completar as sete concede traje Viajante do Guardião, sem duplicar recompensas. Nada cobra ou concede moeda no modo avulso.
+
+API externa: missão + personagem + conjunto explícitos; resultado contém objetivo, ticks, dano, acertos/tentativas, bônus e nota. O modo externo emite resultado uma vez, não escreve SaveService e não troca de tela; saída na pausa emite pedido de saída. A futura Saga controla créditos e próxima cena.
+
 Movimento livre normalizado em oito direções, 240 u/s, aceleração 2.200 u/s², desaceleração 2.800 u/s², corpo de raio 18 u e vida 100. Mira independente: mouse ou stick direito; ao soltar o stick, mantém a última mira. Sem mira explícita, o primeiro movimento define a direção inicial. Corrida, furtivo, abate e interação seguem a Infiltração; sem pulo.
 
 | Ação | Teclado e mouse padrão | Controle padrão |

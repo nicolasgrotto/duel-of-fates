@@ -34,6 +34,8 @@ Atrito elétrico contínuo que cresce em volume e brilho com o tempo da disputa;
 
 ### Operações de blaster (task 16)
 
+Task 18 reutiliza confirmação de UI para onda/fase, impacto metálico para barreiras/torres, tiros existentes para aliados e camadas industriais durante combate. Sem novas amostras ou música. Pausa/sair continuam suspendendo e liberando players locais; volume ouvido não interfere em percepção ou objetivos.
+
 Reutiliza exclusivamente o banco original: tiro/desvio/devolução/acerto `bolt_*`, esquiva e confirmação de precisão existentes, sons de Repulsão/Puxão/Barreira e impacto metálico para cobertura. Preparação inimiga usa o aviso curto existente da Infiltração; supera passos em volume, sem novo áudio ou imitação de franquia. Superaquecimento usa a recusa seca uma vez na entrada, nunca a cada tick segurado. Música e ambiência industriais existentes; pausa suspende áudio local e sair encerra seus players. Áudio consome eventos e não altera percepção, calor ou preparação.
 
 ### Infiltração (tasks 10–12)

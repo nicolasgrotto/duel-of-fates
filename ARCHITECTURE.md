@@ -77,6 +77,12 @@ Arquivos e pastas em `snake_case`; classes com `class_name` em `PascalCase`.
 
 ## Simulação
 
+### Missões de Incursão (task 18)
+
+`BlasterOpsMissionData` estende `InfiltrationMissionData`, com ondas, objetivo, protegido, fases e avaliação por dados. `BlasterOpsMissionState` estende o estado de missão existente e vive no mesmo `BlasterOpsSimulation`; todos os slots de onda, aliados e duas barreiras são montados antes dos ticks. Capture/restore inclui ondas, fases, estatísticas, células/vida de barreiras e timers. Projéteis preservam os dados de sua emissão; fases só trocam referências runtime. Controladores inimigo e de escolta continuam externos, com intenções de movimento/tiro.
+
+`BlasterOpsMode` estende `InfiltrationMode`, oferece catálogo separado reunido por `all_missions()`, e retorna `BlasterOpsMissionResult` selado. No fluxo externo, só emite `finished`/`exit_requested`; não consulta menu, grava progresso ou navega ao terminar. Save acrescenta `incursion_best` por ausência e recompensas cosméticas idempotentes. Telas existentes de Operações compartilham lista/briefing/missão/resultado; rota técnica de treino sai do roteador, mantendo a cena como fixture. Gerador em `tools/blaster_ops/` reutiliza Layout/atlas e registra previews em ASSETS.
+
 ### Operações compartilhadas (task 17)
 
 `BlasterOpsSimulation` é o núcleo comum das missões de Operações e do treino técnico. Estende os primitivos de `InfiltrationSimulation`, mas executa também objetivos, painéis, escoltas e inimigos antigos, preservando seus dados. Dodge/precisão, poderes, calor, stun e impulso vivem uma única vez neste núcleo. `InfiltrationMissionData.objective` seleciona a política Infiltração/Incursão; imagem e campos de resgate continuam no mesmo Resource. O núcleo base permanece fixture das regras anteriores e geometria compartilhada, sem alterar o duelo.

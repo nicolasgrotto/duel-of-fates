@@ -133,6 +133,8 @@ Fora do escopo inicial, possíveis no futuro: modo online, torneio, editor de pe
 
 **Operações (task 17):** Infiltração e Incursão compartilham uma tela, um moveset e o menu Jogar › Modos especiais › Operações. O objetivo da missão muda as regras, nunca as teclas. Infiltração privilegia resgate sem ser visto; Incursão privilegia combate. Todo personagem pode concluir operações apenas com lâmina, guarda, esquiva e um poder. Não existe arma temporária para quem não possui blaster.
 
+**Incursões (task 18):** sete missões independentes, sem compra ou progressão de atributos: Arena, Assalto, Defesa, Resistência, Escolta, Rival e Chefe. Defesa de objetivo é uma missão de Operações, substituindo seu descarte como modo separado. Resgatar é opcional fora da Escolta; aliados libertados ajudam por intenções de tiro. Recompensas avulsas são cosméticas únicas; o fluxo externo recebe resultado e decide eventuais créditos da História, sem o núcleo alterar campanha.
+
 O duelo continua sendo o coração do jogo. O autor aprovou modos que saem do formato "dois combatentes, vista lateral", desde que cada um mantenha a mesma identidade (pixel art na grade do mundo, paleta e UI do tema, lâminas com peso, leitura antes de velocidade, sem gore, sem nada da franquia):
 
 - **Operações**: missões em mapas **top-down 2D** dentro de bases. Objetivo Infiltração privilegia resgate, furtividade e alarmes; Incursão privilegia combate. Lâmina, blaster quando equipado, esquiva e poderes usam os mesmos controles. A lâmina **desvia e devolve disparos** (guarda e parry). Uma tela própria, não o duelo.

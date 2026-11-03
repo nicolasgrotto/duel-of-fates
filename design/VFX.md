@@ -129,6 +129,8 @@ O Corte duplo em X do Ceifador divide o corpo em quatro pedaços: o de cima tomb
 
 ## Disparos
 
+Task 18: leques usam o traço comum, com todos os tiros saindo depois do aviso da arma. Troca de fase usa arco curto no chefe e texto persistente, sem câmera lenta; efeitos reduzidos preservam o título e o contorno estático. Barreira quebrada reutiliza faíscas de impacto metálico, sem clarão global. Ondas e objetivos nunca dependem de temporizador visual.
+
 No duelo, o traço cresce com `BoltData.size`: largura e comprimento escalam em relação ao disparo padrão (`PowerVfxConfig.bolt_reference_size`). O Revólver pesado fica um pouco maior e o Rifle de precisão, o dobro.
 
 Task 16: cada tiro inimigo tem preparação visível e ponto quente na boca da arma antes do disparo; Atirador acrescenta linha fina vermelha travada, recortada pela parede. Investidor anuncia arco curto. Primária usa `UiPalette.bolt`; devolução usa a cor da lâmina; tiro inimigo tem ponta partida para distinguir direção sem depender de cor. Esquiva deixa dois ecos discretos, e precisão acende contorno curto no peito, sem câmera lenta. Repulsão é cone de ar com borda de tier I; Puxão converge ao jogador; Barreira é contorno local segmentado, nunca casca opaca. Caixa danificada solta faísca pequena, caixa quebrada deixa destroço; sem explosão que cubra a mira. Calor extremo solta dois traços curtos acima da arma. Efeitos reduzidos mantêm avisos/tiros/rachaduras, reduzem ecos e faíscas. Toda animação lê fase ou evento, sem decidir a regra.

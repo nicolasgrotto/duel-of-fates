@@ -544,6 +544,8 @@ Idioma (Português/English), dificuldade, efeitos (Completos/Reduzidos), som, m�
 
 ### Operações: Infiltração e Incursão (task 17)
 
+Task 18 entrega as sete missões de Incursão descritas em `content/BLASTER_OPS.md`, no mesmo catálogo visual. Ondas, alvos protegidos, barreiras entre ondas, aliados que atiram, rival e chefe são dados; todas aceitam lâmina sem blaster. Avaliação S/A/B/C usa quatro critérios: tempo, dano, precisão e bônus. Recompensas avulsas são cor/traje, sem moeda. Fluxo externo recebe resultado selado e mantém a responsabilidade pela campanha.
+
 Jogar › Modos especiais › **Operações** substitui Infiltração. Cada missão identifica seu objetivo como **Infiltração** ou **Incursão**, com imagem, briefing e recorde. As seis missões de resgate existentes conservam IDs, painéis que destravam celas, mínimos de prisioneiros, extração e registros. As novas missões de Incursão entram na task 18.
 
 Um único moveset: WASD/setas movem, Shift corre, Ctrl/C anda furtivamente, Espaço esquiva, E interage, F abate silenciosamente quando possível ou inicia corte, R lança o poder; botão esquerdo dispara com blaster ou corta sem ele; botão direito/Q guarda. Controle copia os botões do duelo: rápido ataca, forte corta/abate, esquiva esquiva, habilidade anda furtivamente, poder lança poder; A/Cruz interage e stick esquerdo pressionado corre. Mira independente pelo mouse/stick direito. Os dois objetivos usam os mesmos remapeamentos; configurações antigas sem versão de layout recebem os novos padrões por ausência, sem afetar o duelo.
