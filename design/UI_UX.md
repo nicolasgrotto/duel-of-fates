@@ -185,6 +185,8 @@ Título no alto, lista à esquerda, detalhe à direita (nome e até seis linhas)
 
 ### Exibição
 
+No menu, Extras tem um item **Exibição**, que abre Duelo de exibição e Sequência de exibição.
+
 Cinematográfica e sem HUD: letterbox ligado o tempo todo, as entradas dos lutadores no começo de cada duelo e um cartão de título no centro (nome do duelo em `ScreenTitleLabel`, os dois lutadores em `InfoLabel`), que entra e sai em fade enquanto a entrada acontece. Rodapé discreto em `HintLabel` com `Confirmar  próximo · Pausa  sair`, gerado dos bindings; no último (ou único) duelo, `Confirmar  pular`. Entre um duelo e outro, o fade do `SceneRouter`. O Duelo de exibição usa a mesma composição, com um só cartão.
 
 ### Galeria de poderes e execuções
