@@ -4,6 +4,23 @@ Roteiro para o autor validar, jogando, o que entrou na fase 7.5 (revisão de com
 
 Legenda: ✅ ficou bom · ⚠️ funciona mas a sensação ou o número precisa de ajuste · ❌ não funciona.
 
+## 23. Incursões, rival e chefe (task 18)
+
+| Passo | Verificar | Resultado esperado |
+| --- | --- | --- |
+| 23.1 | Jogar › Modos especiais › Operações, PT/EN, 720p/1080p | Seis Infiltrações e sete Incursões com imagem/briefing; rolagem alcança Personagem e Voltar. Trocar personagem e voltar conserva foco. |
+| 23.2 | Pátio cercado e Linha de ruptura com Guardião sem blaster | Ondas, torres e última guarda cedem a lâmina/guarda/esquiva/poder; extração só abre após objetivos e última onda. |
+| 23.3 | Nó de defesa: E mirando espaço livre durante preparação | Implanta até duas barreiras por tentativa, com vida e colisão para ambos os lados; local ocupado, estreito ou durante combate não consome carga. Terminal tem integridade própria; destruí-lo falha a missão. |
+| 23.4 | Janela de extração: derrotar cedo a primeira onda | Extração permanece bloqueada até 45 s e derrota da onda final; timer, última onda e abertura são legíveis. |
+| 23.5 | Corredor dos aliados: afastar-se, acompanhar e deixar aliado morrer | Protegido só avança com jogador próximo, contorna caixas e ajuda a atirar; extração exige sua chegada e fim das ondas; morte causa falha. |
+| 23.6 | Resgatar prisioneiro secundário nas demais Incursões | E recruta antes de qualquer implantação; aliado segue e dispara por conta própria, sem fogo amigo nem aumentar a precisão do jogador. |
+| 23.7 | Vetor de recuo e Núcleo de cerco, atravessar 65% e 30% de vida | Mira travada → leque preparado → avanço; fases não voltam, não curam e interrompem preparação antiga. Rival recua lateralmente; chefe mantém silhueta própria. |
+| 23.8 | Vitória/derrota, tentar novamente, próxima missão e lista | Banner fecha para resultado com tempo/dano/precisão/bônus e nota C/B/A/S; derrota sem nota. Reiniciar limpa ondas, barreiras, fases e estatísticas; lista conserva foco. |
+| 23.9 | Primeira vitória e completar as sete; repetir e reabrir | Cor Arcade do Guardião na primeira, traje Viajante nas sete; sem créditos standalone. Recorde conserva menor tempo, melhor nota e bônus acumulados; save antigo abre sem perda. |
+| 23.10 | Integrador: iniciar com personagem e conjunto explícitos | `BlasterOpsMode(..., true, ...)` emite resultado uma vez, sem banner automático, save ou navegação; saída da pausa é delegada ao dono. |
+
+**Validação automatizada:** 752 testes passando, zero falhas (738 anteriores + 14), incluindo conclusão das sete missões só com lâmina e regressão das seis Infiltrações. 23 scripts válidos pelo MCP; 17 verificações do fluxo roteado. 138 capturas nativas 720p/1080p em `build/task18_final_renders/`, com 16 folhas inspecionadas, 152 verificações do percurso e quatro verificações adicionais de barreira; quatro capturas nativas 1600×900 no editor em `build/task18_editor_renders/`. Matriz de 936 duelos idêntica: 25.266 acertos, 1.163 choques, 57 disputas, zero pressões (`build/task18_matrix_comparison.log`). Gerador reproduz arte/dados byte a byte; save isolado e 37 arquivos prévios preservados. Avisos ambientais de certificado/encerramento iguais ao baseline. Controle físico, sensação, áudio ouvido, build Web e desempenho sustentado ainda dependem de validação.
+
 ## 22. Operações unificadas (task 17)
 
 | Passo | Verificar | Resultado esperado |
