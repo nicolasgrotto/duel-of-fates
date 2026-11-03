@@ -93,8 +93,9 @@ func objective_lines(sim: InfiltrationSimulation) -> Array[Dictionary]:
 
 
 func next() -> void:
-	var index: int = MISSIONS.find(data)
-	SceneRouter.change(&"operations", {"mission": MISSIONS[index + 1].id if index >= 0 and index + 1 < MISSIONS.size() else data.id})
+	var catalog: Array[InfiltrationMissionData] = BlasterOpsMode.all_missions()
+	var index: int = catalog.find(data)
+	SceneRouter.change(&"operations", {"mission": catalog[index + 1].id if index >= 0 and index + 1 < catalog.size() else data.id})
 
 
 static func bonus_text(mask: int) -> String:

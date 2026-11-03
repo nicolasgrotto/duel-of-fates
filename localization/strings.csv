@@ -1177,3 +1177,48 @@ BOPS_ACTION_RUN,Correr,Run
 BOPS_ACTION_SNEAK,Furtivo,Sneak
 BOPS_ACTION_STRIKE,Corte / abate,Strike / takedown
 BOPS_ACTION_INTERACT,Interagir,Interact
+OPS_ENCIRCLED_YARD,Pátio cercado,Encircled Yard
+OPS_ENCIRCLED_YARD_BRIEF,"Abra espaço entre as coberturas, vença três ondas e retorne à saída. Há um aliado preso no setor sul.","Make room between cover, defeat three waves and return to extraction. An ally is held in the south sector."
+OPS_BREACH_LINE,Linha de ruptura,Breach Line
+OPS_BREACH_LINE_BRIEF,"Avance pelo corredor, destrua as três torres e enfrente o reforço final. A saída fica a leste.","Push through the corridor, destroy three turrets and face the final reinforcements. Extract to the east."
+OPS_DEFENSE_NODE,Nó de defesa,Defense Node
+OPS_DEFENSE_NODE_BRIEF,"Proteja o terminal de três ondas. Durante a montagem, Interagir implanta até duas barreiras à frente da mira.","Protect the terminal through three waves. During preparation, Interact deploys up to two barriers ahead of your aim."
+OPS_EXTRACTION_WINDOW,Janela de extração,Extraction Window
+OPS_EXTRACTION_WINDOW_BRIEF,"Resista 45 segundos, vença o reforço final e alcance a saída. Use guarda, deslocamento e cobertura.","Hold out for 45 seconds, defeat the final reinforcements and reach extraction. Use guard, movement and cover."
+OPS_ALLY_CORRIDOR,Corredor dos aliados,Ally Corridor
+OPS_ALLY_CORRIDOR_BRIEF,Acompanhe o aliado até a saída leste. Ele avança quando você fica perto e ajuda a combater as duas ondas.,Accompany the ally to the eastern exit. They advance while you stay close and help fight both waves.
+OPS_RETREAT_VECTOR,Vetor de recuo,Retreat Vector
+OPS_RETREAT_VECTOR_BRIEF,"Vença o rival: tiro dirigido, leque e avanço. Use as coberturas ou devolva seus disparos, depois vença sua guarda final.","Defeat the rival: aimed fire, fan and charge. Use cover or return their shots, then defeat their final guard."
+OPS_SIEGE_CORE,Núcleo de cerco,Siege Core
+OPS_SIEGE_CORE_BRIEF,Desmonte o andador de cerco. Aos 65% e 30% de integridade ele muda o padrão; sobreviva à última guarda para extrair.,Bring down the siege walker. At 65% and 30% integrity it changes pattern; survive its final guard to extract.
+OPS_PHASE_0,Fase I · Mira travada,Phase I · Locked aim
+OPS_PHASE_1,Fase II · Leque,Phase II · Fan
+OPS_PHASE_2,Fase III · Avanço,Phase III · Charge
+OPS_GOAL,Cumprir o objetivo principal,Complete the main objective
+OPS_FINAL_WAVE,Última onda,Final wave
+OPS_PROTECTED_DOWN,Objetivo protegido perdido,Protected objective lost
+OPS_REWARDS,Recompensas únicas: primeira vitória libera a cor do Arcade do Guardião; completar as sete libera seu traje Viajante.,One-time rewards: first victory unlocks Guardian's Arcade color; complete all seven for the Traveler outfit.
+OPS_BRIEF_RULES,"{waves} ondas · tempo de referência {time} s. Nota por tempo, dano, precisão e objetivo secundário. Blaster opcional.","{waves} waves · reference time {time} s. Rating for time, damage, accuracy and secondary objective. Blaster optional."
+OPS_UNRATED,Sem avaliação,Unrated
+OPS_RATING_C,Avaliação C,Rating C
+OPS_RATING_B,Avaliação B,Rating B
+OPS_RATING_A,Avaliação A,Rating A
+OPS_RATING_S,Avaliação S,Rating S
+OPS_BONUS_TIME,Dentro do tempo de referência,Within reference time
+OPS_BONUS_DAMAGE,Até 25 de dano recebido,At most 25 damage taken
+OPS_BONUS_ACCURACY,Precisão de pelo menos 50%,At least 50% accuracy
+OPS_BONUS_OBJECTIVE,Objetivo secundário,Secondary objective
+OPS_STATISTICS,Dano recebido: {damage} · Precisão: {accuracy}%,Damage taken: {damage} · Accuracy: {accuracy}%
+OPS_EXTRACTION_READY,Extração aberta · alcance a saída,Extraction open · reach the exit
+OPS_PREPARING,Montagem · {time} s,Preparation · {time} s
+OPS_WAVE,Onda {wave}/{total} · inimigos {left},Wave {wave}/{total} · enemies {left}
+OPS_HOLD_TIMER,Extração em {time} s,Extraction in {time} s
+OPS_PROTECTED_HEALTH,Integridade do protegido: {health},Protected integrity: {health}
+OPS_DEPLOY_HINT,{key} implantar barreira · restantes {left},{key} deploy barrier · {left} remaining
+OPS_KIND_0,Elimine as ondas e extraia,Eliminate the waves and extract
+OPS_KIND_1,Destrua as torres e extraia a leste,Destroy the turrets and extract east
+OPS_KIND_2,Proteja o terminal,Protect the terminal
+OPS_KIND_3,Resista até a chegada da extração,Hold out until extraction arrives
+OPS_KIND_4,Acompanhe o aliado à saída leste,Accompany the ally to the eastern exit
+OPS_KIND_5,Vença o rival e sua guarda,Defeat the rival and their guard
+OPS_KIND_6,Vença o chefe e sua guarda,Defeat the boss and its guard

@@ -22,6 +22,16 @@ extends InfiltrationConfig
 @export var dodge_noise: float = 220.0
 @export var power_noise: float = 300.0
 
+@export_group("Incursion missions")
+@export var barrier_capacity: int = 2
+@export var deploy_distance: float = 96.0
+@export var deploy_health: float = 60.0
+@export var ally_fire_interval: float = 1.2
+@export var ally_fire_range: float = 480.0
+@export var protected_speed: float = 90.0
+@export var protected_follow_range: float = 320.0
+@export var ally_bolt: BoltData = preload("res://data/bolts/standard_bolt.tres")
+
 @export_group("Operations presentation")
 @export var dodge_echo_offset: float = 22.0
 @export var precision_flash_seconds: float = 0.24

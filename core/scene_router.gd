@@ -12,7 +12,6 @@ const SCREENS: Dictionary = {
 	&"keys": "res://screens/controls/key_config_screen.tscn",
 	&"controls": "res://screens/controls/controls_screen.tscn",
 	&"blaster_ops_keys": "res://screens/controls/blaster_ops_keys.tscn",
-	&"blaster_ops_training": "res://screens/blaster_ops/blaster_ops_training.tscn",
 	&"story_hub": "res://screens/story/story_hub.tscn",
 	&"story_new": "res://screens/story/story_new.tscn",
 	&"story_attributes": "res://screens/story/story_attributes.tscn",

@@ -1,0 +1,110 @@
+[gd_resource type="Resource" script_class="BlasterOpsMissionData" format=3]
+
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_cover_data.gd" id="cover"]
+[ext_resource type="Texture2D" path="res://assets/blaster_ops/covers.png" id="covers"]
+[ext_resource type="Texture2D" path="res://assets/infiltration/enemy_sprites.png" id="enemies"]
+[ext_resource type="Resource" path="res://data/blaster_ops/enemies/heavy.tres" id="heavy"]
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_arena_data.gd" id="map"]
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_mission_data.gd" id="mission"]
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_phase_data.gd" id="phase"]
+[ext_resource type="Script" path="res://data/infiltration/infiltration_enemy_placement.gd" id="placement"]
+[ext_resource type="Texture2D" path="res://assets/blaster_ops/previews/breach_line.png" id="preview"]
+[ext_resource type="Resource" path="res://data/blaster_ops/enemies/rusher.tres" id="rusher"]
+[ext_resource type="Texture2D" path="res://assets/infiltration/training_sprites.png" id="sprites"]
+[ext_resource type="Texture2D" path="res://assets/infiltration/training_tiles.png" id="tiles"]
+[ext_resource type="Resource" path="res://data/blaster_ops/enemies/turret.tres" id="turret"]
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_wave_data.gd" id="wave"]
+
+
+[sub_resource type="Resource" id="p0"]
+script = ExtResource("placement")
+enemy = ExtResource("turret")
+position = Vector2(800, 544)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p1"]
+script = ExtResource("placement")
+enemy = ExtResource("turret")
+position = Vector2(1376, 544)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p2"]
+script = ExtResource("placement")
+enemy = ExtResource("turret")
+position = Vector2(1952, 544)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="w0"]
+script = ExtResource("wave")
+indices = PackedInt32Array(0, 1, 2)
+final_wave = false
+
+[sub_resource type="Resource" id="p3"]
+script = ExtResource("placement")
+enemy = ExtResource("heavy")
+position = Vector2(1824, 736)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p4"]
+script = ExtResource("placement")
+enemy = ExtResource("rusher")
+position = Vector2(2016, 416)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="w1"]
+script = ExtResource("wave")
+indices = PackedInt32Array(3, 4)
+final_wave = true
+
+[sub_resource type="Resource" id="c0"]
+script = ExtResource("cover")
+cell = Vector2i(10, 5)
+health = 30.0
+
+[sub_resource type="Resource" id="c1"]
+script = ExtResource("cover")
+cell = Vector2i(10, 11)
+health = 30.0
+
+[sub_resource type="Resource" id="c2"]
+script = ExtResource("cover")
+cell = Vector2i(19, 5)
+health = 30.0
+
+[sub_resource type="Resource" id="c3"]
+script = ExtResource("cover")
+cell = Vector2i(19, 11)
+health = 30.0
+
+[sub_resource type="Resource" id="map_data"]
+script = ExtResource("map")
+rows = PackedStringArray("########################################", "#......................................#", "#......................................#", "#......................................#", "#......................................#", "#.........C........C...................#", "#......................................#", "#......................................#", "#.====================================.#", "#......................................#", "#......................................#", "#.........C........C...................#", "#......................................#", "#......................................#", "#......................................#", "#......................................#", "#......................................#", "########################################")
+player_spawn = Vector2(416, 544)
+enemies = Array[ExtResource("placement")]([SubResource("p0"), SubResource("p1"), SubResource("p2"), SubResource("p3"), SubResource("p4")])
+covers = Array[ExtResource("cover")]([SubResource("c0"), SubResource("c1"), SubResource("c2"), SubResource("c3")])
+tiles = ExtResource("tiles")
+sprites = ExtResource("sprites")
+enemy_sprites = ExtResource("enemies")
+cover_atlas = ExtResource("covers")
+enemies_alerted = false
+
+[resource]
+script = ExtResource("mission")
+id = &"breach_line"
+objective = 1
+kind = 1
+title_key = "OPS_BREACH_LINE"
+briefing_key = "OPS_BREACH_LINE_BRIEF"
+map = SubResource("map_data")
+preview = ExtResource("preview")
+waves = Array[ExtResource("wave")]([SubResource("w0"), SubResource("w1")])
+prisoner_spawns = PackedVector2Array(544, 800)
+minimum_prisoners = 0
+extraction = Vector2(2208, 544)
+bonus_seconds = 120.0
+defense_targets = PackedInt32Array(0, 1, 2)

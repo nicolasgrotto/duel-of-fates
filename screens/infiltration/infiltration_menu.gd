@@ -40,7 +40,12 @@ func _ready() -> void:
 	add_child(columns)
 	_list = MenuList.new()
 	_list.custom_minimum_size.x = LIST_WIDTH
-	columns.add_child(_list)
+	var mission_scroll: ScrollContainer = ScrollContainer.new()
+	mission_scroll.custom_minimum_size.x = LIST_WIDTH
+	mission_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	columns.add_child(mission_scroll)
+	mission_scroll.add_child(_list)
+	_list.highlighted.connect(_reveal_selection.bind(mission_scroll))
 	_list.chosen.connect(_choose)
 	_list.highlighted.connect(_highlight)
 	_list.adjusted.connect(_adjust)
@@ -80,6 +85,12 @@ func required_resources(params: Dictionary) -> PackedStringArray:
 	return paths
 
 
+func _reveal_selection(id: StringName, scroll: ScrollContainer) -> void:
+	await get_tree().process_frame
+	if is_instance_valid(scroll) and is_instance_valid(_list) and _list.current_id() == id:
+		scroll.ensure_control_visible(_list.get_child(_list._ids.find(id)))
+
+
 func open(params: Dictionary) -> void:
 	_result = params.has("result")
 	if _result:
@@ -91,7 +102,7 @@ func open(params: Dictionary) -> void:
 		_show_characters()
 		return
 	_heading.text = tr("MENU_OPERATIONS").to_upper()
-	for mission in InfiltrationMode.MISSIONS:
+	for mission in BlasterOpsMode.all_missions():
 		_list.add_item(mission.id, tr(mission.title_key) + "\n" + tr(mission.objective_key()))
 	_list.add_item(CHARACTER_ROW, tr("INF_CHARACTER").format({"name": tr(InfiltrationMode.look_character().name_key)}))
 	_list.add_item(BACK_ROW, tr("MENU_BACK"))
@@ -114,17 +125,28 @@ func _highlight(id: StringName) -> void:
 
 
 func _highlight_mission(id: StringName) -> void:
-	for mission in InfiltrationMode.MISSIONS:
+	for mission in BlasterOpsMode.all_missions():
 		if mission.id == id:
-			_mode = InfiltrationMode.new(mission)
+			_mode = BlasterOpsMode.new(mission as BlasterOpsMissionData) if mission is BlasterOpsMissionData else InfiltrationMode.new(mission)
 			_mission = id
 	var data: InfiltrationMissionData = _mode.data
+	if data is BlasterOpsMissionData:
+		_highlight_incursion(data as BlasterOpsMissionData)
+		return
 	var record: Dictionary = SaveService.infiltration_best.get(String(data.id), {})
 	var progress: String = tr("INF_NOT_COMPLETED")
 	if not record.is_empty():
 		progress = tr("INF_RECORD").format({"time": ChallengeMode.format_time(record.ticks * Ticks.DELTA)}) + "\n" + InfiltrationMode.bonus_text(record.bonuses).replace("\n", ControlHints.SEPARATOR)
 	var controls: String = ControlHints.line(PackedStringArray([ControlHints.blaster_ops_hint("interact"), ControlHints.blaster_ops_hint("strike"), ControlHints.blaster_ops_hint("power")]))
 	_show_panel(data.preview, null, tr(data.title_key).to_upper(), tr(data.objective_key()) + "\n\n" + tr(data.briefing_key) + "\n\n" + tr("INF_BRIEF_RULES").format({"time": int(data.bonus_seconds)}) + "\n" + controls + "\n\n" + progress)
+
+
+func _highlight_incursion(data: BlasterOpsMissionData) -> void:
+	var record: Dictionary = SaveService.incursion_best.get(String(data.id), {})
+	var progress: String = tr("INF_NOT_COMPLETED")
+	if not record.is_empty():
+		progress = tr("INF_RECORD").format({"time": ChallengeMode.format_time(record.ticks * Ticks.DELTA)}) + ControlHints.SEPARATOR + tr(BlasterOpsMode.rating_key(record.rating)) + "\n" + BlasterOpsMode.incursion_bonus_text(record.bonuses)
+	_show_panel(data.preview, null, tr(data.title_key).to_upper(), tr("OPS_INCURSION") + "\n\n" + tr(data.briefing_key) + "\n\n" + tr("OPS_BRIEF_RULES").format({"time": int(data.bonus_seconds), "waves": data.waves.size()}) + "\n\n" + tr("OPS_REWARDS") + "\n\n" + progress)
 
 
 func _show_panel(image: Texture2D, look: InfiltrationLook, title: String, body: String) -> void:
@@ -194,16 +216,22 @@ func _show_result() -> void:
 	var won: bool = result.outcome == InfiltrationMissionState.Outcome.COMPLETED
 	var title_key: String = "INF_SUCCESS" if won else "INF_PRISONER_DOWN" if result.outcome == InfiltrationMissionState.Outcome.PRISONER_DOWN else "INF_PLAYER_DOWN"
 	_heading.text = tr(title_key).to_upper()
+	if _mode is BlasterOpsMode and not won and result.outcome == InfiltrationMissionState.Outcome.PRISONER_DOWN:
+		_heading.text = tr("OPS_PROTECTED_DOWN").to_upper()
 	_list.add_item(&"retry", tr("RESULT_RETRY"))
 	if won:
 		_list.add_item(&"next", tr("INF_NEXT"))
 	_list.add_item(&"missions", tr("INF_MISSIONS"))
 	var lines: PackedStringArray = [tr("INF_TIME").format({"time": ChallengeMode.format_time(result.ticks * Ticks.DELTA)}), tr("INF_APPROACH").format({"approach": tr("INF_DIRECT" if result.alarm_raised else "INF_STEALTH")}), ""]
+	if _mode is BlasterOpsMode:
+		lines = [tr(BlasterOpsMode.rating_key(result.rating)), tr("INF_TIME").format({"time": ChallengeMode.format_time(result.ticks * Ticks.DELTA)}), tr("OPS_STATISTICS").format({"damage": roundi(result.damage), "accuracy": roundi(100.0 * result.hits / maxi(result.attempts, 1))}), ""]
 	for objective in result.objectives:
 		lines.append(tr("INF_CHECK").format({"state": tr("INF_DONE" if objective.done else "INF_PENDING"), "objective": tr(objective.key).format({"index": objective.index})}))
 	lines.append("")
 	lines.append(tr("INF_BONUSES"))
-	lines.append(InfiltrationMode.bonus_text(result.bonuses))
+	lines.append(BlasterOpsMode.incursion_bonus_text(result.bonuses) if _mode is BlasterOpsMode else InfiltrationMode.bonus_text(result.bonuses))
+	if won and _mode is BlasterOpsMode:
+		lines.append(tr("OPS_REWARDS"))
 	if not won:
 		lines.append(tr("INF_FAILURE_SAVE"))
 	_show_panel(_mode.data.preview, null, tr(_mode.data.title_key).to_upper(), "\n".join(lines))

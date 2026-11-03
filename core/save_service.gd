@@ -11,6 +11,7 @@ var parry_best: int = 0
 var challenge_best: Dictionary = {}
 var hunt_best: Dictionary = {}
 var infiltration_best: Dictionary = {}
+var incursion_best: Dictionary = {}
 var infiltration_look: Dictionary = {}
 var unlocked: Dictionary = {}
 var campaign: Dictionary = {}
@@ -28,6 +29,7 @@ func reset() -> void:
 	challenge_best = {}
 	hunt_best = {}
 	infiltration_best = {}
+	incursion_best = {}
 	infiltration_look = {}
 	unlocked = {}
 	campaign = {}
@@ -48,6 +50,7 @@ func load_progress() -> void:
 	challenge_best = file.get_value(SECTION, "challenge_best", {})
 	hunt_best = file.get_value(SECTION, "hunt_best", {})
 	infiltration_best = file.get_value(SECTION, "infiltration_best", {})
+	incursion_best = file.get_value(SECTION, "incursion_best", {})
 	infiltration_look = file.get_value(SECTION, "infiltration_look", {})
 	unlocked = file.get_value(SECTION, "unlocked", {})
 	campaign = file.get_value(SECTION, "campaign", {})
@@ -63,11 +66,32 @@ func save_progress() -> void:
 	file.set_value(SECTION, "challenge_best", challenge_best)
 	file.set_value(SECTION, "hunt_best", hunt_best)
 	file.set_value(SECTION, "infiltration_best", infiltration_best)
+	file.set_value(SECTION, "incursion_best", incursion_best)
 	file.set_value(SECTION, "infiltration_look", infiltration_look)
 	file.set_value(SECTION, "unlocked", unlocked)
 	file.set_value(SECTION, "campaign", campaign)
 	file.set_value(SECTION, "space", space.capture())
 	file.save(path)
+
+
+func record_incursion(id: StringName, ticks: int, rating: int, bonuses: int) -> bool:
+	if ticks <= 0 or rating <= 0:
+		return false
+	var key: String = String(id)
+	var previous: Dictionary = incursion_best.get(key, {})
+	var record: Dictionary = {"ticks": mini(ticks, int(previous.get("ticks", ticks))), "rating": maxi(rating, int(previous.get("rating", 0))), "bonuses": bonuses | int(previous.get("bonuses", 0))}
+	if record == previous:
+		return false
+	incursion_best[key] = record
+	unlocked["color:guardian:1"] = true
+	if incursion_best.size() >= BlasterOpsMode.INCURSIONS.size():
+		var all_completed: bool = true
+		for mission in BlasterOpsMode.INCURSIONS:
+			all_completed = all_completed and incursion_best.has(String(mission.id))
+		if all_completed:
+			unlocked["costume:guardian:traveler"] = true
+	save_progress()
+	return true
 
 
 func clear_arcade(character_id: StringName) -> void:

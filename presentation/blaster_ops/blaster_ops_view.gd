@@ -50,9 +50,12 @@ func _process(delta: float) -> void:
 func _draw() -> void:
 	if operations == null:
 		return
-	_draw_security()
+	if not sim.mission is BlasterOpsMissionState or debug:
+		_draw_security()
 	if sim.mission != null:
 		_draw_mission()
+		if sim.mission is BlasterOpsMissionState:
+			_draw_incursion()
 	_draw_telegraphs()
 	_draw_powers()
 	for index in sim.targets.size():
@@ -89,6 +92,31 @@ func _draw() -> void:
 		for cover in operations.arena.covers:
 			if cover.health > 0.0:
 				draw_rect(Rect2(Vector2(cover.data.cell) * sim.map.tile_size, Vector2.ONE * sim.map.tile_size), PALETTE.potential, false, sim.config.units_per_pixel)
+
+
+func _draw_incursion() -> void:
+	var progress: BlasterOpsMissionState = sim.mission as BlasterOpsMissionState
+	var data: BlasterOpsMissionData = progress.definition
+	if not progress.waves_finished:
+		var exit: Vector2 = data.extraction
+		draw_line(exit - Vector2.ONE * 14.0, exit + Vector2.ONE * 14.0, PALETTE.secondary, 4.0)
+		draw_line(exit + Vector2(-14, 14), exit + Vector2(14, -14), PALETTE.secondary, 4.0)
+	if data.protected_index >= 0 and data.kind == BlasterOpsMissionData.Kind.DEFENSE:
+		var actor: InfiltrationActor = sim.prisoners[data.protected_index]
+		var point: Vector2 = _snap(actor.position)
+		draw_rect(Rect2(point - Vector2(28, 24), Vector2(56, 48)), PALETTE.infiltration_wall)
+		draw_rect(Rect2(point - Vector2(22, 18), Vector2(44, 26)), PALETTE.accent, false, 4.0)
+		draw_line(point + Vector2(-24, 30), point + Vector2(-24 + 48 * actor.health / data.protected_health, 30), PALETTE.text, 4.0)
+	if data.phase_target >= 0:
+		var actor: InfiltrationActor = sim.targets[data.phase_target]
+		if actor.health > 0.0:
+			var point: Vector2 = _snap(actor.previous.lerp(actor.position, alpha))
+			draw_arc(point, actor.radius + 12.0, 0.0, TAU * actor.health / progress.phase_health, 24, PALETTE.flow_tiers[progress.phase_index], 4.0)
+	for index in sim.prisoners.size():
+		var actor: InfiltrationActor = sim.prisoners[index]
+		if actor.health > 0.0 and progress.recruited[index] != 0 and actor.fire_ticks > 0 and index != data.protected_index:
+			var point: Vector2 = _snap(actor.position)
+			draw_line(point, _snap(point + actor.aim * 28.0), PALETTE.bolt, 4.0)
 
 
 func _draw_weapon() -> void:

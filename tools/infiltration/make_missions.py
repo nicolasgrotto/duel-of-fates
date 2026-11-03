@@ -501,7 +501,7 @@ def palette():
     return {name: tuple(bytes.fromhex(value)) for name, value in re.findall(r'var (\w+): Color = Color\("#([0-9a-fA-F]{6})"\)', source)}
 
 
-def preview_image(m):
+def preview_image(m, sprite_overrides=None):
     colors = palette()
     tiles = Image.open(ROOT / "assets/infiltration/training_tiles.png").convert("RGBA")
     enemies = Image.open(ROOT / "assets/infiltration/enemy_sprites.png").convert("RGBA")
@@ -554,7 +554,10 @@ def preview_image(m):
     for kind, cell, facing in m.preview_guards:
         cone(cell, facing, colors["danger"])
     for kind, cell, facing in m.preview_guards:
-        place(enemies.crop((ENEMY_SPRITE[kind] * SPRITE[0], 0, (ENEMY_SPRITE[kind] + 1) * SPRITE[0], SPRITE[1])), cell, facing)
+        sprite = sprite_overrides.get(kind) if sprite_overrides else None
+        if sprite is None:
+            sprite = enemies.crop((ENEMY_SPRITE[kind] * SPRITE[0], 0, (ENEMY_SPRITE[kind] + 1) * SPRITE[0], SPRITE[1]))
+        place(sprite, cell, facing)
     place(hero, m.preview_hero[0], m.preview_hero[1])
     x, y = center(m.preview_hero[0])
     dx, dy = m.preview_hero[1]

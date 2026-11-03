@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="BlasterOpsEnemyData" format=3]
+
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_enemy_data.gd" id="script"]
+[ext_resource type="Resource" path="res://data/bolts/standard_bolt.tres" id="bolt"]
+
+[resource]
+script = ExtResource("script")
+id = &"rival_2"
+health = 80.0
+speed = 160.0
+vision_range = 850.0
+vision_degrees = 360.0
+preferred_range = 36.0
+can_raise_alarm = false
+prefers_prisoners = true
+takedown_immune = true
+telegraph_seconds = 0.5
+fire_interval = 1.8
+sprite = 3
+melee_damage = 8.0
+melee_guard_vigor = 12.0
+melee_range = 52.0
+melee_interval = 1.0
+melee_flinch = 0.15

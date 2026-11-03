@@ -153,7 +153,10 @@ func _draw_mission() -> void:
 			draw_line(marker + Vector2(5, -5), marker + Vector2(-5, 5), PALETTE.danger, 2.0)
 		if sim.mission.recruited[index] != 0:
 			_draw_check(marker, PALETTE.text)
-		draw_line(point + Vector2(-18, 28), point + Vector2(-18 + 36.0 * actor.health / sim.config.prisoner_health, 28), color, 2.0)
+		var maximum: float = sim.config.prisoner_health
+		if sim.mission is BlasterOpsMissionState and index == (sim.mission as BlasterOpsMissionState).definition.protected_index:
+			maximum = (sim.mission as BlasterOpsMissionState).definition.protected_health
+		draw_line(point + Vector2(-18, 28), point + Vector2(-18 + 36.0 * actor.health / maximum, 28), color, 2.0)
 
 
 func _draw_check(point: Vector2, color: Color) -> void:

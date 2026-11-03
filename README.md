@@ -20,9 +20,9 @@ Jogo de duelo de lâminas de energia em visão lateral, feito na **Godot 4.7** c
 - **O Fluxo**: 21 poderes em três categorias (Fluxo comum, Aurora e Eclipse) e 7 técnicas de lâmina, com potência definida pelo nível de Fluxo de cada lutador.
 - **11 personagens**, um chefe e três secretos, cada um com estilo, habilidade, traço e IA próprios.
 - **10 arenas** com identidade visual forte, em que as lâminas são a principal fonte de luz.
-- **Modos**: História (protagonista criado pelo jogador, pontos de habilidade, árvores de Poderes e Lâmina, duas rotas e quatro finais), Duelar (1 Jogador, 2 Jogadores local e CPU vs CPU), Batalhas (Arcade, Sobrevivência, Caçada a chefes com três missões de fases e condições especiais), Modos especiais (Operações: seis missões de Infiltração; Combate de naves: cinco missões e oficina), Tutorial, Treinos guiados, Desafio de parry, Treino, Desafios e Galerias.
+- **Modos**: História (protagonista criado pelo jogador, pontos de habilidade, árvores de Poderes e Lâmina, duas rotas e quatro finais), Duelar (1 Jogador, 2 Jogadores local e CPU vs CPU), Batalhas (Arcade, Sobrevivência, Caçada a chefes com três missões de fases e condições especiais), Modos especiais (Operações: seis Infiltrações e sete Incursões; Combate de naves: seis missões e oficina), Tutorial, Treinos guiados, Desafio de parry, Treino, Desafios e Galerias.
 - Português e inglês, teclado e gamepad.
-- **Operações** em Jogar › Modos especiais: seis missões de Infiltração com resgate em visão superior, furtividade, sete tipos de inimigo, prisioneiros que precisam ser protegidos e personagem à escolha. Controles compartilhados com as futuras Incursões: `WASD` move, `Shift` corre, `Ctrl/C` anda furtivamente, `Espaço` esquiva, `E` interage, `F` corta ou abate, `R` lança poder, mouse mira, botão esquerdo dispara com blaster ou corta sem ele, botão direito/`Q` defende. Na Infiltração, esquiva e tiros fazem ruído e poderes têm recarga tripla.
+- **Operações** em Jogar › Modos especiais: seis Infiltrações de resgate e sete Incursões de combate em visão superior, com personagem à escolha e conclusão possível só com lâmina. Incursões incluem arena, assalto, defesa com duas barreiras implantáveis, sobrevivência até a extração, escolta, rival e chefe de três fases; prisioneiros recrutados ajudam a atirar. Avaliações por tempo, dano, precisão e objetivo secundário liberam recordes e recompensas cosméticas. Controles compartilhados: `WASD` move, `Shift` corre, `Ctrl/C` anda furtivamente, `Espaço` esquiva, `E` interage ou implanta barreira durante a preparação da Defesa, `F` corta ou abate, `R` lança poder, mouse mira, botão esquerdo dispara com blaster ou corta sem ele, botão direito/`Q` defende. Na Infiltração, esquiva e tiros fazem ruído e poderes têm recarga tripla.
 
 **Combate de naves:** Jogar › Modos especiais › Combate de naves. Seis missões, quatro naves no Hangar e oficina de melhorias. A/D giram, W propulsiona, S dá ré, J dispara, K lança o míssil e Shift inicia o impulso.
 
@@ -66,7 +66,7 @@ Arte e áudio são gerados por ferramentas offline (Python 3 com numpy e Pillow)
 | [content/STORY.md](content/STORY.md) | Mundo, campanha, rotas, diálogos (PT-BR e EN) e finais |
 | [content/ARENAS.md](content/ARENAS.md) | As arenas e suas assinaturas visuais |
 | [content/INFILTRATION.md](content/INFILTRATION.md) | Missões, escolta, extração e bônus da Infiltração |
-| [content/BLASTER_OPS.md](content/BLASTER_OPS.md) | Núcleo de tiro superior, calor, esquiva, poderes e treino técnico de Operações de blaster |
+| [content/BLASTER_OPS.md](content/BLASTER_OPS.md) | Operações compartilhadas, sete Incursões, ondas, aliados, fases, avaliações e recompensas |
 | [content/HUNTS.md](content/HUNTS.md) | As três caçadas, recompensas e falas nos dois idiomas |
 | [design/ART_DIRECTION.md](design/ART_DIRECTION.md) | Identidade visual, personagens, lâminas, luz e animação |
 | [design/VFX.md](design/VFX.md) | Efeitos, impacto, câmera lenta e efeitos dos poderes |

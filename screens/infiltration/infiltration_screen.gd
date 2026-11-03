@@ -66,7 +66,7 @@ func open(params: Dictionary) -> void:
 	mode = params.get("mode")
 	var mission_data: InfiltrationMissionData = mode.data if mode != null else null
 	sim = mode.create_simulation() if mode != null else BlasterOpsSimulation.new(CONFIG, params.get("map", TRAINING_MAP), BlasterOpsTraining.equipment(InfiltrationMode.look_character(), 0), mission_data)
-	enemy_controller = BlasterOpsEnemyController.new(sim.map, sim.targets.size())
+	enemy_controller = BlasterOpsMissionController.new(sim.map, sim.targets.size())
 	escort_controller = InfiltrationEscortController.new(sim)
 	_guide_navigation = InfiltrationNavigation.new(sim.map)
 	_stage = PixelStage.new(CONFIG.units_per_pixel)
@@ -237,7 +237,8 @@ func step_once(command: InfiltrationIntent) -> void:
 	if mode != null and sim.mission.outcome != InfiltrationMissionState.Outcome.ACTIVE:
 		_finished = true
 		mode.finish(sim)
-		_begin_closure()
+		if not (mode is BlasterOpsMode and (mode as BlasterOpsMode).external):
+			_begin_closure()
 
 
 func _step_aftermath(delta: float) -> void:
@@ -256,6 +257,8 @@ func _present_events() -> void:
 	for index in sim.event_count:
 		var event: InfiltrationEvent = sim.events[index]
 		_view.on_event(event)
+		if event.type in [InfiltrationEvent.Type.WAVE_STARTED, InfiltrationEvent.Type.PHASE_CHANGED, InfiltrationEvent.Type.BARRIER_PLACED, InfiltrationEvent.Type.EXTRACTION_OPENED]:
+			AudioDirector.play_ui(&"ui_confirm")
 		if BlasterOpsAudio.SOUNDS.has(event.type) and not SOUNDS.has(event.type):
 			AudioDirector.play(BlasterOpsAudio.SOUNDS[event.type], event.position, CONFIG.effects_db)
 		elif event.type == InfiltrationEvent.Type.POWER_RELEASED:
@@ -287,6 +290,8 @@ func _begin_closure() -> void:
 
 
 func _closure_detail(won: bool) -> String:
+	if mode is BlasterOpsMode:
+		return tr(BlasterOpsMode.rating_key(mode.result.rating)) if won else tr("OPS_PROTECTED_DOWN" if sim.mission.outcome == InfiltrationMissionState.Outcome.PRISONER_DOWN else "INF_END_PLAYER")
 	if not won:
 		return tr("INF_END_PRISONER" if sim.mission.outcome == InfiltrationMissionState.Outcome.PRISONER_DOWN else "INF_END_PLAYER")
 	var time: String = tr("INF_TIME").format({"time": ChallengeMode.format_time(sim.mission.finished_tick * Ticks.DELTA)})
@@ -319,7 +324,10 @@ func _update_presentation(alpha: float) -> void:
 	if sim.loadout.blaster != null:
 		cooldowns.append(tr("OPS_HEAT_STATE").format({"value": tr("BOPS_COOLING") if sim.state.overheated else str(roundi(sim.state.heat))}))
 	_operations_status.text = ControlHints.line(cooldowns)
-	_update_security_hud()
+	if sim.mission is BlasterOpsMissionState:
+		_update_incursion_hud()
+	else:
+		_update_security_hud()
 	if mode != null:
 		_objective.text = tr("INF_PROGRESS").format({"done": sim.mission.completed_objectives(sim), "total": mode.data.objective_count(), "time": ChallengeMode.format_time(sim.tick * Ticks.DELTA)})
 	_update_audio()
@@ -331,6 +339,9 @@ func _update_presentation(alpha: float) -> void:
 		]
 		_debug.text += "\nalarm %s  reinforcements %d" % [sim.alarm_active(), sim.reinforcement_ticks]
 		_debug.text += "\nheat %.1f  burst %d / %d  dodge %d / %d  power %d / %d" % [sim.state.heat, sim.state.burst_left, sim.state.burst_ticks, sim.state.dodge_age, sim.state.dodge_cooldown, sim.state.power_ticks, sim.state.power_cooldown]
+		if sim.mission is BlasterOpsMissionState:
+			var progress: BlasterOpsMissionState = sim.mission as BlasterOpsMissionState
+			_debug.text += "\nwave %d prep %d phase %d damage %.1f hits %d/%d barriers %d" % [progress.wave_index, progress.intermission_ticks, progress.phase_index, progress.damage_taken, progress.hits, progress.attempts, progress.barriers_placed]
 		if sim.mission != null:
 			_debug.text += "\nmission %s  alarm history %s  takedowns %d  copied %s  recruited %s  extracted %s" % [InfiltrationMissionState.Outcome.keys()[sim.mission.outcome], sim.mission.alarm_raised, sim.mission.takedowns, sim.mission.copied, sim.mission.recruited, sim.mission.extracted]
 		for index in range(sim.map.targets.size(), sim.targets.size()):
@@ -340,6 +351,31 @@ func _update_presentation(alpha: float) -> void:
 
 func _cooldown(ticks: int) -> String:
 	return tr("BOPS_READY") if ticks == 0 else tr("BOPS_SECONDS").format({"seconds": snappedf(ticks * Ticks.DELTA, 0.1)})
+
+
+func _update_incursion_hud() -> void:
+	var progress: BlasterOpsMissionState = sim.mission as BlasterOpsMissionState
+	var data: BlasterOpsMissionData = progress.definition
+	var text: String = tr("OPS_EXTRACTION_READY") if progress.waves_finished else tr("OPS_PREPARING").format({"time": ceili(progress.intermission_ticks * Ticks.DELTA)}) if progress.intermission_ticks > 0 else tr("OPS_WAVE").format({"wave": progress.wave_index + 1, "total": data.waves.size(), "left": progress.enemies_left(sim)})
+	if progress.wave_index >= 0 and data.waves[progress.wave_index].final_wave and not progress.waves_finished:
+		text += ControlHints.SEPARATOR + tr("OPS_FINAL_WAVE")
+	if data.kind == BlasterOpsMissionData.Kind.HOLD_OUT and not progress.waves_finished:
+		text += ControlHints.SEPARATOR + tr("OPS_HOLD_TIMER").format({"time": maxi(ceili(data.hold_seconds - sim.tick * Ticks.DELTA), 0)})
+	if data.phase_target >= 0:
+		text += ControlHints.SEPARATOR + tr(data.phases[progress.phase_index].title_key)
+	_status.text = text
+	var hints: PackedStringArray = []
+	if progress.nearby_object(sim) >= 0:
+		hints.append(ControlHints.hint(&"infiltration_interact", "INF_RECRUIT"))
+	if data.protected_index >= 0:
+		hints.append(tr("OPS_PROTECTED_HEALTH").format({"health": roundi(sim.prisoners[data.protected_index].health)}))
+	if data.kind == BlasterOpsMissionData.Kind.DEFENSE and progress.intermission_ticks > 0:
+		hints.append(tr("OPS_DEPLOY_HINT").format({"key": ControlHints.key_label(&"infiltration_interact"), "left": CONFIG.barrier_capacity - progress.barriers_placed}))
+	if progress.waves_finished:
+		hints.append(tr("OPS_EXTRACTION_READY"))
+	else:
+		hints.append(tr("OPS_KIND_" + str(data.kind)))
+	_context.text = ControlHints.line(hints)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -390,7 +426,7 @@ func _on_pause_chosen(option: StringName) -> void:
 			_set_paused(false)
 		&"restart":
 			sim = mode.create_simulation() if mode != null else BlasterOpsSimulation.new(CONFIG, sim.arena.source, sim.loadout)
-			enemy_controller = BlasterOpsEnemyController.new(sim.map, sim.targets.size())
+			enemy_controller = BlasterOpsMissionController.new(sim.map, sim.targets.size())
 			escort_controller = InfiltrationEscortController.new(sim)
 			_guide_navigation = InfiltrationNavigation.new(sim.map)
 			_guide_text = ""
@@ -398,6 +434,9 @@ func _on_pause_chosen(option: StringName) -> void:
 			_view.setup(sim, mode.mission_look() if mode != null else InfiltrationMode.current_look())
 			_set_paused(false)
 		&"back":
+			if mode is BlasterOpsMode and (mode as BlasterOpsMode).external:
+				(mode as BlasterOpsMode).exit_requested.emit()
+				return
 			if mode != null:
 				SceneRouter.change(&"operations", {"mission": mode.data.id})
 			else:

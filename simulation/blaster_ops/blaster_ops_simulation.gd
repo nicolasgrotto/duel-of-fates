@@ -24,6 +24,10 @@ func _init(configuration: BlasterOpsConfig, data: InfiltrationMapData, equipment
 		targets[index] = actor
 	for index in bolts.size():
 		bolts[index] = BlasterOpsBolt.new()
+	if mission_data is BlasterOpsMissionData:
+		mission = BlasterOpsMissionState.new(mission_data as BlasterOpsMissionData)
+		arena.reserve_barriers(operations.barrier_capacity if (mission_data as BlasterOpsMissionData).kind == BlasterOpsMissionData.Kind.DEFENSE else 0, operations.deploy_health)
+		(mission as BlasterOpsMissionState).setup(self)
 
 
 func step(intent: InfiltrationIntent, enemy_intents: Array[InfiltrationIntent] = [], escort_intents: Array[InfiltrationIntent] = []) -> void:
@@ -49,6 +53,50 @@ func step(intent: InfiltrationIntent, enemy_intents: Array[InfiltrationIntent] =
 	_step_panels()
 	if mission != null:
 		mission.advance(self, escort_intents)
+		if mission is BlasterOpsMissionState and mission.outcome == InfiltrationMissionState.Outcome.ACTIVE:
+			_step_allies(escort_intents)
+
+
+func deploy_barrier() -> bool:
+	var progress: BlasterOpsMissionState = mission as BlasterOpsMissionState
+	if progress == null or progress.definition.kind != BlasterOpsMissionData.Kind.DEFENSE or progress.intermission_ticks <= 0 or progress.barriers_placed >= operations.barrier_capacity:
+		return false
+	var cell: Vector2i = Vector2i((player.position + player.aim * operations.deploy_distance) / map.tile_size)
+	var center: Vector2 = (Vector2(cell) + Vector2.ONE * 0.5) * map.tile_size
+	for offset in [Vector2i.ZERO, Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
+		if map.is_solid(cell.x + offset.x, cell.y + offset.y):
+			return false
+	if not _spawn_clear(center):
+		return false
+	for actor in prisoners:
+		if actor.health > 0.0 and actor.position.distance_to(center) < map.tile_size:
+			return false
+	var index: int = arena.covers.size() - operations.barrier_capacity + progress.barriers_placed
+	var cover: BlasterOpsCover = arena.covers[index]
+	cover.data.cell = cell
+	cover.health = operations.deploy_health
+	progress.barriers_placed += 1
+	arena.rebuild_cells()
+	cover_revision += 1
+	_emit(InfiltrationEvent.Type.BARRIER_PLACED, 0, index, center)
+	return true
+
+
+func _step_allies(intents: Array[InfiltrationIntent]) -> void:
+	for index in prisoners.size():
+		var actor: InfiltrationActor = prisoners[index]
+		actor.fire_ticks = maxi(actor.fire_ticks - 1, 0)
+		if actor.health <= 0.0 or mission.recruited[index] == 0 or actor.fire_ticks > 0 or index >= intents.size() or (intents[index].held & Intent.Command.LIGHT) == 0:
+			continue
+		var aim: Vector2 = intents[index].aim.normalized()
+		var target: bool = false
+		for enemy in targets:
+			if enemy.health > 0.0 and InfiltrationGeometry.in_sector(actor.position, aim, enemy.position, operations.ally_fire_range, config.swing_degrees) and InfiltrationGeometry.wall_fraction(map, actor.position, enemy.position) == INF:
+				target = true
+				break
+		if target and _spawn_bolt(-index - 2, operations.ally_bolt, aim, 1.0, actor) != null:
+			actor.fire_ticks = Ticks.from_seconds(operations.ally_fire_interval)
+			actor.aim = aim
 
 
 func _advance_operations() -> void:
@@ -229,8 +277,8 @@ func _fire_primary() -> void:
 		_emit(InfiltrationEvent.Type.OVERHEATED, 0, -1, player.position)
 
 
-func _spawn_bolt(shooter: int, data: BoltData, aim: Vector2, scale: float = 1.0) -> BlasterOpsBolt:
-	var actor: InfiltrationActor = player if shooter < 0 else targets[shooter]
+func _spawn_bolt(shooter: int, data: BoltData, aim: Vector2, scale: float = 1.0, body: InfiltrationActor = null) -> BlasterOpsBolt:
+	var actor: InfiltrationActor = body if body != null else (player if shooter < 0 else targets[shooter])
 	var muzzle: Vector2 = actor.position + aim * (actor.radius + data.muzzle_forward)
 	if InfiltrationGeometry.wall_fraction(map, actor.position, muzzle, data.size) != INF:
 		return null
@@ -241,7 +289,7 @@ func _spawn_bolt(shooter: int, data: BoltData, aim: Vector2, scale: float = 1.0)
 		bolt.active = true
 		bolt.data = data
 		bolt.shooter = shooter
-		bolt.owner = shooter + 1
+		bolt.owner = 0 if shooter < 0 else shooter + 1
 		bolt.origin = actor.position
 		bolt.position = muzzle
 		bolt.previous = muzzle
@@ -250,7 +298,9 @@ func _spawn_bolt(shooter: int, data: BoltData, aim: Vector2, scale: float = 1.0)
 		bolt.damage = data.damage * scale
 		bolt.evaded = false
 		bolt.reflected = false
-		_emit(InfiltrationEvent.Type.SHOT_FIRED, bolt.owner, -1, muzzle)
+		_emit(InfiltrationEvent.Type.SHOT_FIRED, shooter + 1, -1, muzzle)
+		if shooter == -1 and mission is BlasterOpsMissionState:
+			(mission as BlasterOpsMissionState).attempts += 1
 		InfiltrationPerception.noise(self, actor.position, config.combat_noise, bolt.owner)
 		return bolt
 	return null
@@ -287,7 +337,7 @@ func _step_bolts() -> void:
 					fraction = impact
 					victim = index + 1
 		for index in prisoners.size():
-			if aftermath or prisoners[index].health <= 0.0 or (mission != null and mission.extracted[index] != 0):
+			if aftermath or prisoners[index].health <= 0.0 or bolt.shooter < -1 or (mission != null and mission.extracted[index] != 0):
 				continue
 			var impact: float = _actor_impact(bolt, end, prisoners[index])
 			if impact < fraction:
@@ -305,6 +355,8 @@ func _step_bolts() -> void:
 					prisoner.health = maxf(prisoner.health - bolt.damage, 0.0)
 					_emit(InfiltrationEvent.Type.BOLT_HIT, bolt.owner, victim, bolt.position, bolt.damage)
 				elif victim > 0:
+					if mission is BlasterOpsMissionState and bolt.shooter == -1 and not bolt.reflected:
+						(mission as BlasterOpsMissionState).hits += 1
 					var damage: float = _armored_damage(victim - 1, bolt.damage, bolt.origin)
 					_emit(InfiltrationEvent.Type.BOLT_HIT, bolt.owner, victim, bolt.position, damage)
 					_damage_target(victim - 1, damage, false, bolt.origin)
@@ -388,6 +440,8 @@ func _resolve_player_bolt(candidate: InfiltrationBolt) -> void:
 func _hurt_player(damage: float, flinch_ticks: int, source: int, point: Vector2) -> void:
 	if aftermath:
 		return
+	if mission is BlasterOpsMissionState:
+		(mission as BlasterOpsMissionState).damage_taken += minf(damage, player.health)
 	super._hurt_player(damage, flinch_ticks, source, point)
 	state.power_ticks = 0
 	if player.health <= 0.0:
@@ -459,7 +513,13 @@ func _release_enemy_attack(index: int, data: BlasterOpsEnemyData, actor: Blaster
 		actor.fire_ticks = Ticks.from_seconds(data.melee_interval)
 		actor.burst_left = 0
 		return
-	if _spawn_bolt(index, data.bolt, actor.telegraph_aim) == null:
+	var emitted: bool = false
+	if data.shot_angles.is_empty():
+		emitted = _spawn_bolt(index, data.bolt, actor.telegraph_aim) != null
+	else:
+		for angle in data.shot_angles:
+			emitted = _spawn_bolt(index, data.bolt, actor.telegraph_aim.rotated(deg_to_rad(angle))) != null or emitted
+	if not emitted:
 		actor.telegraph_ticks = 1
 		return
 	actor.burst_left -= 1
@@ -551,11 +611,14 @@ func capture() -> Dictionary:
 	snapshot["operations"] = state.capture()
 	var health: PackedFloat32Array = []
 	var swings: PackedInt32Array = []
+	var cells: PackedVector2Array = []
 	for cover in arena.covers:
 		health.append(cover.health)
 		swings.append(cover.last_swing_id)
+		cells.append(Vector2(cover.data.cell))
 	snapshot["covers"] = health
 	snapshot["cover_swings"] = swings
+	snapshot["cover_cells"] = cells
 	return snapshot
 
 
@@ -565,4 +628,21 @@ func restore(snapshot: Dictionary) -> void:
 	for index in arena.covers.size():
 		arena.covers[index].health = snapshot.covers[index]
 		arena.covers[index].last_swing_id = snapshot.cover_swings[index]
+		arena.covers[index].data.cell = Vector2i(snapshot.cover_cells[index])
+	arena.rebuild_cells()
+	if mission is BlasterOpsMissionState:
+		var progress: BlasterOpsMissionState = mission as BlasterOpsMissionState
+		if progress.definition.phase_target >= 0:
+			target_data[progress.definition.phase_target] = progress.definition.phases[progress.phase_index].enemy
 	cover_revision += 1
+
+
+func _emit(type: InfiltrationEvent.Type, source: int, target: int, point: Vector2, amount: float = 0.0) -> void:
+	if mission is BlasterOpsMissionState:
+		var progress: BlasterOpsMissionState = mission as BlasterOpsMissionState
+		if type == InfiltrationEvent.Type.SWING_STARTED:
+			progress.attempts += 1
+		elif type == InfiltrationEvent.Type.SWING_HIT and amount > 0.0 and progress.last_hit_swing != player.swing_id:
+			progress.hits += 1
+			progress.last_hit_swing = player.swing_id
+	super._emit(type, source, target, point, amount)

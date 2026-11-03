@@ -27,6 +27,24 @@ func cover_at(x: int, y: int) -> int:
 	return _cells[y * width() + x]
 
 
+func reserve_barriers(capacity: int, health: float) -> void:
+	for index in capacity:
+		var data: BlasterOpsCoverData = BlasterOpsCoverData.new()
+		data.cell = Vector2i(-1, -1)
+		data.health = health
+		var cover: BlasterOpsCover = BlasterOpsCover.new(data)
+		cover.health = 0.0
+		covers.append(cover)
+
+
+func rebuild_cells() -> void:
+	_cells.fill(-1)
+	for index in covers.size():
+		var cell: Vector2i = covers[index].data.cell
+		if cell.x >= 0 and cell.y >= 0 and cell.x < width() and cell.y < rows.size():
+			_cells[cell.y * width() + cell.x] = index
+
+
 func is_solid(x: int, y: int) -> bool:
 	var index: int = cover_at(x, y)
 	return covers[index].health > 0.0 if index >= 0 else source.is_solid(x, y)
