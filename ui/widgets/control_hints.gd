@@ -54,6 +54,22 @@ static func line(hints: PackedStringArray) -> String:
 	return SEPARATOR.join(hints)
 
 
+static func blaster_ops_hud_hint(suffix: String) -> String:
+	var action: StringName = StringName(BlasterOpsBindings.PREFIX + suffix)
+	var label: String = ""
+	if not Input.get_connected_joypads().is_empty():
+		var buttons: PackedStringArray = button_names(action)
+		label = buttons[0] if not buttons.is_empty() else ""
+	if label.is_empty():
+		for event in InputMap.action_get_events(action):
+			if event is InputEventMouseButton:
+				label = TranslationServer.translate("BOPS_MOUSE_LEFT" if event.button_index == MOUSE_BUTTON_LEFT else "BOPS_MOUSE_RIGHT")
+				break
+	if label.is_empty():
+		label = key_label(action)
+	return "%s  %s" % [label, TranslationServer.translate("BOPS_ACTION_" + suffix.to_upper())]
+
+
 static func blaster_ops_hint(suffix: String) -> String:
 	var action: StringName = StringName(BlasterOpsBindings.PREFIX + suffix)
 	var names: PackedStringArray = key_names(action)

@@ -76,7 +76,7 @@ func _input(event: InputEvent) -> void:
 		var code: Key = event.physical_keycode if event.physical_keycode != KEY_NONE else event.keycode
 		if code == KEY_ESCAPE:
 			_finish()
-		elif not InputBindings.is_reserved(code):
+		elif not InputBindings.is_reserved(code) and not BlasterOpsBindings.is_unsafe_key(code):
 			Settings.blaster_ops_keys = InputBindings.rebind(BlasterOpsBindings.keyboard_map(), _waiting, code)
 			_commit()
 		else:

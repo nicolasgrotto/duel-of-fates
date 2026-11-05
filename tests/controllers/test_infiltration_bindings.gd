@@ -11,11 +11,14 @@ func test_keyboard_layout_stays_near_movement_keys_and_never_changes_duel_action
 	for event in InputMap.action_get_events(&"p1_light_attack"):
 		before.append(event.as_text())
 	InfiltrationBindings.install()
-	assert_eq(_keys(&"infiltration_attack"), PackedInt32Array())
+	assert_eq(_keys(&"infiltration_attack"), PackedInt32Array([KEY_V]))
 	assert_eq(_keys(&"infiltration_dodge"), PackedInt32Array([KEY_SPACE]))
-	assert_eq(_keys(&"infiltration_power"), PackedInt32Array([KEY_R]))
+	assert_eq(_keys(&"infiltration_power"), PackedInt32Array([KEY_1, KEY_R]))
+	assert_eq(_keys(&"infiltration_power_2"), PackedInt32Array([KEY_2]))
+	assert_eq(_keys(&"infiltration_power_3"), PackedInt32Array([KEY_3]))
+	assert_eq(_keys(&"infiltration_switch_weapon"), PackedInt32Array([KEY_X]))
 	assert_eq(_keys(&"infiltration_guard"), PackedInt32Array([KEY_Q]))
-	assert_eq(_keys(&"infiltration_sneak"), PackedInt32Array([KEY_CTRL, KEY_C]))
+	assert_eq(_keys(&"infiltration_sneak"), PackedInt32Array([KEY_C]))
 	assert_eq(_keys(&"infiltration_takedown"), PackedInt32Array([KEY_F]))
 	assert_eq(_keys(&"infiltration_interact"), PackedInt32Array([KEY_E]))
 	assert_eq(_keys(&"infiltration_up"), PackedInt32Array([KEY_W, KEY_UP]))
@@ -47,7 +50,12 @@ func test_gamepad_buttons_still_follow_the_duel() -> void:
 	InputBindings.apply_defaults()
 	InfiltrationBindings.install()
 	assert_eq(_buttons(&"infiltration_attack"), _buttons(&"p1_light_attack"))
-	assert_eq(_buttons(&"infiltration_guard"), _buttons(&"p1_block"))
+	assert_eq(_buttons(&"infiltration_guard"), PackedInt32Array())
+	assert_eq(_buttons(&"infiltration_power_2"), PackedInt32Array([JOY_BUTTON_LEFT_SHOULDER]))
+	var trigger: bool = false
+	for event in InputMap.action_get_events(&"infiltration_guard"):
+		trigger = trigger or event is InputEventJoypadMotion
+	assert_true(trigger)
 	InfiltrationBindings.uninstall()
 
 

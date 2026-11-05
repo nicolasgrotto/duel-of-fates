@@ -4,9 +4,12 @@ extends RefCounted
 const COMMANDS: Dictionary = {
 	Intent.Command.LIGHT: &"blaster_ops_fire", Intent.Command.BLOCK: &"blaster_ops_guard",
 	Intent.Command.DODGE: &"blaster_ops_dodge", Intent.Command.POWER: &"blaster_ops_power",
+	InfiltrationIntent.POWER_2: &"blaster_ops_power_2", InfiltrationIntent.POWER_3: &"blaster_ops_power_3",
+	InfiltrationIntent.SWITCH_WEAPON: &"blaster_ops_switch_weapon",
 	Intent.Command.HEAVY: &"blaster_ops_strike", InfiltrationIntent.RUN: &"blaster_ops_run",
 	InfiltrationIntent.SNEAK: &"blaster_ops_sneak", InfiltrationIntent.INTERACT: &"blaster_ops_interact",
 }
+const STANCES: int = InfiltrationIntent.RUN | InfiltrationIntent.SNEAK
 
 var prefix: String = BlasterOpsBindings.PREFIX
 var commands: Dictionary = COMMANDS
@@ -17,6 +20,7 @@ var _pointer: Vector2 = Vector2.ZERO
 var _pointer_active: bool = false
 var _aim: Vector2 = Vector2.RIGHT
 var _explicit_aim: bool = false
+var _stance: int = 0
 
 
 func handle_input(event: InputEvent) -> void:
@@ -48,11 +52,26 @@ func produce(sim: InfiltrationSimulation, intent: InfiltrationIntent) -> void:
 	intent.aim = _aim
 	var raw: int = _held_commands()
 	_suppressed &= raw
-	intent.held = raw & ~_suppressed
-	intent.pressed = (_pending | (intent.held & ~_last_held)) & ~_suppressed
-	intent.held |= intent.pressed
-	_last_held = intent.held
+	var active: int = raw & ~_suppressed
+	intent.pressed = (_pending | (active & ~_last_held)) & ~_suppressed
+	_last_held = active | intent.pressed
+	_toggle_stance(intent.pressed)
+	intent.held = (_last_held & ~STANCES) | _stance
 	_pending = 0
+
+
+func stance() -> int:
+	return _stance
+
+
+func reset_stance() -> void:
+	_stance = 0
+
+
+func _toggle_stance(pressed: int) -> void:
+	for bit in [InfiltrationIntent.RUN, InfiltrationIntent.SNEAK]:
+		if (pressed & bit) != 0:
+			_stance = 0 if _stance == bit else bit
 
 
 func discard_pending() -> void:

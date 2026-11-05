@@ -10,6 +10,8 @@ const MAX_STEPS: int = 5
 const HUD_MARGIN: float = 56.0
 const HUD_WIDTH: float = 320.0
 const GUIDE_REFRESH_FRAMES: int = 15
+const HEAT_BAR_HEIGHT: float = 12.0
+const HEAT_LABEL_GAP: float = 16.0
 const SOUNDS: Dictionary = {
 	InfiltrationEvent.Type.SWING_STARTED: &"swing_light",
 	InfiltrationEvent.Type.SWING_HIT: &"hit_light",
@@ -36,6 +38,8 @@ var _operations_status: Label
 var _camera: Camera2D
 var _health: HudBar
 var _vigor: HudBar
+var _heat: HeatBar
+var _heat_label: Label
 var _status: Label
 var _debug: Label
 var _pause_layer: CanvasLayer
@@ -114,9 +118,17 @@ func _build_hud() -> void:
 	_status.offset_top = 90.0
 	hud.add_child(_status)
 	_health = _bar(hud, 40.0, PALETTE.text)
-	_vigor = _bar(hud, 66.0, PALETTE.accent)
+	_vigor = _bar(hud, 60.0, PALETTE.accent)
+	_heat = HeatBar.new()
+	_heat.position = Vector2(HUD_MARGIN, 80.0)
+	_heat.size = Vector2(HUD_WIDTH, HEAT_BAR_HEIGHT)
+	_heat.reduced = Settings.reduced_effects
+	hud.add_child(_heat)
+	_heat_label = _label("", &"InfiltrationLabel")
+	_heat_label.position = Vector2(HUD_MARGIN + HUD_WIDTH + HEAT_LABEL_GAP, 66.0)
+	hud.add_child(_heat_label)
 	_operations_status = _label("", &"InfiltrationLabel")
-	_operations_status.position = Vector2(HUD_MARGIN, 88.0)
+	_operations_status.position = Vector2(HUD_MARGIN, 100.0)
 	hud.add_child(_operations_status)
 	var objective: Label = _label(tr("INFILTRATION_OBJECTIVE"), &"InfiltrationLabel")
 	objective.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
@@ -165,12 +177,12 @@ func _hints() -> String:
 	})
 	return ControlHints.line(PackedStringArray([
 		movement,
-		ControlHints.blaster_ops_hint("run"), ControlHints.blaster_ops_hint("sneak"),
-		ControlHints.blaster_ops_hint("dodge"),
+		ControlHints.blaster_ops_hud_hint("run"), ControlHints.blaster_ops_hud_hint("sneak"),
+		ControlHints.blaster_ops_hud_hint("dodge"),
 	])) + "\n" + ControlHints.line(PackedStringArray([
-		ControlHints.blaster_ops_hint("fire"), ControlHints.blaster_ops_hint("guard"),
-		ControlHints.blaster_ops_hint("strike"), ControlHints.blaster_ops_hint("interact"),
-		ControlHints.blaster_ops_hint("power"),
+		ControlHints.blaster_ops_hud_hint("fire"), ControlHints.blaster_ops_hud_hint("guard"),
+		ControlHints.blaster_ops_hud_hint("strike"), ControlHints.blaster_ops_hud_hint("interact"),
+		ControlHints.blaster_ops_hud_hint("power"),
 	]))
 
 
@@ -321,8 +333,10 @@ func _update_presentation(alpha: float) -> void:
 	var cooldowns: PackedStringArray = [tr("BOPS_COOLDOWN").format({"action": tr("BOPS_ACTION_DODGE"), "time": _cooldown(sim.state.dodge_cooldown)})]
 	if sim.loadout.power != null:
 		cooldowns.append(tr("BOPS_COOLDOWN").format({"action": tr(sim.loadout.power.power.name_key), "time": _cooldown(sim.state.power_cooldown)}))
-	if sim.loadout.blaster != null:
-		cooldowns.append(tr("OPS_HEAT_STATE").format({"value": tr("BOPS_COOLING") if sim.state.overheated else str(roundi(sim.state.heat))}))
+	_update_heat()
+	var stance: int = controller.stance()
+	if stance != 0:
+		cooldowns.append(tr("BOPS_STANCE_RUN" if stance == InfiltrationIntent.RUN else "BOPS_STANCE_SNEAK"))
 	_operations_status.text = ControlHints.line(cooldowns)
 	if sim.mission is BlasterOpsMissionState:
 		_update_incursion_hud()
@@ -347,6 +361,17 @@ func _update_presentation(alpha: float) -> void:
 		for index in range(sim.map.targets.size(), sim.targets.size()):
 			var actor: InfiltrationActor = sim.targets[index]
 			_debug.text += "\n%d %s %.3f  %s  waypoint %d" % [index + 1, InfiltrationActor.Awareness.keys()[actor.awareness], actor.suspicion, InfiltrationActor.Decision.keys()[actor.decision], actor.waypoint]
+
+
+func _update_heat() -> void:
+	var armed: bool = sim.loadout.blaster != null
+	_heat.visible = armed
+	_heat_label.visible = armed
+	if not armed:
+		return
+	_heat.show_heat(sim, CONFIG)
+	_heat_label.text = tr(HeatBar.label_key(sim.state))
+	_heat_label.modulate = _heat.fill_color
 
 
 func _cooldown(ticks: int) -> String:
@@ -430,6 +455,7 @@ func _on_pause_chosen(option: StringName) -> void:
 			escort_controller = InfiltrationEscortController.new(sim)
 			_guide_navigation = InfiltrationNavigation.new(sim.map)
 			_guide_text = ""
+			controller.reset_stance()
 			_map_view.attach(sim)
 			_view.setup(sim, mode.mission_look() if mode != null else InfiltrationMode.current_look())
 			_set_paused(false)

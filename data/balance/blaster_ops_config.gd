@@ -37,3 +37,5 @@ extends InfiltrationConfig
 @export var precision_flash_seconds: float = 0.24
 @export var power_effect_seconds: float = 0.3
 @export var warning_db: float = -8.0
+@export var heat_hot_ratio: float = 0.7
+@export var heat_pulse_speed: float = 6.0

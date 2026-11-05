@@ -77,6 +77,10 @@ Arquivos e pastas em `snake_case`; classes com `class_name` em `PascalCase`.
 
 ## Simulação
 
+### Atualização 1.1 das Operações
+
+**Entrada.** `BlasterOpsPlayerController` transforma os toques de `RUN` e `SNEAK` em postura (`stance()`), mantida entre ticks; a simulação continua lendo só `intent.held`, então testes, pilotos e reexecução não mudam. `BlasterOpsBindings.migrate_keys` leva teclas salvas do layout 1 para o 2 (`LAYOUT_VERSION`), e `Settings` só migra arquivos antigos. **Janela.** `Settings._fit_window` encolhe a janela do desktop para a área útil da tela, fora de Web, headless e jogo embutido no editor. **Calor.** `HeatBar` (`presentation/hud/`) é só leitura do estado. **Navegador.** `tools/web/web_drive.js` abre a build Web local no Chrome sem interface por CDP, sem dependências, e executa um roteiro JSON de teclas, mouse e capturas: `node tools/web/web_drive.js roteiro.json 1280 720 pasta_de_saida`, com a build servida em `127.0.0.1:8000`.
+
 ### Missões de Incursão (task 18)
 
 `BlasterOpsMissionData` estende `InfiltrationMissionData`, com ondas, objetivo, protegido, fases e avaliação por dados. `BlasterOpsMissionState` estende o estado de missão existente e vive no mesmo `BlasterOpsSimulation`; todos os slots de onda, aliados e duas barreiras são montados antes dos ticks. Capture/restore inclui ondas, fases, estatísticas, células/vida de barreiras e timers. Projéteis preservam os dados de sua emissão; fases só trocam referências runtime. Controladores inimigo e de escolta continuam externos, com intenções de movimento/tiro.

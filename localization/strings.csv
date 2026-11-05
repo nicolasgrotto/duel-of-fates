@@ -1169,13 +1169,12 @@ BOPS_ACTION_DOWN,Mover para baixo,Move down
 BOPS_ACTION_FIRE,Disparar / cortar,Fire / strike
 BOPS_ACTION_GUARD,Guarda / parry,Guard / parry
 BOPS_ACTION_DODGE,Esquivar,Dodge
-BOPS_ACTION_POWER,Poder equipado,Equipped power
+BOPS_ACTION_POWER,Poder 1,Power 1
 MENU_OPERATIONS,Operações,Operations
 OPS_INFILTRATION,Infiltração,Infiltration
 OPS_INCURSION,Incursão,Incursion
-OPS_HEAT_STATE,Calor · {value},Heat · {value}
-BOPS_ACTION_RUN,Correr,Run
-BOPS_ACTION_SNEAK,Furtivo,Sneak
+BOPS_ACTION_RUN,Correr (alterna),Run (toggle)
+BOPS_ACTION_SNEAK,Furtivo (alterna),Sneak (toggle)
 BOPS_ACTION_STRIKE,Corte / abate,Strike / takedown
 BOPS_ACTION_INTERACT,Interagir,Interact
 OPS_ENCIRCLED_YARD,Pátio cercado,Encircled Yard
@@ -1223,3 +1222,9 @@ OPS_KIND_3,Resista até a chegada da extração,Hold out until extraction arrive
 OPS_KIND_4,Acompanhe o aliado à saída leste,Accompany the ally to the eastern exit
 OPS_KIND_5,Vença o rival e sua guarda,Defeat the rival and their guard
 OPS_KIND_6,Vença o chefe e sua guarda,Defeat the boss and its guard
+BOPS_ACTION_POWER_2,Poder 2,Power 2
+BOPS_ACTION_POWER_3,Poder 3,Power 3
+BOPS_ACTION_SWITCH_WEAPON,Trocar arma,Switch weapon
+BOPS_OVERHEATED,Superaquecido · Resfriando,Overheated · Cooling
+BOPS_STANCE_RUN,Correndo,Running
+BOPS_STANCE_SNEAK,Furtivo,Sneaking

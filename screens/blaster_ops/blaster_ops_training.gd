@@ -22,7 +22,7 @@ var _map_view: BlasterOpsMapView
 var _camera: Camera2D
 var _audio: BlasterOpsAudio
 var _health: HudBar
-var _heat: HudBar
+var _heat: HeatBar
 var _vigor: HudBar
 var _heat_text: Label
 var _cooldowns: Label
@@ -89,7 +89,11 @@ func _build_hud() -> void:
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.offset_top = 30.0
 	_health = _bar(hud, 48.0, PALETTE.text)
-	_heat = _bar(hud, 86.0, PALETTE.potential)
+	_heat = HeatBar.new()
+	_heat.position = Vector2(MARGIN + 150.0, 86.0)
+	_heat.size = Vector2(BAR_WIDTH, 8.0)
+	_heat.reduced = Settings.reduced_effects
+	hud.add_child(_heat)
 	_vigor = _bar(hud, 124.0, PALETTE.accent)
 	for index in 3:
 		var text: Label = _label(hud, tr(["BOPS_HEALTH", "BOPS_HEAT", "BOPS_VIGOR"][index]), &"InfiltrationLabel")
@@ -200,13 +204,12 @@ func _update_presentation(alpha: float) -> void:
 	var desired: Vector2 = sim.player.previous.lerp(sim.player.position, alpha)
 	_camera.position = desired.clamp(half, sim.map.world_size() - half)
 	_health.ratio = sim.player.health / CONFIG.health
-	_heat.ratio = sim.state.heat / CONFIG.heat_capacity
+	_heat.show_heat(sim, CONFIG)
 	_heat.visible = sim.loadout.blaster != null
 	_heat_text.visible = _heat.visible
 	_vigor.ratio = sim.player.vigor / CONFIG.vigor
-	_heat.fill_color = PALETTE.danger if sim.state.overheated else PALETTE.potential
-	_heat_text.text = tr("BOPS_COOLING" if sim.state.overheated else "BOPS_HEAT")
-	for bar in [_health, _heat, _vigor]:
+	_heat_text.text = tr(HeatBar.label_key(sim.state))
+	for bar in [_health, _vigor]:
 		bar.ghost_ratio = bar.ratio
 		bar.queue_redraw()
 	_cooldowns.text = tr("BOPS_COOLDOWN").format({"action": tr("BOPS_ACTION_DODGE"), "time": _cooldown(sim.state.dodge_cooldown)})

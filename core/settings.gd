@@ -6,6 +6,7 @@ const DIFFICULTIES: Array[StringName] = [&"easy", &"normal", &"hard"]
 const LOCALES: Array[String] = ["pt_BR", "en"]
 const VOLUME_STEPS: int = 10
 const EFFECT_BUSES: Array[StringName] = [&"Effects", &"Blades", &"Ambience", &"Interface"]
+const HEADLESS_DISPLAY: String = "headless"
 const WEB_FEATURE: String = "web"
 
 var locale: String = "pt_BR"
@@ -54,6 +55,36 @@ func apply() -> void:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 	elif not fullscreen and not windowed:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+	_fit_window()
+
+
+static func fitted_window_size(window: Vector2i, room: Vector2i) -> Vector2i:
+	if window.x <= room.x and window.y <= room.y:
+		return window
+	var ratio: float = minf(float(room.x) / window.x, float(room.y) / window.y)
+	return Vector2i(floori(window.x * ratio), floori(window.y * ratio))
+
+
+func _load_operations_keys(file: ConfigFile) -> Dictionary:
+	var layout: int = file.get_value("blaster_ops", "operations_layout", 0)
+	var saved: Dictionary = file.get_value("blaster_ops", "keys", {})
+	if layout < 1:
+		return {}
+	return saved if layout >= BlasterOpsBindings.LAYOUT_VERSION else BlasterOpsBindings.migrate_keys(saved)
+
+
+func _fit_window() -> void:
+	if OS.has_feature(WEB_FEATURE) or DisplayServer.get_name() == HEADLESS_DISPLAY or Engine.is_embedded_in_editor():
+		return
+	if DisplayServer.window_get_mode() != DisplayServer.WINDOW_MODE_WINDOWED:
+		return
+	var usable: Rect2i = DisplayServer.screen_get_usable_rect(DisplayServer.window_get_current_screen())
+	var inner: Vector2i = DisplayServer.window_get_size()
+	var decorations: Vector2i = DisplayServer.window_get_size_with_decorations() - inner
+	var fitted: Vector2i = fitted_window_size(inner, usable.size - decorations)
+	if fitted != inner:
+		DisplayServer.window_set_size(fitted)
+		DisplayServer.window_set_position(usable.position + decorations)
 
 
 func cycle_key_preset(step: int) -> void:
@@ -108,7 +139,7 @@ func load_settings(path: String = SETTINGS_PATH) -> void:
 	key_preset = StringName(file.get_value("input", "key_preset", String(key_preset)))
 	custom_keys = file.get_value("input", "custom_keys", {})
 	custom_buttons = file.get_value("input", "custom_buttons", {})
-	blaster_ops_keys = file.get_value("blaster_ops", "keys", {}) if file.has_section_key("blaster_ops", "operations_layout") else {}
+	blaster_ops_keys = _load_operations_keys(file)
 	blaster_ops_buttons = file.get_value("blaster_ops", "buttons", {})
 	if not InputBindings.PRESETS.has(key_preset):
 		key_preset = &"default"
@@ -137,7 +168,7 @@ func save_settings(path: String = SETTINGS_PATH) -> void:
 	file.set_value("input", "custom_keys", custom_keys)
 	file.set_value("input", "custom_buttons", custom_buttons)
 	file.set_value("blaster_ops", "keys", blaster_ops_keys)
-	file.set_value("blaster_ops", "operations_layout", 1)
+	file.set_value("blaster_ops", "operations_layout", BlasterOpsBindings.LAYOUT_VERSION)
 	file.set_value("blaster_ops", "buttons", blaster_ops_buttons)
 	for slot in hold_to_lock.size():
 		file.set_value("accessibility", "hold_to_lock_p%d" % (slot + 1), hold_to_lock[slot])

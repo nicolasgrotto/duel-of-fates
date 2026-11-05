@@ -37,7 +37,7 @@ Escudeiro, atirador, drone e andador não correm até o painel; soldados e pesad
 
 ## Controles e personagem
 
-Os controles são compartilhados e remapeáveis em Operações: mover **WASD** ou setas, correr **Shift**, furtivo **Ctrl/C**, esquivar **Espaço**, interagir **E**, corte/abate **F**, poder **R**, atacar **botão esquerdo** (dispara com blaster; corta sem ele), guarda **botão direito/Q**. O controle conserva os botões do duelo, com interação em A/Cruz e corrida no stick esquerdo pressionado.
+Os controles são compartilhados e remapeáveis em Operações: mover **WASD** ou setas, correr **Shift** (alterna), furtivo **C** (alterna), esquivar **Espaço**, interagir **E**, corte/abate **F**, poderes **1/2/3** (R também o primeiro), trocar arma **X**, atacar **botão esquerdo/V** (dispara com blaster; corta sem ele), guarda **botão direito/Q**. O controle conserva os botões do duelo, com interação em A/Cruz e corrida no stick esquerdo pressionado.
 
 A linha **Personagem** do menu escolhe entre personagens e trajes liberados, e a escolha fica salva. Preserva silhueta vista de cima, cores do traje e cor e tipo da lâmina; possuir blaster muda a primária para tiro. Vida, alcance da lâmina e regras de resgate são iguais para todos. Conjunto explícito pode fornecer protagonista e arma da História sem alterar sua campanha. Peças opcionais de traje (como capuz) não mudam a silhueta vista de cima.
 

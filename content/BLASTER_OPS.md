@@ -2,7 +2,7 @@
 
 Núcleo superior de Operações, iniciado na task 16 e compartilhado com Infiltração na task 17. **Pátio de calibração / Calibration Yard** permanece treino reiniciável, sem vitória, recompensa, save de progresso ou entrada pública; a cena `screens/blaster_ops/blaster_ops_training.tscn` pode ser executada no editor, sem rota no roteador. As seis Infiltrações e sete Incursões usam o mesmo núcleo em Jogar › Modos especiais › Operações. O duelo não muda.
 
-**Operações (tasks 17–18):** o núcleo atende Infiltração e Incursão no menu único Operações; o Pátio continua treino técnico, com o mesmo moveset das missões. Espaço esquiva, Shift corre, Ctrl/C anda furtivamente, E interage, F corta ou abate, R lança poder, mouse esquerdo dispara/corta e direito/Q guarda. Nenhum personagem recebe arma temporária. Armas explícitas da História mantêm shot_count, shot_interval e vigor_multiplier (escala de calor); preço não tem função neste modo. As seções históricas abaixo da task 16 são substituídas por GAME_DESIGN, "Operações: Infiltração e Incursão", nestes pontos.
+**Operações (tasks 17–18):** o núcleo atende Infiltração e Incursão no menu único Operações; o Pátio continua treino técnico, com o mesmo moveset das missões. Espaço esquiva, Shift alterna corrida, C alterna furtivo, E interage, F corta ou abate, 1/2/3 lançam poderes (R também o primeiro), X troca de arma, mouse esquerdo ou V dispara/corta e direito/Q guarda. Nenhum personagem recebe arma temporária. Armas explícitas da História mantêm shot_count, shot_interval e vigor_multiplier (escala de calor); preço não tem função neste modo. As seções históricas abaixo da task 16 são substituídas por GAME_DESIGN, "Operações: Infiltração e Incursão", nestes pontos.
 
 ## Jogador e controles
 
@@ -36,17 +36,20 @@ Movimento livre normalizado em oito direções, 240 u/s, aceleração 2.200 u/s�
 | --- | --- | --- |
 | Mover | WASD / setas | stick esquerdo / D-pad |
 | Mirar | mouse | stick direito |
-| Disparar / cortar sem blaster | botão esquerdo | botão oeste (Rápido) |
-| Guarda / parry | botão direito / Q | botão de guarda do J1 |
+| Disparar / cortar sem blaster | botão esquerdo / V | botão oeste (Rápido) |
+| Guarda / parry | botão direito / Q | gatilho de guarda do J1 |
 | Esquivar | Espaço | botão de esquiva do J1 |
-| Correr | Shift | stick esquerdo pressionado |
-| Furtivo | Ctrl/C | habilidade do J1 |
+| Correr (alterna) | Shift | stick esquerdo pressionado |
+| Furtivo (alterna) | C | habilidade do J1 |
 | Corte / abate | F | forte do J1 |
 | Interagir | E | A/Cruz |
-| Poder equipado | R | gatilho de poder do J1 |
+| Poder 1 | 1 / R | gatilho de poder do J1 |
+| Poder 2 | 2 | ombro esquerdo |
+| Poder 3 | 3 | stick direito pressionado |
+| Trocar arma | X | Back/Select |
 | Pausa | ação de pausa do J1 | Start |
 
-Ações `blaster_ops_*` próprias pelo InputMap, com aliases `infiltration_*` para compatibilidade. Teclas e botões são remapeáveis em **Teclas e botões › Operações**; mouse e eixos de mira permanecem disponíveis. Botões padrão copiam os bindings do J1, sem alterar o duelo. A tela Controles tem uma página do modo e as dicas vêm de ControlHints. Na pausa do treino é possível reiniciar com outro personagem (Corsária, Lince, Coldre ou Guardião) e outro poder; toda troca reinicia, sem mudar recurso compartilhado ou campanha.
+Correr e furtivo são alternâncias no controlador: um toque liga, outro desliga, e ligar um desliga o outro; a pausa conserva a postura e reiniciar a limpa. Nenhuma ação usa Ctrl, Alt ou Meta, e a tela de teclas recusa essas teclas, porque o navegador reserva combinações como Ctrl+W. Teclas salvas no layout anterior são migradas sem perder personalizações: sai só Ctrl, e teclas novas entram apenas se estiverem livres. Ações `blaster_ops_*` próprias pelo InputMap, com aliases `infiltration_*` para compatibilidade. Teclas e botões são remapeáveis em **Teclas e botões › Operações**; mouse e eixos de mira permanecem disponíveis. Botões padrão copiam os bindings do J1, sem alterar o duelo. A tela Controles tem uma página do modo e as dicas vêm de ControlHints. Na pausa do treino é possível reiniciar com outro personagem (Corsária, Lince, Coldre ou Guardião) e outro poder; toda troca reinicia, sem mudar recurso compartilhado ou campanha.
 
 ## Tiro e calor
 
