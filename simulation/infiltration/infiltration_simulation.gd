@@ -299,7 +299,7 @@ func _step_bolts() -> void:
 					fraction = impact
 					victim = index + 1
 		for index in prisoners.size():
-			if aftermath or prisoners[index].health <= 0.0 or (mission != null and mission.extracted[index] != 0):
+			if not bolt_hurts_prisoner(bolt, index):
 				continue
 			var impact: float = InfiltrationGeometry.segment_box_fraction(bolt.position, end, _body_box(prisoners[index], bolt.data.size))
 			if impact < fraction:
@@ -325,6 +325,14 @@ func _step_bolts() -> void:
 		bolt.travelled += minf(distance, remaining)
 		if bolt.travelled >= bolt.data.max_range:
 			bolt.active = false
+
+
+func prisoner_exposed(index: int) -> bool:
+	return not aftermath and prisoners[index].health > 0.0 and mission.recruited[index] != 0 and mission.extracted[index] == 0
+
+
+func bolt_hurts_prisoner(bolt: InfiltrationBolt, index: int) -> bool:
+	return bolt.owner != 0 and prisoner_exposed(index)
 
 
 func _body_box(actor: InfiltrationActor, padding: float) -> Rect2:

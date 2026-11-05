@@ -3,6 +3,7 @@ extends InfiltrationMapData
 
 var source: InfiltrationMapData
 var covers: Array[BlasterOpsCover] = []
+var allied_query: bool = false
 var _cells: PackedInt32Array = []
 
 
@@ -34,6 +35,7 @@ func reserve_barriers(capacity: int, health: float) -> void:
 		data.health = health
 		var cover: BlasterOpsCover = BlasterOpsCover.new(data)
 		cover.health = 0.0
+		cover.deployed = true
 		covers.append(cover)
 
 
@@ -47,7 +49,9 @@ func rebuild_cells() -> void:
 
 func is_solid(x: int, y: int) -> bool:
 	var index: int = cover_at(x, y)
-	return covers[index].health > 0.0 if index >= 0 else source.is_solid(x, y)
+	if index < 0:
+		return source.is_solid(x, y)
+	return covers[index].health > 0.0 and not (allied_query and covers[index].deployed)
 
 
 func tile_index(x: int, y: int) -> int:

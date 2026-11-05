@@ -57,6 +57,50 @@ func step(intent: InfiltrationIntent, enemy_intents: Array[InfiltrationIntent] =
 			_step_allies(escort_intents)
 
 
+func wall_for(side: BlasterOpsFaction.Side, start: Vector2, end: Vector2, radius: float = 0.0) -> float:
+	arena.allied_query = side == BlasterOpsFaction.Side.ALLIED
+	var fraction: float = InfiltrationGeometry.wall_fraction(map, start, end, radius)
+	arena.allied_query = false
+	return fraction
+
+
+func apply_area_damage(side: BlasterOpsFaction.Side, center: Vector2, radius: float, damage: float, source: int, flinch_ticks: int = 0) -> void:
+	_emit(InfiltrationEvent.Type.AREA_BLAST, source, int(side), center, radius)
+	if side == BlasterOpsFaction.Side.ALLIED:
+		for index in targets.size():
+			if _area_reaches(side, center, radius, targets[index]):
+				_damage_target(index, damage, false, center)
+	else:
+		if _area_reaches(side, center, radius, player) and not dodge_invulnerable() and not aftermath:
+			var remaining: float = _absorb_barrier(damage, source, center)
+			if remaining > 0.0:
+				_hurt_player(remaining, flinch_ticks, source, center)
+		for index in prisoners.size():
+			if prisoner_exposed(index) and _area_reaches(side, center, radius, prisoners[index]):
+				prisoners[index].health = maxf(prisoners[index].health - damage, 0.0)
+				_emit(InfiltrationEvent.Type.BOLT_HIT, source, targets.size() + index + 1, prisoners[index].position, damage)
+	for index in arena.covers.size():
+		var cover: BlasterOpsCover = arena.covers[index]
+		if cover.health <= 0.0 or (cover.deployed and side == BlasterOpsFaction.Side.ALLIED):
+			continue
+		var point: Vector2 = (Vector2(cover.data.cell) + Vector2.ONE * 0.5) * map.tile_size
+		if point.distance_to(center) <= radius + map.tile_size * 0.5:
+			_damage_cover(index, damage, point)
+
+
+func _area_reaches(side: BlasterOpsFaction.Side, center: Vector2, radius: float, actor: InfiltrationActor) -> bool:
+	return actor.health > 0.0 and actor.position.distance_to(center) <= radius + actor.radius and wall_for(side, center, actor.position) == INF
+
+
+func _absorb_barrier(damage: float, source: int, point: Vector2) -> float:
+	if state.barrier_health <= 0.0:
+		return damage
+	var absorbed: float = minf(damage, state.barrier_health)
+	state.barrier_health -= absorbed
+	_emit(InfiltrationEvent.Type.BOLT_BLOCKED, source, 0, point)
+	return damage - absorbed
+
+
 func deploy_barrier() -> bool:
 	var progress: BlasterOpsMissionState = mission as BlasterOpsMissionState
 	if progress == null or progress.definition.kind != BlasterOpsMissionData.Kind.DEFENSE or progress.intermission_ticks <= 0 or progress.barriers_placed >= operations.barrier_capacity:
@@ -91,7 +135,7 @@ func _step_allies(intents: Array[InfiltrationIntent]) -> void:
 		var aim: Vector2 = intents[index].aim.normalized()
 		var target: bool = false
 		for enemy in targets:
-			if enemy.health > 0.0 and InfiltrationGeometry.in_sector(actor.position, aim, enemy.position, operations.ally_fire_range, config.swing_degrees) and InfiltrationGeometry.wall_fraction(map, actor.position, enemy.position) == INF:
+			if enemy.health > 0.0 and InfiltrationGeometry.in_sector(actor.position, aim, enemy.position, operations.ally_fire_range, config.swing_degrees) and wall_for(BlasterOpsFaction.Side.ALLIED, actor.position, enemy.position) == INF:
 				target = true
 				break
 		if target and _spawn_bolt(-index - 2, operations.ally_bolt, aim, 1.0, actor) != null:
@@ -203,7 +247,7 @@ func _resolve_swing() -> void:
 	var last: float = first + config.swing_degrees / config.active_ticks()
 	for index in arena.covers.size():
 		var cover: BlasterOpsCover = arena.covers[index]
-		if cover.health <= 0.0 or cover.last_swing_id == player.swing_id:
+		if cover.health <= 0.0 or cover.deployed or cover.last_swing_id == player.swing_id:
 			continue
 		var point: Vector2 = (Vector2(cover.data.cell) + Vector2.ONE * 0.5) * map.tile_size
 		if not InfiltrationGeometry.in_sector(player.position, player.swing_aim, point, config.swing_reach, config.swing_degrees, map.tile_size * 0.5):
@@ -280,7 +324,7 @@ func _fire_primary() -> void:
 func _spawn_bolt(shooter: int, data: BoltData, aim: Vector2, scale: float = 1.0, body: InfiltrationActor = null) -> BlasterOpsBolt:
 	var actor: InfiltrationActor = body if body != null else (player if shooter < 0 else targets[shooter])
 	var muzzle: Vector2 = actor.position + aim * (actor.radius + data.muzzle_forward)
-	if InfiltrationGeometry.wall_fraction(map, actor.position, muzzle, data.size) != INF:
+	if wall_for(BlasterOpsFaction.Side.ALLIED if shooter < 0 else BlasterOpsFaction.Side.HOSTILE, actor.position, muzzle, data.size) != INF:
 		return null
 	for candidate in bolts:
 		if candidate.active:
@@ -320,7 +364,7 @@ func _step_bolts() -> void:
 		bolt.previous = bolt.position
 		var distance: float = minf(bolt.velocity.length() * Ticks.DELTA, bolt.data.max_range - bolt.travelled)
 		var end: Vector2 = bolt.position + bolt.velocity.normalized() * distance
-		var fraction: float = InfiltrationGeometry.wall_fraction(map, bolt.position, end, bolt.data.size)
+		var fraction: float = wall_for(BlasterOpsFaction.of_bolt(bolt), bolt.position, end, bolt.data.size)
 		var cover: int = _cover_impact(bolt, end, fraction)
 		var victim: int = -1
 		if bolt.owner != 0 and not bolt.evaded:
@@ -337,7 +381,7 @@ func _step_bolts() -> void:
 					fraction = impact
 					victim = index + 1
 		for index in prisoners.size():
-			if aftermath or prisoners[index].health <= 0.0 or bolt.shooter < -1 or (mission != null and mission.extracted[index] != 0):
+			if not bolt_hurts_prisoner(bolt, index):
 				continue
 			var impact: float = _actor_impact(bolt, end, prisoners[index])
 			if impact < fraction:
@@ -374,7 +418,7 @@ func _cover_impact(bolt: BlasterOpsBolt, end: Vector2, wall: float) -> int:
 		return -1
 	for index in arena.covers.size():
 		var cover: BlasterOpsCover = arena.covers[index]
-		if cover.health <= 0.0:
+		if cover.health <= 0.0 or (cover.deployed and BlasterOpsFaction.of_bolt(bolt) == BlasterOpsFaction.Side.ALLIED):
 			continue
 		var box: Rect2 = Rect2(Vector2(cover.data.cell) * map.tile_size, Vector2.ONE * map.tile_size).grow(bolt.data.size)
 		var impact: float = InfiltrationGeometry.segment_box_fraction(bolt.position, end, box)
@@ -427,12 +471,7 @@ func _resolve_player_bolt(candidate: InfiltrationBolt) -> void:
 			_emit(InfiltrationEvent.Type.BOLT_BLOCKED, bolt.owner, 0, bolt.position)
 		return
 	bolt.active = false
-	var damage: float = bolt.damage
-	if state.barrier_health > 0.0:
-		var absorbed: float = minf(damage, state.barrier_health)
-		state.barrier_health -= absorbed
-		damage -= absorbed
-		_emit(InfiltrationEvent.Type.BOLT_BLOCKED, bolt.owner, 0, bolt.position)
+	var damage: float = _absorb_barrier(bolt.damage, bolt.owner, bolt.position)
 	if damage > 0.0:
 		_hurt_player(damage, bolt.data.flinch_ticks(), bolt.owner, bolt.position)
 
@@ -580,7 +619,7 @@ func _release_power() -> void:
 		var actor: BlasterOpsActor = targets[index] as BlasterOpsActor
 		if actor.health <= 0.0 or not InfiltrationGeometry.in_sector(player.position, state.power_aim, actor.position, power.reach, loadout.power.degrees):
 			continue
-		if InfiltrationGeometry.wall_fraction(map, player.position, actor.position) != INF:
+		if wall_for(BlasterOpsFaction.Side.ALLIED, player.position, actor.position) != INF:
 			continue
 		if power.kind == PowerData.Kind.REPULSE:
 			_affect_enemy(index, power)

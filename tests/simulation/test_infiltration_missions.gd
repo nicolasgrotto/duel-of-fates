@@ -178,11 +178,12 @@ func test_prisoner_downed_fails_before_success() -> void:
 	assert_eq(sim.mission.outcome, InfiltrationMissionState.Outcome.PRISONER_DOWN)
 
 
-func test_enemy_and_reflected_bolts_can_down_prisoner_without_friendly_swing_damage() -> void:
+func test_only_hostile_bolts_can_down_a_freed_prisoner() -> void:
 	for owner in [0, 1]:
 		var sim: InfiltrationSimulation = _sim(3)
 		var actor: InfiltrationActor = sim.prisoners[0]
 		sim.prisoners[1].health = 0.0
+		sim.mission.recruited[0] = 1
 		var bolt: InfiltrationBolt = sim.bolts[0]
 		bolt.data = sim.target_data[0].bolt.duplicate() as BoltData
 		bolt.data.damage = CONFIG.prisoner_health
@@ -192,7 +193,7 @@ func test_enemy_and_reflected_bolts_can_down_prisoner_without_friendly_swing_dam
 		bolt.velocity = Vector2(900, 0)
 		for tick in 4:
 			sim.step(InfiltrationIntent.new())
-		assert_eq(sim.mission.outcome, InfiltrationMissionState.Outcome.PRISONER_DOWN)
+		assert_eq(sim.mission.outcome, InfiltrationMissionState.Outcome.PRISONER_DOWN if owner == 1 else InfiltrationMissionState.Outcome.ACTIVE)
 
 
 func test_alarm_history_survives_disabling_sirens_and_time_bonus_is_inclusive() -> void:

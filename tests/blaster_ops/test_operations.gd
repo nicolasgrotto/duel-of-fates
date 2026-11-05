@@ -94,13 +94,16 @@ func test_power_kills_count_against_no_takedowns_and_do_not_hurt_prisoners() -> 
 	assert_eq(sim.prisoners[0].position, data.prisoner_spawns[0])
 
 
-func test_bolts_still_hurt_prisoners_and_minimum_failure_beats_extraction() -> void:
+func test_enemy_bolts_hurt_freed_prisoners_and_minimum_failure_beats_extraction() -> void:
 	var data: InfiltrationMissionData = _mission()
 	data.prisoner_spawns = PackedVector2Array([data.map.player_spawn + Vector2(100, 0)])
 	data.minimum_prisoners = 1
 	var sim: BlasterOpsSimulation = _sim(data, BlasterOpsTraining.PISTOL.blaster)
 	sim.prisoners[0].health = 1.0
-	sim._spawn_bolt(-1, sim.loadout.blaster.bolt, Vector2.RIGHT)
+	sim.mission.recruited[0] = 1
+	var bolt: BlasterOpsBolt = sim._spawn_bolt(-1, sim.loadout.blaster.bolt, Vector2.RIGHT)
+	bolt.owner = 1
+	bolt.shooter = 0
 	_step(sim, InfiltrationIntent.new(), 6)
 	assert_eq(sim.mission.outcome, InfiltrationMissionState.Outcome.PRISONER_DOWN)
 	var snapshot: Dictionary = sim.capture()

@@ -4,6 +4,7 @@ extends RefCounted
 var data: BlasterOpsCoverData
 var health: float
 var last_swing_id: int = -1
+var deployed: bool = false
 
 
 func _init(definition: BlasterOpsCoverData) -> void:

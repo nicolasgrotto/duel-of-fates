@@ -37,7 +37,7 @@ func produce_all(sim: InfiltrationSimulation) -> Array[InfiltrationIntent]:
 			var nearest: float = operations.operations.ally_fire_range
 			for target in sim.targets:
 				var distance: float = actor.position.distance_to(target.position)
-				if target.health > 0.0 and distance < nearest and InfiltrationGeometry.wall_fraction(sim.map, actor.position, target.position) == INF:
+				if target.health > 0.0 and distance < nearest and operations.wall_for(BlasterOpsFaction.Side.ALLIED, actor.position, target.position) == INF:
 					nearest = distance
 					intent.aim = target.position - actor.position
 					intent.held = Intent.Command.LIGHT
