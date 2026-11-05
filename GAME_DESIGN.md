@@ -634,6 +634,14 @@ A campanha completa parte de dois pressupostos opostos. No **Eclipse**, a hierar
 
 Infiltração e Operações de blaster viram um menu só, **Operações**, com rótulo de objetivo em cada missão. O personagem controla igual em todas, e a regra da missão muda o jogo: na Infiltração a esquiva e o blaster fazem barulho, e o poder tem recarga longa; na Incursão o objetivo é eliminar, destruir bases ou chefes, e prisioneiros libertos são secundários e ajudam. Toda missão pode ser concluída só com o sabre. Blaster de uma mão deixa o sabre aceso na outra. Implementação nas tasks 17 e 18.
 
+## Atualização 1.1 das Operações
+
+Decisão do autor, resumida em [DESIGN.md](DESIGN.md#atualização-11-das-operações-decisão-do-autor). Onde esta seção discorda das seções anteriores de Operações, vale esta. Em especial, deixam de valer: "um poder equipado", "tiros de qualquer lado continuam perigosos" para prisioneiros, "sem compra" nas Incursões e Ctrl como tecla de furtivo. Números e conteúdo em [content/BLASTER_OPS.md](content/BLASTER_OPS.md).
+
+**Controles.** `1` `2` `3` lançam os poderes, `R` também lança o primeiro, `F` é o corpo a corpo, `X` troca de arma, `V` dispara pelo teclado além do botão esquerdo. `E`, `Q` e `Espaço` continuam. `Shift` alterna corrida e `C` alterna furtivo: um toque liga, outro desliga, e ligar um desliga o outro. Teclas personalizadas salvas são preservadas; Ctrl e Alt não podem ser escolhidas neste modo, e quem tinha Ctrl no furtivo fica com o restante das teclas.
+
+**Facções.** Todo disparo e área pertencem a uma facção: jogador e aliados, ou inimigos. Dano só atravessa de uma facção para a outra. Disparo devolvido passa a pertencer a quem devolveu. Barreiras implantadas são da facção do jogador e bloqueiam só o fogo inimigo. Caixas do mapa não têm dono e quebram com qualquer disparo. Prisioneiro ainda na cela não sofre dano de ninguém.
+
 ## Arsenal da História
 
 Decisão do autor. Tela **Arsenal** no hub, para qualquer estilo. **Créditos** vêm só da primeira vitória em cada encontro: repetir não rende nada, e saves antigos recebem pelos encontros já vencidos. Compram só blasters; não valem fora da História. O elenco do duelo não muda.

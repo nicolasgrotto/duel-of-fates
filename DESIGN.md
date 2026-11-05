@@ -124,16 +124,16 @@ Mecânicas descartadas de propósito (complexidade sem ganho):
 - juggles e combos no ar (um golpe aéreo por pulo);
 - dano por chip no bloqueio de lâmina;
 - números de dano na tela;
-- XP, moeda, loja, grind ou melhoria de atributos fora do protagonista da História (decisão do autor: na História existe o Arsenal, com créditos que só vêm da primeira vitória em cada encontro e só compram blasters, sem como farmar);
+- XP, moeda, loja, grind ou melhoria de atributos fora do protagonista da História (decisão do autor: na História existe o Arsenal, com créditos que só vêm da primeira vitória em cada encontro e só compram blasters, sem como farmar; nas Operações existem os Suprimentos da versão 1.1, que valem só dentro de uma tentativa e nunca são salvos);
 - perigos de arena que matam (ring-out).
 
 Fora do escopo inicial, possíveis no futuro: modo online, torneio, editor de personagens.
 
 ## Além do duelo (decisão do autor, fase 9)
 
-**Operações (task 17):** Infiltração e Incursão compartilham uma tela, um moveset e o menu Jogar › Modos especiais › Operações. O objetivo da missão muda as regras, nunca as teclas. Infiltração privilegia resgate sem ser visto; Incursão privilegia combate. Todo personagem pode concluir operações apenas com lâmina, guarda, esquiva e um poder. Não existe arma temporária para quem não possui blaster.
+**Operações (task 17):** Infiltração e Incursão compartilham uma tela, um moveset e o menu Jogar › Modos especiais › Operações. O objetivo da missão muda as regras, nunca as teclas. Infiltração privilegia resgate sem ser visto; Incursão privilegia combate. Todo personagem pode concluir operações apenas com lâmina, guarda, esquiva e poderes. A versão 1.1 substitui a antiga regra de um poder só e acrescenta o conjunto opcional do Arsenal (ver Atualização 1.1); lâmina continua sendo o padrão de quem não possui blaster.
 
-**Incursões (task 18):** sete missões independentes, sem compra ou progressão de atributos: Arena, Assalto, Defesa, Resistência, Escolta, Rival e Chefe. Defesa de objetivo é uma missão de Operações, substituindo seu descarte como modo separado. Resgatar é opcional fora da Escolta; aliados libertados ajudam por intenções de tiro. Recompensas avulsas são cosméticas únicas; o fluxo externo recebe resultado e decide eventuais créditos da História, sem o núcleo alterar campanha.
+**Incursões (task 18):** sete missões independentes, sem progressão de atributos entre tentativas: Arena, Assalto, Defesa, Resistência, Escolta, Rival e Chefe. Defesa de objetivo é uma missão de Operações, substituindo seu descarte como modo separado. Resgatar é opcional fora da Escolta; aliados libertados ajudam por intenções de tiro. Recompensas avulsas são cosméticas únicas; o fluxo externo recebe resultado e decide eventuais créditos da História, sem o núcleo alterar campanha.
 
 O duelo continua sendo o coração do jogo. O autor aprovou modos que saem do formato "dois combatentes, vista lateral", desde que cada um mantenha a mesma identidade (pixel art na grade do mundo, paleta e UI do tema, lâminas com peso, leitura antes de velocidade, sem gore, sem nada da franquia):
 
@@ -145,6 +145,20 @@ O duelo continua sendo o coração do jogo. O autor aprovou modos que saem do fo
 
 Descartados por enquanto: Exploração e Relíquias (plataforma e puzzles) e Defesa de Objetivo. A Sobrevivência já existe no menu Jogar.
 Cada modo novo documenta suas regras em GAME_DESIGN e sua tela em design/UI_UX **antes** de ser implementado.
+
+## Atualização 1.1 das Operações (decisão do autor)
+
+Objetivo: fazer da Incursão uma operação de combate completa, sem comprometer o que já funciona. Vale para Infiltração e Incursão, na mesma tela e no mesmo menu. Regras em [GAME_DESIGN.md](GAME_DESIGN.md#atualização-11-das-operações), números e conteúdo em [content/BLASTER_OPS.md](content/BLASTER_OPS.md).
+
+- **Sem fogo amigo.** Ataques do jogador e dos aliados nunca ferem aliados, prisioneiros, protegidos nem barreiras próprias. A regra vive na resolução de dano, por facção, e cobre disparos, devoluções, explosões e áreas. Inimigos continuam ameaçando aliados, e as condições de falha continuam valendo.
+- **Vários poderes.** Cada personagem leva os poderes do seu conjunto do duelo, com nomes, ícones e valores vindos dos mesmos dados. Não há um segundo sistema de habilidades: o plano superior só tem suas próprias formas de aplicar o efeito.
+- **Conjunto do Arsenal.** A linha de arma do painel de personagem oferece os cinco blasters do Arsenal, de graça e só neste modo, sem posse nem progressão. Lâmina é o padrão. Cada personagem tem seu treino com cada classe de arma: ninguém fica igualmente bom em tudo, e o Arsenal não substitui a identidade do personagem.
+- **Duas formas de usar.** Arma de uma mão com lâmina de uma mão fica junto da lâmina. Arma de duas mãos, ou qualquer arma para quem luta com duas lâminas ou lâmina em haste, exige trocar entre o modo de disparo e o modo de lâmina. O sistema é modular para servir à futura História completa.
+- **Suprimentos.** Ganhos e gastos dentro de uma tentativa, em terminais que só existem em algumas missões longas: cura, barreiras, resfriamento, reforços aliados. Nunca viram moeda, nada é salvo entre tentativas, e toda missão pode ser vencida sem comprar nada.
+- **Aliados e barreiras.** Aliados têm papéis próprios e agem sozinhos; o jogador não dá ordens. Barreiras podem ser implantadas além da Defesa e bloqueiam fogo inimigo.
+- **Duração.** Incursão comum: 5 a 8 minutos numa primeira jogada cuidadosa. Chefe ou grande operação: 8 a 10. A duração vem de objetivos, ambientes e encontros diferentes, nunca de inflar vida de inimigo ou repetir ondas. IDs, recompensas e progresso continuam os mesmos.
+- **Teclas perto do WASD e nada em Ctrl.** Correr e andar furtivo alternam com um toque; o navegador reserva combinações com Ctrl, como Ctrl+W.
+- **Web é plataforma de validação.** O limite de unidades, disparos e busca de caminho é medido antes de crescer, porque a build Web roda em uma só thread.
 
 ## Propriedade intelectual
 

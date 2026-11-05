@@ -24,6 +24,12 @@ Português (padrão) e inglês, escolhidos nas Opções e salvos. Todo texto de 
 
 ## Telas
 
+### HUD das Operações (versão 1.1)
+
+Barra de **Calor** no lugar do número, abaixo de Vida e Vigor, só para quem tem blaster, com o rótulo ao lado. Frio: cor de destaque. Acima de 70%: âmbar (`menu_blade_b`). Superaquecido: perigo, pulsando, rótulo **Superaquecido · Resfriando** e um traço no ponto em que a arma volta a disparar. Com efeitos reduzidos não pulsa; o texto e o traço continuam. Sem número de calor, que fica no F3. A postura atual (**Correndo**, **Furtivo**) aparece em texto junto às recargas, porque agora é uma alternância sem tecla segurada.
+
+A janela do jogo no desktop abre em 1280×720 e encolhe para caber na área útil da tela: a antiga 1600×900 passava da tela do autor (1440×900) e cortava o rodapé e o lado direito. HUD e menus são validados na build Web, não só na prévia do editor.
+
 ### Operações unificadas (task 17)
 
 Task 18: lista rolável de treze missões (seis Infiltrações e sete Incursões), com Personagem e Voltar alcançáveis por teclado, gamepad e mouse. A rolagem acompanha a seleção e preserva o foco no retorno. Incursão mostra objetivo, ondas, tempo de referência, nota/recorde e recompensa no briefing. HUD conserva vida/calor/Vigor/esquiva/poder e acrescenta texto de onda/preparação/extração, vida do protegido e fase do rival/chefe, sem números de dano. Durante montagem da Defesa, dica de E mostra implantações restantes. Resultado mostra nota, tempo, dano recebido, precisão e bônus, com Retry/Próxima/Missões. Fluxo externo não abre resultado automaticamente; entrega o objeto ao dono.
