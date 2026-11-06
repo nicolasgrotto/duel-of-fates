@@ -40,7 +40,11 @@ Céu `tactical_deep` com nebulosa e estrelas geradas, anéis de radar e mira âm
 
 ### Hangar e Oficina (tela única)
 
-Uma tela, duas colunas de foco. Esquerda: as quatro naves, com nível total em marcas e selo **Em uso**. Centro: sprite grande e barras de atributo, com um trecho ciano que mostra o que as melhorias acrescentam. Direita: as três melhorias da nave em foco, com `LevelPips`, efeito atual e efeito seguinte, custo, pontos livres **desta nave**, e Refazer. Esquerda e direita trocam de coluna; cima e baixo movem; Enter usa a nave ou compra o nível; a nave em foco é a que recebe a melhoria, mesmo que não seja a que está em uso. Item comprado até o fim mostra `MÁX`; sem pontos, mostra quanto falta e como ganhar (`Vença uma missão pela primeira vez`).
+Uma tela, duas colunas de foco. Esquerda: as quatro naves, com nível total em marcas e selo **Em uso**. Centro: sprite grande e barras de atributo, com um trecho ciano que mostra o que as melhorias acrescentam. Direita: as três melhorias da nave em foco, com `LevelPips`, efeito atual e efeito seguinte, custo, pontos livres **desta nave**, e Refazer. A tela deixa explícito que cada nave tem melhorias próprias: título da coluna `Melhorias de <nave>` e saldo `<nave>: X de Y pontos livres`. Esquerda e direita trocam de coluna; cima e baixo movem; Enter usa a nave ou compra o nível; a nave em foco é a que recebe a melhoria, mesmo que não seja a que está em uso. Item comprado até o fim mostra `MÁX`; sem pontos, mostra quanto falta e como ganhar (`Vença uma missão pela primeira vez`).
+
+### Menu de comando no controle
+
+Segurar Back por 0,25 s mostra, acima do aviso de contexto, uma cruz de três etiquetas com as setas do direcional: Seguir, Segurar aqui e Proteger. A ordem atual fica em âmbar; Proteger fica apagada quando não há alvo. Soltar fecha sem mudar nada. Fazer a escolha antes do menu aparecer também vale, para quem já decorou. Sem pausa, e só em missões com aliados.
 
 ### Terminal de suprimentos (versão 1.1)
 

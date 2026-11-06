@@ -15,7 +15,7 @@ const COPIES: Dictionary = {"fire": &"p1_light_attack", "guard": &"p1_block", "d
 const BUTTONS: Dictionary = {"run": JOY_BUTTON_LEFT_STICK, "interact": JOY_BUTTON_A, "power_2": JOY_BUTTON_LEFT_SHOULDER, "power_3": JOY_BUTTON_RIGHT_STICK, "switch_weapon": JOY_BUTTON_BACK}
 const MOVE_AXES: Dictionary = {"left": [JOY_AXIS_LEFT_X, -1.0], "right": [JOY_AXIS_LEFT_X, 1.0], "up": [JOY_AXIS_LEFT_Y, -1.0], "down": [JOY_AXIS_LEFT_Y, 1.0]}
 const AIM_AXES: Dictionary = {"aim_left": [JOY_AXIS_RIGHT_X, -1.0], "aim_right": [JOY_AXIS_RIGHT_X, 1.0], "aim_up": [JOY_AXIS_RIGHT_Y, -1.0], "aim_down": [JOY_AXIS_RIGHT_Y, 1.0]}
-const DPAD: Dictionary = {"order_allies": JOY_BUTTON_DPAD_UP}
+const DPAD: Dictionary = {"left": JOY_BUTTON_DPAD_LEFT, "right": JOY_BUTTON_DPAD_RIGHT, "up": JOY_BUTTON_DPAD_UP, "down": JOY_BUTTON_DPAD_DOWN}
 const DEADZONE: float = 0.25
 static var _users: int = 0
 

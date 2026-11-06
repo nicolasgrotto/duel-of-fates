@@ -57,6 +57,7 @@ var _ship_note: Label
 var _stat_bars: Dictionary = {}
 var _stat_values: Dictionary = {}
 var _points_label: Label
+var _track_caption: Label
 var _effect_label: Label
 var _notice: Label
 var _focused_ship: StringName = &""
@@ -395,7 +396,8 @@ func _build_upgrade_panel() -> PanelContainer:
 	var column: VBoxContainer = VBoxContainer.new()
 	column.add_theme_constant_override(&"separation", DETAIL_GAP)
 	panel.add_child(column)
-	column.add_child(_caption(tr("SPACE_WORKSHOP")))
+	_track_caption = _caption("")
+	column.add_child(_track_caption)
 	_points_label = _label("", &"TacticalValueLabel")
 	_points_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	column.add_child(_points_label)
@@ -474,6 +476,7 @@ func _refresh_ship() -> void:
 	_set_stat(&"speed", ship.speed, built.speed)
 	_set_stat(&"agility", ship.rotation_degrees, built.rotation_degrees)
 	_set_stat(&"firepower", ship.primary.damage / ship.primary.interval, built.primary.damage / built.primary.interval)
+	_track_caption.text = tr("SPACE_TRACK_CAPTION").format({"ship": tr(ship.name_key)}).to_upper()
 	_points_label.text = tr("SPACE_POINTS_SHIP").format({"ship": tr(ship.name_key), "free": SaveService.space.available(ship.id), "total": SaveService.space.earned()})
 	_fill_track_list()
 	_refresh_effect()

@@ -16,6 +16,7 @@ var pressed: int = 0
 var panel: int = -1
 var cover_target: int = -1
 var purchase: int = -1
+var ally_order: int = -1
 
 
 func clear() -> void:
@@ -26,3 +27,4 @@ func clear() -> void:
 	panel = -1
 	cover_target = -1
 	purchase = -1
+	ally_order = -1

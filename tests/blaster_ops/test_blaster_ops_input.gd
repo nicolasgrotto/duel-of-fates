@@ -214,3 +214,109 @@ func test_heat_bar_levels_and_labels_follow_the_weapon_state() -> void:
 	assert_eq(HeatBar.label_key(state), "BOPS_COOLING")
 	state.overheated = true
 	assert_eq(HeatBar.label_key(state), "BOPS_OVERHEATED")
+
+
+func _pad(button: JoyButton, pressed: bool) -> InputEventJoypadButton:
+	var event: InputEventJoypadButton = InputEventJoypadButton.new()
+	event.device = 0
+	event.button_index = button
+	event.pressed = pressed
+	return event
+
+
+func test_default_pad_buttons_have_no_conflicts_and_the_dpad_moves() -> void:
+	BlasterOpsBindings.install()
+	var owners: Dictionary = {}
+	for suffix in BlasterOpsBindings.ACTIONS:
+		for event in InputMap.action_get_events(BlasterOpsBindings.PREFIX + suffix):
+			if event is InputEventJoypadButton:
+				assert_false(owners.has(event.button_index), "%s and %s share a button" % [suffix, owners.get(event.button_index, "")])
+				owners[event.button_index] = suffix
+	assert_eq(owners[JOY_BUTTON_DPAD_UP], "up")
+	assert_eq(owners[JOY_BUTTON_DPAD_DOWN], "down")
+	assert_eq(owners[JOY_BUTTON_DPAD_LEFT], "left")
+	assert_eq(owners[JOY_BUTTON_DPAD_RIGHT], "right")
+	assert_eq(owners[JOY_BUTTON_BACK], "switch_weapon")
+	BlasterOpsBindings.uninstall()
+
+
+func test_tapping_back_switches_weapons_and_holding_opens_the_command_menu() -> void:
+	BlasterOpsBindings.install()
+	var controller: BlasterOpsPlayerController = BlasterOpsPlayerController.new()
+	var sim: BlasterOpsSimulation = BlasterOpsSimulation.new(BlasterOpsTraining.CONFIG, BlasterOpsFixture.arena([]), BlasterOpsTraining.PISTOL.duplicate())
+	var intent: InfiltrationIntent = InfiltrationIntent.new()
+	controller.handle_input(_pad(JOY_BUTTON_BACK, true))
+	controller.produce(sim, intent)
+	assert_eq(intent.pressed & InfiltrationIntent.SWITCH_WEAPON, 0, "no switch while the button is down")
+	controller.handle_input(_pad(JOY_BUTTON_BACK, false))
+	controller.produce(sim, intent)
+	assert_true((intent.pressed & InfiltrationIntent.SWITCH_WEAPON) != 0, "a tap switches on release")
+	controller.handle_input(_pad(JOY_BUTTON_BACK, true))
+	for tick in BlasterOpsPlayerController.COMMAND_HOLD_TICKS:
+		controller.produce(sim, intent)
+	assert_true(controller.command_menu_open())
+	controller.handle_input(_pad(JOY_BUTTON_BACK, false))
+	controller.produce(sim, intent)
+	assert_false(controller.command_menu_open())
+	assert_eq(intent.pressed & InfiltrationIntent.SWITCH_WEAPON, 0, "a long hold never switches")
+	BlasterOpsBindings.uninstall()
+
+
+func test_dpad_chooses_an_order_only_while_back_is_held() -> void:
+	BlasterOpsBindings.install()
+	var controller: BlasterOpsPlayerController = BlasterOpsPlayerController.new()
+	var sim: BlasterOpsSimulation = BlasterOpsSimulation.new(BlasterOpsTraining.CONFIG, BlasterOpsFixture.arena([]), BlasterOpsTraining.PISTOL.duplicate())
+	var intent: InfiltrationIntent = InfiltrationIntent.new()
+	controller.handle_input(_pad(JOY_BUTTON_DPAD_LEFT, true))
+	controller.produce(sim, intent)
+	assert_eq(intent.ally_order, -1, "the d-pad alone gives no order")
+	controller.handle_input(_pad(JOY_BUTTON_DPAD_LEFT, false))
+	controller.handle_input(_pad(JOY_BUTTON_BACK, true))
+	controller.handle_input(_pad(JOY_BUTTON_DPAD_LEFT, true))
+	controller.produce(sim, intent)
+	assert_eq(intent.ally_order, BlasterOpsMissionState.AllyOrder.HOLD)
+	controller.handle_input(_pad(JOY_BUTTON_DPAD_LEFT, false))
+	controller.handle_input(_pad(JOY_BUTTON_BACK, false))
+	controller.produce(sim, intent)
+	assert_eq(intent.pressed & InfiltrationIntent.SWITCH_WEAPON, 0, "choosing an order does not switch weapons")
+	BlasterOpsBindings.uninstall()
+
+
+func test_pause_while_holding_back_clears_the_menu() -> void:
+	BlasterOpsBindings.install()
+	var controller: BlasterOpsPlayerController = BlasterOpsPlayerController.new()
+	var sim: BlasterOpsSimulation = BlasterOpsSimulation.new(BlasterOpsTraining.CONFIG, BlasterOpsFixture.arena([]), BlasterOpsTraining.PISTOL.duplicate())
+	var intent: InfiltrationIntent = InfiltrationIntent.new()
+	controller.handle_input(_pad(JOY_BUTTON_BACK, true))
+	for tick in BlasterOpsPlayerController.COMMAND_HOLD_TICKS:
+		controller.produce(sim, intent)
+	controller.discard_pending()
+	assert_false(controller.command_menu_open())
+	controller.handle_input(_pad(JOY_BUTTON_BACK, false))
+	controller.produce(sim, intent)
+	assert_eq(intent.pressed & InfiltrationIntent.SWITCH_WEAPON, 0)
+	BlasterOpsBindings.uninstall()
+
+
+func test_every_older_layout_keeps_custom_keys_and_gets_the_new_ones() -> void:
+	for layout in [1, 2]:
+		var file: ConfigFile = ConfigFile.new()
+		file.set_value("blaster_ops", "operations_layout", layout)
+		file.set_value("blaster_ops", "keys", {"fire": [KEY_J], "guard": [KEY_K], "strike": [KEY_G]})
+		var keys: Dictionary = Settings._load_operations_keys(file)
+		assert_true(keys.fire.has(KEY_J), "layout %d" % layout)
+		assert_true(keys.guard.has(KEY_K), "layout %d" % layout)
+		assert_true(keys.strike.has(KEY_G), "layout %d" % layout)
+		assert_false(keys.order_allies.has(KEY_G), "layout %d: a key in use is not taken" % layout)
+		for suffix in BlasterOpsBindings.ACTIONS:
+			assert_true(keys.has(suffix), "layout %d lists %s" % [layout, suffix])
+
+
+func test_custom_pad_buttons_survive_and_win_over_defaults() -> void:
+	var buttons: Dictionary = {"switch_weapon": [JOY_BUTTON_Y], "order_allies": [JOY_BUTTON_LEFT_STICK]}
+	BlasterOpsBindings.install({}, buttons)
+	assert_true(BlasterOpsBindings.button_map().switch_weapon.has(JOY_BUTTON_Y))
+	assert_true(BlasterOpsBindings.button_map().order_allies.has(JOY_BUTTON_LEFT_STICK))
+	assert_false(BlasterOpsBindings.button_map().run.has(JOY_BUTTON_LEFT_STICK), "a taken default stays free")
+	assert_true(BlasterOpsBindings.button_map().up.has(JOY_BUTTON_DPAD_UP))
+	BlasterOpsBindings.uninstall()

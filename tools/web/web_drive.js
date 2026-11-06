@@ -54,6 +54,17 @@ function getJson(address) {
   await send('Page.enable');
   await send('Runtime.enable');
   await send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: false });
+  if (steps.some((step) => step.padDown !== undefined || step.padConnect)) {
+    await send('Page.addScriptToEvaluateOnNewDocument', { source: `(() => {
+      const buttons = Array.from({ length: 17 }, () => ({ pressed: false, touched: false, value: 0 }));
+      const pad = { id: 'Test pad (STANDARD GAMEPAD)', index: 0, connected: false, mapping: 'standard', axes: [0, 0, 0, 0], buttons, timestamp: 0 };
+      navigator.getGamepads = () => (pad.connected ? [pad, null, null, null] : [null, null, null, null]);
+      window.__testPad = {
+        connect() { pad.connected = true; const event = new Event('gamepadconnected'); event.gamepad = pad; window.dispatchEvent(event); },
+        set(index, down) { buttons[index].pressed = down; buttons[index].touched = down; buttons[index].value = down ? 1 : 0; pad.timestamp = performance.now(); },
+      };
+    })();` });
+  }
   await send('Page.navigate', { url });
 
   async function keyDown(name) { const [key, code, vk] = KEYS[name]; await send('Input.dispatchKeyEvent', { type: 'rawKeyDown', key, code, windowsVirtualKeyCode: vk, nativeVirtualKeyCode: vk }); }
@@ -62,6 +73,9 @@ function getJson(address) {
   for (const step of steps) {
     if (step.wait) await sleep(step.wait);
     if (step.key) { for (let i = 0; i < (step.times || 1); i++) { await keyDown(step.key); await sleep(step.hold || 120); await keyUp(step.key); await sleep(step.gap || 220); } }
+    if (step.padConnect) await send('Runtime.evaluate', { expression: 'window.__testPad.connect()' });
+    if (step.padDown !== undefined) await send('Runtime.evaluate', { expression: `window.__testPad.set(${step.padDown}, true)` });
+    if (step.padUp !== undefined) await send('Runtime.evaluate', { expression: `window.__testPad.set(${step.padUp}, false)` });
     if (step.down) await keyDown(step.down);
     if (step.up) await keyUp(step.up);
     if (step.mouseDown) await send('Input.dispatchMouseEvent', { type: 'mousePressed', x: step.mouseDown[0], y: step.mouseDown[1], button: 'left', buttons: 1, clickCount: 1 });

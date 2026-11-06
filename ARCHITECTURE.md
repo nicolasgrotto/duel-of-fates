@@ -80,6 +80,7 @@ Arquivos e pastas em `snake_case`; classes com `class_name` em `PascalCase`.
 ### Interface da 1.1 e tutoriais
 
 - **Tema:** cores táticas em `UiPalette`, tipos em `main_theme.tres`, widgets em `ui/widgets/`. Telas não criam `StyleBox` nem cor solta.
+- **Menu de comando:** `BlasterOpsPlayerController` separa toque e segurar no botão de `switch_weapon` e produz `InfiltrationIntent.ally_order` (ordem direta). `CommandMenu` só desenha o que o controlador e o estado da missão dizem.
 - **Ordens:** `INTENT.ORDER_ALLIES` é mais um bit de intenção. `BlasterOpsMissionState.ally_order` e `ally_anchor` ficam no snapshot; `InfiltrationEscortController` só lê o ponto a seguir com `sim.ally_anchor(index)`. Sem regra na apresentação.
 - **Etapa de ação:** `BlasterOpsStageData.Objective.ACTION` conta ações em `BlasterOpsMissionState.action_counts`, alimentado por `note_action`, dentro da simulação. O tutorial é uma missão comum, em `BlasterOpsMode.TUTORIALS`, fora de `all_missions()`, e o modo não grava nada quando a missão tem `is_tutorial`.
 - **Oficina por nave:** `SpaceProgress.ship_levels` (id da nave → três níveis). `available()` conta por nave. A chave antiga `levels` é aplicada às quatro naves ao restaurar.

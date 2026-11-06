@@ -58,12 +58,19 @@ static func blaster_ops_hud_hint(suffix: String) -> String:
 	return "%s  %s" % [blaster_ops_hud_key(suffix), TranslationServer.translate("BOPS_ACTION_" + suffix.to_upper())]
 
 
+static func hold_command_label() -> String:
+	var buttons: PackedStringArray = button_names(StringName(BlasterOpsBindings.PREFIX + "switch_weapon"))
+	return TranslationServer.translate("BOPS_HOLD_BUTTON").format({"button": buttons[0]}) if not buttons.is_empty() else ""
+
+
 static func blaster_ops_hud_key(suffix: String) -> String:
 	var action: StringName = StringName(BlasterOpsBindings.PREFIX + suffix)
 	var label: String = ""
 	if not Input.get_connected_joypads().is_empty():
 		var buttons: PackedStringArray = button_names(action)
 		label = buttons[0] if not buttons.is_empty() else ""
+		if label.is_empty() and suffix == "order_allies":
+			label = hold_command_label()
 	if label.is_empty():
 		for event in InputMap.action_get_events(action):
 			if event is InputEventMouseButton:
@@ -81,4 +88,6 @@ static func blaster_ops_hint(suffix: String) -> String:
 	var buttons: PackedStringArray = button_names(action)
 	if not buttons.is_empty():
 		names.append(buttons[0])
+	elif suffix == "order_allies" and not hold_command_label().is_empty():
+		names.append(hold_command_label())
 	return "%s  %s" % [" / ".join(names), TranslationServer.translate("BOPS_ACTION_" + suffix.to_upper())]
