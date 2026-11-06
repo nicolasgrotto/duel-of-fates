@@ -77,6 +77,10 @@ Arquivos e pastas em `snake_case`; classes com `class_name` em `PascalCase`.
 
 ## Simulação
 
+### Publicação Web e cache
+
+O GitHub Pages serve tudo com `Cache-Control: max-age=600` e nomes fixos, então o navegador podia juntar ou manter a versão antiga. `tools/web/export_web.sh`, usado pelos dois workflows, exporta `.js`, `.wasm`, `.pck` e ícones com o commit no nome (`dof-<sha>.*`) e deixa só `index.html` com nome fixo. Assim, uma versão nova nunca reaproveita arquivo antigo; o único atraso possível é o do próprio `index.html`, de até 10 minutos, que o Pages não permite mudar. Para contornar isso na hora, o link do README leva `?v=<versão>`: **atualizar esse número a cada release**.
+
 ### Interface da 1.1 e tutoriais
 
 - **Tema:** cores táticas em `UiPalette`, tipos em `main_theme.tres`, widgets em `ui/widgets/`. Telas não criam `StyleBox` nem cor solta.

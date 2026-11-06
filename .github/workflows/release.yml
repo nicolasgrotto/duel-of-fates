@@ -33,8 +33,7 @@ jobs:
         run: |
           ./godot --headless --path . --import
           ./godot --headless --path . --script res://tools/run_tests.gd
-          mkdir -p build/web
-          ./godot --headless --path . --export-release "Web" build/web/index.html
+          bash tools/web/export_web.sh ./godot
 
       - name: Publish the release
         env:

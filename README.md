@@ -4,7 +4,7 @@ Jogo de duelo de lâminas de energia em visão lateral, feito na **Godot 4.7** c
 
 > **Aviso legal.** Projeto acadêmico e de portfólio, sem fins lucrativos. A inspiração vem da franquia Star Wars, de propriedade da Lucasfilm Ltd. e da Walt Disney Company. Não é um produto oficial, não tem afiliação com elas e não usa nenhum nome, personagem, arte, música ou som oficial. Todo o conteúdo é original (ver [DESIGN.md](DESIGN.md#propriedade-intelectual)).
 
-**[Jogar no navegador](https://nicolasgrotto.github.io/duel-of-fates/)** · [Releases](https://github.com/nicolasgrotto/duel-of-fates/releases)
+**[Jogar no navegador](https://nicolasgrotto.github.io/duel-of-fates/?v=1.2.0)** · [Releases](https://github.com/nicolasgrotto/duel-of-fates/releases)
 
 ## Situação
 
