@@ -83,6 +83,11 @@ func point_at(position: Vector2) -> void:
 	_explicit_aim = true
 
 
+func track_pointer(position: Vector2) -> void:
+	if _pointer_active:
+		_pointer = position
+
+
 func produce(sim: InfiltrationSimulation, intent: InfiltrationIntent) -> void:
 	intent.clear()
 	intent.movement = _menu_stick_movement() if _menu_button_held else Input.get_vector(prefix + "left", prefix + "right", prefix + "up", prefix + "down")

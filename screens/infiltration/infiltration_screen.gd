@@ -393,6 +393,7 @@ func _process(delta: float) -> void:
 		var steps: int = 0
 		while _accumulator >= Ticks.DELTA and steps < MAX_STEPS:
 			_accumulator -= Ticks.DELTA
+			controller.track_pointer(get_global_mouse_position())
 			controller.produce(sim, intent)
 			step_once(intent)
 			steps += 1
