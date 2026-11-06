@@ -4,6 +4,33 @@ Roteiro para o autor validar, jogando, o que entrou na fase 7.5 (revisão de com
 
 Legenda: ✅ ficou bom · ⚠️ funciona mas a sensação ou o número precisa de ajuste · ❌ não funciona.
 
+## 25. Atualização 1.1 das Operações
+
+**Como jogar:** `godot --headless --path . --export-release "Web" build/web/index.html`, depois `python -m http.server 8000 --directory build/web` e abra `http://localhost:8000`. Build local: nada é publicado. No editor a janela agora abre em 1280×720 e encolhe para caber na tela.
+
+| Passo | Verificar | Resultado esperado |
+| --- | --- | --- |
+| 25.1 | HUD no navegador em 1280×720 e 1920×1080 | Barras, rodapé e os três quadros de poder inteiros, sem corte |
+| 25.2 | Personagem com blaster: segurar o disparo até travar | Barra de Calor sobe, fica âmbar acima de 70%, vermelha e pulsando em Superaquecido · Resfriando, com um traço onde a arma volta |
+| 25.3 | `Shift` e `C` | Um toque liga, outro desliga, ligar um desliga o outro; a linha de status diz Correndo ou Furtivo; a sensação ficou melhor que segurar? |
+| 25.4 | `1` `2` `3` e `R` com Sombra, Guardião e Ceifador | Poderes do conjunto de cada um, recargas independentes, tecla e segundos no quadro. Avaliar a sensação de Raio, Estrangular, Congelar, Cura, Ira e Arremesso no plano superior |
+| 25.5 | `F` e `V` | Corte com qualquer personagem; `V` dispara sem o mouse |
+| 25.6 | Linha Arma no menu e no painel de personagem | Lista com a arma própria e as cinco do Arsenal, treino do personagem, uso e números |
+| 25.7 | Guardião com Pistola | Híbrido: lâmina acesa na outra mão, `X` não faz nada |
+| 25.8 | Haste com Rifle e Garça com Rifle | `X` troca entre disparo e lâmina; a Haste troca e atira melhor que a Garça. `F` em modo de disparo troca e corta sozinho; a guarda troca e defende |
+| 25.9 | Vespa, Brasa, Haste e Ceifador com Pistola | Exigem troca, porque as duas mãos estão na lâmina |
+| 25.10 | Atirar e cortar em cima de aliados e prisioneiros, e devolver disparos neles | Nunca sofrem dano. Disparos inimigos e explosões ferem; a falha por aliado perdido continua |
+| 25.11 | Todos os inimigos novos | Guarda de campo com círculo tracejado, sapador armando com círculo vermelho, reparador recuando, Passo de Ferro lento com linha de mira e explosão. Cada um pede uma resposta diferente? O desenho do Passo de Ferro convence? |
+| 25.12 | Setas vermelhas na borda da tela | Apontam para inimigos alertados fora da câmera; ajudam ou poluem? |
+| 25.13 | Libertar aliados: fuzileiro, artilheiro, atirador, socorrista, guarda de lâmina | Agem sozinhos, cada um do seu jeito; os sprites se distinguem |
+| 25.14 | `E` com cargas, longe de objetos | Barreira de campo; com carga de muralha, três tiles. Fogo aliado atravessa, inimigo bate; inimigos sem alvo atacam a barreira; quebrar reabre o caminho |
+| 25.15 | Terminal de suprimentos em Linha de ruptura, Nó de defesa, Corredor dos aliados e Núcleo de cerco | `E` abre a lista e congela a ação; comprar gasta saldo; sem saldo a linha fica apagada; reiniciar zera tudo. O saldo parece justo? |
+| 25.16 | **Duração**: jogar cada Incursão com calma, cronometrando | Comuns entre 5 e 8 minutos, Núcleo de cerco entre 8 e 10. O piloto de testes leva de 2 min 25 s a 3 min 35 s e 5 min 10 s, sem hesitar. **Este é o ajuste que mais depende do autor** |
+| 25.17 | Dificuldade de cada Incursão | Exigente sem parecer injusta. Ajustes por missão em `tools/blaster_ops/make_missions.py` |
+| 25.18 | Save antigo com Incursões concluídas | Nota, bônus e recompensas mantidos; o menu pede um novo tempo |
+| 25.19 | Infiltração com arma e poderes | Tudo funciona e a furtividade não mudou; recargas continuam triplas |
+| 25.20 | Controle físico | Poder 2 no ombro esquerdo, poder 3 no stick direito pressionado, troca em Back/Select; guarda só no gatilho. Ainda não testado com controle real |
+
 ## 24. Coreografia da Vespa e da Brasa, e forte em sequência
 
 | Passo | Verificar | Resultado esperado |
