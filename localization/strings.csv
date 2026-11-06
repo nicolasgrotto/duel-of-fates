@@ -1465,3 +1465,4 @@ SPACE_TRAINING_STEP_8,Destrua os caças restantes,Destroy the remaining fighters
 BOPS_HOLD_BUTTON,segurar {button},hold {button}
 SPACE_TRACK_CAPTION,Melhorias de {ship},{ship} upgrades
 OPS_HUD_BACK_TO_GUN,Você está com a lâmina: volte ao rifle com {key},You have the blade out: switch back to the rifle with {key}
+OPS_WEAPON_SIGNATURE_INFO,"A arma de assinatura da personagem: dano 16 · intervalo 0,14 s · calor 10. Melhor que a pistola do Arsenal.","The character's signature weapon: damage 16 · interval 0.14 s · heat 10. Better than the Arsenal pistol."

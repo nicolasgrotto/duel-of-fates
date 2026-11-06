@@ -5,6 +5,7 @@ const CONFIG: BlasterOpsConfig = preload("res://data/balance/blaster_ops_config.
 const ARENA: BlasterOpsArenaData = preload("res://data/blaster_ops/training_arena.tres")
 const PISTOL: BlasterOpsLoadout = preload("res://data/blaster_ops/loadouts/pistol.tres")
 const RIFLE: BlasterOpsLoadout = preload("res://data/blaster_ops/loadouts/rifle.tres")
+const SIGNATURE_LOADOUTS: Dictionary = {&"corsair": preload("res://data/blaster_ops/loadouts/corsair_pistol.tres")}
 const CHARACTERS: Array[StringName] = [&"corsair", &"lynx", &"holster", &"guardian"]
 const POWERS: Array[BlasterOpsPowerData] = [preload("res://data/blaster_ops/powers/repulse.tres"), preload("res://data/blaster_ops/powers/pull.tres"), preload("res://data/blaster_ops/powers/barrier.tres")]
 const ADAPTED_POWERS: Array[BlasterOpsPowerData] = [
@@ -23,7 +24,7 @@ const ARSENAL: BlasterOpsArsenal = preload("res://data/blaster_ops/arsenal.tres"
 
 
 static func equipment(character: CharacterData, power_index: int) -> BlasterOpsLoadout:
-	var original: BlasterOpsLoadout = PISTOL
+	var original: BlasterOpsLoadout = SIGNATURE_LOADOUTS.get(character.id, PISTOL)
 	if character.weapon.sidearm == WeaponData.Sidearm.HOLSTER and character.weapon.blaster != null:
 		original = RIFLE if character.weapon.blaster.two_handed() else PISTOL
 	var result: BlasterOpsLoadout = original.duplicate() as BlasterOpsLoadout

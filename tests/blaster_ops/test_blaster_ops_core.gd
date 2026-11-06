@@ -11,11 +11,11 @@ func test_movement_is_normalized_and_independent_of_aim() -> void:
 	assert_gt(fixture.sim.player.position.x, 160.0)
 
 
-func test_primary_overheats_on_the_fifth_shot_and_resumes_at_the_threshold() -> void:
+func test_primary_overheats_on_the_eighth_shot_and_resumes_at_the_threshold() -> void:
 	var fixture: BlasterOpsFixture = BlasterOpsFixture.create()
 	fixture.intent.held = Intent.Command.LIGHT
-	fixture.step(41)
-	assert_eq(fixture.count_events(InfiltrationEvent.Type.SHOT_FIRED), 5)
+	fixture.step(71)
+	assert_eq(fixture.count_events(InfiltrationEvent.Type.SHOT_FIRED), 8)
 	assert_eq(fixture.count_events(InfiltrationEvent.Type.OVERHEATED), 1)
 	assert_almost(fixture.sim.state.heat, 100.0)
 	assert_true(fixture.sim.state.overheated)
@@ -27,7 +27,7 @@ func test_primary_overheats_on_the_fifth_shot_and_resumes_at_the_threshold() -> 
 	assert_almost(fixture.sim.state.heat, 40.0)
 	fixture.intent.held = Intent.Command.LIGHT
 	fixture.step()
-	assert_eq(fixture.count_events(InfiltrationEvent.Type.SHOT_FIRED), 6)
+	assert_eq(fixture.count_events(InfiltrationEvent.Type.SHOT_FIRED), 9)
 
 
 func test_cooling_waits_for_the_configured_delay_and_repressing_does_not_unlock() -> void:
@@ -36,9 +36,9 @@ func test_cooling_waits_for_the_configured_delay_and_repressing_does_not_unlock(
 	fixture.step()
 	fixture.intent.clear()
 	fixture.step(14)
-	assert_almost(fixture.sim.state.heat, 20.0)
+	assert_almost(fixture.sim.state.heat, 14.0)
 	fixture.step()
-	assert_almost(fixture.sim.state.heat, 19.5)
+	assert_almost(fixture.sim.state.heat, 13.5)
 	fixture.sim.state.overheated = true
 	fixture.sim.state.overheat_ticks = 10
 	fixture.sim.state.heat = 30.0

@@ -38,45 +38,45 @@ script = ExtResource("weapon")
 blaster = ExtResource("holster_pistol")
 training_class = 0
 two_handed = false
-damage_scale = 2.5
+damage_scale = 2.75
 fire_interval = 0.16
-heat_per_shot = 20.0
+heat_per_shot = 14.0
 
 [sub_resource type="Resource" id="w_thigh_revolver"]
 script = ExtResource("weapon")
 blaster = ExtResource("thigh_revolver")
 training_class = 0
 two_handed = false
-damage_scale = 2.0
+damage_scale = 2.2
 fire_interval = 0.55
-heat_per_shot = 30.0
+heat_per_shot = 21.0
 
 [sub_resource type="Resource" id="w_lumbar_carbine"]
 script = ExtResource("weapon")
 blaster = ExtResource("lumbar_carbine")
 training_class = 1
 two_handed = true
-damage_scale = 2.0
+damage_scale = 2.2
 fire_interval = 0.36
-heat_per_shot = 14.0
+heat_per_shot = 10.0
 
 [sub_resource type="Resource" id="w_back_rifle"]
 script = ExtResource("weapon")
 blaster = ExtResource("back_rifle")
 training_class = 2
 two_handed = true
-damage_scale = 2.0
+damage_scale = 2.2
 fire_interval = 0.42
-heat_per_shot = 12.0
+heat_per_shot = 8.5
 
 [sub_resource type="Resource" id="w_back_sniper"]
 script = ExtResource("weapon")
 blaster = ExtResource("back_sniper")
 training_class = 2
 two_handed = true
-damage_scale = 2.0
+damage_scale = 2.2
 fire_interval = 1.1
-heat_per_shot = 40.0
+heat_per_shot = 28.0
 
 [resource]
 script = ExtResource("arsenal")

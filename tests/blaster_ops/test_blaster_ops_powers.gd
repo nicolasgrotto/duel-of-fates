@@ -140,7 +140,7 @@ func test_training_loadouts_support_blaster_styles_and_do_not_mutate_shared_weap
 		if id == &"guardian":
 			assert_eq(equipment.blaster, null)
 		else:
-			assert_almost(equipment.blaster.bolt.damage * equipment.damage_scale, 10.0)
+			assert_almost(equipment.blaster.bolt.damage * equipment.damage_scale, 16.0 if id == &"corsair" else 10.0)
 	var story: StoryCampaign = StoryCampaign.create("Iria", 0, 3, 3, 0, 1)
 	story.blaster_id = &"back_rifle"
 	var equipment: BlasterOpsLoadout = BlasterOpsTraining.equipment(story.protagonist(), 2)

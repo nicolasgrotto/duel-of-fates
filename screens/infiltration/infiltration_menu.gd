@@ -359,7 +359,7 @@ func _weapon_row_text(character: CharacterData) -> String:
 func _weapon_detail(character: CharacterData, weapon_id: StringName) -> String:
 	var entry: BlasterOpsWeaponData = BlasterOpsTraining.ARSENAL.weapon(weapon_id)
 	if entry == null:
-		return tr("OPS_WEAPON_OWN_INFO")
+		return tr("OPS_WEAPON_SIGNATURE_INFO" if BlasterOpsTraining.SIGNATURE_LOADOUTS.has(character.id) else "OPS_WEAPON_OWN_INFO")
 	var tier: BlasterOpsTrainingTier = BlasterOpsTraining.ARSENAL.tier_for(character.id, entry)
 	var switching: bool = entry.two_handed or character.weapon.kind != WeaponData.Kind.SINGLE
 	var lines: PackedStringArray = [

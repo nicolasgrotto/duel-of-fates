@@ -124,11 +124,13 @@ Dano é o do BoltData vezes a escala da arma; calor por tiro é o da tabela veze
 
 | Arma | Classe | Uso | Dano | Tiros | Intervalo | Calor por tiro |
 | --- | --- | --- | --- | --- | --- | --- |
-| Pistola | Curta | uma mão | 10 | 1 | 0,16 s | 20 |
-| Revólver pesado | Curta | uma mão | 24 | 1 | 0,55 s | 36 |
-| Carabina | Média | duas mãos | 12 | 2 | 0,36 s | 15,4 |
-| Rifle | Longa | duas mãos | 12 | 3 | 0,42 s | 15 |
-| Rifle de precisão | Longa | duas mãos | 44 | 1 | 1,1 s | 64 |
+| Pistola | Curta | uma mão | 11 | 1 | 0,16 s | 14 |
+| Revólver pesado | Curta | uma mão | 26,4 | 1 | 0,55 s | 25,2 |
+| Carabina | Média | duas mãos | 13,2 | 2 | 0,36 s | 11 |
+| Rifle | Longa | duas mãos | 13,2 | 3 | 0,42 s | 10,6 |
+| Rifle de precisão | Longa | duas mãos | 48,4 | 1 | 1,1 s | 44,8 |
+
+Versão 1.2: calor 30% menor em todos os blasters do jogador e dano 10% maior nos do Arsenal.
 
 | Treino | Calor | Intervalo | Dispersão | Tempo de troca |
 | --- | --- | --- | --- | --- |
@@ -165,9 +167,10 @@ Armas usam `BlasterData` e `BoltData`. O conjunto do modo define escala de dano,
 
 | Conjunto | Dano | Velocidade / alcance | Cadência | Calor por tiro |
 | --- | --- | --- | --- | --- |
-| Pistola (Corsária e Coldre) | 10 (4 × 2,5) | 900 / 1.100 u | 0,16 s | 20 |
-| Emissor (Lince) | 10 (4 × 2,5) | 900 / 1.100 u | 0,16 s | 20 |
-| Rifle de dorso (conjunto explícito da futura Saga) | 15 por tiro (6 × 2,5), rajada de 3 | 650 / 1.500 u | 0,12 s entre tiros; 0,42 s entre rajadas | 37,5 (30 × 1,25) |
+| Pistola da Corsária, arma de assinatura | 16 (4 × 4) | 900 / 1.100 u | 0,14 s | 10 |
+| Pistola (Coldre) | 10 (4 × 2,5) | 900 / 1.100 u | 0,16 s | 14 |
+| Emissor (Lince) | 10 (4 × 2,5) | 900 / 1.100 u | 0,16 s | 14 |
+| Rifle de dorso (conjunto explícito da futura Saga) | 15 por tiro (6 × 2,5), rajada de 3 | 650 / 1.500 u | 0,12 s entre tiros; 0,42 s entre rajadas | 26,3 (21 × 1,25) |
 | Personagem só de lâmina | corte 10 | alcance 88 u | ciclo 0,40 s | sem calor |
 
 Capacidade de calor 100, resfriamento 30/s após 0,25 s sem tiro. Atingir 100 trava a arma por **ao menos 1 s e até chegar a 40**, com resfriamento imediato durante a trava. Soltar e reapertar não limpa a trava. Guarda, esquiva, preparação do poder e tranco impedem tiro. Pool cheio ou saída dentro da parede recusa sem cobrar calor/cadência; não sobrescreve disparos. Sem munição, recarga manual, itens ou dano de contato.

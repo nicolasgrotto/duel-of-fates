@@ -10,4 +10,4 @@ blaster = ExtResource("2")
 power = ExtResource("3")
 damage_scale = 2.5
 fire_interval = 0.16
-heat_per_shot = 20.0
+heat_per_shot = 14.0

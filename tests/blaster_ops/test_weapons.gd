@@ -72,7 +72,7 @@ func test_applying_a_weapon_never_touches_the_shared_blaster_or_character() -> v
 	assert_eq(built.blaster, rifle)
 	assert_eq(rifle.vigor_multiplier, multiplier)
 	assert_eq(_character(&"corsair").weapon.blaster, sidearm)
-	assert_eq(BlasterOpsTraining.PISTOL.heat_per_shot, 20.0)
+	assert_eq(BlasterOpsTraining.PISTOL.heat_per_shot, 14.0)
 
 
 func test_two_handed_weapon_fires_in_ranged_mode_and_cuts_in_blade_mode() -> void:
@@ -226,3 +226,27 @@ func test_view_state_follows_the_weapon_mode_not_the_input() -> void:
 	assert_eq(BlasterOpsView.weapon_state(rifle, true), BlasterOpsView.WeaponState.BLADE)
 	var pistol: BlasterOpsLoadout = BlasterOpsTraining.mission_loadout(_character(&"wasp"), &"holster_pistol")
 	assert_eq(BlasterOpsView.weapon_state(pistol, false), BlasterOpsView.WeaponState.BLASTER | BlasterOpsView.WeaponState.BELT_HILT)
+
+
+func _rate(loadout: BlasterOpsLoadout) -> float:
+	return loadout.blaster.bolt.damage * loadout.damage_scale * maxi(loadout.blaster.shot_count, 1) / loadout.fire_interval
+
+
+func test_corsair_signature_beats_every_arsenal_weapon_and_stays_hers() -> void:
+	var corsair: CharacterData = _character(&"corsair")
+	var signature: BlasterOpsLoadout = BlasterOpsTraining.mission_loadout(corsair)
+	for entry in BlasterOpsTraining.ARSENAL.weapons:
+		var shop: BlasterOpsLoadout = BlasterOpsTraining.mission_loadout(corsair, entry.blaster.id)
+		assert_gt(_rate(signature), _rate(shop), String(entry.blaster.id))
+	var pistol: BlasterOpsLoadout = BlasterOpsTraining.mission_loadout(corsair, &"holster_pistol")
+	assert_lt(signature.heat_per_shot / signature.fire_interval, pistol.heat_per_shot / pistol.fire_interval)
+	var lynx: BlasterOpsLoadout = BlasterOpsTraining.equipment(_character(&"lynx"), 0)
+	assert_almost(lynx.damage_scale, BlasterOpsTraining.PISTOL.damage_scale)
+	assert_eq(BlasterOpsTraining.PISTOL.damage_scale, 2.5, "the shared pistol set keeps its damage")
+
+
+func test_buffs_do_not_change_the_duel_blasters() -> void:
+	var damage: Dictionary = {&"holster_pistol": 4.0, &"back_rifle": 6.0}
+	for id: StringName in damage:
+		var blaster: BlasterData = load("res://data/blasters/%s.tres" % id)
+		assert_almost(blaster.bolt.damage, damage[id])

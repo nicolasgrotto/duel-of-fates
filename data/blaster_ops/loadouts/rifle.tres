@@ -10,6 +10,6 @@ blaster = ExtResource("2")
 power = ExtResource("3")
 damage_scale = 2.5
 fire_interval = 0.42
-heat_per_shot = 30.0
+heat_per_shot = 21.0
 switchable = true
 two_handed = true
