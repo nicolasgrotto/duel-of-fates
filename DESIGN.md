@@ -30,7 +30,7 @@ Se uma decisão importante ainda não estiver definida, **proponha e documente a
 
 ## Conceito
 
-Um duelo de lâminas de energia em visão lateral, cinematográfico e intenso. Dois combatentes, uma arena enorme, nenhum elemento sobrando. As trocas de golpes são rápidas, acrobáticas e coreografadas, como nos duelos de sabre da trilogia prequel: lâminas que se encontram o tempo todo, saltos, giros, empurrões de energia, rostos próximos numa disputa de lâminas. Mesmo na velocidade, cada golpe tem peso, cada defesa tem som e luz, e cada erro custa caro.
+Um duelo de lâminas de energia em visão lateral, cinematográfico e intenso. Dois combatentes, uma arena enorme, nenhum elemento sobrando. As trocas de golpes são rápidas, acrobáticas e coreografadas: lâminas que se encontram o tempo todo, saltos, giros, empurrões de energia, rostos próximos numa disputa de lâminas. Mesmo na velocidade, cada golpe tem peso, cada defesa tem som e luz, e cada erro custa caro.
 
 Frase-guia: **"rápido como uma coreografia, decisivo como um duelo."**
 

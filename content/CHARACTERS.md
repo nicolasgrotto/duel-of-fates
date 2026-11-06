@@ -357,7 +357,7 @@ Os três têm **potencial**: o teto de todos os atributos sobe (+1, +2, +3), e a
 - **Trajes**:
   - **Ocaso** (final secreto): presença austera de quem já passou pelo fim; capuz levantado, manto longo, túnica em camadas, luvas de bronze escurecido. Manto `#1c1a20`, corpo `#26222b`, acabamento bronze fosco `#7a6650`.
   - **Caído** (concluir a História): cavaleiro de armadura negra com capa longa e capuz marrom-escuros, máscara cinza-aço, ombreiras, luvas pretas e o antebraço da lâmina protético (metal, `CostumeData.prosthetic_arm`). Manto `#33241a`, corpo `#24242b`, acabamento `#4a4e58`.
-  - **Duelo** (vencer o Arcade com ele): túnica escura em camadas (gola alta), sem capa e sem capuz, cabelo castanho-escuro ondulado até o queixo e o antebraço da lâmina protético. Arquétipo do jovem duelista que perdeu o braço, sem copiar rosto, traje ou marca de personagem existente. Manto `#2b2119`, corpo `#120f0d`, acabamento `#4d3c2d`.
+  - **Duelo** (vencer o Arcade com ele): túnica escura em camadas (gola alta), sem capa e sem capuz, cabelo castanho-escuro ondulado até o queixo e o antebraço da lâmina protético. Manto `#2b2119`, corpo `#120f0d`, acabamento `#4d3c2d`.
   - **Legado** (final secreto): capa `#34394a`, capa longa e máscara.
 - Variantes liberadas ao vencê-las na História (o final secreto de cada rota enfrenta a variante oposta) ou pelo segredo do Equilíbrio.
 - **Lâmina por variante**: a Aurora usa o azul-aurora (`#6fb2ff`); a Eclipse usa o **vermelho do Ápice** (`#ff2b45`), como cita a fala final da rota Aurora. A regra "lâminas sem moral" continua valendo: a cor marca a variante, não o caráter.

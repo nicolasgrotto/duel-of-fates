@@ -30,7 +30,11 @@ Task 20. Conferência técnica feita em 2026-11-06, sobre a branch `1.2`, o site
 | 6 | A estrutura da História ecoa arquétipos da franquia: mestre escondido, aprendiz do senhor sombrio, herdeiro oculto, nascido para equilibrar. O texto é original, sem nomes | `content/STORY.md`, traduções `STORY_*` |
 | 7 | O logo do addon Godot MCP Toolkit, não licenciado para reuso, ficou no histórico entre 2026-10-20 e 2026-11-02. Hoje está fora do repositório e nunca foi para os builds | `addons/godot_mcp_toolkit/icon.svg`, commits `a6086f5` a `927b38d` |
 
-## Ações para o autor decidir
+## Decisões do autor
+
+O projeto é acadêmico, para uma feira deste semestre. Título mantido, `Maul` mantido (a habilidade não tem relação com o personagem), História mantida. Ícone próprio feito na task 22; referência à trilogia só no aviso legal; descrição dos trajes reescrita; histórico do addon intocado.
+
+## Recomendações apresentadas
 
 | # | Ação | Recomendação |
 | --- | --- | --- |

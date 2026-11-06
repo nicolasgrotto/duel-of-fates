@@ -6,7 +6,7 @@ Identidade visual do jogo. Segue [DESIGN.md](../DESIGN.md). Efeitos em [VFX.md](
 
 O jogo deve transmitir: duelo cinematográfico, velocidade elegante, peso nos golpes, tensão, atmosfera sci-fi, contraste forte e combate de alto nível. A cena é escura; a luz e a cor saturada pertencem às lâminas.
 
-Referências de **sensação** (nunca de assets): os duelos de sabre da trilogia prequel (coreografia veloz, acrobacia, cenários industriais e templos enormes, a lâmina iluminando rostos), duelos de samurai do cinema (tensão antes do golpe), Sekiro e For Honor (defesa no tempo certo), Nidhogg e Limbo (silhuetas fortes em cenários escuros), concept art sci-fi industrial e fotografia com neon em ambiente escuro.
+Referências de **sensação** (nunca de assets): duelos de lâmina cinematográficos de ficção científica (coreografia veloz, acrobacia, cenários industriais e templos enormes, a lâmina iluminando rostos), duelos de samurai do cinema (tensão antes do golpe), Sekiro e For Honor (defesa no tempo certo), Nidhogg e Limbo (silhuetas fortes em cenários escuros), concept art sci-fi industrial e fotografia com neon em ambiente escuro.
 
 ## Técnica de apresentação
 
