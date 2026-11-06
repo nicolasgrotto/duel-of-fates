@@ -4,7 +4,7 @@ Roteiro para o autor validar, jogando, o que entrou na fase 7.5 (revisão de com
 
 Legenda: ✅ ficou bom · ⚠️ funciona mas a sensação ou o número precisa de ajuste · ❌ não funciona.
 
-## 27. Blasters da 1.2
+## 27. Blasters (1.1.1)
 
 | Passo | Verificar | Resultado esperado |
 | --- | --- | --- |

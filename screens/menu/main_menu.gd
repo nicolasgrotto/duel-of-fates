@@ -3,6 +3,7 @@ extends Control
 const TITLE_GAP: float = 12.0
 const LIST_GAP: float = 72.0
 const FOOTER_MARGIN: float = 36.0
+const VERSION_SETTING: String = "application/config/version"
 const WEB_FEATURE: String = "web"
 const EMBLEM_SPACE: float = 250.0
 const EMBLEM_LIFT: float = 178.0
@@ -69,6 +70,7 @@ func _ready() -> void:
 	footer.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	footer.offset_bottom = -FOOTER_MARGIN
 	add_child(footer)
+	add_child(_version_label())
 
 
 func _process(_delta: float) -> void:
@@ -179,6 +181,17 @@ func _label(text_key: String, variation: StringName) -> Label:
 	label.text = tr(text_key) if text_key != "" else ""
 	label.theme_type_variation = variation
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	return label
+
+
+func _version_label() -> Label:
+	var label: Label = _label("", &"HintLabel")
+	label.text = tr("MENU_VERSION").format({"version": ProjectSettings.get_setting(VERSION_SETTING)})
+	label.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+	label.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	label.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	label.offset_right = -FOOTER_MARGIN
+	label.offset_bottom = -FOOTER_MARGIN
 	return label
 
 

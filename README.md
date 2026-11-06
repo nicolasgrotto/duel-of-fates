@@ -1,14 +1,14 @@
 # Duel of Fates
 
-Jogo de duelo de lâminas de energia em visão lateral, feito na **Godot 4.7** com **GDScript**. Duelos rápidos, acrobáticos e coreografados, inspirados nos duelos de sabre da trilogia prequel de Star Wars, com peso em cada golpe, leitura do oponente e poderes de uma energia chamada **Fluxo**.
+Jogo de duelo de lâminas de energia em visão lateral, feito na **Godot 4.7** com **GDScript**. Duelos rápidos, acrobáticos e coreografados, com peso em cada golpe, leitura do oponente e poderes de uma energia chamada **Fluxo**.
 
 > **Aviso legal.** Projeto acadêmico e de portfólio, sem fins lucrativos. A inspiração vem da franquia Star Wars, de propriedade da Lucasfilm Ltd. e da Walt Disney Company. Não é um produto oficial, não tem afiliação com elas e não usa nenhum nome, personagem, arte, música ou som oficial. Todo o conteúdo é original (ver [DESIGN.md](DESIGN.md#propriedade-intelectual)).
 
-**[Jogar no navegador](https://nicolasgrotto.github.io/duel-of-fates/?v=1.2.0)** · [Releases](https://github.com/nicolasgrotto/duel-of-fates/releases)
+**[Jogar no navegador](https://nicolasgrotto.github.io/duel-of-fates/?v=1.1.1)** · [Releases](https://github.com/nicolasgrotto/duel-of-fates/releases)
 
 ## Situação
 
-**Versão 1.1.0.** Duelo completo com o elenco inteiro, o Fluxo (poderes e técnicas), as dez arenas, a História com quatro finais, Duelar, Batalhas, Infiltração e Combate de naves, em português e inglês. O detalhe de cada entrega fica em [ROADMAP.md](ROADMAP.md).
+**Versão 1.1.1.** Duelo completo com o elenco inteiro, o Fluxo (poderes e técnicas), as dez arenas, a História com quatro finais, Duelar, Batalhas, Infiltração e Combate de naves, em português e inglês. O detalhe de cada entrega fica em [ROADMAP.md](ROADMAP.md).
 
 **Branches:** o desenvolvimento acontece na `1.x`. A `main` recebe só o que está pronto para publicar: cada push nela atualiza o site, e cada tag `v*` cria uma release.
 

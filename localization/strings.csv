@@ -1466,3 +1466,4 @@ BOPS_HOLD_BUTTON,segurar {button},hold {button}
 SPACE_TRACK_CAPTION,Melhorias de {ship},{ship} upgrades
 OPS_HUD_BACK_TO_GUN,Você está com a lâmina: volte ao rifle com {key},You have the blade out: switch back to the rifle with {key}
 OPS_WEAPON_SIGNATURE_INFO,"A arma de assinatura da personagem: dano {damage} · intervalo {interval} s · calor {heat}. Melhor que a pistola do Arsenal.","The character's signature weapon: damage {damage} · interval {interval} s · heat {heat}. Better than the Arsenal pistol."
+MENU_VERSION,Versão {version},Version {version}
