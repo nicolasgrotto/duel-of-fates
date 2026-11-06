@@ -1,21 +1,33 @@
 extends Control
 
-const MARGIN: float = 100.0
-const LIST_WIDTH: float = 540.0
-const COLUMN_GAP: int = 80
+const ROOT_MARGIN: Vector2 = Vector2(56.0, 44.0)
+const ROOT_GAP: int = 16
+const COLUMN_GAP: int = 16
+const LIST_WIDTH: float = 728.0
 const DETAIL_GAP: int = 12
+const TITLE_GAP: int = 16
+const CHIP_GAP: int = 8
 const CHARACTER_ROW: StringName = &"character"
 const WEAPON_ROW: StringName = &"weapon"
 const OWN_WEAPON: StringName = &"own"
 const BACK_ROW: StringName = &"back"
+const PALETTE: UiPalette = preload("res://ui/palette.tres")
 
-var _list: MenuList
+var _header: TacticalHeader
+var _list: TacticalList
 var _preview: MissionPreview
 var _look_preview: InfiltrationLookPreview
 var _title: Label
+var _group: Label
+var _pill: PanelContainer
+var _pill_glyph: StatusGlyph
+var _pill_text: Label
+var _record: Label
 var _detail: Label
-var _heading: Label
-var _footer: Label
+var _chips: HBoxContainer
+var _reward_box: VBoxContainer
+var _reward_text: Label
+var _footer: KeyFooter
 var _mode: InfiltrationMode
 var _result: bool = false
 var _characters_panel: bool = false
@@ -29,56 +41,106 @@ var _blade: int = 0
 func _ready() -> void:
 	InfiltrationBindings.install(Settings.blaster_ops_keys, Settings.blaster_ops_buttons)
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_heading = _label("", &"ScreenTitleLabel")
-	_heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_heading.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	_heading.offset_top = 70.0
-	add_child(_heading)
+	var ground: ColorRect = ColorRect.new()
+	ground.color = PALETTE.tactical_ground
+	ground.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(ground)
+	var root: VBoxContainer = VBoxContainer.new()
+	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	root.offset_left = ROOT_MARGIN.x
+	root.offset_right = -ROOT_MARGIN.x
+	root.offset_top = ROOT_MARGIN.y
+	root.offset_bottom = -ROOT_MARGIN.y
+	root.add_theme_constant_override(&"separation", ROOT_GAP)
+	add_child(root)
+	_header = TacticalHeader.new()
+	root.add_child(_header)
 	var columns: HBoxContainer = HBoxContainer.new()
-	columns.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	columns.offset_left = MARGIN
-	columns.offset_right = -MARGIN
-	columns.offset_top = 200.0
-	columns.offset_bottom = -110.0
+	columns.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	columns.add_theme_constant_override(&"separation", COLUMN_GAP)
-	add_child(columns)
-	_list = MenuList.new()
-	_list.custom_minimum_size.x = LIST_WIDTH
-	var mission_scroll: ScrollContainer = ScrollContainer.new()
-	mission_scroll.custom_minimum_size.x = LIST_WIDTH
-	mission_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	columns.add_child(mission_scroll)
-	mission_scroll.add_child(_list)
-	_list.highlighted.connect(_reveal_selection.bind(mission_scroll))
+	root.add_child(columns)
+	columns.add_child(_build_list_panel())
+	columns.add_child(_build_detail_panel())
+	_footer = KeyFooter.new()
+	root.add_child(_footer)
+	_set_footer(false)
+
+
+func _build_list_panel() -> PanelContainer:
+	var panel: PanelContainer = PanelContainer.new()
+	panel.theme_type_variation = &"TacticalPanel"
+	panel.custom_minimum_size.x = LIST_WIDTH
+	var scroll: ScrollContainer = ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	panel.add_child(scroll)
+	_list = TacticalList.new()
+	_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(_list)
+	_list.highlighted.connect(_reveal_selection.bind(scroll))
 	_list.chosen.connect(_choose)
 	_list.highlighted.connect(_highlight)
 	_list.adjusted.connect(_adjust)
-	var detail_column: VBoxContainer = VBoxContainer.new()
-	detail_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	detail_column.add_theme_constant_override(&"separation", DETAIL_GAP)
-	columns.add_child(detail_column)
-	_preview = MissionPreview.new()
-	detail_column.add_child(_preview)
-	_look_preview = InfiltrationLookPreview.new()
-	detail_column.add_child(_look_preview)
-	_title = _label("", &"HuntSubtitleLabel")
-	_title.visible = false
-	detail_column.add_child(_title)
+	return panel
+
+
+func _build_detail_panel() -> PanelContainer:
+	var panel: PanelContainer = PanelContainer.new()
+	panel.theme_type_variation = &"TacticalDetailPanel"
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var scroll: ScrollContainer = ScrollContainer.new()
-	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	detail_column.add_child(scroll)
-	_detail = _label("", &"HuntBodyLabel")
+	panel.add_child(scroll)
+	var column: VBoxContainer = VBoxContainer.new()
+	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	column.add_theme_constant_override(&"separation", DETAIL_GAP)
+	scroll.add_child(column)
+	_preview = MissionPreview.new()
+	column.add_child(_preview)
+	_look_preview = InfiltrationLookPreview.new()
+	column.add_child(_look_preview)
+	column.add_child(_build_title_row())
+	_record = _label("", &"TacticalNoteLabel")
+	_record.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	column.add_child(_record)
+	_detail = _label("", &"TacticalBodyLabel")
 	_detail.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	scroll.add_child(_detail)
-	_footer = _label("", &"HuntHintLabel")
-	_footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_footer.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
-	_footer.offset_top = -65.0
-	add_child(_footer)
-	_set_footer(false)
+	column.add_child(_detail)
+	_chips = HBoxContainer.new()
+	_chips.add_theme_constant_override(&"separation", CHIP_GAP)
+	column.add_child(_chips)
+	_reward_box = VBoxContainer.new()
+	_reward_box.add_theme_constant_override(&"separation", 0)
+	_reward_box.add_child(_label(tr("OPS_MENU_REWARDS").to_upper(), &"TacticalGroupLabel"))
+	_reward_text = _label("", &"TacticalNoteLabel")
+	_reward_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_reward_box.add_child(_reward_text)
+	column.add_child(_reward_box)
+	return panel
+
+
+func _build_title_row() -> HBoxContainer:
+	var row: HBoxContainer = HBoxContainer.new()
+	row.add_theme_constant_override(&"separation", TITLE_GAP)
+	_title = _label("", &"TacticalNameLabel")
+	_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	row.add_child(_title)
+	_group = _label("", &"TacticalGroupLabel")
+	_group.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(_group)
+	_pill = PanelContainer.new()
+	_pill.theme_type_variation = &"TacticalPill"
+	_pill.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	var pill_row: HBoxContainer = HBoxContainer.new()
+	pill_row.add_theme_constant_override(&"separation", CHIP_GAP)
+	_pill.add_child(pill_row)
+	_pill_glyph = StatusGlyph.new()
+	pill_row.add_child(_pill_glyph)
+	_pill_text = _label("", &"TacticalValueLabel")
+	pill_row.add_child(_pill_text)
+	row.add_child(_pill)
+	return row
 
 
 func required_resources(params: Dictionary) -> PackedStringArray:
@@ -92,7 +154,7 @@ func required_resources(params: Dictionary) -> PackedStringArray:
 func _reveal_selection(id: StringName, scroll: ScrollContainer) -> void:
 	await get_tree().process_frame
 	if is_instance_valid(scroll) and is_instance_valid(_list) and _list.current_id() == id:
-		scroll.ensure_control_visible(_list.get_child(_list._ids.find(id)))
+		scroll.ensure_control_visible(_list.row_control(id))
 
 
 func open(params: Dictionary) -> void:
@@ -108,14 +170,53 @@ func open(params: Dictionary) -> void:
 	if params.get("panel", &"") == &"weapons":
 		_show_weapons()
 		return
-	_heading.text = tr("MENU_OPERATIONS").to_upper()
-	for mission in BlasterOpsMode.all_missions():
-		_list.add_item(mission.id, tr(mission.title_key) + "\n" + tr(mission.objective_key()))
-	_list.add_item(CHARACTER_ROW, tr("INF_CHARACTER").format({"name": tr(InfiltrationMode.look_character().name_key)}))
-	_list.add_item(WEAPON_ROW, _weapon_row_text(InfiltrationMode.look_character()))
-	_list.add_item(BACK_ROW, tr("MENU_BACK"))
+	_header.set_content(tr("MENU_OPERATIONS"), tr("OPS_MENU_COMPLETED").format({"done": _completed_count(), "total": BlasterOpsMode.all_missions().size()}))
+	_list.add_heading(tr("OPS_MENU_INFILTRATION"))
+	for mission in InfiltrationMode.MISSIONS:
+		_add_mission_row(mission)
+	_list.add_heading(tr("OPS_MENU_INCURSION"))
+	for mission in BlasterOpsMode.INCURSIONS:
+		_add_mission_row(mission)
+	_list.add_rule()
+	_list.add_row(CHARACTER_ROW, tr("INF_CHARACTER").format({"name": tr(InfiltrationMode.look_character().name_key)}))
+	_list.add_row(WEAPON_ROW, _weapon_row_text(InfiltrationMode.look_character()))
+	_list.add_row(BACK_ROW, tr("MENU_BACK"))
 	_list.select_id(_mission)
-	_highlight(_list._ids[_list.selected])
+	_highlight(_list.current_id())
+
+
+func _add_mission_row(mission: InfiltrationMissionData) -> void:
+	var summary: Dictionary = _record_summary(mission)
+	_list.add_row(mission.id, tr(mission.title_key), summary.state, summary.mark, summary.time)
+
+
+func _record_summary(mission: InfiltrationMissionData) -> Dictionary:
+	var record: Dictionary = SaveService.incursion_best.get(String(mission.id), {}) if mission is BlasterOpsMissionData else SaveService.infiltration_best.get(String(mission.id), {})
+	if record.is_empty():
+		return {"state": StatusGlyph.State.AVAILABLE, "mark": " ", "time": " "}
+	var mark: String = _rating_mark(record.get("rating", 0)) if mission is BlasterOpsMissionData else str(_bit_count(int(record.get("bonuses", 0))))
+	var time: String = ChallengeMode.format_time(record.ticks * Ticks.DELTA) if record.has("ticks") else "–"
+	return {"state": StatusGlyph.State.COMPLETED, "mark": mark, "time": time}
+
+
+func _rating_mark(rating: int) -> String:
+	return tr(BlasterOpsMode.rating_key(rating) + "_SHORT")
+
+
+func _bit_count(mask: int) -> int:
+	var count: int = 0
+	for bit in 4:
+		if mask & (1 << bit) != 0:
+			count += 1
+	return count
+
+
+func _completed_count() -> int:
+	var done: int = 0
+	for mission in BlasterOpsMode.all_missions():
+		if _record_summary(mission).state == StatusGlyph.State.COMPLETED:
+			done += 1
+	return done
 
 
 func _highlight(id: StringName) -> void:
@@ -127,12 +228,12 @@ func _highlight(id: StringName) -> void:
 		_highlight_character(id)
 	elif id == WEAPON_ROW:
 		var character: CharacterData = InfiltrationMode.look_character()
-		_show_panel(null, InfiltrationMode.current_look(), tr("OPS_WEAPON_TITLE").to_upper(), _weapon_detail(character, InfiltrationMode.look_weapon()))
+		_show_panel(null, InfiltrationMode.current_look(), tr("OPS_WEAPON_TITLE"), _weapon_detail(character, InfiltrationMode.look_weapon()))
 	elif id == BACK_ROW:
 		_show_panel(null, null, "", "")
 	elif id == CHARACTER_ROW:
 		var character: CharacterData = InfiltrationMode.look_character()
-		_show_panel(null, InfiltrationMode.current_look(), tr(character.name_key).to_upper(), tr("INF_CHARACTER_INFO"))
+		_show_panel(null, InfiltrationMode.current_look(), tr(character.name_key), tr("INF_CHARACTER_INFO"))
 	else:
 		_highlight_mission(id)
 
@@ -149,19 +250,58 @@ func _highlight_mission(id: StringName) -> void:
 	var record: Dictionary = SaveService.infiltration_best.get(String(data.id), {})
 	var progress: String = tr("INF_NOT_COMPLETED")
 	if not record.is_empty():
-		progress = tr("INF_RECORD").format({"time": ChallengeMode.format_time(record.ticks * Ticks.DELTA)}) + "\n" + InfiltrationMode.bonus_text(record.bonuses).replace("\n", ControlHints.SEPARATOR)
-	var controls: String = ControlHints.line(PackedStringArray([ControlHints.blaster_ops_hint("interact"), ControlHints.blaster_ops_hint("strike"), ControlHints.blaster_ops_hint("power")]))
-	_show_panel(data.preview, null, tr(data.title_key).to_upper(), tr(data.objective_key()) + "\n\n" + tr(data.briefing_key) + "\n\n" + tr("INF_BRIEF_RULES").format({"time": int(data.bonus_seconds)}) + "\n" + controls + "\n\n" + progress)
+		progress = tr("INF_RECORD").format({"time": ChallengeMode.format_time(record.ticks * Ticks.DELTA)}) + ControlHints.SEPARATOR + tr("OPS_MENU_BONUS_COUNT").format({"count": _bit_count(int(record.bonuses))})
+	_show_panel(data.preview, null, tr(data.title_key), tr(data.briefing_key))
+	_show_mission_state(tr("OPS_MENU_INFILTRATION"), not record.is_empty(), progress)
+	_set_chips([
+		[tr("OPS_MENU_PRISONERS"), str(data.prisoner_spawns.size())],
+		[tr("OPS_MENU_TIME_BONUS"), "%d s" % int(data.bonus_seconds)],
+		[tr("OPS_MENU_BONUSES"), tr("OPS_MENU_INFILTRATION_BONUSES")],
+	])
 
 
 func _highlight_incursion(data: BlasterOpsMissionData) -> void:
 	var record: Dictionary = SaveService.incursion_best.get(String(data.id), {})
 	var progress: String = tr("INF_NOT_COMPLETED")
 	if record.has("ticks"):
-		progress = tr("INF_RECORD").format({"time": ChallengeMode.format_time(record.ticks * Ticks.DELTA)}) + ControlHints.SEPARATOR + tr(BlasterOpsMode.rating_key(record.rating)) + "\n" + BlasterOpsMode.incursion_bonus_text(record.bonuses)
+		progress = tr("INF_RECORD").format({"time": ChallengeMode.format_time(record.ticks * Ticks.DELTA)}) + ControlHints.SEPARATOR + tr(BlasterOpsMode.rating_key(record.rating))
 	elif not record.is_empty():
-		progress = tr("OPS_RECORD_LEGACY").format({"rating": tr(BlasterOpsMode.rating_key(record.rating))}) + "\n" + BlasterOpsMode.incursion_bonus_text(record.bonuses)
-	_show_panel(data.preview, null, tr(data.title_key).to_upper(), tr("OPS_INCURSION") + "\n\n" + tr(data.briefing_key) + "\n\n" + tr("OPS_BRIEF_RULES").format({"time": int(data.bonus_seconds), "waves": data.objective_count()}) + "\n\n" + tr("OPS_REWARDS") + "\n\n" + progress)
+		progress = tr("OPS_RECORD_LEGACY").format({"rating": tr(BlasterOpsMode.rating_key(record.rating))})
+	_show_panel(data.preview, null, tr(data.title_key), tr(data.briefing_key))
+	_show_mission_state(tr("OPS_MENU_INCURSION"), not record.is_empty(), progress)
+	var chips: Array[Array] = [
+		[tr("OPS_MENU_STAGES"), str(data.objective_count())],
+		[tr("OPS_MENU_REFERENCE"), ChallengeMode.format_time(data.bonus_seconds)],
+	]
+	if not data.supply_terminals.is_empty():
+		chips.append([tr("OPS_MENU_SUPPLIES"), str(data.supply_terminals.size())])
+	if data.barrier_charges + data.heavy_barrier_charges > 0:
+		chips.append([tr("OPS_MENU_BARRIERS"), str(data.barrier_charges + data.heavy_barrier_charges)])
+	chips.append([tr("OPS_MENU_CRITERIA"), tr("OPS_MENU_CRITERIA_TEXT")])
+	_set_chips(chips)
+	_reward_text.text = tr("OPS_REWARDS")
+	_reward_box.visible = true
+
+
+func _show_mission_state(group: String, completed: bool, record: String) -> void:
+	_group.text = group.to_upper()
+	_group.visible = true
+	_pill.visible = true
+	_pill_glyph.state = StatusGlyph.State.COMPLETED if completed else StatusGlyph.State.AVAILABLE
+	_pill_text.text = tr("OPS_MENU_DONE" if completed else "OPS_MENU_AVAILABLE")
+	_record.text = record
+	_record.visible = record != ""
+
+
+func _set_chips(entries: Array) -> void:
+	for child in _chips.get_children():
+		_chips.remove_child(child)
+		child.queue_free()
+	for index in entries.size():
+		var chip: InfoChip = InfoChip.new(entries[index][0], entries[index][1])
+		chip.grows = index == entries.size() - 1
+		_chips.add_child(chip)
+	_chips.visible = not entries.is_empty()
 
 
 func _show_panel(image: Texture2D, look: InfiltrationLook, title: String, body: String) -> void:
@@ -170,12 +310,18 @@ func _show_panel(image: Texture2D, look: InfiltrationLook, title: String, body: 
 	_title.text = title
 	_title.visible = title != ""
 	_detail.text = body
+	_detail.visible = body != ""
+	_group.visible = false
+	_pill.visible = false
+	_record.visible = false
+	_reward_box.visible = false
+	_set_chips([])
 
 
 func _show_characters() -> void:
 	_characters_panel = true
 	_set_footer(true)
-	_heading.text = tr("INF_CHARACTER_TITLE").to_upper()
+	_header.set_content(tr("INF_CHARACTER_TITLE"))
 	var current: CharacterData = InfiltrationMode.look_character()
 	for id in CharacterRoster.IDS:
 		var character: CharacterData = CharacterRoster.character(id)
@@ -212,7 +358,7 @@ func _weapon_detail(character: CharacterData, weapon_id: StringName) -> String:
 
 func _show_weapons() -> void:
 	_weapons_panel = true
-	_heading.text = tr("OPS_WEAPON_TITLE").to_upper()
+	_header.set_content(tr("OPS_WEAPON_TITLE"))
 	var character: CharacterData = InfiltrationMode.look_character()
 	_list.add_item(OWN_WEAPON, tr(BlasterOpsTraining.weapon_name_key(character, &"")))
 	for entry in BlasterOpsTraining.ARSENAL.weapons:
@@ -220,7 +366,7 @@ func _show_weapons() -> void:
 	_list.add_item(BACK_ROW, tr("MENU_BACK"))
 	var current: StringName = InfiltrationMode.look_weapon()
 	_list.select_id(current if BlasterOpsTraining.ARSENAL.weapon(current) != null else OWN_WEAPON)
-	_highlight_weapon(_list._ids[_list.selected])
+	_highlight_weapon(_list.current_id())
 
 
 func _highlight_weapon(id: StringName) -> void:
@@ -229,7 +375,7 @@ func _highlight_weapon(id: StringName) -> void:
 		return
 	var character: CharacterData = InfiltrationMode.look_character()
 	var key: String = BlasterOpsTraining.weapon_name_key(character, id)
-	_show_panel(null, InfiltrationMode.current_look(), tr(key).to_upper(), _weapon_detail(character, id))
+	_show_panel(null, InfiltrationMode.current_look(), tr(key), _weapon_detail(character, id))
 
 
 func _highlight_character(id: StringName) -> void:
@@ -238,7 +384,7 @@ func _highlight_character(id: StringName) -> void:
 		return
 	if id == WEAPON_ROW:
 		var focused: CharacterData = CharacterRoster.character(_focused_character)
-		_show_panel(null, InfiltrationLook.create(focused, _costume, _blade), tr("OPS_WEAPON_TITLE").to_upper(), _weapon_detail(focused, InfiltrationMode.look_weapon()))
+		_show_panel(null, InfiltrationLook.create(focused, _costume, _blade), tr("OPS_WEAPON_TITLE"), _weapon_detail(focused, InfiltrationMode.look_weapon()))
 		return
 	_focused_character = id
 	_costume = 0
@@ -252,7 +398,7 @@ func _refresh_character(character: CharacterData) -> void:
 	for index in equipment.slot_count():
 		powers.append(tr(equipment.slot(index).power.name_key))
 	var body: String = tr("INF_CHARACTER_COSTUME").format({"name": tr(character.costumes[_costume].name_key)}) + "\n" + tr("INF_CHARACTER_BLADE").format({"name": tr(character.blade_color_keys[_blade])}) + "\n" + tr("OPS_CHARACTER_POWERS").format({"powers": ControlHints.line(powers)}) + "\n\n" + tr("INF_CHARACTER_INFO")
-	_show_panel(null, InfiltrationLook.create(character, _costume, _blade), tr(character.name_key).to_upper(), body)
+	_show_panel(null, InfiltrationLook.create(character, _costume, _blade), tr(character.name_key), body)
 
 
 func _adjust(id: StringName, direction: int) -> void:
@@ -283,9 +429,9 @@ func _show_result() -> void:
 	var result: Dictionary = _mode.result
 	var won: bool = result.outcome == InfiltrationMissionState.Outcome.COMPLETED
 	var title_key: String = "INF_SUCCESS" if won else "INF_PRISONER_DOWN" if result.outcome == InfiltrationMissionState.Outcome.PRISONER_DOWN else "INF_PLAYER_DOWN"
-	_heading.text = tr(title_key).to_upper()
+	_header.set_content(tr(title_key))
 	if _mode is BlasterOpsMode and not won and result.outcome == InfiltrationMissionState.Outcome.PRISONER_DOWN:
-		_heading.text = tr("OPS_PROTECTED_DOWN").to_upper()
+		_header.set_content(tr("OPS_PROTECTED_DOWN"))
 	_list.add_item(&"retry", tr("RESULT_RETRY"))
 	if won:
 		_list.add_item(&"next", tr("INF_NEXT"))
@@ -302,7 +448,7 @@ func _show_result() -> void:
 		lines.append(tr("OPS_REWARDS"))
 	if not won:
 		lines.append(tr("INF_FAILURE_SAVE"))
-	_show_panel(_mode.data.preview, null, tr(_mode.data.title_key).to_upper(), "\n".join(lines))
+	_show_panel(_mode.data.preview, null, tr(_mode.data.title_key), "\n".join(lines))
 
 
 func _choose(id: StringName) -> void:
@@ -355,17 +501,17 @@ func _unhandled_input(event: InputEvent) -> void:
 		_leave()
 	elif _characters_panel and event.is_action_pressed(&"menu_variant"):
 		get_viewport().set_input_as_handled()
-		_cycle_blade(_list._ids[_list.selected])
+		_cycle_blade(_list.current_id())
 
 
 func _set_footer(characters: bool) -> void:
-	var hints: PackedStringArray = ["↑ ↓  " + tr("HINT_CHANGE")]
+	var hints: Array[Dictionary] = [{"keys": PackedStringArray(["↑", "↓"]), "text": tr("HINT_CHANGE")}]
 	if characters:
-		hints.append(tr("INF_CHARACTER_HINT"))
-		hints.append(ControlHints.hint(&"menu_variant", "INF_CHARACTER_BLADE_HINT"))
-	hints.append(ControlHints.hint(&"ui_accept", "HINT_CONFIRM"))
-	hints.append(ControlHints.hint(&"ui_cancel", "HINT_BACK"))
-	_footer.text = ControlHints.line(hints)
+		hints.append({"keys": PackedStringArray(["←", "→"]), "text": tr("OPS_MENU_COSTUME")})
+		hints.append({"keys": PackedStringArray([ControlHints.key_label(&"menu_variant")]), "text": tr("INF_CHARACTER_BLADE_HINT")})
+	hints.append({"keys": PackedStringArray([ControlHints.key_label(&"ui_accept")]), "text": tr("HINT_CONFIRM")})
+	hints.append({"keys": PackedStringArray([ControlHints.key_label(&"ui_cancel")]), "text": tr("HINT_BACK")})
+	_footer.set_hints(hints)
 
 
 func _label(text: String, variation: StringName) -> Label:
