@@ -51,6 +51,8 @@ func step(intents: Array[SpaceIntent]) -> void:
 	tick += 1
 	if mission != null:
 		mission.before_tick(self)
+		if not intents.is_empty():
+			mission.note_intent(self, intents[0])
 	for index in ships.size():
 		var ship: SpaceShipState = ships[index]
 		ship.previous = ship.position

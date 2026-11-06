@@ -4,6 +4,10 @@ extends InfiltrationMode
 signal finished(value: BlasterOpsMissionResult)
 signal exit_requested
 
+const TUTORIALS: Array[BlasterOpsMissionData] = [
+	preload("res://data/blaster_ops/missions/training_infiltration.tres"),
+	preload("res://data/blaster_ops/missions/training_incursion.tres"),
+]
 const INCURSIONS: Array[BlasterOpsMissionData] = [
 	preload("res://data/blaster_ops/missions/encircled_yard.tres"),
 	preload("res://data/blaster_ops/missions/breach_line.tres"),
@@ -50,7 +54,7 @@ func finish(sim: InfiltrationSimulation) -> void:
 	result = progress.capture()
 	result.merge(sealed.to_dict(), true)
 	result["objectives"] = objective_lines(sim)
-	if not external and sealed.won:
+	if not external and sealed.won and not (data as BlasterOpsMissionData).tutorial:
 		SaveService.record_incursion(data.id, sealed.ticks, sealed.rating, sealed.bonuses)
 	finished.emit(sealed)
 
@@ -69,6 +73,13 @@ func next() -> void:
 	var catalog: Array[InfiltrationMissionData] = all_missions()
 	var index: int = catalog.find(data)
 	SceneRouter.change(&"operations", {"mission": catalog[index + 1].id if index >= 0 and index + 1 < catalog.size() else data.id})
+
+
+static func menu_missions() -> Array[InfiltrationMissionData]:
+	var missions: Array[InfiltrationMissionData] = []
+	missions.assign(TUTORIALS)
+	missions.append_array(all_missions())
+	return missions
 
 
 static func all_missions() -> Array[InfiltrationMissionData]:

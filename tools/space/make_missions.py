@@ -266,9 +266,32 @@ def preview(identifier, colors):
     return image
 
 
+def training_flight():
+    r = Resource("space_mission_data")
+
+    def place(ship, x, y, team=1, **fields):
+        return r.sub("space_ship_placement", ship=r.ext(f"data/space/ships/{ship}.tres"), position=f"Vector2({x}, {y})", team=str(team), angle="3.1415927" if team else "0.0", **fields)
+
+    def group(ship, x, y, offsets):
+        return r.sub("space_formation_data", ship=r.ext(f"data/space/ships/{ship}.tres"), origin=f"Vector2({x}, {y})", offsets="Array[Vector2]([" + ", ".join(f"Vector2({a}, {b})" for a, b in offsets) + "])")
+
+    def wave(delay, *formations):
+        return r.sub("space_wave_data", delay=f"{delay}.0", formations=r.array("space_formation_data", list(formations)))
+
+    def step(index, action, count, *hints):
+        joined = ", ".join(f'"{hint}"' for hint in hints)
+        return r.sub("space_tutorial_step", title_key=f'"SPACE_TRAINING_STEP_{index}"', action=str(action), count=str(count), hint_actions=f"PackedStringArray({joined})")
+
+    steps = [step(1, 0, 60, "space_thrust"), step(2, 1, 60, "space_left", "space_right"), step(3, 2, 30, "space_reverse"), step(4, 3, 45, "space_fire"), step(5, 4, 1, "space_boost"), step(6, 6, 1), step(7, 5, 1, "space_secondary"), step(8, 6, 1)]
+    waves = [wave(1, group("fighter", 1500, 900, PAIR)), wave(1, group("fighter", 1600, 900, WEDGE))]
+    arena = r.sub("space_arena_data", title_key='"SPACE_TRAINING_TITLE"', size="Vector2(2800, 1800)", ships=r.array("space_ship_placement", [place("mission_ship", 800, 900, 0)]))
+    r.save("missions/training_flight.tres", id='&"training_flight"', title_key='"SPACE_TRAINING_TITLE"', briefing_key='"SPACE_TRAINING_BRIEF"', objective_key='"SPACE_TRAINING_OBJECTIVE"', arena=arena, waves=r.array("space_wave_data", waves), tutorial_steps=r.array("space_tutorial_step", steps), par_seconds="120.0", limit_seconds="900.0")
+
+
 def main():
     weapons()
     ships()
+    training_flight()
     colors = palette()
     previews = ROOT / "assets/space/previews"
     previews.mkdir(parents=True, exist_ok=True)

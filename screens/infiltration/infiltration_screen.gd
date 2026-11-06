@@ -18,6 +18,7 @@ const PROMPT_BOTTOM: float = 150.0
 const HINTS_BOTTOM: float = 44.0
 const HINTS_SECONDS: float = 12.0
 const HINTS_PER_LINE: int = 3
+const COUNTED_ACTIONS: int = 20
 const HINTS_FADE_SECONDS: float = 2.0
 const GUIDE_REFRESH_FRAMES: int = 15
 const ABILITY_BOTTOM: float = 40.0
@@ -203,6 +204,9 @@ func _build_hints() -> CenterContainer:
 	var label: Label = _label(_hints(), &"TacticalNoteLabel")
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_hints_panel.add_child(label)
+	if mode != null and mode.data is BlasterOpsMissionData and (mode.data as BlasterOpsMissionData).tutorial:
+		_hints_left = 0.0
+		_hints_panel.visible = false
 	return box
 
 
@@ -289,7 +293,7 @@ func _hints() -> String:
 		movement,
 		ControlHints.blaster_ops_hud_hint("run"), ControlHints.blaster_ops_hud_hint("sneak"),
 		ControlHints.blaster_ops_hud_hint("dodge"),
-	])) + "\n" + ControlHints.line(_combat_hints())
+	])) + "\n" + _wrapped_hints(_combat_hints())
 
 
 func _wrapped_hints(hints: PackedStringArray) -> String:
@@ -597,6 +601,8 @@ func _update_hints(delta: float) -> void:
 
 
 func _restart_hints() -> void:
+	if mode != null and mode.data is BlasterOpsMissionData and (mode.data as BlasterOpsMissionData).tutorial:
+		return
 	_hints_left = HINTS_SECONDS + HINTS_FADE_SECONDS
 	_hints_panel.visible = true
 	_hints_panel.modulate.a = 1.0
@@ -616,13 +622,22 @@ func _update_incursion_hud() -> void:
 	if progress.waves_finished:
 		_card.show_objective(tr("OPS_HUD_EXTRACT"), tr("OPS_HUD_EXTRACT_TEXT"), -1.0, guide, time)
 	elif stage != null:
-		var eyebrow: String = tr("OPS_HUD_STAGE").format({"index": progress.stage_index + 1, "total": data.stages.size()})
+		var eyebrow: String = tr("OPS_HUD_TRAINING_STEP" if data.tutorial else "OPS_HUD_STAGE").format({"index": progress.stage_index + 1, "total": data.stages.size()})
 		var measure: Dictionary = _stage_measure(progress, stage)
 		var detail: String = ControlHints.line(_detail_parts(measure.text, guide))
-		_card.show_objective(eyebrow, tr(stage.title_key), measure.ratio, detail, time)
+		_card.show_objective(eyebrow, _stage_title(stage), measure.ratio, detail, time)
 	else:
 		_card.show_objective(tr("OPS_MENU_INCURSION"), tr("OPS_KIND_" + str(data.kind)), -1.0, guide, time)
 	_show_prompt(_incursion_prompt(progress))
+
+
+func _stage_title(stage: BlasterOpsStageData) -> String:
+	if stage.hint_actions.is_empty():
+		return tr(stage.title_key)
+	var keys: Array[String] = []
+	for suffix in stage.hint_actions:
+		keys.append(ControlHints.blaster_ops_hud_key(suffix))
+	return tr(stage.title_key).format(keys)
 
 
 func _show_prompt(entry: Array) -> void:
@@ -638,10 +653,15 @@ func _detail_parts(first: String, second: String) -> PackedStringArray:
 
 
 func _stage_measure(progress: BlasterOpsMissionState, stage: BlasterOpsStageData) -> Dictionary:
+	if progress.intermission_ticks > 0 and progress.definition.tutorial:
+		return {"ratio": 0.0, "text": ""}
 	if progress.intermission_ticks > 0:
 		return {"ratio": -1.0, "text": tr("OPS_HUD_PREPARE").format({"time": ceili(progress.intermission_ticks * Ticks.DELTA)})}
 	var data: BlasterOpsMissionData = progress.definition
 	match stage.objective:
+		BlasterOpsStageData.Objective.ACTION:
+			var text: String = "%d / %d" % [mini(progress.action_progress, stage.action_count), stage.action_count] if stage.action_count <= COUNTED_ACTIONS else ""
+			return {"ratio": float(progress.action_progress) / stage.action_count, "text": text}
 		BlasterOpsStageData.Objective.HOLD:
 			var left: int = maxi(ceili(stage.hold_seconds - progress.hold_ticks * Ticks.DELTA), 0)
 			var inside: bool = stage.zone_radius <= 0.0 or sim.player.position.distance_to(stage.zone) <= stage.zone_radius
@@ -670,6 +690,10 @@ func _stage_measure(progress: BlasterOpsMissionState, stage: BlasterOpsStageData
 
 func _incursion_prompt(progress: BlasterOpsMissionState) -> Array:
 	var interact: String = ControlHints.key_label(&"infiltration_interact")
+	if sim.takedown_target() >= 0:
+		return [tr("INFILTRATION_TAKEDOWN"), ControlHints.key_label(&"infiltration_takedown")]
+	if sim.nearby_panel() >= 0:
+		return [tr("INFILTRATION_DISABLE"), interact]
 	var object: int = progress.nearby_object(sim)
 	if object >= 0:
 		return [tr("INF_COPY" if object < progress.definition.terminals.size() else "INF_RECRUIT"), interact]

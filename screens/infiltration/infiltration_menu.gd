@@ -171,6 +171,9 @@ func open(params: Dictionary) -> void:
 		_show_weapons()
 		return
 	_header.set_content(tr("MENU_OPERATIONS"), tr("OPS_MENU_COMPLETED").format({"done": _completed_count(), "total": BlasterOpsMode.all_missions().size()}))
+	_list.add_heading(tr("OPS_MENU_TRAINING"))
+	for mission in BlasterOpsMode.TUTORIALS:
+		_list.add_row(mission.id, tr(mission.title_key), StatusGlyph.State.AVAILABLE, " ", " ")
 	_list.add_heading(tr("OPS_MENU_INFILTRATION"))
 	for mission in InfiltrationMode.MISSIONS:
 		_add_mission_row(mission)
@@ -239,11 +242,14 @@ func _highlight(id: StringName) -> void:
 
 
 func _highlight_mission(id: StringName) -> void:
-	for mission in BlasterOpsMode.all_missions():
+	for mission in BlasterOpsMode.menu_missions():
 		if mission.id == id:
 			_mode = BlasterOpsMode.new(mission as BlasterOpsMissionData) if mission is BlasterOpsMissionData else InfiltrationMode.new(mission)
 			_mission = id
 	var data: InfiltrationMissionData = _mode.data
+	if data is BlasterOpsMissionData and (data as BlasterOpsMissionData).tutorial:
+		_highlight_tutorial(data as BlasterOpsMissionData)
+		return
 	if data is BlasterOpsMissionData:
 		_highlight_incursion(data as BlasterOpsMissionData)
 		return
@@ -281,6 +287,16 @@ func _highlight_incursion(data: BlasterOpsMissionData) -> void:
 	_set_chips(chips)
 	_reward_text.text = tr("OPS_REWARDS")
 	_reward_box.visible = true
+
+
+func _highlight_tutorial(data: BlasterOpsMissionData) -> void:
+	_show_panel(data.preview, null, tr(data.title_key), tr(data.briefing_key))
+	_show_mission_state(tr("OPS_MENU_TRAINING"), false, "")
+	_set_chips([
+		[tr("OPS_MENU_STEPS"), str(data.stages.size())],
+		[tr("OPS_MENU_DURATION"), tr("OPS_MENU_DURATION_TEXT")],
+		[tr("OPS_MENU_RULES"), tr("OPS_MENU_TRAINING_RULES")],
+	])
 
 
 func _show_mission_state(group: String, completed: bool, record: String) -> void:
@@ -433,9 +449,13 @@ func _show_result() -> void:
 	if _mode is BlasterOpsMode and not won and result.outcome == InfiltrationMissionState.Outcome.PRISONER_DOWN:
 		_header.set_content(tr("OPS_PROTECTED_DOWN"))
 	_list.add_item(&"retry", tr("RESULT_RETRY"))
-	if won:
+	var tutorial: bool = _mode.data is BlasterOpsMissionData and (_mode.data as BlasterOpsMissionData).tutorial
+	if won and not tutorial:
 		_list.add_item(&"next", tr("INF_NEXT"))
 	_list.add_item(&"missions", tr("INF_MISSIONS"))
+	if tutorial:
+		_show_panel(_mode.data.preview, null, tr(_mode.data.title_key), tr("OPS_TRAINING_DONE" if won else "OPS_TRAINING_RETRY"))
+		return
 	var lines: PackedStringArray = [tr("INF_TIME").format({"time": ChallengeMode.format_time(result.ticks * Ticks.DELTA)}), tr("INF_APPROACH").format({"approach": tr("INF_DIRECT" if result.alarm_raised else "INF_STEALTH")}), ""]
 	if _mode is BlasterOpsMode:
 		lines = [tr(BlasterOpsMode.rating_key(result.rating)), tr("INF_TIME").format({"time": ChallengeMode.format_time(result.ticks * Ticks.DELTA)}), tr("OPS_STATISTICS").format({"damage": roundi(result.damage), "accuracy": roundi(100.0 * result.hits / maxi(result.attempts, 1))}), ""]

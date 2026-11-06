@@ -177,6 +177,9 @@ func _build_hints() -> CenterContainer:
 	var label: Label = _label(_hints(), &"TacticalNoteLabel")
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_hints_panel.add_child(label)
+	if mode.data.is_tutorial():
+		_hints_left = 0.0
+		_hints_panel.visible = false
 	return box
 
 
@@ -295,6 +298,9 @@ func _update_objective(target: int, player: SpaceShipState) -> void:
 	var parts: PackedStringArray = []
 	var ratio: float = -1.0
 	var eyebrow: String = tr(mode.data.title_key)
+	if mode.data.is_tutorial():
+		_update_tutorial_card(time, target, player)
+		return
 	if not mode.data.waves.is_empty():
 		eyebrow = tr("SPACE_HUD_WAVE").format({"wave": sim.mission.wave, "total": mode.data.waves.size()})
 	if not mode.data.phases.is_empty():
@@ -308,6 +314,19 @@ func _update_objective(target: int, player: SpaceShipState) -> void:
 	if target >= 0:
 		parts.append(_bearing(sim.ships[target].position - player.position, player.angle))
 	_card.show_objective(eyebrow, tr(mode.data.objective_key), ratio, ControlHints.line(parts), time)
+
+
+func _update_tutorial_card(time: String, target: int, player: SpaceShipState) -> void:
+	var step: SpaceTutorialStep = sim.mission.current_step()
+	if step == null:
+		return
+	var keys: Array[String] = []
+	for action in step.hint_actions:
+		keys.append(ControlHints.key_label(StringName(action)))
+	var eyebrow: String = tr("OPS_HUD_TRAINING_STEP").format({"index": sim.mission.step_index + 1, "total": mode.data.tutorial_steps.size()})
+	var detail: String = _bearing(sim.ships[target].position - player.position, player.angle) if target >= 0 else ""
+	var ratio: float = float(sim.mission.step_progress) / step.count if step.action != SpaceTutorialStep.Action.DESTROY else -1.0
+	_card.show_objective(eyebrow, tr(step.title_key).format(keys), ratio, detail, time)
 
 
 func _bearing(offset: Vector2, facing: float) -> String:

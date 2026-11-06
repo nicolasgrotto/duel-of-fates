@@ -4,6 +4,20 @@ extends InfiltrationMissionState
 enum AllyOrder { FOLLOW, HOLD, GUARD }
 enum OfferBlock { NONE, LIMIT, SUPPLIES, NO_BLASTER, NO_RESERVE, NO_ALLIES, FULL_HEALTH }
 
+const EVENT_ACTIONS: Dictionary = {
+	InfiltrationEvent.Type.SHOT_FIRED: BlasterOpsStageData.Action.FIRE,
+	InfiltrationEvent.Type.SWING_STARTED: BlasterOpsStageData.Action.CUT,
+	InfiltrationEvent.Type.BOLT_BLOCKED: BlasterOpsStageData.Action.PARRY,
+	InfiltrationEvent.Type.BOLT_REFLECTED: BlasterOpsStageData.Action.PARRY,
+	InfiltrationEvent.Type.DODGED: BlasterOpsStageData.Action.DODGE,
+	InfiltrationEvent.Type.POWER_RELEASED: BlasterOpsStageData.Action.POWER,
+	InfiltrationEvent.Type.WEAPON_SWITCHED: BlasterOpsStageData.Action.SWITCH,
+	InfiltrationEvent.Type.BARRIER_PLACED: BlasterOpsStageData.Action.DEPLOY,
+	InfiltrationEvent.Type.TAKEDOWN_LANDED: BlasterOpsStageData.Action.TAKEDOWN,
+	InfiltrationEvent.Type.PANEL_DISABLED: BlasterOpsStageData.Action.PANEL,
+	InfiltrationEvent.Type.PRISONER_RECRUITED: BlasterOpsStageData.Action.RECRUIT,
+}
+
 var definition: BlasterOpsMissionData
 var wave_index: int = -1
 var intermission_ticks: int = 0
@@ -29,6 +43,7 @@ var hold_ticks: int = 0
 var wave_gap_ticks: int = 0
 var ally_order: int = AllyOrder.FOLLOW
 var ally_anchor: Vector2 = Vector2.ZERO
+var action_progress: int = 0
 
 
 func _init(mission_data: BlasterOpsMissionData) -> void:
@@ -98,6 +113,7 @@ func purchase(sim: BlasterOpsSimulation, index: int) -> bool:
 		return false
 	supplies -= offer.cost
 	offer_counts[index] += 1
+	note_action(BlasterOpsStageData.Action.BUY)
 	match offer.kind:
 		BlasterOpsSupplyOffer.Kind.HEAL:
 			sim.player.health = minf(sim.player.health + offer.amount, sim.operations.health)
@@ -162,6 +178,7 @@ func cycle_ally_order(sim: BlasterOpsSimulation) -> void:
 		ally_order = AllyOrder.FOLLOW
 	if ally_order == AllyOrder.HOLD:
 		ally_anchor = sim.player.position
+	note_action(BlasterOpsStageData.Action.ORDER)
 
 
 func order_point(sim: BlasterOpsSimulation) -> Vector2:
@@ -263,11 +280,96 @@ func current_stage() -> BlasterOpsStageData:
 	return definition.stages[stage_index]
 
 
+func note_action(action: BlasterOpsStageData.Action) -> void:
+	var stage: BlasterOpsStageData = current_stage()
+	if stage != null and stage.objective == BlasterOpsStageData.Objective.ACTION and stage.action == action:
+		action_progress += 1
+
+
+func _count_actions(sim: BlasterOpsSimulation) -> void:
+	var player: InfiltrationActor = sim.player
+	if player.velocity.length_squared() > 0.0:
+		note_action(BlasterOpsStageData.Action.MOVE)
+		if player.locomotion == InfiltrationActor.Locomotion.RUN:
+			note_action(BlasterOpsStageData.Action.RUN)
+		elif player.locomotion == InfiltrationActor.Locomotion.SNEAK:
+			note_action(BlasterOpsStageData.Action.SNEAK)
+	if player.guard:
+		note_action(BlasterOpsStageData.Action.GUARD)
+	for index in sim.event_count:
+		var event: InfiltrationEvent = sim.events[index]
+		var defended: bool = event.type == InfiltrationEvent.Type.BOLT_BLOCKED or event.type == InfiltrationEvent.Type.BOLT_REFLECTED
+		if EVENT_ACTIONS.has(event.type) and (event.source == 0 or defended):
+			note_action(EVENT_ACTIONS[event.type])
+		if event.type == InfiltrationEvent.Type.SWING_STARTED and sim.state.blade_drawn:
+			note_action(BlasterOpsStageData.Action.FIRE)
+
+
+func _action_stage_done(sim: BlasterOpsSimulation, stage: BlasterOpsStageData) -> bool:
+	if action_progress >= stage.action_count or _action_impossible(sim, stage.action):
+		return true
+	if stage.targets.is_empty():
+		return false
+	for target in stage.targets:
+		if sim.targets[target].health > 0.0 or not sim.targets[target].spawned:
+			return false
+	return true
+
+
+func _action_impossible(sim: BlasterOpsSimulation, action: BlasterOpsStageData.Action) -> bool:
+	match action:
+		BlasterOpsStageData.Action.POWER:
+			return sim.loadout.slot_count() == 0
+		BlasterOpsStageData.Action.DEPLOY:
+			return barrier_charges + heavy_barrier_charges <= 0
+		BlasterOpsStageData.Action.ORDER:
+			return not has_free_allies(sim)
+		BlasterOpsStageData.Action.BUY:
+			for index in BlasterOpsTraining.SUPPLY_OFFERS.size():
+				if offer_block(sim, index) == OfferBlock.NONE:
+					return false
+			return true
+		BlasterOpsStageData.Action.PANEL:
+			for panel in sim.panels:
+				if not panel.disabled:
+					return false
+			return true
+		BlasterOpsStageData.Action.RECRUIT:
+			for index in sim.prisoners.size():
+				if recruited[index] == 0 and sim.prisoners[index].health > 0.0 and not definition.is_reserve(index):
+					return false
+			return true
+	return false
+
+
+func _action_point(sim: BlasterOpsSimulation, stage: BlasterOpsStageData) -> Vector2:
+	if stage.zone_radius > 0.0:
+		return stage.zone
+	match stage.action:
+		BlasterOpsStageData.Action.PANEL:
+			for index in sim.panels.size():
+				if not sim.panels[index].disabled:
+					return sim.map.panels[index].position
+		BlasterOpsStageData.Action.RECRUIT:
+			for index in sim.prisoners.size():
+				if recruited[index] == 0 and sim.prisoners[index].health > 0.0 and not definition.is_reserve(index):
+					return sim.prisoners[index].position
+		BlasterOpsStageData.Action.BUY:
+			if has_supplies():
+				return definition.supply_terminals[0]
+	for target in stage.targets:
+		if sim.targets[target].spawned and sim.targets[target].health > 0.0:
+			return sim.targets[target].position
+	return Vector2.INF
+
+
 func objective_point(sim: BlasterOpsSimulation) -> Vector2:
 	var stage: BlasterOpsStageData = current_stage()
 	if stage == null:
 		return data.extraction
 	match stage.objective:
+		BlasterOpsStageData.Objective.ACTION:
+			return _action_point(sim, stage)
 		BlasterOpsStageData.Objective.HOLD, BlasterOpsStageData.Objective.REACH, BlasterOpsStageData.Objective.ESCORT:
 			if stage.zone_radius > 0.0:
 				return stage.zone
@@ -304,6 +406,7 @@ func _advance_stages(sim: BlasterOpsSimulation) -> void:
 		_enter_stage(0)
 		intermission_ticks = maxi(intermission_ticks, Ticks.from_seconds(definition.intermission_seconds))
 	var stage: BlasterOpsStageData = definition.stages[stage_index]
+	_count_actions(sim)
 	if intermission_ticks > 0:
 		intermission_ticks -= 1
 		if intermission_ticks == 0 and stage.first_wave >= 0:
@@ -335,6 +438,8 @@ func _stage_done(sim: BlasterOpsSimulation, stage: BlasterOpsStageData) -> bool:
 	if stage.requires_clear and not _stage_cleared(sim, stage):
 		return false
 	match stage.objective:
+		BlasterOpsStageData.Objective.ACTION:
+			return _action_stage_done(sim, stage)
 		BlasterOpsStageData.Objective.DESTROY:
 			for target in stage.targets:
 				if not sim.targets[target].spawned or sim.targets[target].health > 0.0:
@@ -376,6 +481,7 @@ func _enter_stage(index: int) -> void:
 	stage_index = index
 	stage_ticks = 0
 	hold_ticks = 0
+	action_progress = 0
 	intermission_ticks = maxi(Ticks.from_seconds(definition.stages[index].prep_seconds), 1)
 
 
@@ -486,7 +592,7 @@ func bonus_objective(sim: InfiltrationSimulation) -> bool:
 
 func capture() -> Dictionary:
 	var snapshot: Dictionary = super.capture()
-	snapshot["incursion"] = {"wave_index": wave_index, "intermission_ticks": intermission_ticks, "waves_finished": waves_finished, "phase_index": phase_index, "phase_health": phase_health, "damage_taken": damage_taken, "attempts": attempts, "hits": hits, "barriers_placed": barriers_placed, "barrier_charges": barrier_charges, "heavy_barrier_charges": heavy_barrier_charges, "last_hit_swing": last_hit_swing, "repair_ticks": repair_ticks, "supplies": supplies, "offer_counts": offer_counts.duplicate(), "heat_scale": heat_scale, "damage_scale": damage_scale, "ally_scale": ally_scale, "stage_index": stage_index, "stage_ticks": stage_ticks, "hold_ticks": hold_ticks, "wave_gap_ticks": wave_gap_ticks, "ally_order": ally_order, "ally_anchor": ally_anchor}
+	snapshot["incursion"] = {"wave_index": wave_index, "intermission_ticks": intermission_ticks, "waves_finished": waves_finished, "phase_index": phase_index, "phase_health": phase_health, "damage_taken": damage_taken, "attempts": attempts, "hits": hits, "barriers_placed": barriers_placed, "barrier_charges": barrier_charges, "heavy_barrier_charges": heavy_barrier_charges, "last_hit_swing": last_hit_swing, "repair_ticks": repair_ticks, "supplies": supplies, "offer_counts": offer_counts.duplicate(), "heat_scale": heat_scale, "damage_scale": damage_scale, "ally_scale": ally_scale, "stage_index": stage_index, "stage_ticks": stage_ticks, "hold_ticks": hold_ticks, "wave_gap_ticks": wave_gap_ticks, "ally_order": ally_order, "ally_anchor": ally_anchor, "action_progress": action_progress}
 	return snapshot
 
 

@@ -1418,3 +1418,47 @@ SPACE_HUD_TARGET,Alvo {side} · {distance} m,Target {side} · {distance} m
 SPACE_HUD_AHEAD,à frente,ahead
 SPACE_HUD_SIDE,ao lado,to the side
 SPACE_HUD_BEHIND,atrás,behind
+OPS_MENU_TRAINING,Treinamento,Training
+OPS_MENU_STEPS,Passos,Steps
+OPS_MENU_DURATION,Duração,Duration
+OPS_MENU_DURATION_TEXT,2 a 4 min,2 to 4 min
+OPS_MENU_RULES,Regras,Rules
+OPS_MENU_TRAINING_RULES,Sem nota nem recompensa · refaça quando quiser,No rating or reward · replay any time
+OPS_HUD_TRAINING_STEP,Treino {index} de {total},Training {index} of {total}
+OPS_TRAINING_DONE,"Treino concluído. As missões não dependem dele, e você pode repetir quando quiser.","Training complete. Missions do not depend on it, and you can replay it any time."
+OPS_TRAINING_RETRY,Treino interrompido. Tente de novo: nada é salvo.,Training interrupted. Try again: nothing is saved.
+OPS_TRAINING_INFILTRATION,Treino de Infiltração,Infiltration training
+OPS_TRAINING_INFILTRATION_BRIEF,"Aprenda a se mover sem ser visto, desligar o alarme, abater pelas costas, libertar um prisioneiro e sair. Cada passo pede uma ação.","Learn to move unseen, cut the alarm, take someone down from behind, free a prisoner and leave. Each step asks for one action."
+OPS_ST_TRAINING_INFILTRATION_1,Mova-se com {0} {1} {2} {3},Move with {0} {1} {2} {3}
+OPS_ST_TRAINING_INFILTRATION_2,Toque {0} e ande: correndo você vai rápido e faz barulho,Tap {0} and walk: running is fast and noisy
+OPS_ST_TRAINING_INFILTRATION_3,Toque {0} e ande: furtivo você quase não é ouvido,Tap {0} and walk: sneaking is almost silent
+OPS_ST_TRAINING_INFILTRATION_4,Vá ao painel e desligue o alarme com {0}. Sem alarme não vêm reforços,Go to the panel and cut the alarm with {0}. No alarm means no reinforcements
+OPS_ST_TRAINING_INFILTRATION_5,Furtivo ({0}): chegue pelas costas do guarda e abata com {1},Sneak ({0}): get behind the guard and take them down with {1}
+OPS_ST_TRAINING_INFILTRATION_6,Liberte o prisioneiro com {0}. Depois leve-o até a saída,Free the prisoner with {0}. Then bring them to the exit
+OPS_TRAINING_INCURSION,Treino de Incursão,Incursion training
+OPS_TRAINING_INCURSION_BRIEF,"Aprenda a atirar, cortar, defender, usar poderes, implantar barreiras, dar ordens aos aliados e comprar suprimentos. Você usa o rifle aqui para praticar a troca de arma.","Learn to shoot, cut, defend, use powers, deploy barriers, order allies and buy supplies. You carry the rifle here to practice switching weapons."
+OPS_ST_TRAINING_INCURSION_1,Mova-se com {0} {1} {2} {3},Move with {0} {1} {2} {3}
+OPS_ST_TRAINING_INCURSION_2,Mire e atire com {0}. Atirar sem parar enche a barra de Calor,Aim and shoot with {0}. Nonstop fire fills the Heat bar
+OPS_ST_TRAINING_INCURSION_3,Troque para a lâmina com {0},Switch to the blade with {0}
+OPS_ST_TRAINING_INCURSION_4,Corte com {0},Cut with {0}
+OPS_ST_TRAINING_INCURSION_5,Segure {0} para se defender,Hold {0} to guard
+OPS_ST_TRAINING_INCURSION_6,Esquive com {0},Dodge with {0}
+OPS_ST_TRAINING_INCURSION_7,A torre abriu fogo: mire nela e defenda os tiros com {0}. Toque na hora certa para devolver,The turret opened fire: aim at it and block with {0}. Tap at the right time to send shots back
+OPS_ST_TRAINING_INCURSION_8,Destrua a torre,Destroy the turret
+OPS_ST_TRAINING_INCURSION_9,Use um poder com {0},Use a power with {0}
+OPS_ST_TRAINING_INCURSION_10,Olhe para um espaço livre e implante uma barreira com {0}. Ela barra só o fogo inimigo,Face open floor and deploy a barrier with {0}. It only stops enemy fire
+OPS_ST_TRAINING_INCURSION_11,Vá até o aliado e liberte com {0},Go to the ally and free them with {0}
+OPS_ST_TRAINING_INCURSION_12,Dê uma ordem com {0}: Seguir · Segurar aqui · Proteger,Give an order with {0}: Follow · Hold here · Protect
+OPS_ST_TRAINING_INCURSION_13,Vá ao terminal e compre com {0},Go to the terminal and buy with {0}
+OPS_ST_TRAINING_INCURSION_14,A porta abriu: elimine os inimigos,The door opened: defeat the enemies
+SPACE_TRAINING_TITLE,Treino de voo,Flight training
+SPACE_TRAINING_BRIEF,"Aprenda a pilotar, atirar, usar impulso e mísseis e derrubar alvos. Sem nota nem recompensa.","Learn to fly, shoot, use boost and missiles and shoot down targets. No rating or reward."
+SPACE_TRAINING_OBJECTIVE,Complete os passos do treino,Complete the training steps
+SPACE_TRAINING_STEP_1,Acelere com {0},Accelerate with {0}
+SPACE_TRAINING_STEP_2,Gire com {0} e {1},Turn with {0} and {1}
+SPACE_TRAINING_STEP_3,Dê ré com {0},Reverse with {0}
+SPACE_TRAINING_STEP_4,Segure {0} para atirar,Hold {0} to fire
+SPACE_TRAINING_STEP_5,Use o impulso com {0},Boost with {0}
+SPACE_TRAINING_STEP_6,Dois caças à frente: destrua os dois. O escudo volta sozinho,Two fighters ahead: destroy them. Your shield recovers on its own
+SPACE_TRAINING_STEP_7,Lance um míssil guiado com {0},Launch a guided missile with {0}
+SPACE_TRAINING_STEP_8,Destrua os caças restantes,Destroy the remaining fighters

@@ -24,6 +24,8 @@ enum Kind { ARENA, ASSAULT, DEFENSE, HOLD_OUT, ESCORT, RIVAL, BOSS }
 @export var reserve_start: int = -1
 @export var damage_bonus: float = 25.0
 @export var accuracy_bonus: float = 0.5
+@export var tutorial: bool = false
+@export var forced_weapon: StringName = &""
 
 
 func ally_role(index: int) -> BlasterOpsAllyData:

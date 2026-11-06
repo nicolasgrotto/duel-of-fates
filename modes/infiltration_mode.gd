@@ -57,7 +57,10 @@ func _init(mission: InfiltrationMissionData, fighter: CharacterData = null, load
 
 func create_simulation() -> BlasterOpsSimulation:
 	var fighter: CharacterData = character if character != null else look_character()
-	var loadout: BlasterOpsLoadout = equipment if equipment != null else BlasterOpsTraining.mission_loadout(fighter, look_weapon() if character == null else &"")
+	var weapon: StringName = look_weapon() if character == null else &""
+	if data is BlasterOpsMissionData and (data as BlasterOpsMissionData).forced_weapon != &"":
+		weapon = (data as BlasterOpsMissionData).forced_weapon
+	var loadout: BlasterOpsLoadout = equipment if equipment != null else BlasterOpsTraining.mission_loadout(fighter, weapon)
 	return BlasterOpsSimulation.new(BlasterOpsTraining.CONFIG, data.map, loadout, data)
 
 

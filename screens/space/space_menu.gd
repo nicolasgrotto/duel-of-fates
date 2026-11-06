@@ -17,8 +17,9 @@ const STAT_VALUE_WIDTH: float = 130.0
 const THREAT_LEVELS: int = 5
 const RATING_LEVELS: int = 3
 const REVIEW_LIST_WIDTH: float = 728.0
-const TOOL_HANGAR: int = 0
-const TOOL_BACK: int = 1
+const TOOL_TRAINING: int = 0
+const TOOL_HANGAR: int = 1
+const TOOL_BACK: int = 2
 const PALETTE: UiPalette = preload("res://ui/palette.tres")
 const STAT_MAXIMUM: Dictionary = {&"hull": 150.0, &"shield": 75.0, &"speed": 480.0, &"agility": 260.0, &"firepower": 130.0}
 const STAT_KEYS: Dictionary = {&"hull": "SPACE_STAT_HULL", &"shield": "SPACE_STAT_SHIELD", &"speed": "SPACE_STAT_SPEED", &"agility": "SPACE_STAT_AGILITY", &"firepower": "SPACE_STAT_FIREPOWER"}
@@ -138,6 +139,7 @@ func _build_map_column() -> VBoxContainer:
 	var tools: HBoxContainer = HBoxContainer.new()
 	tools.add_theme_constant_override(&"separation", CHIP_GAP)
 	_tools.clear()
+	_tools.append(_tool_button(tr("SPACE_TRAINING_TITLE"), TOOL_TRAINING))
 	_tools.append(_tool_button(tr("SPACE_HANGAR_ROW").format({"name": tr(SaveService.space.selected_ship().name_key)}), TOOL_HANGAR))
 	_tools.append(_tool_button(tr("MENU_BACK"), TOOL_BACK))
 	for tool in _tools:
@@ -239,10 +241,13 @@ func _refresh_focus() -> void:
 		_tools[index].theme_type_variation = &"TacticalRowSelected" if _focus == missions + index else &"TacticalChip"
 	if _focus < missions:
 		_show_mission(SpaceMode.MISSIONS[_focus])
+	elif _focus == missions + TOOL_TRAINING:
+		_show_mission(SpaceMode.TUTORIAL)
 
 
 func _show_mission(data: SpaceMissionData) -> void:
-	_mission = data.id
+	if not data.is_tutorial():
+		_mission = data.id
 	_mode = SpaceMode.new(data, SaveService.space.loadout())
 	_detail_preview.show_texture(data.preview)
 	_detail_title.text = tr(data.title_key)
@@ -300,7 +305,10 @@ func _on_tool_input(event: InputEvent, tool: int) -> void:
 
 
 func _run_tool(tool: int) -> void:
-	if tool == TOOL_HANGAR:
+	if tool == TOOL_TRAINING:
+		_mode = SpaceMode.new(SpaceMode.TUTORIAL, SaveService.space.loadout())
+		_mode.start()
+	elif tool == TOOL_HANGAR:
 		SceneRouter.change(&"space_ships", {"panel": &"ships", "mission": _mission})
 	else:
 		_leave()
@@ -491,7 +499,7 @@ func _effect_text(track: int, level: int, next: int) -> String:
 	var ship: SpaceShipData = _ship_by_id(_focused_ship)
 	match track:
 		0:
-			return tr("SPACE_EFFECT_WEAPON").format({"a": snappedf(ship.primary.damage + config.weapon_damage * level, 0.1), "b": snappedf(ship.primary.damage + config.weapon_damage * next, 0.1), "c": snappedf(ship.primary.interval - config.weapon_interval * level, 0.01), "d": snappedf(ship.primary.interval - config.weapon_interval * next, 0.01)})
+			return tr("SPACE_EFFECT_WEAPON").format({"a": String.num(ship.primary.damage + config.weapon_damage * level, 1), "b": String.num(ship.primary.damage + config.weapon_damage * next, 1), "c": String.num(ship.primary.interval - config.weapon_interval * level, 2), "d": String.num(ship.primary.interval - config.weapon_interval * next, 2)})
 		1:
 			return tr("SPACE_EFFECT_SHIELD").format({"a": roundi(ship.shield + config.shield_capacity * level), "b": roundi(ship.shield + config.shield_capacity * next), "c": roundi(ship.shield_regeneration + config.shield_regeneration * level), "d": roundi(ship.shield_regeneration + config.shield_regeneration * next)})
 	return tr("SPACE_EFFECT_SPEED").format({"a": roundi(ship.speed + config.speed * level), "b": roundi(ship.speed + config.speed * next), "c": roundi(ship.acceleration + config.acceleration * level), "d": roundi(ship.acceleration + config.acceleration * next)})
@@ -556,7 +564,7 @@ func _show_result() -> void:
 	list_panel.add_child(list)
 	list.add_row(&"retry", tr("RESULT_RETRY"))
 	list.add_row(&"upgrades", tr("SPACE_HANGAR_TITLE"))
-	if result.won():
+	if result.won() and not _mode.data.is_tutorial():
 		list.add_row(&"next", tr("INF_NEXT"))
 	list.add_row(&"missions", tr("INF_MISSIONS"))
 	list.chosen.connect(_on_result_chosen)
@@ -575,7 +583,10 @@ func _show_result() -> void:
 	for objective in result.objectives:
 		lines.append(tr("INF_CHECK").format({"state": tr("INF_DONE" if objective.done else "INF_PENDING"), "objective": tr(objective.key)}))
 	lines.append("")
-	lines.append(tr("SPACE_POINT_EARNED" if result.point_earned else "SPACE_REPEAT" if result.won() else "SPACE_FAILURE_SAVE"))
+	if _mode.data.is_tutorial():
+		lines = [tr("OPS_TRAINING_DONE" if result.won() else "OPS_TRAINING_RETRY")]
+	else:
+		lines.append(tr("SPACE_POINT_EARNED" if result.point_earned else "SPACE_REPEAT" if result.won() else "SPACE_FAILURE_SAVE"))
 	var body: Label = _label("\n".join(lines), &"TacticalBodyLabel")
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	column.add_child(body)

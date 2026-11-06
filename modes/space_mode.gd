@@ -6,6 +6,7 @@ signal exit_requested
 
 const CONFIG: SpaceConfig = preload("res://data/balance/space_config.tres")
 const UPGRADES: SpaceUpgradeConfig = preload("res://data/space/upgrades.tres")
+const TUTORIAL: SpaceMissionData = preload("res://data/space/missions/training_flight.tres")
 const MISSIONS: Array[SpaceMissionData] = [
 	preload("res://data/space/missions/open_corridor.tres"),
 	preload("res://data/space/missions/ash_trail.tres"),
@@ -53,7 +54,7 @@ func finish(sim: SpaceSimulation) -> void:
 	result.objectives.append({"key": data.objective_key, "done": result.won()})
 	if data.protected_ship >= 0:
 		result.objectives.append({"key": "SPACE_KEEP_ALLY", "done": sim.ships[data.protected_ship].hull > 0.0})
-	if result.won() and not external:
+	if result.won() and not external and not data.is_tutorial():
 		result.point_earned = SaveService.record_space(data.id, result.ticks, result.rating)
 	finished.emit(result)
 

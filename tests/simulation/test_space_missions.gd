@@ -251,3 +251,39 @@ func test_obstacle_separates_hull_and_consumes_projectiles() -> void:
 	for tick in 10:
 		sim.step(commands)
 	assert_false(sim.projectiles[0].active)
+
+
+func test_flight_tutorial_walks_every_step_without_saving() -> void:
+	var service: Node = Engine.get_main_loop().root.get_node("SaveService")
+	var before: Dictionary = service.space.capture()
+	var mode: SpaceMode = SpaceMode.new(SpaceMode.TUTORIAL, SpaceLoadout.new())
+	var sim: SpaceSimulation = mode.create_simulation()
+	var enemies: SpaceEnemyController = SpaceEnemyController.new(sim.ships.size())
+	var pilot: SpaceMissionPilot = SpaceMissionPilot.new()
+	var seen: Array[int] = []
+	for tick in 60 * 60 * 6:
+		var player: SpaceIntent = pilot.produce(sim)
+		var step: SpaceTutorialStep = sim.mission.current_step()
+		if step != null and not seen.has(sim.mission.step_index):
+			seen.append(sim.mission.step_index)
+		if step != null:
+			match step.action:
+				SpaceTutorialStep.Action.THRUST:
+					player.thrust = 1.0
+				SpaceTutorialStep.Action.TURN:
+					player.turn = 1.0
+				SpaceTutorialStep.Action.REVERSE:
+					player.thrust = -1.0
+				SpaceTutorialStep.Action.FIRE:
+					player.held |= SpaceIntent.Command.PRIMARY
+				SpaceTutorialStep.Action.BOOST:
+					player.pressed |= SpaceIntent.Command.BOOST
+				SpaceTutorialStep.Action.MISSILE:
+					player.pressed |= SpaceIntent.Command.SECONDARY
+		sim.step(enemies.produce_all(sim, player))
+		if sim.mission.outcome != SpaceMissionState.Outcome.ACTIVE:
+			break
+	assert_eq(sim.mission.outcome, SpaceMissionState.Outcome.COMPLETED)
+	assert_eq(seen.size(), SpaceMode.TUTORIAL.tutorial_steps.size())
+	mode.finish(sim)
+	assert_eq(service.space.capture(), before)

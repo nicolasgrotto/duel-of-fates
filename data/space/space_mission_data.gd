@@ -15,9 +15,14 @@ enum MapLabel { BELOW, ABOVE, RIGHT }
 @export var boss: int = -1
 @export var phases: Array[SpaceBossPhase] = []
 @export var preview: Texture2D
+@export var tutorial_steps: Array[SpaceTutorialStep] = []
 @export_range(1, 5) var threat: int = 1
 @export var map_position: Vector2
 @export var map_label: MapLabel = MapLabel.BELOW
+
+
+func is_tutorial() -> bool:
+	return not tutorial_steps.is_empty()
 
 
 func enemy_types() -> Array[SpaceShipData]:

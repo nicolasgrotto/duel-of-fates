@@ -1,7 +1,8 @@
 class_name BlasterOpsStageData
 extends Resource
 
-enum Objective { CLEAR, DESTROY, HOLD, REACH, INTERACT, ESCORT, BOSS }
+enum Objective { CLEAR, DESTROY, HOLD, REACH, INTERACT, ESCORT, BOSS, ACTION }
+enum Action { MOVE, RUN, SNEAK, FIRE, CUT, GUARD, PARRY, DODGE, POWER, SWITCH, DEPLOY, ORDER, BUY, TAKEDOWN, PANEL, RECRUIT }
 
 @export var objective: Objective = Objective.CLEAR
 @export var title_key: String
@@ -18,3 +19,6 @@ enum Objective { CLEAR, DESTROY, HOLD, REACH, INTERACT, ESCORT, BOSS }
 @export var supply_reward: int = 2
 @export var repair_on_complete: float = 20.0
 @export var requires_clear: bool = false
+@export var action: Action = Action.MOVE
+@export var action_count: int = 1
+@export var hint_actions: PackedStringArray

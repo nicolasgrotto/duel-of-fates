@@ -7,10 +7,11 @@ sys.path.insert(0, str(ROOT / "tools/infiltration"))
 from make_missions import Layout, preview_image, cell_point
 from PIL import Image
 
-KINDS = {"encircled_yard": 0, "breach_line": 1, "defense_node": 2, "extraction_window": 3, "ally_corridor": 4, "retreat_vector": 5, "siege_core": 6}
+KINDS = {"training_infiltration": 0, "training_incursion": 0, "encircled_yard": 0, "breach_line": 1, "defense_node": 2, "extraction_window": 3, "ally_corridor": 4, "retreat_vector": 5, "siege_core": 6}
 SPRITES = {"boss": "assets/infiltration/walker.png", "rusher": "assets/blaster_ops/rusher.png", "warden": "assets/blaster_ops/warden.png", "sapper": "assets/blaster_ops/sapper.png", "repairer": "assets/blaster_ops/repairer.png", "ironstride": "assets/blaster_ops/ironstride.png"}
 PREVIEW_KIND = {"soldier": "trooper", "turret": "sentry", "heavy": "heavy", "marksman": "marksman", "rusher": "rusher", "warden": "warden", "sapper": "sapper", "repairer": "repairer", "ironstride": "ironstride"}
-OBJECTIVES = {"clear": 0, "destroy": 1, "hold": 2, "reach": 3, "interact": 4, "escort": 5, "boss": 6}
+OBJECTIVES = {"clear": 0, "destroy": 1, "hold": 2, "reach": 3, "interact": 4, "escort": 5, "boss": 6, "action": 7}
+ACTIONS = {name: index for index, name in enumerate(["move", "run", "sneak", "fire", "cut", "guard", "parry", "dodge", "power", "switch", "deploy", "order", "buy", "takedown", "panel", "recruit"])}
 TILE_RADIUS = 64
 
 
@@ -37,6 +38,11 @@ class Plan(Layout):
         self.phase_target = -1
         self.phase_prefix = ""
         self.preview_cones = False
+        self.guards = {}
+        self.tutorial = False
+        self.objective_value = 1
+        self.forced_weapon = ""
+        self.damage_scale = 1.0
 
     def room(self, x0, y0, x1, y1):
         self.carve(x0, y0, x1, y1)
@@ -52,6 +58,16 @@ class Plan(Layout):
             self.grid[cell[1]][cell[0]] = "C"
             self.covers.append((cell, True))
         return list(range(first, first + len(cells)))
+
+    def guard(self, name, cell, direction):
+        index = len(self.placements)
+        self.placements.append((name, cell))
+        self.guards[index] = direction
+        return index
+
+    def action(self, name, count=1, hints=(), targets=(), first=-1, opens=(), prep=0.5, reward=0, repair=0.0, zone=None, radius=0):
+        self.stage("action", first=first, targets=targets, opens=opens, prep=prep, reward=reward, repair=repair, zone=zone, radius=radius)
+        self.stages[-1].update({"action": ACTIONS[name], "count": count, "hints": list(hints)})
 
     def wave(self, *entries):
         indices = []
@@ -462,6 +478,8 @@ def write_mission(p):
     validate(p)
     write_preview(p)
     paths = {"mission": ("Script", "data/blaster_ops/blaster_ops_mission_data.gd"), "map": ("Script", "data/blaster_ops/blaster_ops_arena_data.gd"), "wave": ("Script", "data/blaster_ops/blaster_ops_wave_data.gd"), "phase": ("Script", "data/blaster_ops/blaster_ops_phase_data.gd"), "stage": ("Script", "data/blaster_ops/blaster_ops_stage_data.gd"), "ally": ("Script", "data/blaster_ops/blaster_ops_ally_data.gd"), "placement": ("Script", "data/infiltration/infiltration_enemy_placement.gd"), "cover": ("Script", "data/blaster_ops/blaster_ops_cover_data.gd"), "tiles": ("Texture2D", "assets/infiltration/training_tiles.png"), "sprites": ("Texture2D", "assets/infiltration/training_sprites.png"), "enemies": ("Texture2D", "assets/infiltration/enemy_sprites.png"), "covers": ("Texture2D", "assets/blaster_ops/covers.png"), "preview": ("Texture2D", f"assets/blaster_ops/previews/{p.id}.png")}
+    if p.panels:
+        paths["panel"] = ("Script", "data/infiltration/infiltration_panel_data.gd")
     names = {name for name, _ in p.placements}
     if p.phase_prefix:
         names |= {f"{p.phase_prefix}_{i}" for i in range(3)}
@@ -475,7 +493,9 @@ def write_mission(p):
     placements = []
     for index, (name, cell) in enumerate(p.placements):
         placements.append(f'SubResource("p{index}")')
-        body += f'\n[sub_resource type="Resource" id="p{index}"]\nscript = ExtResource("placement")\nenemy = ExtResource("{name}")\nposition = Vector2{cell_point(cell)}\ndirection = Vector2(-1, 0)\nreinforcement = true\n'
+        facing = p.guards.get(index)
+        body += f'\n[sub_resource type="Resource" id="p{index}"]\nscript = ExtResource("placement")\nenemy = ExtResource("{name}")\nposition = Vector2{cell_point(cell)}\n'
+        body += f'direction = Vector2{facing}\nreinforcement = false\n' if facing else 'direction = Vector2(-1, 0)\nreinforcement = true\n'
     wave_ids = []
     for index, wave in enumerate(p.waves):
         wave_ids.append(f'SubResource("w{index}")')
@@ -485,19 +505,29 @@ def write_mission(p):
     stage_ids = []
     for index, stage in enumerate(p.stages):
         stage_ids.append(f'SubResource("s{index}")')
+        action_fields = ""
+        if "action" in stage:
+            hints = ", ".join(f'"{hint}"' for hint in stage["hints"])
+            action_fields = f'action = {stage["action"]}\naction_count = {stage["count"]}\nhint_actions = PackedStringArray({hints})\n'
         zone = f'zone = Vector2{stage["zone"]}\n' if stage["zone"] else ""
-        body += f'\n[sub_resource type="Resource" id="s{index}"]\nscript = ExtResource("stage")\nobjective = {stage["objective"]}\ntitle_key = "OPS_ST_{p.id.upper()}_{index + 1}"\nfirst_wave = {stage["first"]}\nlast_wave = {stage["last"]}\nwave_gap_seconds = {stage["gap"]}\ntargets = PackedInt32Array({", ".join(map(str, stage["targets"]))})\nterminals = PackedInt32Array({", ".join(map(str, stage["terminals"]))})\nopens_covers = PackedInt32Array({", ".join(map(str, stage["opens"]))})\nhold_seconds = {stage["hold"]}\n{zone}zone_radius = {float(stage["radius"])}\nprep_seconds = {stage["prep"]}\nsupply_reward = {stage["reward"]}\nrepair_on_complete = {stage["repair"]}\nrequires_clear = {str(stage["clear"]).lower()}\n'
+        body += f'\n[sub_resource type="Resource" id="s{index}"]\nscript = ExtResource("stage")\nobjective = {stage["objective"]}\ntitle_key = "OPS_ST_{p.id.upper()}_{index + 1}"\nfirst_wave = {stage["first"]}\nlast_wave = {stage["last"]}\nwave_gap_seconds = {stage["gap"]}\ntargets = PackedInt32Array({", ".join(map(str, stage["targets"]))})\nterminals = PackedInt32Array({", ".join(map(str, stage["terminals"]))})\nopens_covers = PackedInt32Array({", ".join(map(str, stage["opens"]))})\nhold_seconds = {stage["hold"]}\n{zone}zone_radius = {float(stage["radius"])}\nprep_seconds = {stage["prep"]}\nsupply_reward = {stage["reward"]}\nrepair_on_complete = {stage["repair"]}\nrequires_clear = {str(stage["clear"]).lower()}\n{action_fields}'
     phases = []
     if p.phase_prefix:
         for index, ratio in enumerate([1.0, 0.65, 0.3]):
             phases.append(f'SubResource("f{index}")')
             body += f'\n[sub_resource type="Resource" id="f{index}"]\nscript = ExtResource("phase")\nhealth_ratio = {ratio}\ntitle_key = "OPS_PHASE_{index}"\nenemy = ExtResource("{p.phase_prefix}_{index}")\nstrafe = {0.5 if p.phase_prefix == "rival" and index < 2 else 0.0}\n'
+    panel_ids = []
+    for index, cell in enumerate(p.panels):
+        panel_ids.append(f'SubResource("n{index}")')
+        body += f'\n[sub_resource type="Resource" id="n{index}"]\nscript = ExtResource("panel")\nposition = Vector2{cell_point(cell)}\n'
     rows = ", ".join('"' + "".join(row) + '"' for row in p.grid)
     covers = ", ".join(f'SubResource("c{i}")' for i in range(len(p.covers)))
     body += '\n[sub_resource type="Resource" id="map_data"]\nscript = ExtResource("map")\n'
     body += f'rows = PackedStringArray({rows})\nplayer_spawn = Vector2{cell_point(p.spawn)}\nenemies = Array[ExtResource("placement")]([{", ".join(placements)}])\ncovers = Array[ExtResource("cover")]([{covers}])\n'
+    if panel_ids:
+        body += f'panels = Array[ExtResource("panel")]([{", ".join(panel_ids)}])\n'
     body += 'tiles = ExtResource("tiles")\nsprites = ExtResource("sprites")\nenemy_sprites = ExtResource("enemies")\ncover_atlas = ExtResource("covers")\nenemies_alerted = false\n'
-    body += f'\n[resource]\nscript = ExtResource("mission")\nid = &"{p.id}"\nobjective = 1\nkind = {p.kind}\ntitle_key = "OPS_{p.id.upper()}"\nbriefing_key = "OPS_{p.id.upper()}_BRIEF"\nmap = SubResource("map_data")\npreview = ExtResource("preview")\nwaves = Array[ExtResource("wave")]([{", ".join(wave_ids)}])\nstages = Array[ExtResource("stage")]([{", ".join(stage_ids)}])\n'
+    body += f'\n[resource]\nscript = ExtResource("mission")\nid = &"{p.id}"\nobjective = {p.objective_value}\nkind = {p.kind}\ntitle_key = "OPS_{p.id.upper()}"\nbriefing_key = "OPS_{p.id.upper()}_BRIEF"\nmap = SubResource("map_data")\npreview = ExtResource("preview")\nwaves = Array[ExtResource("wave")]([{", ".join(wave_ids)}])\nstages = Array[ExtResource("stage")]([{", ".join(stage_ids)}])\n'
     spawns = list(p.prisoners) + [p.spawn for _ in p.reserve]
     body += f'prisoner_spawns = PackedVector2Array({vec_list(spawns)})\nminimum_prisoners = {1 if p.protected is not None else 0}\nextraction = Vector2{cell_point(p.exit)}\nbonus_seconds = {float(p.bonus)}\ndamage_bonus = {float(p.damage_bonus)}\naccuracy_bonus = {p.accuracy_bonus}\nenemy_damage_scale = 0.6\n'
     role_items = ", ".join(f'ExtResource("role_{r}")' if r else "null" for r in roles)
@@ -516,12 +546,82 @@ def write_mission(p):
         body += f"protected_index = {p.protected}\nprotected_health = {float(p.protected_health)}\n"
     if phases:
         body += f'phase_target = {p.phase_target}\nphases = Array[ExtResource("phase")]([{", ".join(phases)}])\n'
+    if p.tutorial:
+        body += "tutorial = true\n"
+    if p.forced_weapon:
+        body += f'forced_weapon = &"{p.forced_weapon}"\n'
+    if p.damage_scale != 1.0:
+        body += f"enemy_damage_scale = {p.damage_scale}\n"
     resource(ROOT / f"data/blaster_ops/missions/{p.id}.tres", "BlasterOpsMissionData", body, ext)
 
 
+def training_infiltration():
+    p = Plan("training_infiltration", 46, 20)
+    p.tutorial = True
+    p.objective_value = 0
+    p.room(2, 5, 16, 14)
+    p.room(18, 5, 30, 14)
+    p.room(32, 5, 43, 14)
+    p.carve(17, 9, 17, 11)
+    p.carve(31, 9, 31, 11)
+    p.spawn, p.exit = (4, 10), (41, 12)
+    d1 = p.door([(17, y) for y in range(9, 12)])
+    d2 = p.door([(31, y) for y in range(9, 12)])
+    p.panels = [(14, 6)]
+    guard = p.guard("soldier", (27, 10), (1, 0))
+    p.ally((38, 8), None)
+    p.action("move", 90, ["up", "left", "down", "right"], prep=1.0)
+    p.action("run", 60, ["run"])
+    p.action("sneak", 60, ["sneak"])
+    p.action("panel", 1, ["interact"], opens=d1)
+    p.action("takedown", 1, ["sneak", "strike"], targets=[guard], opens=d2)
+    p.action("recruit", 1, ["interact"])
+    p.bonus = 300
+    p.preview_center, p.preview_hero = (18, 10), ((14, 10), (1, 0))
+    p.preview_guards = [("soldier", (27, 10), (1, 0))]
+    return p
+
+
+def training_incursion():
+    p = Plan("training_incursion", 50, 22)
+    p.tutorial = True
+    p.forced_weapon = "back_rifle"
+    p.damage_scale = 0.35
+    p.room(2, 4, 24, 18)
+    p.room(26, 4, 46, 18)
+    p.carve(25, 9, 25, 13)
+    p.spawn, p.exit = (5, 11), (44, 11)
+    p.crates((14, 6), (14, 16))
+    door = p.door([(25, y) for y in range(9, 14)])
+    p.supply = [(8, 5)]
+    p.start_supplies = 20
+    p.barriers = 2
+    p.ally((12, 16), "rifleman")
+    turret = p.wave(("turret", (22, 11)))
+    soldiers = p.wave(("soldier", (38, 8)), ("soldier", (40, 11)), ("soldier", (38, 14)))
+    p.action("move", 60, ["up", "left", "down", "right"], prep=1.0)
+    p.action("fire", 6, ["fire"])
+    p.action("switch", 1, ["switch_weapon"])
+    p.action("cut", 2, ["strike"])
+    p.action("guard", 60, ["guard"])
+    p.action("dodge", 1, ["dodge"])
+    p.action("parry", 2, ["guard"], targets=turret, first=0)
+    p.stage("destroy", targets=turret, prep=0.5, reward=0, repair=30.0)
+    p.action("power", 1, ["power"])
+    p.action("deploy", 1, ["interact"])
+    p.action("recruit", 1, ["interact"])
+    p.action("order", 1, ["order_allies"])
+    p.action("buy", 1, ["interact"], opens=door)
+    p.stage("clear", first=1, prep=1.0, reward=0, repair=30.0)
+    p.preview_center, p.preview_hero = (20, 11), ((14, 11), (1, 0))
+    p.preview_guards = [("turret", (22, 11), (-1, 0))]
+    return p
+
+
+TUTORIALS = [training_infiltration, training_incursion]
 MISSIONS = [encircled_yard, breach_line, defense_node, extraction_window, ally_corridor, retreat_vector, siege_core]
 
 if __name__ == "__main__":
     enemies()
-    for build in MISSIONS:
+    for build in MISSIONS + TUTORIALS:
         write_mission(build())

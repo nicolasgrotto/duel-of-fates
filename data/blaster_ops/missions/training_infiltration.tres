@@ -1,0 +1,219 @@
+[gd_resource type="Resource" script_class="BlasterOpsMissionData" format=3]
+
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_ally_data.gd" id="ally"]
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_cover_data.gd" id="cover"]
+[ext_resource type="Texture2D" path="res://assets/blaster_ops/covers.png" id="covers"]
+[ext_resource type="Texture2D" path="res://assets/infiltration/enemy_sprites.png" id="enemies"]
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_arena_data.gd" id="map"]
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_mission_data.gd" id="mission"]
+[ext_resource type="Script" path="res://data/infiltration/infiltration_panel_data.gd" id="panel"]
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_phase_data.gd" id="phase"]
+[ext_resource type="Script" path="res://data/infiltration/infiltration_enemy_placement.gd" id="placement"]
+[ext_resource type="Texture2D" path="res://assets/blaster_ops/previews/training_infiltration.png" id="preview"]
+[ext_resource type="Resource" path="res://data/blaster_ops/enemies/soldier.tres" id="soldier"]
+[ext_resource type="Texture2D" path="res://assets/infiltration/training_sprites.png" id="sprites"]
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_stage_data.gd" id="stage"]
+[ext_resource type="Texture2D" path="res://assets/infiltration/training_tiles.png" id="tiles"]
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_wave_data.gd" id="wave"]
+
+
+[sub_resource type="Resource" id="p0"]
+script = ExtResource("placement")
+enemy = ExtResource("soldier")
+position = Vector2(1760, 672)
+direction = Vector2(1, 0)
+reinforcement = false
+
+[sub_resource type="Resource" id="c0"]
+script = ExtResource("cover")
+cell = Vector2i(17, 9)
+health = 1.0
+door = true
+
+[sub_resource type="Resource" id="c1"]
+script = ExtResource("cover")
+cell = Vector2i(17, 10)
+health = 1.0
+door = true
+
+[sub_resource type="Resource" id="c2"]
+script = ExtResource("cover")
+cell = Vector2i(17, 11)
+health = 1.0
+door = true
+
+[sub_resource type="Resource" id="c3"]
+script = ExtResource("cover")
+cell = Vector2i(31, 9)
+health = 1.0
+door = true
+
+[sub_resource type="Resource" id="c4"]
+script = ExtResource("cover")
+cell = Vector2i(31, 10)
+health = 1.0
+door = true
+
+[sub_resource type="Resource" id="c5"]
+script = ExtResource("cover")
+cell = Vector2i(31, 11)
+health = 1.0
+door = true
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("stage")
+objective = 7
+title_key = "OPS_ST_TRAINING_INFILTRATION_1"
+first_wave = -1
+last_wave = -1
+wave_gap_seconds = 0.0
+targets = PackedInt32Array()
+terminals = PackedInt32Array()
+opens_covers = PackedInt32Array()
+hold_seconds = 0.0
+zone_radius = 0.0
+prep_seconds = 1.0
+supply_reward = 0
+repair_on_complete = 0.0
+requires_clear = false
+action = 0
+action_count = 90
+hint_actions = PackedStringArray("up", "left", "down", "right")
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("stage")
+objective = 7
+title_key = "OPS_ST_TRAINING_INFILTRATION_2"
+first_wave = -1
+last_wave = -1
+wave_gap_seconds = 0.0
+targets = PackedInt32Array()
+terminals = PackedInt32Array()
+opens_covers = PackedInt32Array()
+hold_seconds = 0.0
+zone_radius = 0.0
+prep_seconds = 0.5
+supply_reward = 0
+repair_on_complete = 0.0
+requires_clear = false
+action = 1
+action_count = 60
+hint_actions = PackedStringArray("run")
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("stage")
+objective = 7
+title_key = "OPS_ST_TRAINING_INFILTRATION_3"
+first_wave = -1
+last_wave = -1
+wave_gap_seconds = 0.0
+targets = PackedInt32Array()
+terminals = PackedInt32Array()
+opens_covers = PackedInt32Array()
+hold_seconds = 0.0
+zone_radius = 0.0
+prep_seconds = 0.5
+supply_reward = 0
+repair_on_complete = 0.0
+requires_clear = false
+action = 2
+action_count = 60
+hint_actions = PackedStringArray("sneak")
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("stage")
+objective = 7
+title_key = "OPS_ST_TRAINING_INFILTRATION_4"
+first_wave = -1
+last_wave = -1
+wave_gap_seconds = 0.0
+targets = PackedInt32Array()
+terminals = PackedInt32Array()
+opens_covers = PackedInt32Array(0, 1, 2)
+hold_seconds = 0.0
+zone_radius = 0.0
+prep_seconds = 0.5
+supply_reward = 0
+repair_on_complete = 0.0
+requires_clear = false
+action = 14
+action_count = 1
+hint_actions = PackedStringArray("interact")
+
+[sub_resource type="Resource" id="s4"]
+script = ExtResource("stage")
+objective = 7
+title_key = "OPS_ST_TRAINING_INFILTRATION_5"
+first_wave = -1
+last_wave = -1
+wave_gap_seconds = 0.0
+targets = PackedInt32Array(0)
+terminals = PackedInt32Array()
+opens_covers = PackedInt32Array(3, 4, 5)
+hold_seconds = 0.0
+zone_radius = 0.0
+prep_seconds = 0.5
+supply_reward = 0
+repair_on_complete = 0.0
+requires_clear = false
+action = 13
+action_count = 1
+hint_actions = PackedStringArray("sneak", "strike")
+
+[sub_resource type="Resource" id="s5"]
+script = ExtResource("stage")
+objective = 7
+title_key = "OPS_ST_TRAINING_INFILTRATION_6"
+first_wave = -1
+last_wave = -1
+wave_gap_seconds = 0.0
+targets = PackedInt32Array()
+terminals = PackedInt32Array()
+opens_covers = PackedInt32Array()
+hold_seconds = 0.0
+zone_radius = 0.0
+prep_seconds = 0.5
+supply_reward = 0
+repair_on_complete = 0.0
+requires_clear = false
+action = 15
+action_count = 1
+hint_actions = PackedStringArray("interact")
+
+[sub_resource type="Resource" id="n0"]
+script = ExtResource("panel")
+position = Vector2(928, 416)
+
+[sub_resource type="Resource" id="map_data"]
+script = ExtResource("map")
+rows = PackedStringArray("##############################################", "##############################################", "##############################################", "##############################################", "##############################################", "##...............#.............#............##", "##...............#.............#............##", "##...............#.............#............##", "##...............#.............#............##", "##...............C.............C............##", "##...............C.............C............##", "##...............C.............C............##", "##...............#.............#............##", "##...............#.............#............##", "##...............#.............#............##", "##############################################", "##############################################", "##############################################", "##############################################", "##############################################")
+player_spawn = Vector2(288, 672)
+enemies = Array[ExtResource("placement")]([SubResource("p0")])
+covers = Array[ExtResource("cover")]([SubResource("c0"), SubResource("c1"), SubResource("c2"), SubResource("c3"), SubResource("c4"), SubResource("c5")])
+panels = Array[ExtResource("panel")]([SubResource("n0")])
+tiles = ExtResource("tiles")
+sprites = ExtResource("sprites")
+enemy_sprites = ExtResource("enemies")
+cover_atlas = ExtResource("covers")
+enemies_alerted = false
+
+[resource]
+script = ExtResource("mission")
+id = &"training_infiltration"
+objective = 0
+kind = 0
+title_key = "OPS_TRAINING_INFILTRATION"
+briefing_key = "OPS_TRAINING_INFILTRATION_BRIEF"
+map = SubResource("map_data")
+preview = ExtResource("preview")
+waves = Array[ExtResource("wave")]([])
+stages = Array[ExtResource("stage")]([SubResource("s0"), SubResource("s1"), SubResource("s2"), SubResource("s3"), SubResource("s4"), SubResource("s5")])
+prisoner_spawns = PackedVector2Array(2464, 544)
+minimum_prisoners = 0
+extraction = Vector2(2656, 800)
+bonus_seconds = 300.0
+damage_bonus = 70.0
+accuracy_bonus = 0.45
+enemy_damage_scale = 0.6
+ally_roles = Array[ExtResource("ally")]([null])
+tutorial = true

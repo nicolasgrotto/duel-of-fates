@@ -12,12 +12,16 @@ var phase: int = 0
 var phase_ticks: int = 0
 var phase_visits: PackedInt32Array = []
 var finished_tick: int = 0
+var step_index: int = 0
+var step_progress: int = 0
 
 
 func _init(mission: SpaceMissionData) -> void:
 	data = mission
 	pending_wave = 1 if not data.waves.is_empty() else 0
 	wave_ticks = Ticks.from_seconds(data.waves[0].delay) if pending_wave > 0 else 0
+	if data.is_tutorial():
+		pending_wave = 0
 	phase_visits.resize(data.phases.size())
 	if not phase_visits.is_empty():
 		phase_visits[0] = 1
@@ -47,6 +51,66 @@ func before_tick(sim: SpaceSimulation) -> void:
 		pending_wave = 0
 
 
+func current_step() -> SpaceTutorialStep:
+	return data.tutorial_steps[step_index] if step_index < data.tutorial_steps.size() else null
+
+
+func note_intent(sim: SpaceSimulation, intent: SpaceIntent) -> void:
+	var step: SpaceTutorialStep = current_step()
+	if step == null:
+		return
+	match step.action:
+		SpaceTutorialStep.Action.THRUST:
+			step_progress += int(intent.thrust > 0.0)
+		SpaceTutorialStep.Action.TURN:
+			step_progress += int(intent.turn != 0.0)
+		SpaceTutorialStep.Action.REVERSE:
+			step_progress += int(intent.thrust < 0.0)
+		SpaceTutorialStep.Action.FIRE:
+			step_progress += int((intent.held & SpaceIntent.Command.PRIMARY) != 0)
+
+
+func _count_tutorial_events(sim: SpaceSimulation, step: SpaceTutorialStep) -> void:
+	for index in sim.event_count:
+		var event: SpaceEvent = sim.events[index]
+		if event.source != 0:
+			continue
+		if step.action == SpaceTutorialStep.Action.BOOST and event.type == SpaceEvent.Type.BOOST_STARTED:
+			step_progress += 1
+		elif step.action == SpaceTutorialStep.Action.MISSILE and event.type == SpaceEvent.Type.SHOT_FIRED and event.target == 1:
+			step_progress += 1
+
+
+func _advance_tutorial(sim: SpaceSimulation) -> void:
+	var step: SpaceTutorialStep = current_step()
+	if step == null:
+		return
+	_count_tutorial_events(sim, step)
+	if step.action == SpaceTutorialStep.Action.DESTROY and wave == 0 and pending_wave == 0:
+		_call_next_wave()
+	if step.action == SpaceTutorialStep.Action.MISSILE and wave == 0 and pending_wave == 0:
+		_call_next_wave()
+	var done: bool = step_progress >= step.count
+	if step.action == SpaceTutorialStep.Action.DESTROY:
+		done = pending_wave == 0 and wave > 0 and _wave_cleared(sim)
+	if not done:
+		return
+	step_index += 1
+	step_progress = 0
+	var next: SpaceTutorialStep = current_step()
+	if next == null:
+		_finish(sim, Outcome.COMPLETED)
+	elif next.action == SpaceTutorialStep.Action.DESTROY or next.action == SpaceTutorialStep.Action.MISSILE:
+		if pending_wave == 0 and _wave_cleared(sim) and wave < data.waves.size():
+			_call_next_wave()
+
+
+func _call_next_wave() -> void:
+	if wave < data.waves.size():
+		pending_wave = wave + 1
+		wave_ticks = Ticks.from_seconds(data.waves[wave].delay)
+
+
 func advance(sim: SpaceSimulation) -> void:
 	_advance_phase(sim)
 	if sim.ships[0].hull <= 0.0:
@@ -55,6 +119,8 @@ func advance(sim: SpaceSimulation) -> void:
 		_finish(sim, Outcome.ALLY_DOWN)
 	elif sim.tick >= Ticks.from_seconds(data.limit_seconds):
 		_finish(sim, Outcome.TIMEOUT)
+	elif data.is_tutorial():
+		_advance_tutorial(sim)
 	elif data.boss >= 0 and sim.ships[data.boss].hull <= 0.0 and _objectives_cleared(sim):
 		_finish(sim, Outcome.COMPLETED)
 	elif pending_wave == 0 and _wave_cleared(sim):
@@ -165,7 +231,7 @@ func _finish(sim: SpaceSimulation, result: Outcome) -> void:
 
 
 func capture() -> Dictionary:
-	return {"outcome": int(outcome), "wave": wave, "pending_wave": pending_wave, "wave_ticks": wave_ticks, "phase": phase, "phase_ticks": phase_ticks, "phase_visits": phase_visits.duplicate(), "finished_tick": finished_tick}
+	return {"outcome": int(outcome), "wave": wave, "pending_wave": pending_wave, "wave_ticks": wave_ticks, "phase": phase, "phase_ticks": phase_ticks, "phase_visits": phase_visits.duplicate(), "finished_tick": finished_tick, "step_index": step_index, "step_progress": step_progress}
 
 
 func restore(state: Dictionary) -> void:
