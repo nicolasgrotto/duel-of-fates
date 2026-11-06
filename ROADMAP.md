@@ -4,15 +4,16 @@ Ordem de construção do jogo. Cada fase termina jogável e testada. Marque `[x]
 
 ## Ponto de continuidade
 
-- [ ] **Versão 1.1.1 e depois 1.2** (branch `1.2`). A 1.1.1 sai antes da migração para 640×360; a 1.2 traz todo o resto.
+- [ ] **Versão 1.2** (branch `1.2`), depois da 1.1.1 já publicada. A 1.2 traz a migração para 640×360 e todo o resto.
   - [x] **Blasters nas Operações:** calor 30% menor em todos, dano 10% maior no Arsenal, pistola de assinatura da Corsária (16 de dano, 0,14 s, calor 10) e Emissor do Lince (13 de dano, 0,15 s, calor 12). O duelo não muda: `BlasterData` e `BoltData` ficaram intactos.
   - [x] **Piloto de testes que atira:** o piloto "armado" da 1.1 só cortava, então sua derrota não dizia nada sobre os blasters. Corsária antes dos buffs: 6 vitórias e um travamento do piloto em Pátio cercado. Depois: **7 de 7**, mais rápida e com mais vida que com a pistola da loja. Guardião com Rifle, sem treino: 3 de 7.
   - [x] **Cache:** arquivos Web com o commit no nome (ARCHITECTURE, "Publicação Web e cache").
   - [ ] **Upgrade visual e sonoro:** índice, auditoria e proposta em [docs/tasks/](docs/tasks/README.md), briefs em [docs/art-briefs/](docs/art-briefs/). Decisões D1 a D12 do autor registradas na proposta. Nada implementado ainda. Tasks em `build/agent_tasks/`, na ordem de execução.
   - [x] **Revisão de marcas:** [relatório e decisões do autor](docs/tasks/_revisao-marca.md).
   - [x] **Guia de estilo:** registrado, com as [paletas](docs/art-briefs/_palettes.md) atuais mantidas pelo autor.
-  - [x] **Combate de perto:** golpe de perto nos atiradores, Esmagador, Duelista e mais inimigos nas Incursões; mira corrigida.
-  - **Próximo:** autor avaliar **PLAYTEST 27**. Tasks em `build/agent_tasks/`, com o agente no nome do arquivo e o prefixo `DONE_` ao terminar; 1.1.1 antes da migração para 640×360, 1.2 com todo o resto.
+  - [x] **Combate de perto:** golpe de perto nos atiradores, Esmagador, Duelista e mais inimigos nas Incursões; mira corrigida. **942 testes, zero falhas** (`build/v11_audit/tests_combat_final2.log`). Matriz idêntica à base (50.801 acertos, 2.350 choques, 105 disputas, 1 pressão). Pilotos vencem as sete: lâmina, Corsária e Lince armados. Limite conhecido: o piloto de lâmina termina Pátio cercado, Linha de ruptura e Vetor de recuo com cerca de um terço da vida, e o resultado muda bastante com a posição de um reforço; a dificuldade real depende de jogar.
+  - **Versão 1.1.1 publicada** com a autorização do autor.
+  - **Próximo:** task 23 (sabres e glow), com o glow medido pelo autor no Chrome dele; autor avaliar **PLAYTEST 27**. Tasks em `build/agent_tasks/`, com o agente no nome do arquivo e o prefixo `DONE_` ao terminar; 1.1.1 antes da migração para 640×360, 1.2 com todo o resto.
 
 - [x] **Atualização 1.1 — Operações** (pedido do autor, branch `1.x`). Auditoria feita: **771 testes, zero falhas** na linha de base (`build/v11_audit/tests_baseline.log`). Direções visuais aprovadas pelo autor: Operações A (Console) e Naves A (Mapa de setor) (`build/v11_audit/mockups/index.html`). Decisões registradas em DESIGN e GAME_DESIGN.
   - **Fase 3, nesta ordem:** [x] 1. janela, controles, calor e checagem no navegador (779 testes; Chrome real em 720p e 1080p, `build/v11_audit/web_shots_s1/`); [x] 2. facções (disparo, devolução, área, barreira e corte); [x] 3. vários poderes (conjunto do personagem, onze formas no plano superior, quadros de recarga); [x] 4. sistema de armas e Arsenal (treino por personagem, troca, linha Arma); [x] 5. navegação e limites de desempenho (medidos no Chrome: 24 inimigos ativos, 6 aliados); [x] 6. inimigos novos (guarda de campo, sapador, reparador, Passo de Ferro); [x] 7. aliados (cinco papéis, reforços por dados, limite de seis); [x] 8. barreiras (cargas por missão, dois tipos, inimigos as atacam); [x] 9. suprimentos (terminais por missão, sete compras, nada salvo); [x] 10. missões longas (etapas por dados, mapas novos, reparo de campo, recordes migrados).
