@@ -8,6 +8,9 @@ const ENGAGE_RANGE: float = 260.0
 const FREE_RANGE: float = 900.0
 const LOW_HEALTH: float = 60.0
 const HOLD_MARGIN: float = 220.0
+const SHOOT_RANGE: float = 620.0
+const KEEP_AWAY: float = 150.0
+const HEAT_CEILING: float = 80.0
 
 
 func _init(sim: BlasterOpsSimulation) -> void:
@@ -94,6 +97,20 @@ func _avoid_blast(sim: BlasterOpsSimulation) -> bool:
 	return false
 
 
+func _shoot_at(sim: BlasterOpsSimulation, target: InfiltrationActor, distance: float) -> bool:
+	if sim.loadout.blaster == null or sim.loadout.integrated or sim.state.overheated or sim.state.heat >= HEAT_CEILING:
+		return false
+	if distance > SHOOT_RANGE * SHOOT_RANGE or sim.wall_for(BlasterOpsFaction.Side.ALLIED, sim.player.position, target.position) != INF:
+		return false
+	if sim.loadout.switchable and sim.state.blade_drawn:
+		intent.pressed = InfiltrationIntent.SWITCH_WEAPON if sim.state.switch_ticks == 0 else 0
+		return true
+	intent.held = Intent.Command.LIGHT
+	if distance < KEEP_AWAY * KEEP_AWAY:
+		intent.movement = -intent.aim
+	return true
+
+
 func _reachable(sim: BlasterOpsSimulation, point: Vector2) -> bool:
 	return _navigation.path_tiles(sim.player.position, point) != InfiltrationNavigation.NONE
 
@@ -137,6 +154,8 @@ func produce(sim: BlasterOpsSimulation) -> InfiltrationIntent:
 	if nearest >= 0:
 		var target: InfiltrationActor = sim.targets[nearest]
 		intent.aim = (target.position - sim.player.position).normalized()
+		if _shoot_at(sim, target, distance):
+			return intent
 		var enemy: InfiltrationEnemyData = sim.target_data[nearest] as InfiltrationEnemyData
 		if distance < sim.loadout.power.power.reach * sim.loadout.power.power.reach and sim.state.power_cooldown == 0:
 			intent.pressed = Intent.Command.POWER
