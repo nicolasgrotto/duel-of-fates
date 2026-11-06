@@ -476,6 +476,7 @@ def write_preview(p):
 
 def write_mission(p):
     validate(p)
+    assert p.tutorial or all("action" not in stage for stage in p.stages), f"{p.id}: action stages are tutorial only"
     write_preview(p)
     paths = {"mission": ("Script", "data/blaster_ops/blaster_ops_mission_data.gd"), "map": ("Script", "data/blaster_ops/blaster_ops_arena_data.gd"), "wave": ("Script", "data/blaster_ops/blaster_ops_wave_data.gd"), "phase": ("Script", "data/blaster_ops/blaster_ops_phase_data.gd"), "stage": ("Script", "data/blaster_ops/blaster_ops_stage_data.gd"), "ally": ("Script", "data/blaster_ops/blaster_ops_ally_data.gd"), "placement": ("Script", "data/infiltration/infiltration_enemy_placement.gd"), "cover": ("Script", "data/blaster_ops/blaster_ops_cover_data.gd"), "tiles": ("Texture2D", "assets/infiltration/training_tiles.png"), "sprites": ("Texture2D", "assets/infiltration/training_sprites.png"), "enemies": ("Texture2D", "assets/infiltration/enemy_sprites.png"), "covers": ("Texture2D", "assets/blaster_ops/covers.png"), "preview": ("Texture2D", f"assets/blaster_ops/previews/{p.id}.png")}
     if p.panels:

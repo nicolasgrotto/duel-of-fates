@@ -61,6 +61,7 @@ var _barrier_chip: HudChip
 var _supply_chip: HudChip
 var _stance_chip: HudChip
 var _prompt: HudChip
+var _command_menu: CommandMenu
 var _hints_panel: PanelContainer
 var _hints_left: float = HINTS_SECONDS + HINTS_FADE_SECONDS
 var _shop: SupplyShop
@@ -157,9 +158,16 @@ func _build_hud() -> void:
 	prompt_box.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	prompt_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hud.add_child(prompt_box)
+	var prompt_column: VBoxContainer = VBoxContainer.new()
+	prompt_column.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	prompt_column.add_theme_constant_override(&"separation", CHIP_GAP)
+	prompt_box.add_child(prompt_column)
+	_command_menu = CommandMenu.new()
+	prompt_column.add_child(_command_menu)
 	_prompt = HudChip.new()
 	_prompt.visible = false
-	prompt_box.add_child(_prompt)
+	_prompt.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	prompt_column.add_child(_prompt)
 	hud.add_child(_build_hints())
 	_abilities = AbilityBar.new()
 	_abilities.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
@@ -518,6 +526,8 @@ func _update_presentation(alpha: float) -> void:
 		if sim.mission is BlasterOpsMissionState:
 			var progress: BlasterOpsMissionState = sim.mission as BlasterOpsMissionState
 			_debug.text += "\nwave %d prep %d phase %d damage %.1f hits %d/%d barriers %d" % [progress.wave_index, progress.intermission_ticks, progress.phase_index, progress.damage_taken, progress.hits, progress.attempts, progress.barriers_placed]
+			if progress.definition.tutorial:
+				_debug.text += "\ntraining step %d progress %d performed %d skipped [%s]" % [progress.stage_index + 1, progress.action_progress, progress.performed_actions, progress.skip_report()]
 		if sim.mission != null:
 			_debug.text += "\nmission %s  alarm history %s  takedowns %d  copied %s  recruited %s  extracted %s" % [InfiltrationMissionState.Outcome.keys()[sim.mission.outcome], sim.mission.alarm_raised, sim.mission.takedowns, sim.mission.copied, sim.mission.recruited, sim.mission.extracted]
 		for index in range(sim.map.targets.size(), sim.targets.size()):
@@ -587,6 +597,9 @@ func _update_chips() -> void:
 		_last_order = progress.ally_order
 		AudioDirector.play_ui(&"ui_confirm")
 	_view.order_point = progress.order_point(sim) if allies > 0 else Vector2.INF
+	_command_menu.visible = false
+	if allies > 0 and controller.command_menu_open():
+		_command_menu.show_orders(progress.ally_order, progress.guard_point(sim) != Vector2.INF)
 	var barriers: int = progress.barrier_charges + progress.heavy_barrier_charges
 	_barrier_chip.show_text(tr("OPS_HUD_BARRIERS").format({"count": barriers}) if barriers > 0 else "", ControlHints.blaster_ops_hud_key("interact") if progress.can_deploy() else "")
 	_supply_chip.show_text(tr("OPS_HUD_SUPPLIES").format({"count": progress.supplies}) if progress.has_supplies() else "")
@@ -661,6 +674,8 @@ func _stage_measure(progress: BlasterOpsMissionState, stage: BlasterOpsStageData
 	match stage.objective:
 		BlasterOpsStageData.Objective.ACTION:
 			var text: String = "%d / %d" % [mini(progress.action_progress, stage.action_count), stage.action_count] if stage.action_count <= COUNTED_ACTIONS else ""
+			if stage.action == BlasterOpsStageData.Action.FIRE and sim.state.blade_drawn and sim.loadout.switchable:
+				text = tr("OPS_HUD_BACK_TO_GUN").format({"key": ControlHints.blaster_ops_hud_key("switch_weapon")})
 			return {"ratio": float(progress.action_progress) / stage.action_count, "text": text}
 		BlasterOpsStageData.Objective.HOLD:
 			var left: int = maxi(ceili(stage.hold_seconds - progress.hold_ticks * Ticks.DELTA), 0)

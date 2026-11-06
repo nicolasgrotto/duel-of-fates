@@ -1340,7 +1340,7 @@ OPS_RATING_S_SHORT,S,S
 OPS_UNRATED_SHORT,–,–
 OPS_MENU_BONUS_COUNT,{count} de 4 bônus,{count} of 4 bonuses
 OPS_MENU_PRISONERS,Prisioneiros,Prisoners
-SPACE_MAP_PROGRESS,{done} de {total} concluídas · {points} pontos de oficina,{done} of {total} completed · {points} workshop points
+SPACE_MAP_PROGRESS,{done} de {total} concluídas · {points} pontos por nave,{done} of {total} completed · {points} points per ship
 SPACE_MAP_MOVE,trocar missão,change mission
 SPACE_MAP_START,iniciar,start
 SPACE_MAP_ENEMIES,Tipos de inimigo,Enemy types
@@ -1349,7 +1349,7 @@ SPACE_MAP_BEST,Melhor nota,Best rating
 SPACE_MAP_STATUS,Situação,Status
 SPACE_MAP_REWARD,Primeira vitória: 1 ponto de oficina,First victory: 1 workshop point
 SPACE_HANGAR_TITLE,Hangar e Oficina,Hangar and Workshop
-SPACE_POINTS_EARNED,{points} de {total} pontos ganhos,{points} of {total} points earned
+SPACE_POINTS_EARNED,{points} de {total} pontos ganhos · por nave,{points} of {total} points earned · per ship
 SPACE_POINTS_SHIP,{ship}: {free} de {total} pontos livres,{ship}: {free} of {total} points free
 SPACE_HANGAR_SWITCH,naves e melhorias,ships and upgrades
 SPACE_HANGAR_CONFIRM_SHIP,usar esta nave,fly this ship
@@ -1462,3 +1462,6 @@ SPACE_TRAINING_STEP_5,Use o impulso com {0},Boost with {0}
 SPACE_TRAINING_STEP_6,Dois caças à frente: destrua os dois. O escudo volta sozinho,Two fighters ahead: destroy them. Your shield recovers on its own
 SPACE_TRAINING_STEP_7,Lance um míssil guiado com {0},Launch a guided missile with {0}
 SPACE_TRAINING_STEP_8,Destrua os caças restantes,Destroy the remaining fighters
+BOPS_HOLD_BUTTON,segurar {button},hold {button}
+SPACE_TRACK_CAPTION,Melhorias de {ship},{ship} upgrades
+OPS_HUD_BACK_TO_GUN,Você está com a lâmina: volte ao rifle com {key},You have the blade out: switch back to the rifle with {key}
