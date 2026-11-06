@@ -4,8 +4,20 @@ const END_REASONS: Dictionary = {SpaceMissionState.Outcome.PLAYER_DOWN: "SPACE_E
 const CONFIG: SpaceConfig = preload("res://data/balance/space_config.tres")
 const PALETTE: UiPalette = preload("res://ui/palette.tres")
 const MAX_STEPS: int = 5
-const HUD_MARGIN: float = 56.0
-const HUD_WIDTH: float = 290.0
+const HUD_MARGIN: float = 44.0
+const HUD_WIDTH: float = 320.0
+const HUD_LABEL_WIDTH: float = 86.0
+const HUD_BAR_HEIGHT: float = 10.0
+const HUD_ROW_GAP: int = 6
+const CARD_TOP: float = 24.0
+const CHIP_GAP: int = 8
+const CHIP_BOTTOM: float = 40.0
+const HINTS_BOTTOM: float = 44.0
+const HINTS_RESERVE: float = 356.0
+const HINTS_SECONDS: float = 12.0
+const HINTS_FADE_SECONDS: float = 2.0
+const FACING_AHEAD: float = 45.0
+const FACING_ASIDE: float = 135.0
 
 var sim: SpaceSimulation
 var controller: SpacePlayerController
@@ -22,8 +34,11 @@ var _view: SpaceView
 var _audio: SpaceAudio
 var _hull: HudBar
 var _shield: HudBar
-var _objective: Label
-var _status: Label
+var _card: ObjectiveCard
+var _boost_chip: HudChip
+var _missile_chip: HudChip
+var _hints_panel: PanelContainer
+var _hints_left: float = HINTS_SECONDS + HINTS_FADE_SECONDS
 var _debug: Label
 var _pause_layer: CanvasLayer
 var _pause_title: Label
@@ -77,40 +92,92 @@ func _build_hud() -> void:
 	var hud: CanvasLayer = CanvasLayer.new()
 	hud.layer = 10
 	add_child(hud)
-	var title: Label = _label(tr(mode.data.title_key).to_upper(), &"ScreenTitleLabel")
-	title.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.offset_top = 30.0
-	hud.add_child(title)
-	_hull = _bar(hud, 50.0, PALETTE.text)
-	_shield = _bar(hud, 90.0, PALETTE.menu_blade_a)
-	for index in 2:
-		var name_label: Label = _label(tr("SPACE_HULL" if index == 0 else "SPACE_SHIELD"), &"InfiltrationLabel")
-		name_label.position = Vector2(HUD_MARGIN, 14.0 + index * 40.0)
-		hud.add_child(name_label)
-	_status = _label("", &"InfiltrationLabel")
-	_status.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-	_status.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-	_status.offset_left = -HUD_MARGIN
-	_status.offset_right = -HUD_MARGIN
-	_status.offset_top = 86.0
-	hud.add_child(_status)
-	_objective = _label("", &"InfiltrationLabel")
-	_objective.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	_objective.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_objective.offset_top = 130.0
-	hud.add_child(_objective)
-	var footer: Label = _label(_hints(), &"InfiltrationLabel")
-	footer.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
-	footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	footer.offset_top = -96.0
-	hud.add_child(footer)
+	var vitals: PanelContainer = PanelContainer.new()
+	vitals.theme_type_variation = &"TacticalHudChip"
+	vitals.position = Vector2(HUD_MARGIN, CARD_TOP)
+	vitals.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vitals.add_child(_build_vitals())
+	hud.add_child(vitals)
+	var top: CenterContainer = CenterContainer.new()
+	top.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+	top.offset_top = CARD_TOP
+	top.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hud.add_child(top)
+	_card = ObjectiveCard.new()
+	top.add_child(_card)
+	hud.add_child(_build_weapon_chips())
+	hud.add_child(_build_hints())
 	_debug = _label("", &"DebugLabel")
 	_debug.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
 	_debug.offset_left = HUD_MARGIN
 	_debug.offset_top = 200.0
 	_debug.visible = false
 	hud.add_child(_debug)
+
+
+func _build_vitals() -> VBoxContainer:
+	var column: VBoxContainer = VBoxContainer.new()
+	column.add_theme_constant_override(&"separation", HUD_ROW_GAP)
+	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	column.add_child(_label(tr(mode.data.title_key).to_upper(), &"TacticalCaptionLabel"))
+	_hull = HudBar.new()
+	_hull.fill_color = PALETTE.text
+	column.add_child(_bar_row(tr("SPACE_HULL"), _hull))
+	_shield = HudBar.new()
+	_shield.fill_color = PALETTE.menu_blade_a
+	column.add_child(_bar_row(tr("SPACE_SHIELD"), _shield))
+	return column
+
+
+func _bar_row(caption: String, bar: Control) -> HBoxContainer:
+	var row: HBoxContainer = HBoxContainer.new()
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var label: Label = _label(caption, &"TacticalCaptionLabel")
+	label.custom_minimum_size.x = HUD_LABEL_WIDTH
+	row.add_child(label)
+	bar.custom_minimum_size = Vector2(HUD_WIDTH, HUD_BAR_HEIGHT)
+	bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(bar)
+	return row
+
+
+func _build_weapon_chips() -> VBoxContainer:
+	var column: VBoxContainer = VBoxContainer.new()
+	column.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+	column.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	column.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	column.offset_left = -HUD_MARGIN
+	column.offset_right = -HUD_MARGIN
+	column.offset_top = -CHIP_BOTTOM
+	column.offset_bottom = -CHIP_BOTTOM
+	column.add_theme_constant_override(&"separation", CHIP_GAP)
+	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_boost_chip = HudChip.new()
+	_boost_chip.size_flags_horizontal = Control.SIZE_SHRINK_END
+	column.add_child(_boost_chip)
+	_missile_chip = HudChip.new()
+	_missile_chip.size_flags_horizontal = Control.SIZE_SHRINK_END
+	column.add_child(_missile_chip)
+	return column
+
+
+func _build_hints() -> CenterContainer:
+	var box: CenterContainer = CenterContainer.new()
+	box.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+	box.offset_top = -HINTS_BOTTOM
+	box.offset_bottom = -HINTS_BOTTOM
+	box.offset_left = HINTS_RESERVE
+	box.offset_right = -HINTS_RESERVE
+	box.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_hints_panel = PanelContainer.new()
+	_hints_panel.theme_type_variation = &"TacticalHudChip"
+	_hints_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_child(_hints_panel)
+	var label: Label = _label(_hints(), &"TacticalNoteLabel")
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_hints_panel.add_child(label)
+	return box
 
 
 func _hints() -> String:
@@ -222,6 +289,52 @@ func _show_result() -> void:
 	SceneRouter.change(&"space_result", {"mode": mode, "panel": &"result"})
 
 
+func _update_objective(target: int, player: SpaceShipState) -> void:
+	_card.tick(get_process_delta_time())
+	var time: String = ChallengeMode.format_time(sim.tick * Ticks.DELTA)
+	var parts: PackedStringArray = []
+	var ratio: float = -1.0
+	var eyebrow: String = tr(mode.data.title_key)
+	if not mode.data.waves.is_empty():
+		eyebrow = tr("SPACE_HUD_WAVE").format({"wave": sim.mission.wave, "total": mode.data.waves.size()})
+	if not mode.data.phases.is_empty():
+		var boss: SpaceShipState = sim.ships[mode.data.boss]
+		ratio = boss.hull / boss.data.hull
+		parts.append(tr(mode.data.phases[sim.mission.phase].title_key) + ControlHints.SEPARATOR + tr("SPACE_OPEN" if sim.mission.weakpoint_open() else "SPACE_CLOSED"))
+	if mode.data.protected_ship >= 0:
+		var ally: SpaceShipState = sim.ships[mode.data.protected_ship]
+		ratio = ally.hull / ally.data.hull
+		parts.append(tr("SPACE_ALLY_HULL").format({"hull": roundi(ratio * 100.0)}))
+	if target >= 0:
+		parts.append(_bearing(sim.ships[target].position - player.position, player.angle))
+	_card.show_objective(eyebrow, tr(mode.data.objective_key), ratio, ControlHints.line(parts), time)
+
+
+func _bearing(offset: Vector2, facing: float) -> String:
+	var angle: float = absf(rad_to_deg(wrapf(offset.angle() - facing, -PI, PI)))
+	var side: String = "SPACE_HUD_AHEAD" if angle <= FACING_AHEAD else "SPACE_HUD_BEHIND" if angle >= FACING_ASIDE else "SPACE_HUD_SIDE"
+	return tr("SPACE_HUD_TARGET").format({"side": tr(side), "distance": roundi(offset.length())})
+
+
+func _update_chips(player: SpaceShipState) -> void:
+	var boost: String = tr("SPACE_BOOST_READY") if player.boost_cooldown == 0 else tr("SPACE_BOOST_COOLDOWN").format({"seconds": snappedf(player.boost_cooldown * Ticks.DELTA, 0.1)})
+	if _refusal_left > 0.0:
+		boost = tr(_refusal_key)
+	_boost_chip.show_text(boost, ControlHints.key_label(&"space_boost"))
+	_boost_chip.set_tint(PALETTE.text if player.boost_cooldown == 0 and _refusal_left <= 0.0 else PALETTE.tactical_muted)
+	var missile: String = tr("SPACE_MISSILE_READY") if player.cooldowns[1] == 0 else tr("SPACE_MISSILE_COOLDOWN").format({"seconds": snappedf(player.cooldowns[1] * Ticks.DELTA, 0.1)})
+	_missile_chip.show_text(missile, ControlHints.key_label(&"space_secondary"))
+	_missile_chip.set_tint(PALETTE.text if player.cooldowns[1] == 0 else PALETTE.tactical_muted)
+
+
+func _update_hints(delta: float) -> void:
+	if _hints_left <= 0.0:
+		return
+	_hints_left = maxf(_hints_left - delta, 0.0)
+	_hints_panel.modulate.a = clampf(_hints_left / HINTS_FADE_SECONDS, 0.0, 1.0)
+	_hints_panel.visible = _hints_left > 0.0
+
+
 func _update_presentation(alpha: float) -> void:
 	if paused:
 		alpha = 1.0
@@ -244,17 +357,9 @@ func _update_presentation(alpha: float) -> void:
 	_shield.ratio = player.shield / player.data.shield if player.data.shield > 0.0 else 0.0
 	_shield.ghost_ratio = _shield.ratio
 	_shield.queue_redraw()
-	var bearing: String = ""
-	if target >= 0:
-		var offset: Vector2 = sim.ships[target].position - player.position
-		bearing = tr("SPACE_TARGET").format({"angle": roundi(rad_to_deg(wrapf(offset.angle() - player.angle, -PI, PI))), "distance": roundi(offset.length())})
-	_objective.text = tr(mode.data.objective_key) + "\n" + tr("SPACE_WAVE_TIME" if not mode.data.waves.is_empty() else "SPACE_RESULT_TIME").format({"wave": sim.mission.wave, "total": mode.data.waves.size(), "time": ChallengeMode.format_time(sim.tick * Ticks.DELTA)}) + "  " + bearing
-	if mode.data.protected_ship >= 0:
-		_objective.text += "\n" + tr("SPACE_ALLY_HULL").format({"hull": roundi(sim.ships[mode.data.protected_ship].hull / sim.ships[mode.data.protected_ship].data.hull * 100.0)})
-	if not mode.data.phases.is_empty():
-		_objective.text += "\n" + tr(mode.data.phases[sim.mission.phase].title_key) + " · " + tr("SPACE_OPEN" if sim.mission.weakpoint_open() else "SPACE_CLOSED")
-	_status.text = tr(_refusal_key) if _refusal_left > 0.0 else tr("SPACE_BOOST_READY") if player.boost_cooldown == 0 else tr("SPACE_BOOST_COOLDOWN").format({"seconds": snappedf(player.boost_cooldown * Ticks.DELTA, 0.1)})
-	_status.text += "\n" + (tr("SPACE_MISSILE_READY") if player.cooldowns[1] == 0 else tr("SPACE_MISSILE_COOLDOWN").format({"seconds": snappedf(player.cooldowns[1] * Ticks.DELTA, 0.1)}))
+	_update_objective(target, player)
+	_update_chips(player)
+	_update_hints(get_process_delta_time())
 	if not paused and not finished:
 		_audio.update(player)
 	if _view.debug:

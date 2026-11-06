@@ -24,6 +24,7 @@ const STAT_MAXIMUM: Dictionary = {&"hull": 150.0, &"shield": 75.0, &"speed": 480
 const STAT_KEYS: Dictionary = {&"hull": "SPACE_STAT_HULL", &"shield": "SPACE_STAT_SHIELD", &"speed": "SPACE_STAT_SPEED", &"agility": "SPACE_STAT_AGILITY", &"firepower": "SPACE_STAT_FIREPOWER"}
 const TRACK_KEYS: PackedStringArray = ["SPACE_TRACK_WEAPON", "SPACE_TRACK_SHIELD", "SPACE_TRACK_SPEED"]
 const RESET_ROW: StringName = &"reset"
+const TRACK_ROW_HEIGHT: float = 56.0
 const BACK_ROW: StringName = &"back"
 
 var _header: TacticalHeader
@@ -386,6 +387,7 @@ func _build_upgrade_panel() -> PanelContainer:
 	_points_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	column.add_child(_points_label)
 	_track_list = TacticalList.new()
+	_track_list.row_height = TRACK_ROW_HEIGHT
 	column.add_child(_track_list)
 	_effect_label = _label("", &"TacticalBodyLabel")
 	_effect_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART

@@ -8,6 +8,12 @@ const SHELL_SIZE: float = 10.0
 const THREAT_RANGE: float = 1100.0
 const THREAT_INSET: float = 26.0
 const THREAT_SIZE: float = 14.0
+const OBJECTIVE_INSET: float = 26.0
+const OBJECTIVE_SIZE: float = 12.0
+const OBJECTIVE_HOVER: float = 30.0
+const ORDER_RADIUS: float = 40.0
+const ORDER_SEGMENTS: int = 16
+const ORDER_WIDTH: float = 2.0
 var operations: BlasterOpsSimulation
 var emitter: bool = false
 var _precision_left: float = 0.0
@@ -22,6 +28,8 @@ var _blast_left: PackedFloat32Array = []
 var _blast_hostile: PackedByteArray = []
 var _next_blast: int = 0
 var view_rect: Rect2 = Rect2()
+var objective_point: Vector2 = Vector2.INF
+var order_point: Vector2 = Vector2.INF
 
 
 func setup(simulation: InfiltrationSimulation, look: InfiltrationLook) -> void:
@@ -130,6 +138,8 @@ func _draw() -> void:
 			_draw_emitter()
 	_draw_operations_bolts()
 	_draw_sparks()
+	_draw_objective_marker()
+	_draw_order_marker()
 	_draw_threat_markers()
 	if debug:
 		_draw_debug()
@@ -343,6 +353,30 @@ func _draw_powers() -> void:
 	var radius: float = _power_entry.power.reach * (progress if _power_kind == PowerData.Kind.REPULSE else 1.0 - progress)
 	var half: float = deg_to_rad(_power_entry.degrees * 0.5)
 	draw_arc(_power_position, maxf(radius, 4.0), _power_aim.angle() - half, _power_aim.angle() + half, 18, Color(color, 1.0 - progress), sim.config.units_per_pixel * (1.0 if reduced else 2.0))
+
+
+func _draw_objective_marker() -> void:
+	if objective_point == Vector2.INF or view_rect.size == Vector2.ZERO:
+		return
+	var color: Color = PALETTE.menu_blade_a
+	if view_rect.grow(-OBJECTIVE_INSET).has_point(objective_point):
+		var tip: Vector2 = _snap(objective_point + Vector2.UP * OBJECTIVE_HOVER)
+		draw_colored_polygon(PackedVector2Array([tip, tip + Vector2(-OBJECTIVE_SIZE, -OBJECTIVE_SIZE), tip + Vector2(OBJECTIVE_SIZE, -OBJECTIVE_SIZE)]), color)
+		return
+	var point: Vector2 = threat_marker(view_rect, objective_point, OBJECTIVE_INSET)
+	var direction: Vector2 = (objective_point - point).normalized()
+	var side: Vector2 = direction.orthogonal()
+	draw_colored_polygon(PackedVector2Array([_snap(point + direction * OBJECTIVE_SIZE), _snap(point + side * OBJECTIVE_SIZE * 0.8), _snap(point - side * OBJECTIVE_SIZE * 0.8)]), color)
+
+
+func _draw_order_marker() -> void:
+	if order_point == Vector2.INF:
+		return
+	var center: Vector2 = _snap(order_point)
+	for segment in ORDER_SEGMENTS:
+		if segment % 2 == 0:
+			var angle: float = TAU * segment / ORDER_SEGMENTS
+			draw_arc(center, ORDER_RADIUS, angle, angle + TAU / ORDER_SEGMENTS, 4, PALETTE.menu_blade_b, ORDER_WIDTH)
 
 
 func _draw_threat_markers() -> void:

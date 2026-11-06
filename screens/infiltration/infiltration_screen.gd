@@ -7,13 +7,22 @@ const SUSPICION_SOUND: AudioStream = preload("res://assets/audio/infiltration/su
 const ALARM_SOUND: AudioStream = preload("res://assets/audio/infiltration/alarm.wav")
 const PALETTE: UiPalette = preload("res://ui/palette.tres")
 const MAX_STEPS: int = 5
-const HUD_MARGIN: float = 56.0
+const HUD_MARGIN: float = 44.0
 const HUD_WIDTH: float = 320.0
+const HUD_ROW_GAP: int = 6
+const HUD_LABEL_WIDTH: float = 86.0
+const HUD_BAR_HEIGHT: float = 10.0
+const CARD_TOP: float = 24.0
+const CHIP_GAP: int = 8
+const PROMPT_BOTTOM: float = 150.0
+const HINTS_BOTTOM: float = 44.0
+const HINTS_SECONDS: float = 12.0
+const HINTS_PER_LINE: int = 3
+const HINTS_FADE_SECONDS: float = 2.0
 const GUIDE_REFRESH_FRAMES: int = 15
-const HEAT_BAR_HEIGHT: float = 12.0
-const HEAT_LABEL_GAP: float = 16.0
 const ABILITY_BOTTOM: float = 40.0
 const ABILITY_RESERVE: float = 356.0
+const WEAPON_CHIP_BOTTOM: float = 136.0
 const TICK_COST_WINDOW: int = 300
 const SOUNDS: Dictionary = {
 	InfiltrationEvent.Type.SWING_STARTED: &"swing_light",
@@ -28,7 +37,7 @@ const SOUNDS: Dictionary = {
 var sim: BlasterOpsSimulation
 var mode: InfiltrationMode
 var escort_controller: InfiltrationEscortController
-var _objective: Label
+var _card: ObjectiveCard
 var _finished: bool = false
 var controller: InfiltrationPlayerController
 var enemy_controller: InfiltrationEnemyController
@@ -37,19 +46,24 @@ var paused: bool = false
 var _stage: PixelStage
 var _view: BlasterOpsView
 var _map_view: BlasterOpsMapView
-var _operations_status: Label
+var _dodge_status: Label
 var _camera: Camera2D
 var _health: HudBar
 var _vigor: HudBar
 var _heat: HeatBar
+var _heat_row: HBoxContainer
 var _heat_label: Label
 var _abilities: AbilityBar
-var _weapon_status: Label
-var _shop_layer: CanvasLayer
-var _shop_title: Label
-var _shop_detail: Label
-var _shop_list: MenuList
-var _status: Label
+var _weapon_chip: HudChip
+var _allies_chip: HudChip
+var _barrier_chip: HudChip
+var _supply_chip: HudChip
+var _stance_chip: HudChip
+var _prompt: HudChip
+var _hints_panel: PanelContainer
+var _hints_left: float = HINTS_SECONDS + HINTS_FADE_SECONDS
+var _shop: SupplyShop
+var _last_order: int = 0
 var _debug: Label
 var _pause_layer: CanvasLayer
 var _pause_title: Label
@@ -58,7 +72,6 @@ var _hum: AudioStreamPlayer
 var _alarm: AudioStreamPlayer
 var _notice: AudioStreamPlayer
 var _music: Array[AudioStreamPlayer] = []
-var _context: Label
 var _accumulator: float = 0.0
 var _guide_navigation: InfiltrationNavigation
 var _guide_revision: int = -1
@@ -69,6 +82,7 @@ var _tick_average: int = 0
 var _tick_worst: int = 0
 var _guide_age: int = 0
 var _guide_text: String = ""
+var _guide_text_direction: String = ""
 var _guide_target: Vector2 = Vector2.INF
 var _guide_tiles: int = -1
 var _guide_key: String = ""
@@ -121,52 +135,31 @@ func _build_hud() -> void:
 	var hud: CanvasLayer = CanvasLayer.new()
 	hud.layer = 10
 	add_child(hud)
-	var title: Label = _label(tr(mode.data.title_key if mode != null else "INFILTRATION_TRAINING").to_upper(), &"ScreenTitleLabel")
-	title.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.offset_top = 30.0
-	hud.add_child(title)
-	_status = _label(tr("INFILTRATION_STATUS"), &"InfiltrationLabel")
-	_status.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-	_status.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-	_status.offset_left = -HUD_MARGIN
-	_status.offset_right = -HUD_MARGIN
-	_status.offset_top = 90.0
-	hud.add_child(_status)
-	_health = _bar(hud, 40.0, PALETTE.text)
-	_vigor = _bar(hud, 60.0, PALETTE.accent)
-	_heat = HeatBar.new()
-	_heat.position = Vector2(HUD_MARGIN, 80.0)
-	_heat.size = Vector2(HUD_WIDTH, HEAT_BAR_HEIGHT)
-	_heat.reduced = Settings.reduced_effects
-	hud.add_child(_heat)
-	_heat_label = _label("", &"InfiltrationLabel")
-	_heat_label.position = Vector2(HUD_MARGIN + HUD_WIDTH + HEAT_LABEL_GAP, 66.0)
-	hud.add_child(_heat_label)
-	_operations_status = _label("", &"InfiltrationLabel")
-	_operations_status.position = Vector2(HUD_MARGIN, 100.0)
-	hud.add_child(_operations_status)
-	_weapon_status = _label("", &"InfiltrationLabel")
-	_weapon_status.position = Vector2(HUD_MARGIN, 136.0)
-	hud.add_child(_weapon_status)
-	var objective: Label = _label(tr("INFILTRATION_OBJECTIVE"), &"InfiltrationLabel")
-	objective.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	objective.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	objective.offset_top = 128.0
-	hud.add_child(objective)
-	_objective = objective
-	_context = _label("", &"InfiltrationLabel")
-	_context.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
-	_context.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_context.offset_top = -154.0
-	_context.offset_right = -ABILITY_RESERVE
-	hud.add_child(_context)
-	var footer: Label = _label(_hints(), &"InfiltrationLabel")
-	footer.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
-	footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	footer.offset_top = -98.0
-	footer.offset_right = -ABILITY_RESERVE
-	hud.add_child(footer)
+	var vitals: PanelContainer = PanelContainer.new()
+	vitals.theme_type_variation = &"TacticalHudChip"
+	vitals.position = Vector2(HUD_MARGIN, CARD_TOP)
+	vitals.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vitals.add_child(_build_vitals())
+	hud.add_child(vitals)
+	var top: CenterContainer = CenterContainer.new()
+	top.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+	top.offset_top = CARD_TOP
+	top.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hud.add_child(top)
+	_card = ObjectiveCard.new()
+	top.add_child(_card)
+	hud.add_child(_build_mission_chips())
+	var prompt_box: CenterContainer = CenterContainer.new()
+	prompt_box.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+	prompt_box.offset_top = -PROMPT_BOTTOM
+	prompt_box.offset_bottom = -PROMPT_BOTTOM
+	prompt_box.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	prompt_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hud.add_child(prompt_box)
+	_prompt = HudChip.new()
+	_prompt.visible = false
+	prompt_box.add_child(_prompt)
+	hud.add_child(_build_hints())
 	_abilities = AbilityBar.new()
 	_abilities.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
 	_abilities.grow_horizontal = Control.GROW_DIRECTION_BEGIN
@@ -177,6 +170,15 @@ func _build_hud() -> void:
 	_abilities.offset_bottom = -ABILITY_BOTTOM
 	hud.add_child(_abilities)
 	_setup_abilities()
+	_weapon_chip = HudChip.new()
+	_weapon_chip.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+	_weapon_chip.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	_weapon_chip.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	_weapon_chip.offset_left = -HUD_MARGIN
+	_weapon_chip.offset_right = -HUD_MARGIN
+	_weapon_chip.offset_top = -WEAPON_CHIP_BOTTOM
+	_weapon_chip.offset_bottom = -WEAPON_CHIP_BOTTOM
+	hud.add_child(_weapon_chip)
 	_debug = _label("", &"DebugLabel")
 	_debug.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
 	_debug.offset_left = HUD_MARGIN
@@ -185,20 +187,86 @@ func _build_hud() -> void:
 	hud.add_child(_debug)
 
 
+func _build_hints() -> CenterContainer:
+	var box: CenterContainer = CenterContainer.new()
+	box.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+	box.offset_top = -HINTS_BOTTOM
+	box.offset_bottom = -HINTS_BOTTOM
+	box.offset_left = ABILITY_RESERVE
+	box.offset_right = -ABILITY_RESERVE
+	box.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_hints_panel = PanelContainer.new()
+	_hints_panel.theme_type_variation = &"TacticalHudChip"
+	_hints_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_child(_hints_panel)
+	var label: Label = _label(_hints(), &"TacticalNoteLabel")
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_hints_panel.add_child(label)
+	return box
+
+
+func _build_vitals() -> VBoxContainer:
+	var column: VBoxContainer = VBoxContainer.new()
+	column.add_theme_constant_override(&"separation", HUD_ROW_GAP)
+	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var title: Label = _label(tr(mode.data.title_key if mode != null else "INFILTRATION_TRAINING").to_upper(), &"TacticalCaptionLabel")
+	column.add_child(title)
+	_health = HudBar.new()
+	_health.fill_color = PALETTE.text
+	column.add_child(_bar_row(tr("OPS_HUD_HEALTH"), _health))
+	_vigor = HudBar.new()
+	_vigor.fill_color = PALETTE.accent
+	column.add_child(_bar_row(tr("OPS_HUD_VIGOR"), _vigor))
+	_heat = HeatBar.new()
+	_heat.reduced = Settings.reduced_effects
+	_heat_row = _bar_row(tr("OPS_HUD_HEAT"), _heat)
+	_heat_label = _label("", &"TacticalCaptionLabel")
+	_heat_row.add_child(_heat_label)
+	column.add_child(_heat_row)
+	_dodge_status = _label("", &"TacticalCaptionLabel")
+	column.add_child(_dodge_status)
+	return column
+
+
+func _bar_row(caption: String, bar: Control) -> HBoxContainer:
+	var row: HBoxContainer = HBoxContainer.new()
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var label: Label = _label(caption, &"TacticalCaptionLabel")
+	label.custom_minimum_size.x = HUD_LABEL_WIDTH
+	row.add_child(label)
+	bar.custom_minimum_size = Vector2(HUD_WIDTH, HUD_BAR_HEIGHT)
+	bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(bar)
+	return row
+
+
+func _build_mission_chips() -> VBoxContainer:
+	var column: VBoxContainer = VBoxContainer.new()
+	column.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
+	column.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	column.offset_left = HUD_MARGIN
+	column.offset_right = HUD_MARGIN
+	column.offset_top = -ABILITY_BOTTOM
+	column.offset_bottom = -ABILITY_BOTTOM
+	column.add_theme_constant_override(&"separation", CHIP_GAP)
+	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_stance_chip = HudChip.new()
+	_allies_chip = HudChip.new()
+	_barrier_chip = HudChip.new()
+	_supply_chip = HudChip.new()
+	for chip in [_stance_chip, _supply_chip, _barrier_chip, _allies_chip]:
+		chip.visible = false
+		chip.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+		column.add_child(chip)
+	return column
+
+
 func _label(text: String, variation: StringName) -> Label:
 	var label: Label = Label.new()
 	label.text = text
 	label.theme_type_variation = variation
 	return label
-
-
-func _bar(parent: Node, top: float, color: Color) -> HudBar:
-	var bar: HudBar = HudBar.new()
-	bar.position = Vector2(HUD_MARGIN, top)
-	bar.size = Vector2(HUD_WIDTH, 8.0)
-	bar.fill_color = color
-	parent.add_child(bar)
-	return bar
 
 
 func _power_legend() -> String:
@@ -224,6 +292,16 @@ func _hints() -> String:
 	])) + "\n" + ControlHints.line(_combat_hints())
 
 
+func _wrapped_hints(hints: PackedStringArray) -> String:
+	var lines: PackedStringArray = []
+	var index: int = 0
+	while index < hints.size():
+		lines.append(ControlHints.line(hints.slice(index, index + HINTS_PER_LINE)))
+		index += HINTS_PER_LINE
+	return "
+".join(lines)
+
+
 func _combat_hints() -> PackedStringArray:
 	var hints: PackedStringArray = [
 		ControlHints.blaster_ops_hud_hint("fire"), ControlHints.blaster_ops_hud_hint("guard"),
@@ -231,6 +309,8 @@ func _combat_hints() -> PackedStringArray:
 	]
 	if sim.loadout.switchable and sim.loadout.blaster != null:
 		hints.append(ControlHints.blaster_ops_hud_hint("switch_weapon"))
+	if sim.mission is BlasterOpsMissionState:
+		hints.append(ControlHints.blaster_ops_hud_hint("order_allies"))
 	return hints
 
 
@@ -251,10 +331,7 @@ func _build_pause() -> void:
 	_pause_title = _label(tr("PAUSE_TITLE"), &"ScreenTitleLabel")
 	_pause_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(_pause_title)
-	var legend: Label = _label(tr("INFILTRATION_LEGEND"), &"InfiltrationLabel")
-	legend.text += "\n" + ControlHints.line(PackedStringArray([
-		ControlHints.blaster_ops_hint("strike"), ControlHints.blaster_ops_hint("interact"),
-	])) + "\n" + _power_legend()
+	var legend: Label = _label(_hints() + "\n" + _power_legend(), &"InfiltrationLabel")
 	legend.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(legend)
 	var center: CenterContainer = CenterContainer.new()
@@ -266,36 +343,10 @@ func _build_pause() -> void:
 
 
 func _build_shop() -> void:
-	_shop_layer = CanvasLayer.new()
-	_shop_layer.layer = 30
-	add_child(_shop_layer)
-	var overlay: ColorRect = ColorRect.new()
-	overlay.color = Color(PALETTE.background, 0.9)
-	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_shop_layer.add_child(overlay)
-	var column: VBoxContainer = VBoxContainer.new()
-	column.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
-	column.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	column.grow_vertical = Control.GROW_DIRECTION_BOTH
-	column.add_theme_constant_override(&"separation", 30)
-	_shop_layer.add_child(column)
-	_shop_title = _label("", &"ScreenTitleLabel")
-	_shop_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	column.add_child(_shop_title)
-	var center: CenterContainer = CenterContainer.new()
-	column.add_child(center)
-	_shop_list = MenuList.new()
-	center.add_child(_shop_list)
-	_shop_list.chosen.connect(_on_shop_chosen)
-	_shop_list.highlighted.connect(_on_shop_highlighted)
-	_shop_detail = _label("", &"InfiltrationLabel")
-	_shop_detail.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	column.add_child(_shop_detail)
-	var hints: Label = _label(ControlHints.line(PackedStringArray([ControlHints.hint(&"ui_accept", "HINT_CONFIRM"), ControlHints.hint(&"ui_cancel", "HINT_BACK")])), &"InfiltrationLabel")
-	hints.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	column.add_child(hints)
-	_shop_layer.visible = false
-	_shop_list.set_process_unhandled_input(false)
+	_shop = SupplyShop.new()
+	add_child(_shop)
+	_shop.purchase_requested.connect(_on_shop_purchase)
+	_shop.closed.connect(_close_shop)
 
 
 func _open_shop() -> void:
@@ -303,9 +354,7 @@ func _open_shop() -> void:
 	_accumulator = 0.0
 	_view.animate = false
 	controller.discard_pending()
-	_shop_layer.visible = true
-	_shop_list.set_process_unhandled_input(true)
-	_refresh_shop()
+	_shop.open(sim)
 
 
 func _close_shop() -> void:
@@ -313,45 +362,15 @@ func _close_shop() -> void:
 	_accumulator = 0.0
 	_view.animate = true
 	controller.discard_pending()
-	_shop_layer.visible = false
-	_shop_list.set_process_unhandled_input(false)
+	_shop.close()
 
 
-func _refresh_shop(focus: StringName = &"") -> void:
-	var progress: BlasterOpsMissionState = sim.mission as BlasterOpsMissionState
-	_shop_title.text = tr("OPS_SUPPLY_TITLE").format({"supplies": progress.supplies})
-	_shop_list.clear_items()
-	for index in BlasterOpsTraining.SUPPLY_OFFERS.size():
-		if not progress.offer_available(sim, index):
-			continue
-		var offer: BlasterOpsSupplyOffer = BlasterOpsTraining.SUPPLY_OFFERS[index]
-		var id: StringName = StringName(str(index))
-		_shop_list.add_item(id, tr("OPS_SUPPLY_ROW").format({"name": tr(offer.name_key), "cost": offer.cost}))
-		if progress.supplies < offer.cost:
-			_shop_list.set_item_color(id, PALETTE.secondary)
-	_shop_list.add_item(&"back", tr("MENU_BACK"))
-	if focus != &"":
-		_shop_list.select_id(focus)
-	_on_shop_highlighted(_shop_list._ids[_shop_list.selected])
-
-
-func _on_shop_highlighted(id: StringName) -> void:
-	_shop_detail.text = "" if id == &"back" else tr(BlasterOpsTraining.SUPPLY_OFFERS[int(String(id))].description_key)
-
-
-func _on_shop_chosen(id: StringName) -> void:
-	if id == &"back":
-		_close_shop()
-		return
-	var offer: int = int(String(id))
-	var progress: BlasterOpsMissionState = sim.mission as BlasterOpsMissionState
-	if progress.supplies < BlasterOpsTraining.SUPPLY_OFFERS[offer].cost:
-		AudioDirector.play_ui(&"rejected")
-		return
+func _on_shop_purchase(offer: int) -> void:
 	controller.queue_purchase(offer)
 	controller.produce(sim, intent)
 	step_once(intent)
-	_refresh_shop(id)
+	AudioDirector.play_ui(&"ui_confirm")
+	_shop.purchased(offer)
 
 
 func _process(delta: float) -> void:
@@ -407,6 +426,8 @@ func _present_events() -> void:
 	for index in sim.event_count:
 		var event: InfiltrationEvent = sim.events[index]
 		_view.on_event(event)
+		if event.type == InfiltrationEvent.Type.STAGE_COMPLETED:
+			_card.flash(tr("OPS_HUD_STAGE_DONE"), Settings.reduced_effects)
 		if event.type in [InfiltrationEvent.Type.WAVE_STARTED, InfiltrationEvent.Type.PHASE_CHANGED, InfiltrationEvent.Type.BARRIER_PLACED, InfiltrationEvent.Type.EXTRACTION_OPENED, InfiltrationEvent.Type.STAGE_COMPLETED]:
 			AudioDirector.play_ui(&"ui_confirm")
 		if BlasterOpsAudio.SOUNDS.has(event.type) and not SOUNDS.has(event.type):
@@ -470,22 +491,17 @@ func _update_presentation(alpha: float) -> void:
 	_vigor.ratio = sim.player.vigor / CONFIG.vigor
 	_vigor.ghost_ratio = _vigor.ratio
 	_vigor.queue_redraw()
-	var cooldowns: PackedStringArray = [tr("BOPS_COOLDOWN").format({"action": tr("BOPS_ACTION_DODGE"), "time": _cooldown(sim.state.dodge_cooldown)})]
+	_dodge_status.text = tr("OPS_HUD_DODGE").format({"time": _cooldown(sim.state.dodge_cooldown)}) if sim.state.dodge_cooldown > 0 else ""
 	_abilities.show_state(sim.state)
 	_update_heat()
 	_update_weapon()
-	if sim.mission is BlasterOpsMissionState and (sim.mission as BlasterOpsMissionState).has_supplies():
-		cooldowns.append(tr("OPS_SUPPLY_STATUS").format({"supplies": (sim.mission as BlasterOpsMissionState).supplies}))
-	var stance: int = controller.stance()
-	if stance != 0:
-		cooldowns.append(tr("BOPS_STANCE_RUN" if stance == InfiltrationIntent.RUN else "BOPS_STANCE_SNEAK"))
-	_operations_status.text = ControlHints.line(cooldowns)
+	_update_chips()
+	_update_hints(get_process_delta_time())
+	_card.tick(get_process_delta_time())
 	if sim.mission is BlasterOpsMissionState:
 		_update_incursion_hud()
 	else:
 		_update_security_hud()
-	if mode != null:
-		_objective.text = tr("INF_PROGRESS").format({"done": sim.mission.completed_objectives(sim), "total": mode.data.objective_count(), "time": ChallengeMode.format_time(sim.tick * Ticks.DELTA)})
 	_update_audio()
 	if _view.debug:
 		var player: InfiltrationActor = sim.player
@@ -532,25 +548,58 @@ func _update_weapon() -> void:
 	var text: String = tr(name_key)
 	if sim.loadout.integrated:
 		text = tr("OPS_WEAPON_OWN_EMITTER")
-	if sim.loadout.switchable and sim.loadout.blaster != null:
+	var switchable: bool = sim.loadout.switchable and sim.loadout.blaster != null
+	if switchable:
 		var mode_key: String = "OPS_MODE_SWITCHING" if sim.state.switch_ticks > 0 else "OPS_MODE_BLADE" if sim.state.blade_drawn else "OPS_MODE_RANGED"
 		text += ControlHints.SEPARATOR + tr(mode_key)
-	_weapon_status.text = text
+	_weapon_chip.show_text(text, ControlHints.blaster_ops_hud_key("switch_weapon") if switchable else "")
 
 
 func _update_heat() -> void:
 	var armed: bool = sim.loadout.blaster != null
-	_heat.visible = armed
-	_heat_label.visible = armed
+	_heat_row.visible = armed
 	if not armed:
 		return
 	_heat.show_heat(sim, CONFIG)
-	_heat_label.text = tr(HeatBar.label_key(sim.state))
+	_heat_label.text = tr(HeatBar.label_key(sim.state)) if _heat.level != HeatBar.Level.COOL else ""
 	_heat_label.modulate = _heat.fill_color
 
 
 func _cooldown(ticks: int) -> String:
 	return tr("BOPS_READY") if ticks == 0 else tr("BOPS_SECONDS").format({"seconds": snappedf(ticks * Ticks.DELTA, 0.1)})
+
+
+func _update_chips() -> void:
+	var stance: int = controller.stance()
+	_stance_chip.show_text("" if stance == 0 else tr("BOPS_STANCE_RUN" if stance == InfiltrationIntent.RUN else "BOPS_STANCE_SNEAK"))
+	var progress: BlasterOpsMissionState = sim.mission as BlasterOpsMissionState
+	if progress == null:
+		return
+	var allies: int = progress.living_allies(sim)
+	var order_text: String = tr(["OPS_ORDER_FOLLOW", "OPS_ORDER_HOLD", "OPS_ORDER_GUARD"][progress.ally_order])
+	_allies_chip.show_text(tr("OPS_HUD_ALLIES").format({"count": allies, "order": order_text}) if allies > 0 else "", ControlHints.blaster_ops_hud_key("order_allies"))
+	_allies_chip.set_tint(PALETTE.menu_blade_b if progress.ally_order != BlasterOpsMissionState.AllyOrder.FOLLOW else PALETTE.text)
+	if progress.ally_order != _last_order:
+		_last_order = progress.ally_order
+		AudioDirector.play_ui(&"ui_confirm")
+	_view.order_point = progress.order_point(sim) if allies > 0 else Vector2.INF
+	var barriers: int = progress.barrier_charges + progress.heavy_barrier_charges
+	_barrier_chip.show_text(tr("OPS_HUD_BARRIERS").format({"count": barriers}) if barriers > 0 else "", ControlHints.blaster_ops_hud_key("interact") if progress.can_deploy() else "")
+	_supply_chip.show_text(tr("OPS_HUD_SUPPLIES").format({"count": progress.supplies}) if progress.has_supplies() else "")
+
+
+func _update_hints(delta: float) -> void:
+	if _hints_left <= 0.0:
+		return
+	_hints_left = maxf(_hints_left - delta, 0.0)
+	_hints_panel.modulate.a = clampf(_hints_left / HINTS_FADE_SECONDS, 0.0, 1.0)
+	_hints_panel.visible = _hints_left > 0.0
+
+
+func _restart_hints() -> void:
+	_hints_left = HINTS_SECONDS + HINTS_FADE_SECONDS
+	_hints_panel.visible = true
+	_hints_panel.modulate.a = 1.0
 
 
 func _update_incursion_hud() -> void:
@@ -559,41 +608,79 @@ func _update_incursion_hud() -> void:
 		_guide_navigation.invalidate()
 		_guide_revision = sim.cover_revision
 	var data: BlasterOpsMissionData = progress.definition
-	var text: String = tr("OPS_EXTRACTION_READY") if progress.waves_finished else tr("OPS_PREPARING").format({"time": ceili(progress.intermission_ticks * Ticks.DELTA)}) if progress.intermission_ticks > 0 else tr("OPS_WAVE").format({"wave": progress.wave_index + 1, "total": data.waves.size(), "left": progress.enemies_left(sim)})
-	if progress.wave_index >= 0 and data.waves[progress.wave_index].final_wave and not progress.waves_finished:
-		text += ControlHints.SEPARATOR + tr("OPS_FINAL_WAVE")
-	if data.stages.is_empty() and data.kind == BlasterOpsMissionData.Kind.HOLD_OUT and not progress.waves_finished:
-		text += ControlHints.SEPARATOR + tr("OPS_HOLD_TIMER").format({"time": maxi(ceili(data.hold_seconds - sim.tick * Ticks.DELTA), 0)})
-	if data.phase_target >= 0 and sim.targets[data.phase_target].spawned and sim.targets[data.phase_target].health > 0.0:
-		text += ControlHints.SEPARATOR + tr(data.phases[progress.phase_index].title_key)
-	_status.text = text
-	var hints: PackedStringArray = []
+	var time: String = ChallengeMode.format_time(sim.tick * Ticks.DELTA)
 	var stage: BlasterOpsStageData = progress.current_stage()
+	var point: Vector2 = data.extraction if progress.waves_finished else progress.objective_point(sim)
+	var guide: String = _incursion_guide(point)
+	_view.objective_point = point
 	if progress.waves_finished:
-		hints.append(tr("OPS_EXTRACTION_READY"))
-		hints.append(_incursion_guide(data.extraction))
+		_card.show_objective(tr("OPS_HUD_EXTRACT"), tr("OPS_HUD_EXTRACT_TEXT"), -1.0, guide, time)
 	elif stage != null:
-		hints.append(tr(stage.title_key))
-		if stage.objective == BlasterOpsStageData.Objective.HOLD:
-			hints.append(tr("OPS_STAGE_HOLD_LEFT").format({"time": maxi(ceili(stage.hold_seconds - progress.hold_ticks * Ticks.DELTA), 0)}))
-		var guide: String = _incursion_guide(progress.objective_point(sim))
-		if guide != "":
-			hints.append(guide)
+		var eyebrow: String = tr("OPS_HUD_STAGE").format({"index": progress.stage_index + 1, "total": data.stages.size()})
+		var measure: Dictionary = _stage_measure(progress, stage)
+		var detail: String = ControlHints.line(_detail_parts(measure.text, guide))
+		_card.show_objective(eyebrow, tr(stage.title_key), measure.ratio, detail, time)
 	else:
-		hints.append(tr("OPS_KIND_" + str(data.kind)))
-	if progress.nearby_object(sim) >= 0:
-		hints.append(ControlHints.hint(&"infiltration_interact", "INF_COPY" if progress.nearby_object(sim) < data.terminals.size() else "INF_RECRUIT"))
-	elif progress.nearby_terminal(sim) >= 0:
-		hints.append(ControlHints.hint(&"infiltration_interact", "OPS_SUPPLY_OPEN"))
-	if data.protected_index >= 0:
-		hints.append(tr("OPS_PROTECTED_HEALTH").format({"health": roundi(sim.prisoners[data.protected_index].health)}))
-	if progress.can_deploy() and progress.nearby_terminal(sim) < 0:
-		hints.append(tr("OPS_DEPLOY_HINT").format({"key": ControlHints.key_label(&"infiltration_interact"), "left": progress.barrier_charges + progress.heavy_barrier_charges}))
-	_context.text = ControlHints.line(hints)
+		_card.show_objective(tr("OPS_MENU_INCURSION"), tr("OPS_KIND_" + str(data.kind)), -1.0, guide, time)
+	_show_prompt(_incursion_prompt(progress))
+
+
+func _show_prompt(entry: Array) -> void:
+	_prompt.show_text(entry[0], entry[1])
+
+
+func _detail_parts(first: String, second: String) -> PackedStringArray:
+	var parts: PackedStringArray = []
+	for part in [first, second]:
+		if part != "":
+			parts.append(part)
+	return parts
+
+
+func _stage_measure(progress: BlasterOpsMissionState, stage: BlasterOpsStageData) -> Dictionary:
+	if progress.intermission_ticks > 0:
+		return {"ratio": -1.0, "text": tr("OPS_HUD_PREPARE").format({"time": ceili(progress.intermission_ticks * Ticks.DELTA)})}
+	var data: BlasterOpsMissionData = progress.definition
+	match stage.objective:
+		BlasterOpsStageData.Objective.HOLD:
+			var left: int = maxi(ceili(stage.hold_seconds - progress.hold_ticks * Ticks.DELTA), 0)
+			var inside: bool = stage.zone_radius <= 0.0 or sim.player.position.distance_to(stage.zone) <= stage.zone_radius
+			return {"ratio": progress.hold_ticks * Ticks.DELTA / stage.hold_seconds, "text": tr("OPS_HUD_HOLD" if inside else "OPS_HUD_HOLD_OUTSIDE").format({"time": left})}
+		BlasterOpsStageData.Objective.DESTROY:
+			var alive: int = 0
+			for target in stage.targets:
+				alive += int(not sim.targets[target].spawned or sim.targets[target].health > 0.0)
+			return {"ratio": 1.0 - float(alive) / maxi(stage.targets.size(), 1), "text": tr("OPS_HUD_TARGETS").format({"left": alive, "total": stage.targets.size()})}
+		BlasterOpsStageData.Objective.INTERACT:
+			var pending: int = 0
+			for terminal in stage.terminals:
+				pending += int(progress.copied[terminal] == 0)
+			return {"ratio": 1.0 - float(pending) / maxi(stage.terminals.size(), 1), "text": tr("OPS_HUD_TERMINALS").format({"left": pending, "total": stage.terminals.size()})}
+		BlasterOpsStageData.Objective.ESCORT:
+			var protected: InfiltrationActor = sim.prisoners[data.protected_index]
+			return {"ratio": protected.health / data.protected_health, "text": tr("OPS_HUD_PROTECTED").format({"health": roundi(protected.health), "total": roundi(data.protected_health)})}
+		BlasterOpsStageData.Objective.BOSS:
+			var boss: InfiltrationActor = sim.targets[data.phase_target]
+			if boss.spawned:
+				return {"ratio": boss.health / progress.phase_health, "text": tr(data.phases[progress.phase_index].title_key)}
+		BlasterOpsStageData.Objective.REACH:
+			return {"ratio": -1.0, "text": ""}
+	return {"ratio": -1.0, "text": tr("OPS_HUD_ENEMIES").format({"left": progress.enemies_left(sim)}) if progress.enemies_left(sim) > 0 else ""}
+
+
+func _incursion_prompt(progress: BlasterOpsMissionState) -> Array:
+	var interact: String = ControlHints.key_label(&"infiltration_interact")
+	var object: int = progress.nearby_object(sim)
+	if object >= 0:
+		return [tr("INF_COPY" if object < progress.definition.terminals.size() else "INF_RECRUIT"), interact]
+	if progress.nearby_terminal(sim) >= 0:
+		return [tr("OPS_SUPPLY_OPEN"), interact]
+	return ["", ""]
 
 
 func _incursion_guide(point: Vector2) -> String:
 	if point == Vector2.INF:
+		_guide_text = ""
 		return ""
 	_guide_age = (_guide_age + 1) % GUIDE_REFRESH_FRAMES
 	if _guide_age != 1 and _guide_text != "":
@@ -610,7 +697,7 @@ func _incursion_guide(point: Vector2) -> String:
 func _unhandled_input(event: InputEvent) -> void:
 	if sim == null or _finished:
 		return
-	if _shop_layer.visible:
+	if _shop.visible:
 		if event.is_action_pressed(&"ui_cancel") or event.is_action_pressed(&"p1_pause"):
 			_close_shop()
 			get_viewport().set_input_as_handled()
@@ -668,6 +755,8 @@ func _on_pause_chosen(option: StringName) -> void:
 			escort_controller = InfiltrationEscortController.new(sim)
 			_guide_navigation = InfiltrationNavigation.new(sim.map)
 			_guide_text = ""
+			_last_order = 0
+			_restart_hints()
 			controller.reset_stance()
 			_setup_abilities()
 			_map_view.attach(sim)
@@ -736,38 +825,47 @@ func _update_security_hud() -> void:
 	var disabled: bool = not sim.panels.is_empty()
 	for panel in sim.panels:
 		disabled = disabled and panel.disabled
+	var alarm: bool = sim.alarm_active()
+	var eyebrow: String
 	if mode != null:
-		_status.text = tr("INF_SECURITY_ACTIVE" if sim.alarm_active() else "INF_SECURITY_DISABLED" if disabled else "INF_SECURITY_READY")
+		eyebrow = tr("INF_SECURITY_ACTIVE" if alarm else "INF_SECURITY_DISABLED" if disabled else "INF_SECURITY_READY")
 	else:
-		_status.text = tr("INFILTRATION_ALARM_ACTIVE" if sim.alarm_active() else "INFILTRATION_ALARM_DISABLED" if disabled else "INFILTRATION_STATUS")
-	_status.modulate = PALETTE.danger if sim.alarm_active() else PALETTE.text
-	var hints: PackedStringArray = []
-	if sim.takedown_target() >= 0:
-		hints.append(ControlHints.hint(&"infiltration_takedown", "INFILTRATION_TAKEDOWN"))
-	if sim.nearby_panel() >= 0:
-		hints.append(ControlHints.hint(&"infiltration_interact", "INFILTRATION_DISABLE"))
-	elif sim.mission != null:
-		var object: int = sim.mission.nearby_object(sim)
-		if sim.mission.locked_prisoner_nearby(sim):
-			hints.append(tr("INF_LOCKED"))
-		elif object >= 0:
-			hints.append(ControlHints.hint(&"infiltration_interact", "INF_COPY" if object < mode.data.terminals.size() else "INF_RECRUIT"))
-	if sim.mission != null and hints.is_empty():
-		hints.append(_mission_guide())
+		eyebrow = tr("INFILTRATION_ALARM_ACTIVE" if alarm else "INFILTRATION_ALARM_DISABLED" if disabled else "INFILTRATION_STATUS")
+	var tone: ObjectiveCard.Tone = ObjectiveCard.Tone.DANGER if alarm else ObjectiveCard.Tone.NORMAL
+	if sim.mission == null:
+		_card.show_objective(eyebrow, tr("INFILTRATION_OBJECTIVE"), -1.0, "", "", tone)
+		_show_prompt(_security_prompt())
+		return
+	var guide: String = _mission_guide()
+	var parts: PackedStringArray = [_guide_text_direction, tr("OPS_HUD_OBJECTIVES").format({"done": sim.mission.completed_objectives(sim), "total": mode.data.objective_count()})]
 	if not sim.prisoners.is_empty():
-		hints.append(_escort_guide())
-	_context.text = ControlHints.line(hints)
+		parts.append(_escort_guide())
+	var ratio: float = float(sim.mission.completed_objectives(sim)) / maxi(mode.data.objective_count(), 1)
+	_card.show_objective(eyebrow, guide, ratio, ControlHints.line(parts), ChallengeMode.format_time(sim.tick * Ticks.DELTA), tone)
+	_view.objective_point = _guide_target
+	_show_prompt(_security_prompt())
+
+
+func _security_prompt() -> Array:
+	var interact: String = ControlHints.key_label(&"infiltration_interact")
+	if sim.takedown_target() >= 0:
+		return [tr("INFILTRATION_TAKEDOWN"), ControlHints.key_label(&"infiltration_takedown")]
+	if sim.nearby_panel() >= 0:
+		return [tr("INFILTRATION_DISABLE"), interact]
+	if sim.mission != null:
+		if sim.mission.locked_prisoner_nearby(sim):
+			return [tr("INF_LOCKED"), ""]
+		var object: int = sim.mission.nearby_object(sim)
+		if object >= 0:
+			return [tr("INF_COPY" if object < mode.data.terminals.size() else "INF_RECRUIT"), interact]
+	return ["", ""]
 
 
 func _escort_guide() -> String:
 	var following: int = 0
-	var lowest: float = CONFIG.prisoner_health
 	for index in sim.prisoners.size():
-		var alive: bool = sim.prisoners[index].health > 0.0
-		following += int(alive and sim.mission.recruited[index] != 0 and sim.mission.extracted[index] == 0)
-		if alive and sim.mission.recruited[index] != 0:
-			lowest = minf(lowest, sim.prisoners[index].health)
-	return tr("INF_ESCORT_GUIDE").format({"safe": sim.mission.rescued(), "total": sim.prisoners.size(), "minimum": mode.data.required_prisoners(), "following": following, "health": roundi(lowest)})
+		following += int(sim.prisoners[index].health > 0.0 and sim.mission.recruited[index] != 0 and sim.mission.extracted[index] == 0)
+	return tr("OPS_HUD_RESCUED").format({"safe": sim.mission.rescued(), "minimum": mode.data.required_prisoners(), "following": following})
 
 
 func _mission_guide() -> String:
@@ -795,7 +893,8 @@ func _mission_guide() -> String:
 	var direction: String = "←" if offset.x < 0.0 else "→"
 	if absf(offset.y) > absf(offset.x):
 		direction = "↑" if offset.y < 0.0 else "↓"
-	_guide_text = tr("INF_TARGET_GUIDE").format({"objective": tr(_guide_key).format({"index": _guide_number}), "direction": direction, "distance": roundi(maxi(_guide_tiles, 0) * sim.map.tile_size)})
+	_guide_text_direction = tr("OPS_STAGE_GUIDE").format({"direction": direction, "distance": roundi(maxi(_guide_tiles, 0) * sim.map.tile_size)})
+	_guide_text = tr(_guide_key).format({"index": _guide_number})
 	return _guide_text
 
 

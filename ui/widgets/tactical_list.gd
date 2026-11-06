@@ -10,6 +10,7 @@ const HEADING_TOP: float = 8.0
 const RULE_HEIGHT: float = 1.0
 const RULE_GAP: int = 8
 
+var row_height: float = ROW_HEIGHT
 var active: bool = true:
 	set(value):
 		active = value
@@ -29,7 +30,7 @@ func add_item(id: StringName, text: String) -> void:
 
 func add_row(id: StringName, text: String, state: StatusGlyph.State = StatusGlyph.State.NONE, mark: String = "", time: String = "", dimmed: bool = false, extra: Control = null) -> void:
 	var row: PanelContainer = PanelContainer.new()
-	row.custom_minimum_size.y = ROW_HEIGHT
+	row.custom_minimum_size.y = row_height
 	row.mouse_filter = Control.MOUSE_FILTER_STOP
 	var cells: HBoxContainer = HBoxContainer.new()
 	cells.add_theme_constant_override(&"separation", CELL_GAP)

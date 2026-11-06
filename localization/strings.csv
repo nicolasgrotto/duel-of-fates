@@ -1367,3 +1367,54 @@ SPACE_EFFECT_WEAPON,Dano {a} → {b}  ·  Intervalo {c} → {d} s,Damage {a} →
 SPACE_EFFECT_SHIELD,Capacidade {a} → {b}  ·  Recarga {c} → {d}/s,Capacity {a} → {b}  ·  Recharge {c} → {d}/s
 SPACE_EFFECT_SPEED,Velocidade {a} → {b}  ·  Aceleração {c} → {d},Speed {a} → {b}  ·  Acceleration {c} → {d}
 SPACE_IN_USE,Em uso,In use
+BOPS_ACTION_ORDER_ALLIES,Ordem aos aliados,Order allies
+OPS_ORDER_FOLLOW,Seguir,Follow
+OPS_ORDER_HOLD,Segurar aqui,Hold here
+OPS_ORDER_GUARD,Proteger,Protect
+OPS_SHOP_TITLE,Terminal de suprimentos,Supply terminal
+OPS_SHOP_BALANCE,Suprimentos  {supplies},Supplies  {supplies}
+OPS_SHOP_BUY,comprar,buy
+OPS_SHOP_STATUS,Situação agora,Current status
+OPS_SHOP_HEALTH,Vida,Health
+OPS_SHOP_BARRIERS,Barreiras,Barriers
+OPS_SHOP_BULWARKS,Muralhas,Bulwarks
+OPS_SHOP_ALLIES,Aliados,Allies
+OPS_SHOP_HEAT,Calor por tiro,Heat per shot
+OPS_SHOP_DAMAGE,Dano,Damage
+OPS_SHOP_ALLY_DAMAGE,Dano dos aliados,Ally damage
+OPS_SHOP_BOUGHT,Comprado: {name}.,Bought: {name}.
+OPS_SHOP_ONE_LEFT,Resta 1 compra nesta tentativa.,1 purchase left this attempt.
+OPS_SHOP_TEMPORARY,Vale só nesta tentativa.,Lasts for this attempt only.
+OPS_SHOP_BLOCK_1,Limite atingido nesta tentativa.,Limit reached this attempt.
+OPS_SHOP_BLOCK_2,Faltam {missing} suprimentos.,{missing} more supplies needed.
+OPS_SHOP_BLOCK_3,Só serve para quem leva blaster.,Only useful with a blaster.
+OPS_SHOP_BLOCK_4,Nenhum aliado de reserva nesta missão.,No reserve allies in this mission.
+OPS_SHOP_BLOCK_5,Nenhum aliado ativo para equipar.,No active allies to equip.
+OPS_SHOP_BLOCK_6,Sua vida já está cheia.,Your health is already full.
+OPS_HUD_STAGE,Etapa {index} de {total},Stage {index} of {total}
+OPS_HUD_EXTRACT,Extração,Extraction
+OPS_HUD_EXTRACT_TEXT,Alcance a saída,Reach the exit
+OPS_HUD_STAGE_DONE,Etapa concluída,Stage complete
+OPS_HUD_PREPARE,Prepare-se: {time} s,Get ready: {time} s
+OPS_HUD_HOLD,Segure a posição: {time} s,Hold the position: {time} s
+OPS_HUD_HOLD_OUTSIDE,Volte para a marca · falta segurar {time} s,Return to the mark · {time} s left to hold
+OPS_HUD_TARGETS,{left} de {total} restantes,{left} of {total} left
+OPS_HUD_ENEMIES,{left} inimigos restantes,{left} enemies left
+OPS_HUD_TERMINALS,{left} de {total} terminais restantes,{left} of {total} terminals left
+OPS_HUD_PROTECTED,Protegido: {health} de {total},Protected: {health} of {total}
+OPS_HUD_FINAL_WAVE,Última onda,Final wave
+OPS_HUD_ALLIES,Aliados {count} · {order},Allies {count} · {order}
+OPS_HUD_BARRIERS,Barreiras {count},Barriers {count}
+OPS_HUD_SUPPLIES,Suprimentos {count},Supplies {count}
+OPS_HUD_DODGE,Esquiva {time},Dodge {time}
+OPS_HUD_HEALTH,Vida,Health
+OPS_HUD_VIGOR,Vigor,Vigor
+OPS_HUD_HEAT,Calor,Heat
+OPS_HUD_OBJECTIVES,Objetivos {done} de {total},Objectives {done} of {total}
+OPS_HUD_RESCUED,Salvos {safe} de {minimum} · {following} seguindo,Rescued {safe} of {minimum} · {following} following
+OPS_HUD_TRAINING,Treino,Training
+SPACE_HUD_WAVE,Onda {wave} de {total},Wave {wave} of {total}
+SPACE_HUD_TARGET,Alvo {side} · {distance} m,Target {side} · {distance} m
+SPACE_HUD_AHEAD,à frente,ahead
+SPACE_HUD_SIDE,ao lado,to the side
+SPACE_HUD_BEHIND,atrás,behind

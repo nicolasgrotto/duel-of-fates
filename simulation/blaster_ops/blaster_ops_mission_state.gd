@@ -1,6 +1,9 @@
 class_name BlasterOpsMissionState
 extends InfiltrationMissionState
 
+enum AllyOrder { FOLLOW, HOLD, GUARD }
+enum OfferBlock { NONE, LIMIT, SUPPLIES, NO_BLASTER, NO_RESERVE, NO_ALLIES, FULL_HEALTH }
+
 var definition: BlasterOpsMissionData
 var wave_index: int = -1
 var intermission_ticks: int = 0
@@ -24,6 +27,8 @@ var stage_index: int = -1
 var stage_ticks: int = 0
 var hold_ticks: int = 0
 var wave_gap_ticks: int = 0
+var ally_order: int = AllyOrder.FOLLOW
+var ally_anchor: Vector2 = Vector2.ZERO
 
 
 func _init(mission_data: BlasterOpsMissionData) -> void:
@@ -53,17 +58,36 @@ func nearby_terminal(sim: BlasterOpsSimulation) -> int:
 
 
 func offer_available(sim: BlasterOpsSimulation, index: int) -> bool:
+	var block: OfferBlock = offer_block(sim, index)
+	return block == OfferBlock.NONE or block == OfferBlock.SUPPLIES
+
+
+func offer_block(sim: BlasterOpsSimulation, index: int) -> OfferBlock:
 	var offer: BlasterOpsSupplyOffer = BlasterOpsTraining.SUPPLY_OFFERS[index]
 	if offer.limit > 0 and offer_counts[index] >= offer.limit:
-		return false
+		return OfferBlock.LIMIT
 	match offer.kind:
 		BlasterOpsSupplyOffer.Kind.COOLANT:
-			return sim.loadout.blaster != null
+			if sim.loadout.blaster == null:
+				return OfferBlock.NO_BLASTER
 		BlasterOpsSupplyOffer.Kind.REINFORCEMENT:
-			return _next_reserve() >= 0
+			if _next_reserve() < 0:
+				return OfferBlock.NO_RESERVE
 		BlasterOpsSupplyOffer.Kind.ALLY_UPGRADE:
-			return _has_allies(sim)
-	return true
+			if not _has_allies(sim):
+				return OfferBlock.NO_ALLIES
+		BlasterOpsSupplyOffer.Kind.HEAL:
+			if sim.player.health >= sim.operations.health:
+				return OfferBlock.FULL_HEALTH
+	return OfferBlock.SUPPLIES if supplies < offer.cost else OfferBlock.NONE
+
+
+func living_allies(sim: BlasterOpsSimulation) -> int:
+	var count: int = 0
+	for index in sim.prisoners.size():
+		if index != definition.protected_index and sim.prisoners[index].health > 0.0 and recruited[index] != 0 and extracted[index] == 0:
+			count += 1
+	return count
 
 
 func purchase(sim: BlasterOpsSimulation, index: int) -> bool:
@@ -111,6 +135,44 @@ func _restore_allies(sim: BlasterOpsSimulation) -> void:
 	for index in recruited.size():
 		if recruited[index] != 0 and sim.prisoners[index].health > 0.0:
 			sim.prisoners[index].health = sim._ally_max_health(index)
+
+
+func has_free_allies(sim: BlasterOpsSimulation) -> bool:
+	return living_allies(sim) > 0
+
+
+func guard_point(sim: BlasterOpsSimulation) -> Vector2:
+	var protected: int = definition.protected_index
+	if protected >= 0 and protected < sim.prisoners.size() and sim.prisoners[protected].health > 0.0 and recruited[protected] != 0:
+		return sim.prisoners[protected].position
+	for target in definition.defense_targets:
+		if sim.targets[target].health > 0.0:
+			return sim.targets[target].position
+	var stage: BlasterOpsStageData = current_stage()
+	if stage != null and stage.objective == BlasterOpsStageData.Objective.HOLD and stage.zone_radius > 0.0:
+		return stage.zone
+	return Vector2.INF
+
+
+func cycle_ally_order(sim: BlasterOpsSimulation) -> void:
+	if not has_free_allies(sim):
+		return
+	ally_order = posmod(ally_order + 1, AllyOrder.size())
+	if ally_order == AllyOrder.GUARD and guard_point(sim) == Vector2.INF:
+		ally_order = AllyOrder.FOLLOW
+	if ally_order == AllyOrder.HOLD:
+		ally_anchor = sim.player.position
+
+
+func order_point(sim: BlasterOpsSimulation) -> Vector2:
+	if waves_finished:
+		return Vector2.INF
+	match ally_order:
+		AllyOrder.HOLD:
+			return ally_anchor
+		AllyOrder.GUARD:
+			return guard_point(sim)
+	return Vector2.INF
 
 
 func can_deploy() -> bool:
@@ -424,7 +486,7 @@ func bonus_objective(sim: InfiltrationSimulation) -> bool:
 
 func capture() -> Dictionary:
 	var snapshot: Dictionary = super.capture()
-	snapshot["incursion"] = {"wave_index": wave_index, "intermission_ticks": intermission_ticks, "waves_finished": waves_finished, "phase_index": phase_index, "phase_health": phase_health, "damage_taken": damage_taken, "attempts": attempts, "hits": hits, "barriers_placed": barriers_placed, "barrier_charges": barrier_charges, "heavy_barrier_charges": heavy_barrier_charges, "last_hit_swing": last_hit_swing, "repair_ticks": repair_ticks, "supplies": supplies, "offer_counts": offer_counts.duplicate(), "heat_scale": heat_scale, "damage_scale": damage_scale, "ally_scale": ally_scale, "stage_index": stage_index, "stage_ticks": stage_ticks, "hold_ticks": hold_ticks, "wave_gap_ticks": wave_gap_ticks}
+	snapshot["incursion"] = {"wave_index": wave_index, "intermission_ticks": intermission_ticks, "waves_finished": waves_finished, "phase_index": phase_index, "phase_health": phase_health, "damage_taken": damage_taken, "attempts": attempts, "hits": hits, "barriers_placed": barriers_placed, "barrier_charges": barrier_charges, "heavy_barrier_charges": heavy_barrier_charges, "last_hit_swing": last_hit_swing, "repair_ticks": repair_ticks, "supplies": supplies, "offer_counts": offer_counts.duplicate(), "heat_scale": heat_scale, "damage_scale": damage_scale, "ally_scale": ally_scale, "stage_index": stage_index, "stage_ticks": stage_ticks, "hold_ticks": hold_ticks, "wave_gap_ticks": wave_gap_ticks, "ally_order": ally_order, "ally_anchor": ally_anchor}
 	return snapshot
 
 
