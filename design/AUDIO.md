@@ -4,6 +4,10 @@ Segue [DESIGN.md](../DESIGN.md). Som e música são parte da sensação do duelo
 
 > Implementado na fase 3: sons sintetizados (sem amostras) por `tools/audio/synth_audio.py`, barramentos, zumbido por personagem, disputa, abafar no parry perfeito e no K.O., música em três camadas (base, percussão, tensão) que abrem com a vida mais baixa, batida de vida baixa e ambiência da Plataforma de Refino. Fase 8: ambiência própria das dez arenas (`assets/audio/ambience/<arena>.wav`, 10 s em laço, 22 kHz), tema sagrado (Santuário, Floresta, Cume) e tema de chefe (Cidadela e os personagens com `CharacterData.theme`: Sombra Desperta, Soberano, Ancião e as duas variantes do Predestinado; o tema do adversário vence o da arena). A variação por arena vem de `MusicData.pitch` (transposição de até três semitons, que também muda levemente o andamento) sobre os três temas. No despertar do chefe, a música passa a tocar com pelo menos `ModesConfig.boss_music_floor` de intensidade (percussão e tensão abertas).
 
+## Direção da versão 1.2 (decisão do autor)
+
+**Só synth sombrio e atmosférico:** pads, baixos graves, drones, arpejos, coro sintético, percussão e impactos eletrônicos. **Sem camadas orquestrais e sem serviços pagos de música.** Produção por síntese em numpy e, se precisar, MIDI com sons de synth. Material de terceiros só com licença livre (CC0 ou permissiva), com licença e atribuição registradas em `ASSETS.md`; faixa sem licença confirmada não entra. Uma faixa de teste do menu, de cerca de 30 s, passa pelo autor antes das demais. Detalhes por faixa em `docs/art-briefs/audio/_direction.md`.
+
 ## Regras
 
 - **Tudo original**: efeitos gravados, desenhados ou sintetizados para o jogo, ou bibliotecas com licença compatível registrada em [ASSETS.md](../ASSETS.md). Nenhum som ou música da franquia, nem imitação reconhecível deles (o zumbido, a ignição e os temas clássicos não podem ser copiados nem "quase copiados").

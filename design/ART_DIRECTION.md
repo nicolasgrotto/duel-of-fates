@@ -12,12 +12,36 @@ Referências de **sensação** (nunca de assets): os duelos de sabre da trilogia
 
 - O **duelo acontece num plano 2D lateral**. A câmera do duelo é lateral; profundidade é cenário. Infiltração e naves têm a exceção top-down autorizada em DESIGN, "Além do duelo".
 - **Técnica decidida: pixel art sci-fi com esqueleto** (decisão da migração para pixel art; a versão em alta definição está na tag `phase-5-hd`). O mundo inteiro (arena, lutadores, lâminas, poderes e efeitos) é desenhado **nativamente numa grade de pixels baixa** e ampliado sem suavização. Não é um filtro sobre a arte em alta definição: cada peça é pintada direto na grade, com tons e contornos definidos.
-- **Grade**: 1 pixel do mundo = **2 u** (0,5 px/u). Um lutador tem ~75 px de altura; no enquadramento neutro a grade tem ~480×270 e cada pixel ocupa ~4 px de uma tela 1080p. O zoom da câmera muda o tamanho de **todos** os pixels por igual (entre ~2,5 e ~4,5 px de tela), nunca reamostra uma peça isolada. A câmera anda em pixels inteiros da grade; o deslize suave vem do deslocamento da imagem final.
-- **Peças**: o mesmo esqueleto (`Skeleton2D`, IK, tecidos com física, pose calculada da simulação por família de movimento). As peças são pintadas na grade sem antialias: borda dura, **4 tons por cor** (sombra, base, luz, brilho), **contorno seletivo** de 1 px (escuro no lado da sombra; no lado da luz, que vem da frente e de cima, a borda sobe um tom), para membros finos de 4–5 px não virarem só contorno, **luz de forma** pintada em cada peça (frente clara, costas escuras) e detalhe interno só onde ele lê em 1–2 px (olho, sobrancelha, nariz, brilho do cabelo, dobras de cotovelo e joelho, punho, biqueira e sola da bota, lapela da túnica, bolsa no cinto). A cabeça tem ~11 px de altura (proporção heroica, ~1/7 do corpo) e pescoço curto, para o rosto ler na grade. As peças de trás (perna, braço, capa) ficam acima do cenário na ordem de desenho, sempre visíveis. Os trajes trocam a paleta (8 slots), como num jogo de pixel art clássico. O mapa de normal é pintado na mesma grade: a luz das lâminas ilumina o corpo em degraus de pixel.
+- **Grade**: 1 pixel do mundo = **1,5 u**. Um lutador tem ~100 px de altura; no enquadramento neutro a grade tem **640×360** e cada pixel ocupa 2 px em 720p, 3 px em 1080p e 4 px em 1440p. *Vale a partir da migração (task 24); até lá o jogo está em 2 u, ~75 px e ~480×270.* Operações e naves ficam em 2 u nesta rodada. O zoom da câmera muda o tamanho de **todos** os pixels por igual (entre ~2,5 e ~4,5 px de tela), nunca reamostra uma peça isolada. A câmera anda em pixels inteiros da grade; o deslize suave vem do deslocamento da imagem final.
+- **Peças**: o mesmo esqueleto (`Skeleton2D`, IK, tecidos com física, pose calculada da simulação por família de movimento). As peças são pintadas na grade sem antialias: borda dura, **até 3 tons por cor** (*4 até a task 27 trocar as peças*), **contorno seletivo** de 1 px (escuro no lado da sombra; no lado da luz, que vem da frente e de cima, a borda sobe um tom), para membros finos de 4–5 px não virarem só contorno, **luz de forma** pintada em cada peça (frente clara, costas escuras) e detalhe interno só onde ele lê em 1–2 px (olho, sobrancelha, nariz, brilho do cabelo, dobras de cotovelo e joelho, punho, biqueira e sola da bota, lapela da túnica, bolsa no cinto). A cabeça tem ~11 px de altura (proporção heroica, ~1/7 do corpo) e pescoço curto, para o rosto ler na grade. As peças de trás (perna, braço, capa) ficam acima do cenário na ordem de desenho, sempre visíveis. Os trajes trocam a paleta (8 slots), como num jogo de pixel art clássico. O mapa de normal é pintado na mesma grade: a luz das lâminas ilumina o corpo em degraus de pixel.
 - **Rotação**: peças giram com o osso e são rasterizadas na grade (sem subpixel); por isso as peças são pequenas e com formas simples, que continuam limpas em qualquer ângulo.
 - **Interface**: continua em alta resolução, com a Oxanium; só o mundo é pixel art.
 - Descartados: filtro de pixelização sobre a arte em alta definição (proibido), sprites quadro a quadro (volume de arte enorme com 15 lutadores, 4 armas e variantes, e perderia a sincronia automática com a simulação) e 2.5D com modelos 3D.
 - O pipeline anterior (alta definição, 4 px/u, fase 3) fica registrado em ARCHITECTURE.md; o formato das peças (mapa de material + mapa de normal) é o mesmo.
+
+## Upgrade visual da versão 1.2 (decisões do autor)
+
+Vale para o duelo, os lutadores, as arenas e os menus. As tasks estão em [docs/tasks/](../docs/tasks/README.md).
+
+- **Rig mantido.** Quadro a quadro continua descartado. Peças podem nascer de imagem gerada, a partir de frames-chave; o piloto do Guardião compara peças todas geradas com o híbrido, com imagem gerada só em cabeça, torso, capa e punho, e o restante por código.
+- **Conversão não é filtro.** Continua proibido pixelar a arte em alta resolução no jogo. Permitido: converter uma imagem-fonte para a grade **uma vez**, no pipeline, quantizar para a paleta fixa e limpar. O resultado entra no jogo como peça pintada na grade.
+- **Limpeza por script ao máximo:** quantização, pixels soltos e contorno. Retoque manual em Pixelorama, com LibreSprite como alternativa. Tempo automático e manual são registrados à parte.
+- **Paleta:** 16 cores por lutador, em [`_palettes.md`](../docs/art-briefs/_palettes.md). **3 tons** nos slots grandes, e menos nos pequenos. Contorno colorido, sem preto puro.
+- **Luz de recorte:** pintada só em retratos e fundos. Nas peças, vem do shader e dos mapas de normal, porque cada lutador tem três cores de lâmina.
+- **Zoom mantido.** 640×360 é o enquadramento neutro. Zoom contínuo e punch-in continuam, sob o teste de shimmer e de largura dos pixels da task 24.
+- **Texto em Oxanium**, em alta resolução. Imagens de interface ficam na grade, com pixel de 3 px na base 1080p.
+- **Imagem gerada:** sem texto, logo, emblema, insígnia ou símbolo, conferida à mão. Prompts nunca citam franquia, obra ou artista.
+- **Trajes de risco:** Caído, Duelo, Legado e Ocaso do Predestinado, além de Soberano, Sombra, Espelho e Eco, só por código ou formas genéricas. Podem ser reabertos um a um depois do piloto.
+- **Imagem de carregamento:** referência de riqueza, não de técnica, porque não tem grade única.
+
+**Checklist anti-mixel**, para toda imagem que entra no jogo:
+
+1. Nenhuma cor fora da paleta declarada.
+2. Nenhum meio-tom criado por redimensionamento.
+3. Sem escala ou rotação com filtro. Peças do rig giram com nearest e snap, e por isso continuam simples.
+4. Imagem de interface em múltiplo inteiro do pixel de interface.
+5. Sem transparência parcial no sprite, exceto em efeitos aditivos.
+6. Sem texto, logo, insígnia ou emblema.
 
 ## Escala e enquadramento
 

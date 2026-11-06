@@ -9,6 +9,7 @@ Ordem de construção do jogo. Cada fase termina jogável e testada. Marque `[x]
   - [x] **Piloto de testes que atira:** o piloto "armado" da 1.1 só cortava, então sua derrota não dizia nada sobre os blasters. Corsária antes dos buffs: 6 vitórias e um travamento do piloto em Pátio cercado. Depois: **7 de 7**, mais rápida e com mais vida que com a pistola da loja. Guardião com Rifle, sem treino: 3 de 7.
   - [x] **Cache:** arquivos Web com o commit no nome (ARCHITECTURE, "Publicação Web e cache").
   - [ ] **Upgrade visual e sonoro:** índice, auditoria e proposta em [docs/tasks/](docs/tasks/README.md), briefs em [docs/art-briefs/](docs/art-briefs/). Decisões D1 a D12 do autor registradas na proposta. Nada implementado ainda. Tasks em `build/agent_tasks/`, na ordem de execução.
+  - [ ] **Tasks 20 e 21 prontas, aguardando o autor:** [revisão de marcas](docs/tasks/_revisao-marca.md) e [paletas](docs/art-briefs/_palettes.md).
   - **Próximo:** autor avaliar **PLAYTEST 27**. Tasks em `build/agent_tasks/`, com o agente no nome do arquivo e o prefixo `DONE_` ao terminar; 1.1.1 antes da migração para 640×360, 1.2 com todo o resto.
 
 - [x] **Atualização 1.1 — Operações** (pedido do autor, branch `1.x`). Auditoria feita: **771 testes, zero falhas** na linha de base (`build/v11_audit/tests_baseline.log`). Direções visuais aprovadas pelo autor: Operações A (Console) e Naves A (Mapa de setor) (`build/v11_audit/mockups/index.html`). Decisões registradas em DESIGN e GAME_DESIGN.

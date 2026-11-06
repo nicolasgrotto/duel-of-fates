@@ -15,7 +15,7 @@ Esta pasta guarda só este índice, a [auditoria](_auditoria.md) e a [proposta c
 
 ## Tabela
 
-Tasks 01 a 18 estão concluídas e mantêm os nomes antigos.
+Tasks 01 a 18 estão concluídas, com o prefixo `DONE_`.
 
 | Nº | Título | Responsável | Depende de |
 | --- | --- | --- | --- |
