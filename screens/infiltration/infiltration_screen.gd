@@ -562,7 +562,7 @@ func _update_incursion_hud() -> void:
 	var text: String = tr("OPS_EXTRACTION_READY") if progress.waves_finished else tr("OPS_PREPARING").format({"time": ceili(progress.intermission_ticks * Ticks.DELTA)}) if progress.intermission_ticks > 0 else tr("OPS_WAVE").format({"wave": progress.wave_index + 1, "total": data.waves.size(), "left": progress.enemies_left(sim)})
 	if progress.wave_index >= 0 and data.waves[progress.wave_index].final_wave and not progress.waves_finished:
 		text += ControlHints.SEPARATOR + tr("OPS_FINAL_WAVE")
-	if data.kind == BlasterOpsMissionData.Kind.HOLD_OUT and not progress.waves_finished:
+	if data.stages.is_empty() and data.kind == BlasterOpsMissionData.Kind.HOLD_OUT and not progress.waves_finished:
 		text += ControlHints.SEPARATOR + tr("OPS_HOLD_TIMER").format({"time": maxi(ceili(data.hold_seconds - sim.tick * Ticks.DELTA), 0)})
 	if data.phase_target >= 0 and sim.targets[data.phase_target].spawned and sim.targets[data.phase_target].health > 0.0:
 		text += ControlHints.SEPARATOR + tr(data.phases[progress.phase_index].title_key)
