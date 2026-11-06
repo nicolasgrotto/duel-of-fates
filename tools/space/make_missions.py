@@ -79,12 +79,12 @@ GRAVEYARD_OBSTACLES = (
     (2560, 1180, 72), (640, 620, 44), (620, 1540, 48), (1560, 180, 40),
 )
 MISSIONS = {
-    "open_corridor": dict(number=1, par=180, limit=420),
-    "ash_trail": dict(number=2, par=210, limit=480),
-    "last_escort": dict(number=3, par=270, limit=540),
-    "cut_network": dict(number=4, par=270, limit=540),
-    "iron_graveyard": dict(number=6, par=240, limit=540),
-    "tide_iron": dict(number=5, par=270, limit=600),
+    "open_corridor": dict(number=1, par=180, limit=420, threat=1, map=(120, 610), label=0),
+    "ash_trail": dict(number=2, par=210, limit=480, threat=2, map=(330, 430), label=2),
+    "last_escort": dict(number=3, par=270, limit=540, threat=3, map=(190, 190), label=1),
+    "cut_network": dict(number=4, par=270, limit=540, threat=3, map=(560, 300), label=0),
+    "iron_graveyard": dict(number=6, par=240, limit=540, threat=3, map=(800, 540), label=0),
+    "tide_iron": dict(number=5, par=270, limit=600, threat=4, map=(940, 150), label=1),
 }
 PAIR = [(0, -90), (0, 90)]
 WEDGE = [(0, 0), (-110, -130), (-110, 130)]
@@ -213,7 +213,7 @@ def mission(identifier):
     for x, y, radius in obstacles_source:
         obstacles.append(r.sub("space_obstacle_data", position=f"Vector2({x}, {y})", radius=f"{radius}.0", sprite=r.ext("assets/space/debris.png", "Texture2D")))
     arena = r.sub("space_arena_data", title_key=f'"SPACE_M{number}_TITLE"', size="Vector2(2800, 1800)", ships=r.array("space_ship_placement", placements), obstacles=r.array("space_obstacle_data", obstacles))
-    r.save(f"missions/{identifier}.tres", id=f'&"{identifier}"', title_key=f'"SPACE_M{number}_TITLE"', briefing_key=f'"SPACE_M{number}_BRIEF"', objective_key=f'"SPACE_M{number}_OBJECTIVE"', arena=arena, waves=r.array("space_wave_data", waves), phases=r.array("space_boss_phase", phases), par_seconds=f'{spec["par"]}.0', limit_seconds=f'{spec["limit"]}.0', preview=r.ext(f"assets/space/previews/{identifier}.png", "Texture2D"), **extra)
+    r.save(f"missions/{identifier}.tres", id=f'&"{identifier}"', threat=spec["threat"], map_position=f'Vector2({spec["map"][0]}, {spec["map"][1]})', map_label=spec["label"], title_key=f'"SPACE_M{number}_TITLE"', briefing_key=f'"SPACE_M{number}_BRIEF"', objective_key=f'"SPACE_M{number}_OBJECTIVE"', arena=arena, waves=r.array("space_wave_data", waves), phases=r.array("space_boss_phase", phases), par_seconds=f'{spec["par"]}.0', limit_seconds=f'{spec["limit"]}.0', preview=r.ext(f"assets/space/previews/{identifier}.png", "Texture2D"), **extra)
 
 
 PREVIEW_SIZE = (480, 170)

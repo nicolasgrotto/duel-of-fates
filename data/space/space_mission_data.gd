@@ -1,6 +1,8 @@
 class_name SpaceMissionData
 extends Resource
 
+enum MapLabel { BELOW, ABOVE, RIGHT }
+
 @export var id: StringName
 @export var title_key: String
 @export var briefing_key: String
@@ -13,6 +15,27 @@ extends Resource
 @export var boss: int = -1
 @export var phases: Array[SpaceBossPhase] = []
 @export var preview: Texture2D
+@export_range(1, 5) var threat: int = 1
+@export var map_position: Vector2
+@export var map_label: MapLabel = MapLabel.BELOW
+
+
+func enemy_types() -> Array[SpaceShipData]:
+	var found: Array[SpaceShipData] = []
+	for placement in arena.ships:
+		_note_enemy(found, placement.ship, placement.team)
+	for wave in waves:
+		for placement in wave.ships:
+			_note_enemy(found, placement.ship, placement.team)
+		for formation in wave.formations:
+			_note_enemy(found, formation.ship, formation.team)
+	return found
+
+
+func _note_enemy(found: Array[SpaceShipData], ship: SpaceShipData, team: int) -> void:
+	if ship == null or team == 0 or ship.archetype == SpaceShipData.Archetype.SECTION or ship in found:
+		return
+	found.append(ship)
 
 
 func create_arena(loadout: SpaceLoadout, upgrades: SpaceUpgradeConfig) -> SpaceArenaData:

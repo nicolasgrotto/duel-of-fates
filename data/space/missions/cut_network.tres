@@ -214,6 +214,9 @@ obstacles = Array[ExtResource("14")]([SubResource("Part_25"), SubResource("Part_
 [resource]
 script = ExtResource("1")
 id = &"cut_network"
+threat = 3
+map_position = Vector2(560, 300)
+map_label = 0
 title_key = "SPACE_M4_TITLE"
 briefing_key = "SPACE_M4_BRIEF"
 objective_key = "SPACE_M4_OBJECTIVE"

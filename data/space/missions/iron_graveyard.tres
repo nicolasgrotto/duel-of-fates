@@ -348,6 +348,9 @@ obstacles = Array[ExtResource("11")]([SubResource("Part_36"), SubResource("Part_
 [resource]
 script = ExtResource("1")
 id = &"iron_graveyard"
+threat = 3
+map_position = Vector2(800, 540)
+map_label = 0
 title_key = "SPACE_M6_TITLE"
 briefing_key = "SPACE_M6_BRIEF"
 objective_key = "SPACE_M6_OBJECTIVE"

@@ -194,13 +194,13 @@ func select_space_ship(id: StringName) -> bool:
 	return true
 
 
-func buy_space_upgrade(track: int) -> bool:
-	if not space.buy(track):
+func buy_space_upgrade(track: int, ship_id: StringName = &"") -> bool:
+	if not space.buy(track, ship_id):
 		return false
 	save_progress()
 	return true
 
 
-func reset_space_upgrades() -> void:
-	space.reset_upgrades()
+func reset_space_upgrades(ship_id: StringName = &"") -> void:
+	space.reset_upgrades(ship_id)
 	save_progress()

@@ -135,3 +135,61 @@ func test_external_victory_keeps_progress_untouched_and_reports_phase_history() 
 	assert_false(mode.result.point_earned)
 	assert_eq(mode.result.phase_visits, PackedInt32Array([1, 0, 0]))
 	assert_eq(service.space.capture(), before)
+
+
+func test_each_ship_keeps_its_own_upgrades_and_budget() -> void:
+	var progress: SpaceProgress = SpaceProgress.new()
+	progress.record(&"open_corridor", 60, 3)
+	progress.record(&"ash_trail", 60, 3)
+	assert_true(progress.buy(0, &"anvil"))
+	assert_true(progress.buy(0, &"anvil"))
+	assert_false(progress.buy(1, &"anvil"))
+	assert_eq(progress.available(&"anvil"), 0)
+	assert_eq(progress.available(&"needle"), 2)
+	assert_true(progress.buy(1, &"needle"))
+	assert_eq(progress.levels_for(&"needle"), PackedInt32Array([0, 1, 0]))
+	assert_eq(progress.levels_for(&"anvil"), PackedInt32Array([2, 0, 0]))
+	progress.reset_upgrades(&"anvil")
+	assert_eq(progress.available(&"anvil"), 2)
+	assert_eq(progress.levels_for(&"needle"), PackedInt32Array([0, 1, 0]))
+
+
+func test_loadout_uses_only_the_chosen_ship_upgrades() -> void:
+	var progress: SpaceProgress = SpaceProgress.new()
+	progress.record(&"open_corridor", 60, 3)
+	assert_true(progress.buy(2, &"anvil"))
+	assert_eq(progress.loadout().speed_level, 0)
+	assert_true(progress.select_ship(&"anvil"))
+	assert_eq(progress.loadout().speed_level, 1)
+	var built: SpaceShipData = progress.loadout().build_ship(SpaceProgress.CONFIG, SpaceProgress.SHIPS[0])
+	assert_almost(built.speed, 270.0 + SpaceProgress.CONFIG.speed)
+
+
+func test_per_ship_levels_survive_a_save() -> void:
+	var progress: SpaceProgress = SpaceProgress.new()
+	progress.record(&"open_corridor", 60, 3)
+	assert_true(progress.buy(1, &"spear"))
+	var restored: SpaceProgress = SpaceProgress.new()
+	restored.restore(progress.capture())
+	assert_eq(restored.levels_for(&"spear"), PackedInt32Array([0, 1, 0]))
+	assert_eq(restored.levels_for(&"needle"), PackedInt32Array([0, 0, 0]))
+
+
+func test_old_global_upgrades_stay_on_every_ship() -> void:
+	var records: Dictionary = {}
+	for id in SpaceProgress.IDS:
+		records[id] = {"ticks": 60, "rating": 3}
+	var progress: SpaceProgress = SpaceProgress.new()
+	progress.restore({"records": records, "levels": [2, 2, 2], "ship": "needle"})
+	for ship in SpaceProgress.SHIPS:
+		assert_eq(progress.levels_for(ship.id), PackedInt32Array([2, 2, 2]))
+		assert_eq(progress.available(ship.id), 0)
+
+
+func test_every_mission_lists_its_enemy_types_and_threat() -> void:
+	for mission in SpaceMode.MISSIONS:
+		assert_true(not mission.enemy_types().is_empty(), String(mission.id))
+		assert_true(mission.threat >= 1 and mission.threat <= 5, String(mission.id))
+		for ship in mission.enemy_types():
+			assert_true(ship.archetype != SpaceShipData.Archetype.SECTION, String(ship.id))
+			assert_true(not SpaceProgress.SHIPS.has(ship), String(ship.id))

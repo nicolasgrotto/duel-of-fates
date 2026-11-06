@@ -221,6 +221,9 @@ obstacles = Array[ExtResource("11")]([SubResource("Part_29"), SubResource("Part_
 [resource]
 script = ExtResource("1")
 id = &"ash_trail"
+threat = 2
+map_position = Vector2(330, 430)
+map_label = 2
 title_key = "SPACE_M2_TITLE"
 briefing_key = "SPACE_M2_BRIEF"
 objective_key = "SPACE_M2_OBJECTIVE"

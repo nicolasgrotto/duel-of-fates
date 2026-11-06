@@ -206,6 +206,9 @@ obstacles = Array[ExtResource("14")]([SubResource("Part_23"), SubResource("Part_
 [resource]
 script = ExtResource("1")
 id = &"tide_iron"
+threat = 4
+map_position = Vector2(940, 150)
+map_label = 1
 title_key = "SPACE_M5_TITLE"
 briefing_key = "SPACE_M5_BRIEF"
 objective_key = "SPACE_M5_OBJECTIVE"

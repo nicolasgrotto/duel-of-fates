@@ -11,12 +11,26 @@ const SHIPS: Array[SpaceShipData] = [
 ]
 
 var records: Dictionary = {}
-var levels: PackedInt32Array = [0, 0, 0]
+var ship_levels: Dictionary = {}
+var levels: PackedInt32Array:
+	get:
+		return levels_for(ship_id)
 var ship_id: StringName = SHIPS[0].id
 
 
-func available() -> int:
-	return records.size() - (levels[0] + levels[1] + levels[2]) * CONFIG.cost
+func earned() -> int:
+	return records.size()
+
+
+func levels_for(id: StringName) -> PackedInt32Array:
+	if not ship_levels.has(id):
+		ship_levels[id] = PackedInt32Array([0, 0, 0])
+	return ship_levels[id]
+
+
+func available(id: StringName = &"") -> int:
+	var owned: PackedInt32Array = levels_for(id if id != &"" else ship_id)
+	return earned() - (owned[0] + owned[1] + owned[2]) * CONFIG.cost
 
 
 func record(id: StringName, ticks: int, rating: int) -> bool:
@@ -27,15 +41,18 @@ func record(id: StringName, ticks: int, rating: int) -> bool:
 	return previous.is_empty()
 
 
-func buy(track: int) -> bool:
-	if track < 0 or track >= levels.size() or levels[track] >= CONFIG.max_level or available() < CONFIG.cost:
+func buy(track: int, id: StringName = &"") -> bool:
+	var target: StringName = id if id != &"" else ship_id
+	var owned: PackedInt32Array = levels_for(target)
+	if track < 0 or track >= owned.size() or owned[track] >= CONFIG.max_level or available(target) < CONFIG.cost:
 		return false
-	levels[track] += 1
+	owned[track] += 1
+	ship_levels[target] = owned
 	return true
 
 
-func reset_upgrades() -> void:
-	levels.fill(0)
+func reset_upgrades(id: StringName = &"") -> void:
+	ship_levels[id if id != &"" else ship_id] = PackedInt32Array([0, 0, 0])
 
 
 func selected_ship() -> SpaceShipData:
@@ -54,21 +71,29 @@ func select_ship(id: StringName) -> bool:
 
 
 func loadout() -> SpaceLoadout:
+	return loadout_for(selected_ship())
+
+
+func loadout_for(ship: SpaceShipData) -> SpaceLoadout:
+	var owned: PackedInt32Array = levels_for(ship.id)
 	var result: SpaceLoadout = SpaceLoadout.new()
-	result.ship = selected_ship()
-	result.weapon_level = levels[0]
-	result.shield_level = levels[1]
-	result.speed_level = levels[2]
+	result.ship = ship
+	result.weapon_level = owned[0]
+	result.shield_level = owned[1]
+	result.speed_level = owned[2]
 	return result
 
 
 func capture() -> Dictionary:
-	return {"records": records.duplicate(true), "levels": levels.duplicate(), "ship": String(ship_id)}
+	var saved_levels: Dictionary = {}
+	for ship in SHIPS:
+		saved_levels[String(ship.id)] = Array(levels_for(ship.id))
+	return {"records": records.duplicate(true), "ship_levels": saved_levels, "ship": String(ship_id)}
 
 
 func restore(state: Dictionary) -> void:
 	records.clear()
-	levels.fill(0)
+	ship_levels.clear()
 	ship_id = SHIPS[0].id
 	select_ship(StringName(str(state.get("ship", ""))))
 	var saved: Variant = state.get("records", {})
@@ -77,9 +102,16 @@ func restore(state: Dictionary) -> void:
 			var row: Variant = saved.get(id, {})
 			if row is Dictionary:
 				record(StringName(id), int(row.get("ticks", 0)), int(row.get("rating", 0)))
-	var upgrades: Variant = state.get("levels", [])
-	if upgrades is Array or upgrades is PackedInt32Array:
-		for track in mini(upgrades.size(), levels.size()):
-			var desired: int = clampi(int(upgrades[track]), 0, CONFIG.max_level)
-			for level in desired:
-				buy(track)
+	var saved_levels: Variant = state.get("ship_levels", {})
+	for ship in SHIPS:
+		var upgrades: Variant = saved_levels.get(String(ship.id), state.get("levels", [])) if saved_levels is Dictionary else []
+		_rebuy(ship.id, upgrades)
+
+
+func _rebuy(id: StringName, upgrades: Variant) -> void:
+	if not (upgrades is Array or upgrades is PackedInt32Array):
+		return
+	for track in mini(upgrades.size(), levels_for(id).size()):
+		var desired: int = clampi(int(upgrades[track]), 0, CONFIG.max_level)
+		for level in desired:
+			buy(track, id)

@@ -201,6 +201,9 @@ obstacles = Array[ExtResource("10")]([SubResource("Part_26"), SubResource("Part_
 [resource]
 script = ExtResource("1")
 id = &"open_corridor"
+threat = 1
+map_position = Vector2(120, 610)
+map_label = 0
 title_key = "SPACE_M1_TITLE"
 briefing_key = "SPACE_M1_BRIEF"
 objective_key = "SPACE_M1_OBJECTIVE"
