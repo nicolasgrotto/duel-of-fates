@@ -255,3 +255,89 @@ func test_new_order_key_keeps_custom_bindings() -> void:
 	assert_false(migrated.order_allies.has(KEY_G), "a key the player already uses is not taken")
 	var free: Dictionary = BlasterOpsBindings.migrate_keys({"fire": [KEY_J]})
 	assert_true(free.order_allies.has(KEY_G))
+
+
+func _scenario(order: int, role: String, player_offset: Vector2, enemies: Array[BlasterOpsEnemyData] = []) -> BlasterOpsSimulation:
+	var sim: BlasterOpsSimulation = _sim([_role(role)] as Array[BlasterOpsAllyData], enemies)
+	var progress: BlasterOpsMissionState = sim.mission as BlasterOpsMissionState
+	var stage: BlasterOpsStageData = BlasterOpsStageData.new()
+	stage.objective = BlasterOpsStageData.Objective.HOLD
+	stage.zone = POINT + Vector2(0.0, 300.0)
+	stage.zone_radius = 100.0
+	stage.hold_seconds = 600.0
+	progress.definition.stages = [stage] as Array[BlasterOpsStageData]
+	progress.stage_index = 0
+	progress.recruited[0] = 1
+	sim.player.position = POINT
+	sim.prisoners[0].position = POINT + Vector2(40.0, 0.0)
+	progress.set_ally_order(sim, order)
+	sim.player.position = POINT + player_offset
+	return sim
+
+
+func test_three_orders_put_the_same_ally_in_three_different_places() -> void:
+	var away: Vector2 = Vector2(600.0, 0.0)
+	var places: Array[Vector2] = []
+	for order in [BlasterOpsMissionState.AllyOrder.FOLLOW, BlasterOpsMissionState.AllyOrder.HOLD, BlasterOpsMissionState.AllyOrder.GUARD]:
+		var sim: BlasterOpsSimulation = _scenario(order, "rifleman", away)
+		_run(sim, 300)
+		places.append(sim.prisoners[0].position)
+		print("order %d rifleman at %s, %.0f from player, %.0f from hold point, %.0f from zone" % [order, sim.prisoners[0].position, sim.prisoners[0].position.distance_to(sim.player.position), sim.prisoners[0].position.distance_to(POINT), sim.prisoners[0].position.distance_to(POINT + Vector2(0.0, 300.0))])
+	var follow: BlasterOpsSimulation = _scenario(BlasterOpsMissionState.AllyOrder.FOLLOW, "rifleman", away)
+	assert_true(places[0].distance_to(POINT + away) < 150.0, "follow stays with the player")
+	assert_true(places[1].distance_to(POINT) < 150.0, "hold stays at the ordered point")
+	assert_true(places[2].distance_to(POINT + Vector2(0.0, 300.0)) < 150.0, "protect stands at the objective")
+	assert_true(places[0].distance_to(places[1]) > 300.0)
+	assert_true(places[1].distance_to(places[2]) > 150.0)
+	assert_true(follow != null)
+
+
+func _field_enemy(health: float = 2000.0) -> BlasterOpsEnemyData:
+	var enemy: BlasterOpsEnemyData = load("res://data/blaster_ops/enemies/soldier.tres").duplicate() as BlasterOpsEnemyData
+	enemy.health = health
+	return enemy
+
+
+func test_orders_change_who_the_blade_guard_engages() -> void:
+	var enemies: Array[BlasterOpsEnemyData] = [_field_enemy()]
+	var results: Array[float] = []
+	for order in [BlasterOpsMissionState.AllyOrder.FOLLOW, BlasterOpsMissionState.AllyOrder.HOLD]:
+		var sim: BlasterOpsSimulation = _scenario(order, "blade", Vector2(900.0, 0.0), enemies)
+		sim.targets[0].position = POINT + Vector2(150.0, 0.0)
+		sim.targets[0].previous = sim.targets[0].position
+		sim.targets[0].spawned = true
+		var before: float = sim.targets[0].health
+		var escorts: InfiltrationEscortController = InfiltrationEscortController.new(sim)
+		var idle: InfiltrationIntent = InfiltrationIntent.new()
+		for tick in 240:
+			sim.step(idle, [], escorts.produce_all(sim))
+		results.append(before - sim.targets[0].health)
+		print("order %d blade guard damage to an enemy near the ordered point: %.0f" % [order, results[-1]])
+	assert_eq(results[0], 0.0, "following: the enemy is too far from the player")
+	assert_gt(results[1], 0.0, "holding: the enemy is inside the guard's reach")
+
+
+func test_orders_change_who_the_medic_repairs() -> void:
+	var healed: Array[float] = []
+	for order in [BlasterOpsMissionState.AllyOrder.FOLLOW, BlasterOpsMissionState.AllyOrder.HOLD]:
+		var sim: BlasterOpsSimulation = _scenario(order, "medic", Vector2(900.0, 0.0))
+		sim.player.health = 40.0
+		_run(sim, 480)
+		healed.append(sim.player.health - 40.0)
+		print("order %d medic healed the far player by %.0f" % [order, healed[-1]])
+	assert_gt(healed[0], 0.0, "following: the medic comes along and repairs")
+	assert_eq(healed[1], 0.0, "holding: the medic stays behind")
+
+
+func test_protect_tracks_a_moving_protected_ally() -> void:
+	var sim: BlasterOpsSimulation = _sim([_role("rifleman"), _role("rifleman")] as Array[BlasterOpsAllyData])
+	var progress: BlasterOpsMissionState = sim.mission as BlasterOpsMissionState
+	progress.definition.protected_index = 1
+	progress.recruited[0] = 1
+	progress.recruited[1] = 1
+	progress.set_ally_order(sim, BlasterOpsMissionState.AllyOrder.GUARD)
+	assert_eq(progress.ally_order, BlasterOpsMissionState.AllyOrder.GUARD)
+	sim.player.position = POINT + Vector2(700.0, 0.0)
+	sim.prisoners[1].position = POINT + Vector2(0.0, 240.0)
+	_run(sim, 300)
+	assert_true(sim.prisoners[0].position.distance_to(sim.prisoners[1].position) < 150.0, "stays by the protected ally, not the player")

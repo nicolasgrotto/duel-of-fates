@@ -193,3 +193,60 @@ func test_every_mission_lists_its_enemy_types_and_threat() -> void:
 		for ship in mission.enemy_types():
 			assert_true(ship.archetype != SpaceShipData.Archetype.SECTION, String(ship.id))
 			assert_true(not SpaceProgress.SHIPS.has(ship), String(ship.id))
+
+
+func _service_from(sections: Dictionary, name: String) -> Node:
+	var file: ConfigFile = ConfigFile.new()
+	for key in sections:
+		file.set_value("progress", key, sections[key])
+	var path: String = "user://%s.cfg" % name
+	file.save(path)
+	var service: Node = SERVICE.new()
+	service.path = path
+	service.load_progress()
+	return service
+
+
+func test_full_old_save_keeps_everything_after_a_save_and_reload() -> void:
+	var records: Dictionary = {}
+	for id in SpaceProgress.IDS:
+		records[id] = {"ticks": 3000, "rating": 2}
+	var look: Dictionary = {"character": "lynx", "costume": 1, "blade": 0}
+	var service: Node = _service_from({
+		"version": 1,
+		"survival_best": 12,
+		"infiltration_best": {"first_access": {"ticks": 600, "bonuses": 5}},
+		"incursion_best": {"breach_line": {"ticks": 900, "rating": 3, "bonuses": 7}},
+		"infiltration_look": look,
+		"space": {"records": records, "levels": [2, 1, 0], "ship": "anvil"},
+	}, "test_old_full_save")
+	assert_eq(service.survival_best, 12)
+	assert_eq(service.infiltration_best.first_access.bonuses, 5)
+	assert_eq(service.incursion_best.breach_line.rating, 3)
+	assert_eq(service.incursion_best.breach_line.bonuses, 7)
+	assert_eq(service.infiltration_look.character, "lynx")
+	assert_eq(service.space.selected_ship().id, &"anvil")
+	assert_eq(service.space.records.size(), 6)
+	for ship in SpaceProgress.SHIPS:
+		assert_eq(service.space.levels_for(ship.id), PackedInt32Array([2, 1, 0]))
+		assert_eq(service.space.available(ship.id), 3)
+	assert_true(service.buy_space_upgrade(2, &"needle"))
+	service.reset_space_upgrades(&"spear")
+	var reloaded: Node = SERVICE.new()
+	reloaded.path = service.path
+	reloaded.load_progress()
+	assert_eq(reloaded.space.levels_for(&"needle"), PackedInt32Array([2, 1, 1]))
+	assert_eq(reloaded.space.levels_for(&"spear"), PackedInt32Array([0, 0, 0]))
+	assert_eq(reloaded.space.levels_for(&"anvil"), PackedInt32Array([2, 1, 0]))
+	assert_eq(reloaded.incursion_best.breach_line.rating, 3)
+	DirAccess.remove_absolute(service.path)
+	service.free()
+	reloaded.free()
+
+
+func test_damaged_per_ship_data_is_clamped_to_the_budget() -> void:
+	var progress: SpaceProgress = SpaceProgress.new()
+	progress.restore({"records": {"open_corridor": {"ticks": 60, "rating": 3}}, "ship_levels": {"anvil": [9, 9, 9], "needle": "bad", "unknown": [1, 1, 1]}})
+	assert_eq(progress.levels_for(&"anvil"), PackedInt32Array([1, 0, 0]))
+	assert_eq(progress.levels_for(&"needle"), PackedInt32Array([0, 0, 0]))
+	assert_eq(progress.available(&"spear"), 1)
