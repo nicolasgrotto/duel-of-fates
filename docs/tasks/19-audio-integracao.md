@@ -19,6 +19,7 @@ Tocar a música nova com crossfade, loops sem emenda, camadas por intensidade e 
 - Música de abertura, menu, seleção por Caminho, vitória, derrota e Arcade final ligadas.
 - Mixagem revisada, com níveis por bus anotados em `design/AUDIO.md`.
 - Opções de volume conferidas.
+- Créditos do jogo com as atribuições exigidas pela task 18.
 - Teste de lógica da camada: dado o estado, qual camada toca.
 
 ## Critérios de aceite
@@ -42,7 +43,7 @@ Tocar a música nova com crossfade, loops sem emenda, camadas por intensidade e 
 
 ## Dependências
 
-16 e 17.
+16 e 17. Nenhum serviço externo em tempo de jogo ou de build: o CI usa o áudio já renderizado no repositório.
 
 ## Ordem sugerida
 

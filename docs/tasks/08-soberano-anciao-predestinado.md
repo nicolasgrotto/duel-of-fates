@@ -10,7 +10,7 @@ Aplicar o fluxo validado no piloto a Soberano, Ancião e Predestinado.
 
 ## Contexto
 
-Secretos. O Predestinado tem variante Eclipse com peças próprias (`foretold_eclipse`). Regra de lotes: **um frame-chave por vez, nunca folha completa de uma vez.** Ordem: idle, ataque, hit; depois bloqueio, andar, habilidade e poderes. Tamanho de lote conforme medido em `_lessons.md`; trabalhar um lutador por sessão se o plano limitar. Formato final conforme D1.
+Secretos. O Predestinado tem variante Eclipse com peças próprias (`foretold_eclipse`). **Os trajes Caído, Duelo, Legado e Ocaso são feitos por código, sem imagem gerada.** O Soberano só usa imagem gerada com formas genéricas e sem prompt de rosto. Regra de lotes: **um frame-chave por vez, nunca folha completa de uma vez.** Ordem de referência: idle, ataque, hit; depois, só se a abordagem pedir, bloqueio, andar, habilidade e poderes. Tamanho de lote conforme medido em `_lessons.md`; trabalhar um lutador por sessão se o plano limitar. As peças seguem a abordagem escolhida na task 03. Sem recorte pintado nas peças (D4). Trajes de risco conforme a proposta: por código ou com formas genéricas (D8).
 
 ## Entregáveis
 

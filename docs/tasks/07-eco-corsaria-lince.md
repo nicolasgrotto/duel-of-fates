@@ -10,7 +10,7 @@ Aplicar o fluxo validado no piloto a Eco, Corsária e Lince.
 
 ## Contexto
 
-A Corsária e o Lince carregam armas de disparo desenhadas pelo jogo. Manter mão livre e coldre nas posições usadas pelas poses. Regra de lotes: **um frame-chave por vez, nunca folha completa de uma vez.** Ordem: idle, ataque, hit; depois bloqueio, andar, habilidade e poderes. Tamanho de lote conforme medido em `_lessons.md`; trabalhar um lutador por sessão se o plano limitar. Formato final conforme D1.
+A Corsária e o Lince carregam armas de disparo desenhadas pelo jogo. Manter mão livre e coldre nas posições usadas pelas poses. Regra de lotes: **um frame-chave por vez, nunca folha completa de uma vez.** Ordem de referência: idle, ataque, hit; depois, só se a abordagem pedir, bloqueio, andar, habilidade e poderes. Tamanho de lote conforme medido em `_lessons.md`; trabalhar um lutador por sessão se o plano limitar. As peças seguem a abordagem escolhida na task 03. Sem recorte pintado nas peças (D4). Trajes de risco conforme a proposta: por código ou com formas genéricas (D8).
 
 ## Entregáveis
 

@@ -16,6 +16,10 @@ Herda [_style-base.md](_style-base.md). Referência: `art/reference/sovereign/`.
 
 manto preto até o chão (`#211c27`, um tom acima do preto puro para a silhueta ler), corpo `#131016`; capuz fundo com o rosto na sombra, só os olhos do Eclipse visíveis; sem ombreiras; tronco curvado para a frente, ombros estreitos; gola alta e mangas largas. Lâmina carmesim apontada para o rival, braço adiantado com cotovelo flexível e mão livre recuada (família Esgrimista).
 
+## Risco de propriedade intelectual (D8)
+
+Por código, ou só formas genéricas e sem prompt de rosto. Nunca citar franquia, obra ou personagem no prompt.
+
 ## A definir na task
 
 - **Silhueta distinta:** o que torna este lutador reconhecível pintado de preto.

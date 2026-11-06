@@ -16,7 +16,7 @@ Herda [_style-base.md](_style-base.md). Referência: `art/reference/foretold/`. 
 
 Túnica clara cor de areia (`#c9c3b5`), corpo `#2a2f3a`, acabamento azul (`#6fb2ff`); sem capuz; cinto com fivela e botas escuras. Variante Eclipse com peças próprias (`foretold_eclipse`).
 
-> **Cuidado na hora de gerar.** Os trajes alternativos descritos em `content/CHARACTERS.md`, como o cavaleiro de armadura negra com máscara, capa e antebraço protético, têm alto risco de o gerador reproduzir personagens conhecidos. Não copie essas descrições no prompt: defina silhueta, máscara e armadura próprias e confira o resultado à mão com atenção redobrada.
+> **Decisão do autor (D8).** Os trajes Caído, Duelo, Legado e Ocaso são feitos **por código**, sem imagem gerada, e essas descrições nunca vão para um prompt.
 
 ## A definir na task
 

@@ -16,6 +16,10 @@ Herda [_style-base.md](_style-base.md). Referência: `art/reference/shadow/`. Ta
 
 capa longa até o chão, quase preta (`#1f2029`), corpo `#121319`; capuz levantado e pontudo; barra da capa rasgada em pontas desiguais; botas altas quase pretas. Postura inclinada para a frente, predatória. Guarda baixa: lâmina para baixo e para a frente. Cabo com pomo curvado. Olhos do Eclipse brilhando dentro do capuz.
 
+## Risco de propriedade intelectual (D8)
+
+Só formas genéricas; conferência manual reforçada. Nunca citar franquia, obra ou personagem no prompt.
+
 ## A definir na task
 
 - **Silhueta distinta:** o que torna este lutador reconhecível pintado de preto.

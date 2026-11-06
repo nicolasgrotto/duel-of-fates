@@ -10,7 +10,7 @@ Aplicar o fluxo validado no piloto a Espelho, Haste e Brasa.
 
 ## Contexto
 
-O Espelho é o único traje claro do elenco. A Haste usa lâmina em haste. A Brasa tem lâminas longa e curta em mãos separadas. Regra de lotes: **um frame-chave por vez, nunca folha completa de uma vez.** Ordem: idle, ataque, hit; depois bloqueio, andar, habilidade e poderes. Tamanho de lote conforme medido em `_lessons.md`; trabalhar um lutador por sessão se o plano limitar. Formato final conforme D1.
+O Espelho é o único traje claro do elenco. A Haste usa lâmina em haste. A Brasa tem lâminas longa e curta em mãos separadas. Regra de lotes: **um frame-chave por vez, nunca folha completa de uma vez.** Ordem de referência: idle, ataque, hit; depois, só se a abordagem pedir, bloqueio, andar, habilidade e poderes. Tamanho de lote conforme medido em `_lessons.md`; trabalhar um lutador por sessão se o plano limitar. As peças seguem a abordagem escolhida na task 03. Sem recorte pintado nas peças (D4). Trajes de risco conforme a proposta: por código ou com formas genéricas (D8).
 
 ## Entregáveis
 

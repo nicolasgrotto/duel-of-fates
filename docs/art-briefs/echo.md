@@ -16,6 +16,10 @@ Herda [_style-base.md](_style-base.md). Referência: `art/reference/echo/`. Task
 
 túnica escura curta (`#23202b`), corpo `#121017`; capuz e máscara lisa; manga rasgada só no braço da frente; cinto escuro. Baixa e torta, imprevisível. Lâmina baixa à frente. Cabo com empunhadura.
 
+## Risco de propriedade intelectual (D8)
+
+Máscara própria, só formas genéricas. Nunca citar franquia, obra ou personagem no prompt.
+
 ## A definir na task
 
 - **Silhueta distinta:** o que torna este lutador reconhecível pintado de preto.

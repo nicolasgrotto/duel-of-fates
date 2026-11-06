@@ -15,7 +15,8 @@ A lâmina já tem camadas, rastro, faíscas e sete punhos (ver auditoria); ela l
 ## Entregáveis
 
 - `BladeView` em 3 camadas definidas: núcleo branco, cor, halo aditivo com material `blend_add`.
-- Glow na Web: medir `web_glow = true` no Chrome. Se não couber, simular o bloom com o halo aditivo em camadas, sem pós-processamento, para o site ficar no mesmo nível do nativo.
+- **Medição antes de adotar:** tempo de quadro com `web_glow` ligado e desligado, no duelo mais pesado, em 720p e 1080p, registrado em `docs/tasks/_glow-web.md`. Usar o Chrome do autor com GPU real e registrar a GPU em `chrome://gpu`: o Chrome da automação pode renderizar por software, e aí a medida não vale.
+- **Decisão pela medida:** só ligar o glow na Web se mantiver 60 FPS. Se não der, fazer o halo aditivo no próprio sabre, em camadas, sem pós-processamento, para o site ficar no mesmo nível do nativo.
 - Glow e bloom ajustados em `duel_environment.tres`; flicker sutil contínuo, com `Settings.reduced_effects` desligando.
 - Rastro de golpe mais legível, com fim em faixas e não em degradê.
 - `PointLight2D` colorida por lâmina, com limite por cena.

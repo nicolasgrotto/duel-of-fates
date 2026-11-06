@@ -20,9 +20,10 @@ No text, no letters, no logos, no emblems, no insignia, no symbols on clothing, 
 
 - **Uma imagem por vez:** um frame-chave por pedido, nunca uma folha completa.
 - **Referências anexadas:** a imagem do sprite atual e, depois da primeira pose aprovada, essa pose, para manter a consistência.
-- **`[RIM]`:** manter em retratos, fundos e referências. Remover nas imagens que viram peças do rig, em que o shader faz essa luz (D4, a confirmar na task 00).
+- **`[RIM]`:** só em retratos e fundos. **Removido** em tudo que vira peça do rig, inclusive nos frames-chave de onde as peças saem, porque o shader faz essa luz (D4).
 - **Magenta:** não usar `#FF00FF` nem tons próximos no personagem. A lâmina magenta da Sombra é gerada em outra cor e trocada pela paleta.
 - **Sem texto ou símbolo:** se aparecer qualquer emblema, logo ou letra, descartar a imagem. Não tentar apagar depois.
+- **Trajes de risco (D8):** armaduras e mantos escuros, máscaras e próteses seguem a tabela da proposta: por código ou por formas genéricas.
 - **Conferência:** toda imagem aprovada é olhada à mão, à procura de símbolos que lembrem marcas conhecidas.
 - **Registro:** salvar em `art/source/<id>/` com data e prompt, e contar em `_lessons.md`.
 

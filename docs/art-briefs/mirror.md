@@ -16,6 +16,10 @@ Herda [_style-base.md](_style-base.md). Referência: `art/reference/mirror/`. Ta
 
 manto longo cinza-claro (`#b9bcc7`) — o único personagem claro do elenco —, corpo `#3a3d47`; capuz levantado e máscara lisa com uma fenda; mangas largas e gola alta. Totalmente ereto, imóvel. Lâmina vertical à frente do rosto. Cabo liso.
 
+## Risco de propriedade intelectual (D8)
+
+Máscara própria, só formas genéricas. Nunca citar franquia, obra ou personagem no prompt.
+
 ## A definir na task
 
 - **Silhueta distinta:** o que torna este lutador reconhecível pintado de preto.

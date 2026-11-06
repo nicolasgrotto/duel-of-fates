@@ -1,36 +1,41 @@
-# Task 18: Produção musical: método e entrega
+# Task 18: Produção musical com MIDI, FluidSynth e numpy
 
-**Quem executa:** Claude Code avalia; autor decide serviços pagos
+**Quem executa:** Claude Code; o autor ouve e aprova
 
 Leia antes: [AGENTS.md](../../AGENTS.md), [README desta pasta](README.md), [_auditoria.md](_auditoria.md) e [_proposta-estilo-e-migracao.md](_proposta-estilo-e-migracao.md).
 
 ## Objetivo
 
-Escolher como gerar a música, com teste real, e fixar o formato de entrega.
+Montar a produção musical própria e repetível, e fixar o formato de entrega.
 
 ## Contexto
 
-Três caminhos: MIDI + FluidSynth com soundfont orquestral, síntese procedural em numpy (o projeto já usa em `synth_audio.py`) e geração externa (Suno, Udio). **Licença é o risco:** `AGENTS.md` não aceita asset sem licença conhecida e compatível, e os termos desses serviços variam por plano e mudam; é preciso confirmar no momento do uso. O soundfont também precisa de licença compatível.
+Sem serviços pagos, Suno ou Udio (D7). Só MIDI + FluidSynth com soundfont de licença livre e síntese em numpy. `tools/audio/synth_audio.py` já sintetiza todos os sons em numpy, com semente. FluidSynth não está instalado nesta máquina: é ferramenta de render, offline, e não vai no jogo. O soundfont também não vai: só o áudio renderizado. **Faixa sem licença confirmada não entra.** Candidatos a soundfont para checar: FluidR3_GM, MuseScore_General, GeneralUser GS e conversões de VSCO 2 CE. A lista é ponto de partida: a licença de cada arquivo precisa ser lida na fonte, porque varia por versão. Sonatina e bibliotecas com cláusula não comercial ou de amostragem ficam de fora.
 
 ## Entregáveis
 
-- Teste de 30 s da mesma ficha nos caminhos viáveis, com comparação de qualidade, controle, custo e licença.
-- Recomendação registrada em `design/AUDIO.md`.
-- Especificação do que for gerado fora: prompt sem nome de artista ou obra, BPM, tom, duração, stems.
-- Formato de entrega: mestre em WAV 44,1 kHz 16 bits, jogo em OGG Vorbis; loops com pontos de início e fim; camadas de duração igual; limite de clique na emenda.
+- `tools/audio/music/`: composição em dados ou MIDI, render por FluidSynth, camadas em numpy, mixagem e exportação, tudo por um comando.
+- `docs/art-briefs/audio/_production.md`: instalação, versão das ferramentas e licenças.
+- Tabela de licenças: para cada soundfont ou amostra, link da fonte, texto da licença, data da consulta, atribuição exigida e SHA-256 do arquivo.
+- Atribuições exigidas incluídas em `ASSETS.md` e nos créditos do jogo.
+- Teste de 30 s de uma ficha, para o autor ouvir antes de produzir o restante.
+- Formato de entrega: mestre em WAV 44,1 kHz 16 bits, jogo em OGG Vorbis; pontos de loop; camadas de duração igual; limite de clique na emenda.
 - Orçamento de tamanho na Web.
 
 ## Critérios de aceite
 
-- Licença de cada ferramenta e soundfont documentada com link e data.
-- O autor ouve os testes e escolhe.
-- Script, se houver, repetível e em `tools/audio/`.
+- Licença livre (CC0 ou permissiva) confirmada, com link e data, para tudo que for usado. Sem confirmação, o material sai.
+- Nenhum serviço pago ou externo em qualquer etapa; o render funciona sem rede.
+- O mesmo comando, com a mesma entrada, gera áudio idêntico, com checagem por hash.
+- O soundfont não entra no repositório nem no `.pck`, salvo se a licença permitir e o tamanho justificar.
+- O autor aprova o teste de 30 s.
 
 ## Arquivos afetados
 
-- `design/AUDIO.md`
+- `tools/audio/music/**`
 - `docs/art-briefs/audio/_production.md`
-- `tools/audio/**` se preciso
+- `design/AUDIO.md`
+- `ASSETS.md`
 
 ## Dependências
 

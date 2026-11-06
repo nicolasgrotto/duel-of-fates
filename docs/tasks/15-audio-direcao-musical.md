@@ -10,17 +10,19 @@ Definir clima, instrumentação e tom por faixa, antes de produzir qualquer mús
 
 ## Contexto
 
-Decisão do autor: híbrido de synth sombrio com orquestral épico (cordas graves, metais, coro sintético, pads, percussão tensa). Regra do projeto: composição original, nenhuma melodia existente. Referências são só de **clima**, descritas em palavras, nunca nome de obra, compositor ou franquia nos prompts.
+Decisão do autor: **synth sombrio, pads, baixos, coro sintético e percussão, com orquestral só como textura.** Sem serviços pagos, Suno ou Udio (D7). Só MIDI + FluidSynth com soundfont de licença livre e síntese em numpy. Regra do projeto: composição original. Referências são só de **clima**, em palavras, nunca nome de obra, compositor ou franquia.
 
 ## Entregáveis
 
 - `design/AUDIO.md` com a direção: paleta instrumental, faixa de BPM, tonalidades, motivo melódico original e como ele varia entre Aurora e Eclipse.
 - `docs/art-briefs/audio/_direction.md` com uma ficha por faixa: abertura, menu, seleção (Aurora e Eclipse), 2 a 3 arenas, vitória, derrota, Arcade final.
+- Em cada ficha, o que vem de numpy (pads, baixos, coro, percussão) e o que vem do soundfont (textura orquestral).
 - Camadas por intensidade: normal, vida baixa, clímax.
 
 ## Critérios de aceite
 
-- Cada ficha tem clima, BPM, tom, duração, ponto de loop, camadas e bus.
+- Cada ficha tem clima, BPM, tom, duração, ponto de loop, camadas, bus e origem de cada instrumento.
+- Orquestral aparece só como textura, nunca como condutor.
 - Sem nome de obra, compositor ou franquia.
 - Aprovado pelo autor.
 

@@ -1,6 +1,6 @@
 # Proposta: guia de estilo e migração para 640×360
 
-Proposta para aprovação, a ser registrada de vez na task 00. **Nada foi implementado.** Base: [_auditoria.md](_auditoria.md).
+Aprovada pelo autor, com as decisões abaixo; a task 00 registra tudo em `ART_DIRECTION.md`. **Nada foi implementado ainda.** Base: [_auditoria.md](_auditoria.md).
 
 ## Grade
 
@@ -13,46 +13,33 @@ Proposta para aprovação, a ser registrada de vez na task 00. **Nada foi implem
 
 A simulação não muda: ela trabalha em unidades, e a mudança é só de quantos pixels cabem em cada unidade. O enquadramento continua igual, com o lutador em 27% da altura da tela.
 
-## Decisões que precisam do autor
+## Decisões do autor
 
-### D1. Rig com peças ou quadro a quadro
+Respondidas pelo autor. A task 00 as registra em `ART_DIRECTION.md`.
 
-O plano pede sprites com frames-chave. O jogo usa rig, e o que depende dele está na auditoria.
-
-| | **A. Peças no rig (recomendada)** | B. Quadro a quadro |
+| # | Decisão | Consequência |
 | --- | --- | --- |
-| Imagens por lutador | cerca de 10: poses-chave de referência e folha de peças | **centenas**: cerca de 25 ações × 6 quadros = 150 por lutador, cerca de 2.700 no elenco, antes dos trajes |
-| Animação | toda a atual, e o trabalho da Vespa e da Brasa é preservado | refazer tudo; golpes sincronizados à mão |
-| Trajes e rostos | troca de paleta, como hoje | multiplicam o volume |
-| Luz da lâmina em tempo real | sim, com normal gerado | só pintada, e errada nas outras cores |
-| Execuções, peças cortadas, capa física | preservadas | perdidas ou refeitas |
-| Limite | movimento fica limitado ao que o rig faz | poses totalmente livres |
+| D1 | **Rig com peças**, mantido. Quadro a quadro está descartado | A task 03 compara duas formas de fazer as peças: (a) todas por IA a partir do frame-chave; (b) híbrido, com IA só em cabeça, torso, capa e punho, e o restante por código |
+| D2 | **Zoom contínuo mantido**, com 640×360 como enquadramento neutro | A task 00b testa punch-in e zoom contínuo quanto a shimmer e pixels de largura desigual, e propõe degraus inteiros ou transição curta se precisar |
+| D3 | **Texto em Oxanium**, em alta resolução | Imagens de interface ficam na grade, com pixel de 3 px na base 1080p |
+| D4 | **Recorte pintado só em retratos e fundos** | Nas peças, a luz vem do shader e dos mapas de normal |
+| D5 | **Tasks 00b e 03 antes das tasks 20 a 22 do Codex**, para a plataforma já usar os modelos novos. Sem branches separadas | A task 19 do Codex (Roguelite) é top-down e não depende do rig: pode rodar antes, sem esperar |
+| D6 | **Modos top-down fora** desta rodada | Operações e naves ficam na grade atual |
+| D7 | **Áudio sem serviços pagos, Suno ou Udio.** MIDI + FluidSynth com soundfont de licença livre, mais síntese em numpy | Direção: synth sombrio, pads, baixos, coro sintético e percussão, com orquestral só como textura. Faixa sem licença confirmada não entra |
+| D8 | **Trajes com risco de propriedade intelectual** são feitos por código ou descritos só por formas genéricas | Ver "Trajes de risco" abaixo |
 
-**Recomendo A**, sem abrir mão dos frames-chave: idle, ataque e hit continuam sendo gerados um por vez, como **alvo de qualidade e referência**, e a folha de peças sai deles. A task 03 mede a diferença com um lutador real antes de comprometer o restante. Se o resultado do rig não chegar ao nível das poses, a alternativa é híbrida: rig para o combate e quadros pintados só em poses especiais, como introduções.
+## Trajes de risco
 
-### D2. Zoom da câmera ou 2× literal
+Armaduras e mantos escuros, máscaras e próteses são o que o gerador mais tende a aproximar de personagens conhecidos.
 
-Pixel perfect com ampliação inteira e fixa não convive com o zoom contínuo e o punch-in, que são parte da sensação do duelo (`ART_DIRECTION`, "Punch-in curto no impacto").
+| Lutador | Traje ou visual | Tratamento |
+| --- | --- | --- |
+| Predestinado | Caído, Duelo, Legado, Ocaso | **Por código** a partir dos pintores atuais, sem imagem gerada |
+| Soberano | Original (manto preto, capuz fundo, olhos do Eclipse) e Legado | Por código, ou brief só com formas genéricas e sem prompt de rosto |
+| Sombra | Capa longa quase preta, capuz pontudo | Formas genéricas; conferência manual reforçada |
+| Espelho, Eco | Máscara lisa com capuz | Formas genéricas; máscara própria |
 
-**Recomendo** tratar 640×360 como a grade **neutra** e manter o zoom com `pixel_upscale`: todo o quadro é desenhado na grade e ampliado por igual, então não há mixel, pois todos os pixels têm o mesmo tamanho, e no neutro a ampliação é inteira. A alternativa literal, câmera só com pan, exige refazer o enquadramento e perde o punch-in.
-
-### D3. Texto de interface
-
-**Recomendo** manter a Oxanium em alta resolução, como na família tática aprovada na 1.1: é mais legível, serve aos dois idiomas e cumpre o mínimo de 18 px em 720p. Tudo que for **imagem** de interface (retratos, ícones, molduras, fundos) fica na grade, com pixel de 3 px na base 1080p.
-
-### D4. Luz de recorte pintada ou dinâmica
-
-Cada lutador tem três cores de lâmina, e o shader já ilumina o corpo pela lâmina. Recorte pintado ficaria na cor errada em duas delas.
-
-**Recomendo:** recorte **pintado** só em retratos, fundos e referências; nas peças do rig, a luz vem do shader e dos mapas de normal. O prompt-base traz a instrução em um bloco opcional.
-
-### D5. Ordem em relação às tasks 19 a 22 do Codex
-
-O Codex tem Roguelite, Saga e Ação lateral pendentes, na mesma branch. A migração de grade e a troca de peças mexem no que essas tasks usam. **Recomendo** concluir as tasks 00b e 03 antes de Ação lateral (21 e 22), que reutiliza o rig, ou deixar as duas frentes em branches separadas.
-
-### D6. Modos top-down
-
-Operações e naves têm sprites de 24×28 e 40×40, tiles de 32×32 e câmera própria. **Recomendo** deixá-los fora desta rodada, na grade atual, porque foram refeitos e aprovados na 1.1.
+Nos prompts, nunca citar franquia, obra ou personagem, nem por negação: o texto descreve só formas, materiais e cores.
 
 ## Guia de estilo proposto
 
