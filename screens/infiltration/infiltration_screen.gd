@@ -14,6 +14,7 @@ const HEAT_BAR_HEIGHT: float = 12.0
 const HEAT_LABEL_GAP: float = 16.0
 const ABILITY_BOTTOM: float = 40.0
 const ABILITY_RESERVE: float = 356.0
+const TICK_COST_WINDOW: int = 300
 const SOUNDS: Dictionary = {
 	InfiltrationEvent.Type.SWING_STARTED: &"swing_light",
 	InfiltrationEvent.Type.SWING_HIT: &"hit_light",
@@ -56,6 +57,11 @@ var _music: Array[AudioStreamPlayer] = []
 var _context: Label
 var _accumulator: float = 0.0
 var _guide_navigation: InfiltrationNavigation
+var _tick_total: int = 0
+var _tick_peak: int = 0
+var _tick_samples: int = 0
+var _tick_average: int = 0
+var _tick_worst: int = 0
 var _guide_age: int = 0
 var _guide_text: String = ""
 var _guide_target: Vector2 = Vector2.INF
@@ -279,7 +285,9 @@ func _process(delta: float) -> void:
 func step_once(command: InfiltrationIntent) -> void:
 	if _finished:
 		return
+	var started: int = Time.get_ticks_usec()
 	sim.step(command, enemy_controller.produce_all(sim), escort_controller.produce_all(sim))
+	_record_tick_cost(Time.get_ticks_usec() - started)
 	_present_events()
 	if mode != null and sim.mission.outcome != InfiltrationMissionState.Outcome.ACTIVE:
 		_finished = true
@@ -387,7 +395,7 @@ func _update_presentation(alpha: float) -> void:
 			Engine.get_frames_per_second(), sim.tick, str(player.position), str(player.velocity), str(player.aim), player.guard,
 			player.parry_age, player.parry_cooldown, player.swing_tick, player.health, player.vigor, sim.dropped_events,
 		]
-		_debug.text += "\nalarm %s  reinforcements %d" % [sim.alarm_active(), sim.reinforcement_ticks]
+		_debug.text += "\nalarm %s  reinforcements %d  tick %d us avg / %d us max  active %d" % [sim.alarm_active(), sim.reinforcement_ticks, _tick_average, _tick_worst, _active_enemies()]
 		_debug.text += "\nheat %.1f  burst %d / %d  dodge %d / %d  power %d slot %d cooldowns %d %d %d  channel %d  absorb %d  heal %d  boost %d  area %d" % [sim.state.heat, sim.state.burst_left, sim.state.burst_ticks, sim.state.dodge_age, sim.state.dodge_cooldown, sim.state.power_ticks, sim.state.cast_slot, sim.state.power_cooldown, sim.state.power_cooldown_2, sim.state.power_cooldown_3, sim.state.channel_ticks, sim.state.absorb_ticks, sim.state.heal_ticks, sim.state.boost_ticks, sim.state.area_ticks]
 		if sim.mission is BlasterOpsMissionState:
 			var progress: BlasterOpsMissionState = sim.mission as BlasterOpsMissionState
@@ -397,6 +405,28 @@ func _update_presentation(alpha: float) -> void:
 		for index in range(sim.map.targets.size(), sim.targets.size()):
 			var actor: InfiltrationActor = sim.targets[index]
 			_debug.text += "\n%d %s %.3f  %s  waypoint %d" % [index + 1, InfiltrationActor.Awareness.keys()[actor.awareness], actor.suspicion, InfiltrationActor.Decision.keys()[actor.decision], actor.waypoint]
+
+
+func _record_tick_cost(microseconds: int) -> void:
+	_tick_total += microseconds
+	_tick_peak = maxi(_tick_peak, microseconds)
+	_tick_samples += 1
+	if _tick_samples < TICK_COST_WINDOW:
+		return
+	_tick_average = _tick_total / _tick_samples
+	_tick_worst = _tick_peak
+	if _view.debug:
+		print("ops_tick_us avg=%d max=%d active=%d" % [_tick_average, _tick_worst, _active_enemies()])
+	_tick_total = 0
+	_tick_peak = 0
+	_tick_samples = 0
+
+
+func _active_enemies() -> int:
+	var count: int = 0
+	for actor in sim.targets:
+		count += int(actor.health > 0.0)
+	return count
 
 
 func _update_weapon() -> void:

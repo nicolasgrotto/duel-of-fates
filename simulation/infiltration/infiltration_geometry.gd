@@ -5,6 +5,8 @@ const EPSILON: float = 0.0001
 
 
 static func move_body(map: InfiltrationMapData, start: Vector2, motion: Vector2, radius: float, targets: Array[InfiltrationActor], self_actor: InfiltrationActor = null, player: InfiltrationActor = null) -> Vector2:
+	if motion == Vector2.ZERO:
+		return start
 	var result: Vector2 = start
 	for axis in 2:
 		var destination: float = result[axis] + motion[axis]

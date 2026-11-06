@@ -280,3 +280,26 @@ func test_catalog_has_thirteen_unique_missions_with_translated_briefings_and_pre
 			assert_ne(TranslationServer.translate(mission.title_key), mission.title_key)
 			assert_ne(TranslationServer.translate(mission.briefing_key), mission.briefing_key)
 	TranslationServer.set_locale(locale)
+
+
+func test_waves_hold_reinforcements_above_the_active_enemy_limit() -> void:
+	var sim: BlasterOpsSimulation = _sim(0)
+	var progress: BlasterOpsMissionState = sim.mission as BlasterOpsMissionState
+	var limited: BlasterOpsConfig = sim.operations.duplicate() as BlasterOpsConfig
+	limited.max_active_enemies = 1
+	sim.operations = limited
+	progress._start_wave(sim, 0)
+	var indices: PackedInt32Array = progress.definition.waves[0].indices
+	assert_gt(indices.size(), 1)
+	assert_eq(progress.enemies_left(sim), 1)
+	assert_false(progress._wave_spawned(sim))
+	sim.targets[indices[0]].health = 0.0
+	progress._spawn_pending(sim)
+	assert_eq(progress.enemies_left(sim), 1)
+	assert_true(sim.targets[indices[1]].spawned)
+
+
+func test_configured_limits_come_from_the_measured_budget() -> void:
+	assert_eq(BlasterOpsTraining.CONFIG.max_active_enemies, 24)
+	assert_eq(BlasterOpsTraining.CONFIG.max_allies, 6)
+	assert_eq(BlasterOpsTraining.CONFIG.projectile_capacity, 64)

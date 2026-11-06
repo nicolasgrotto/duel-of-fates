@@ -95,11 +95,15 @@ func _start_wave(sim: BlasterOpsSimulation, index: int) -> void:
 
 
 func _spawn_pending(sim: BlasterOpsSimulation) -> void:
+	var active: int = enemies_left(sim)
 	for wave in range(wave_index + 1):
 		for index in definition.waves[wave].indices:
 			var actor: InfiltrationActor = sim.targets[index]
 			if actor.spawned or not sim._spawn_clear(actor.position):
 				continue
+			if active >= sim.operations.max_active_enemies:
+				return
+			active += 1
 			actor.spawned = true
 			actor.health = definition.phases[0].enemy.health if index == definition.phase_target and not definition.phases.is_empty() else sim.target_data[index].health
 			InfiltrationPerception.alert(sim, index, sim.player.position)

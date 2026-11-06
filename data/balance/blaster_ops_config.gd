@@ -26,6 +26,10 @@ extends InfiltrationConfig
 @export var dodge_noise: float = 220.0
 @export var power_noise: float = 300.0
 
+@export_group("Limits")
+@export var max_active_enemies: int = 24
+@export var max_allies: int = 6
+
 @export_group("Incursion missions")
 @export var barrier_capacity: int = 2
 @export var deploy_distance: float = 96.0

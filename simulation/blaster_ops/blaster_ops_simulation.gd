@@ -4,6 +4,7 @@ extends InfiltrationSimulation
 const POWER_COMMANDS: Array[int] = [Intent.Command.POWER, InfiltrationIntent.POWER_2, InfiltrationIntent.POWER_3]
 const POWER_BOLT_SHOOTER: int = -2
 const SPREAD_PATTERN: PackedFloat32Array = [0.0, 1.0, -1.0, 0.5, -0.5]
+const BOLT_SWEEP_MARGIN: float = 32.0
 
 var operations: BlasterOpsConfig
 var arena: BlasterOpsMap
@@ -40,7 +41,8 @@ func step(intent: InfiltrationIntent, enemy_intents: Array[InfiltrationIntent] =
 		return
 	tick += 1
 	player.previous = player.position
-	for actor in targets:
+	_refresh_live_bodies()
+	for actor in live_bodies:
 		actor.previous = actor.position
 	_advance_player_timers()
 	_advance_operations()
@@ -59,6 +61,20 @@ func step(intent: InfiltrationIntent, enemy_intents: Array[InfiltrationIntent] =
 		mission.advance(self, escort_intents)
 		if mission is BlasterOpsMissionState and mission.outcome == InfiltrationMissionState.Outcome.ACTIVE:
 			_step_allies(escort_intents)
+
+
+func _refresh_live_bodies() -> void:
+	live_bodies.clear()
+	live_indices.clear()
+	alerted_bodies = 0
+	for index in targets.size():
+		var actor: InfiltrationActor = targets[index]
+		if actor.health > 0.0:
+			live_bodies.append(actor)
+			live_indices.append(index)
+			alerted_bodies += int(actor.awareness == InfiltrationActor.Awareness.ALERTED)
+		else:
+			actor.previous = actor.position
 
 
 func wall_for(side: BlasterOpsFaction.Side, start: Vector2, end: Vector2, radius: float = 0.0) -> float:
@@ -138,7 +154,7 @@ func _step_allies(intents: Array[InfiltrationIntent]) -> void:
 			continue
 		var aim: Vector2 = intents[index].aim.normalized()
 		var target: bool = false
-		for enemy in targets:
+		for enemy in live_bodies:
 			if enemy.health > 0.0 and InfiltrationGeometry.in_sector(actor.position, aim, enemy.position, operations.ally_fire_range, config.swing_degrees) and wall_for(BlasterOpsFaction.Side.ALLIED, actor.position, enemy.position) == INF:
 				target = true
 				break
@@ -313,7 +329,7 @@ func _resolve_swing() -> void:
 func _move_player(desired: Vector2, dash: bool = false) -> void:
 	var acceleration: float = config.acceleration if desired.length_squared() > 0.0 else config.deceleration
 	player.velocity = desired if dash else player.velocity.move_toward(desired, acceleration * Ticks.DELTA)
-	player.position = InfiltrationGeometry.move_body(map, player.position, player.velocity * Ticks.DELTA, player.radius, targets)
+	player.position = InfiltrationGeometry.move_body(map, player.position, player.velocity * Ticks.DELTA, player.radius, live_bodies)
 	player.velocity = (player.position - player.previous) / Ticks.DELTA
 	player.walked += player.position.distance_to(player.previous)
 	if player.walked >= config.step_distance:
@@ -423,10 +439,13 @@ func _step_bolts() -> void:
 				fraction = impact
 				victim = 0
 		elif bolt.owner == 0:
-			for index in targets.size():
-				if targets[index].health <= 0.0:
+			var sweep: float = distance + bolt.data.size + BOLT_SWEEP_MARGIN
+			for index in live_indices:
+				var actor: InfiltrationActor = targets[index]
+				var limit: float = sweep + actor.radius
+				if actor.health <= 0.0 or actor.position.distance_squared_to(bolt.position) > limit * limit:
 					continue
-				var impact: float = _actor_impact(bolt, end, targets[index])
+				var impact: float = _actor_impact(bolt, end, actor)
 				if impact < fraction:
 					fraction = impact
 					victim = index + 1
@@ -552,7 +571,7 @@ func _apply_enemy_intent(index: int, intent: InfiltrationIntent) -> void:
 		actor.stun_ticks = maxi(actor.stun_ticks - 1, 0)
 		if actor.impulse_ticks > 0:
 			actor.impulse_ticks -= 1
-			actor.position = InfiltrationGeometry.move_body(map, actor.position, actor.impulse * Ticks.DELTA, actor.radius, targets, actor, player)
+			actor.position = InfiltrationGeometry.move_body(map, actor.position, actor.impulse * Ticks.DELTA, actor.radius, live_bodies, actor, player)
 		if actor.stun_ticks > 0:
 			actor.burst_left = 0
 			actor.velocity = (actor.position - actor.previous) / Ticks.DELTA
@@ -563,7 +582,7 @@ func _apply_enemy_intent(index: int, intent: InfiltrationIntent) -> void:
 	actor.stun_ticks = maxi(actor.stun_ticks - 1, 0)
 	if actor.impulse_ticks > 0:
 		actor.impulse_ticks -= 1
-		actor.position = InfiltrationGeometry.move_body(map, actor.position, actor.impulse * Ticks.DELTA, actor.radius, targets, actor, player)
+		actor.position = InfiltrationGeometry.move_body(map, actor.position, actor.impulse * Ticks.DELTA, actor.radius, live_bodies, actor, player)
 	if actor.stun_ticks > 0:
 		actor.telegraph_ticks = -1
 		actor.burst_left = 0
@@ -576,7 +595,7 @@ func _apply_enemy_intent(index: int, intent: InfiltrationIntent) -> void:
 		actor.decision = InfiltrationActor.Decision.PATROL
 	if actor.telegraph_ticks < 0:
 		var speed: float = data.speed * (data.alarm_speed_ratio if (intent.held & Intent.Command.DODGE) != 0 else 1.0)
-		actor.position = InfiltrationGeometry.move_body(map, actor.position, intent.movement.limit_length() * speed * Ticks.DELTA, actor.radius, targets, actor, player)
+		actor.position = InfiltrationGeometry.move_body(map, actor.position, intent.movement.limit_length() * speed * Ticks.DELTA, actor.radius, live_bodies, actor, player)
 	actor.velocity = (actor.position - actor.previous) / Ticks.DELTA
 	_advance_enemy_mission_intent(index, intent)
 	if actor.awareness != InfiltrationActor.Awareness.ALERTED or (intent.held & Intent.Command.LIGHT) == 0:

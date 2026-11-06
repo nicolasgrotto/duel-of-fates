@@ -37,8 +37,11 @@ static func step(sim: InfiltrationSimulation) -> void:
 		var actor: InfiltrationActor = sim.targets[index]
 		if actor.health <= 0.0:
 			continue
-		actor.visible_player = sees(sim, index)
-		actor.target_prisoner = visible_prisoner(sim, index)
+		if actor.awareness != InfiltrationActor.Awareness.ALERTED or sim.alerted_bodies <= sim.config.sight_stagger_above or (sim.tick + index) % sim.config.alerted_sight_period == 0:
+			actor.visible_player = sees(sim, index)
+			actor.target_prisoner = visible_prisoner(sim, index)
+		elif actor.target_prisoner >= 0 and not sim.prisoner_exposed(actor.target_prisoner):
+			actor.target_prisoner = -1
 		if actor.target_prisoner >= 0 and actor.visible_player and not (sim.target_data[index] as InfiltrationEnemyData).prefers_prisoners:
 			if actor.position.distance_squared_to(sim.player.position) <= actor.position.distance_squared_to(sim.prisoners[actor.target_prisoner].position):
 				actor.target_prisoner = -1

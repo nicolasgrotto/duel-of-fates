@@ -35,6 +35,9 @@ func produce_all(sim: InfiltrationSimulation) -> Array[InfiltrationIntent]:
 				if progress.definition.kind == BlasterOpsMissionData.Kind.DEFENSE:
 					continue
 			var nearest: float = operations.operations.ally_fire_range
+			if actor.fire_ticks > 0:
+				leader = actor.position
+				continue
 			for target in sim.targets:
 				var distance: float = actor.position.distance_to(target.position)
 				if target.health > 0.0 and distance < nearest and operations.wall_for(BlasterOpsFaction.Side.ALLIED, actor.position, target.position) == INF:

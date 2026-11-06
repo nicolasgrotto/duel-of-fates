@@ -17,6 +17,9 @@ var prisoners: Array[InfiltrationActor] = []
 var mission: InfiltrationMissionState
 var reinforcement_ticks: int = -1
 var reinforcement_called: bool = false
+var live_bodies: Array[InfiltrationActor] = []
+var live_indices: PackedInt32Array = []
+var alerted_bodies: int = 0
 var _empty_enemy_intent: InfiltrationIntent = InfiltrationIntent.new()
 var _panel_requests: PackedByteArray = []
 

@@ -53,4 +53,4 @@ func produce(sim: InfiltrationSimulation, index: int, intent: InfiltrationIntent
 
 func _move(sim: InfiltrationSimulation, actor: InfiltrationActor, destination: Vector2, intent: InfiltrationIntent, stop: float) -> void:
 	if actor.position.distance_to(destination) > stop:
-		intent.movement = _navigation.direction(actor.position, destination, actor.radius)
+		intent.movement = _navigation.direction(actor.position, destination, actor.radius, sim.alerted_bodies > sim.config.sight_stagger_above)
