@@ -4,6 +4,37 @@ Roteiro para o autor validar, jogando, o que entrou na fase 7.5 (revisão de com
 
 Legenda: ✅ ficou bom · ⚠️ funciona mas a sensação ou o número precisa de ajuste · ❌ não funciona.
 
+## 26. Interface da 1.1, ordens e tutoriais
+
+**Como jogar:** a mesma build local da seção 25. Nada é publicado.
+
+| Passo | Verificar | Resultado esperado |
+| --- | --- | --- |
+| 26.1 | Console de Operações, 1280×720 e 1920×1080 | Grupos Treinamento, Infiltração e Incursão; barra ciano na seleção; prévia inteira, sem cone cortado; nada corta nem cria rolagem; rodapé com teclas |
+| 26.2 | Setas, Enter, Esc e mouse no Console | Navega só pelas linhas, pula títulos; Enter inicia; passar o mouse seleciona; clique confirma |
+| 26.3 | Painéis Personagem e Arma | Mesma composição; ← → trocam traje; a tecla de lâmina funciona |
+| 26.4 | Mapa de setor | Rota ciano sobre o que foi concluído e tracejada à frente; colchetes âmbar na seleção; círculo tracejado ao passar o mouse; primeiro clique seleciona, segundo inicia; nome legível sobre as linhas |
+| 26.5 | Painel da missão no mapa | Objetivo, briefing, tipos de inimigo, ameaça, melhor nota, situação e recompensa, sem cortar nas seis missões |
+| 26.6 | Hangar e Oficina juntos | ↑ ↓ na coluna, ← → troca entre naves e melhorias; Enter usa a nave ou compra; a nave em foco recebe a melhoria; barra ciano mostra o ganho |
+| 26.7 | Comprar melhorias em duas naves | Cada nave tem as suas; comprar em uma não muda os pontos da outra; `MÁX` e `Resta 1 nível` corretos; Refazer só afeta a nave em foco |
+| 26.8 | Save antigo com a Oficina comprada | As melhorias continuam em todas as quatro naves. Nada se perde |
+| 26.9 | HUD de missão nas Incursões | Um cartão com etapa, objetivo em frase, barra e direção; `Etapa concluída` ao terminar; seta ciano para fora da tela e marca no alvo. Dá para saber o que fazer sem parar de jogar? |
+| 26.10 | HUD na Infiltração | Rótulo mostra a segurança; alarme troca a borda para perigo; alvo e distância corretos |
+| 26.11 | HUD nas naves | Mesmo cartão, onda, fase, casco aliado e alvo; impulso e míssil em etiquetas com tecla |
+| 26.12 | Comandos no rodapé | Aparecem 12 s no início, somem aos poucos, voltam ao reiniciar e estão na pausa; nunca cobrem os poderes |
+| 26.13 | Terminal de suprimentos | Todas as ofertas visíveis; marcas de nível, `MÁX`, `×N`, custo; indisponível apagada com o motivo; Agora → Depois com os números reais; `Resta 1 compra` |
+| 26.14 | Comprar cura com vida cheia | Recusada, com o motivo. **Regra nova:** antes gastava o saldo sem efeito |
+| 26.15 | `G` com aliados: Seguir, Segurar aqui, Proteger | Etiqueta muda e fica âmbar fora de Seguir; anel âmbar no ponto; aliados ficam lá e continuam lutando; a guarda de lâmina avança a partir do ponto |
+| 26.16 | `G` em Corredor dos aliados e Nó de defesa | Proteger aparece e cerca o protegido ou o terminal; sem alvo, o ciclo pula Proteger |
+| 26.17 | Extração aberta com ordem dada | Todos seguem para a saída sozinhos |
+| 26.18 | Teclas personalizadas antigas | Continuam iguais; `G` só entra se estiver livre |
+| 26.19 | Controle físico: direcional para cima dá a ordem | **Mudança:** o direcional não move mais nas Operações, só o stick esquerdo. Ainda não testado com controle real |
+| 26.20 | Treino de Infiltração | Passos em ordem, com as teclas atuais, sem nota nem recompensa. Dá para entender sozinho? Dura de 2 a 4 minutos? |
+| 26.21 | Treino de Incursão com vários personagens | Todos os 14 passos; o rifle é só do treino; sem poder, o passo de poder é pulado |
+| 26.22 | Treino de voo | Oito passos; acessível pelo mapa de setor |
+| 26.23 | Tentar travar um treino: gastar barreiras antes, libertar antes da hora, sair da área | Nenhum passo fica impossível; se a ação já não pode acontecer, o passo conclui sozinho |
+| 26.24 | Terminar treinos e voltar ao menu | Recordes e pontos da Oficina inalterados |
+
 ## 25. Atualização 1.1 das Operações
 
 **Como jogar:** `godot --headless --path . --export-release "Web" build/web/index.html`, depois `python -m http.server 8000 --directory build/web` e abra `http://localhost:8000`. Build local: nada é publicado. No editor a janela agora abre em 1280×720 e encolhe para caber na tela.

@@ -656,7 +656,9 @@ Cada personagem tem **treino** por classe de arma: Treinado, Familiar ou Sem tre
 - **Treino de Incursão:** mirar e atirar, o calor da arma, corte e guarda, aparar disparo, esquiva, poderes, trocar de arma, barreira, ordem aos aliados, terminal de suprimentos.
 - **Treino de Voo:** acelerar e girar, disparar, impulso, míssil, derrubar um alvo, escudo, seguir o marcador de alvo.
 
-Cada passo é um **objetivo de ação** na etapa: uma ação a realizar, N vezes. O alvo vem dos dados e é contado pela simulação, para que o teste possa atravessar o tutorial com as mesmas intenções do jogador.
+Cada passo é um **objetivo de ação** na etapa: uma ação a realizar, N vezes. O alvo vem dos dados e é contado pela simulação, para que o teste possa atravessar o tutorial com as mesmas intenções do jogador. **Um passo nunca trava:** se a ação deixou de ser possível (barreiras gastas antes, aliado já libertado, sem poder, nada para comprar), ele conclui sozinho. O Treino de Incursão usa sempre o rifle, para ensinar a troca de arma, sem mudar a escolha salva.
+
+**Terminal de suprimentos.** Cura com a vida cheia é recusada: antes gastava o saldo sem efeito.
 
 ## Arsenal da História
 

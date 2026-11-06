@@ -83,6 +83,8 @@ Arquivos e pastas em `snake_case`; classes com `class_name` em `PascalCase`.
 - **Ordens:** `INTENT.ORDER_ALLIES` é mais um bit de intenção. `BlasterOpsMissionState.ally_order` e `ally_anchor` ficam no snapshot; `InfiltrationEscortController` só lê o ponto a seguir com `sim.ally_anchor(index)`. Sem regra na apresentação.
 - **Etapa de ação:** `BlasterOpsStageData.Objective.ACTION` conta ações em `BlasterOpsMissionState.action_counts`, alimentado por `note_action`, dentro da simulação. O tutorial é uma missão comum, em `BlasterOpsMode.TUTORIALS`, fora de `all_missions()`, e o modo não grava nada quando a missão tem `is_tutorial`.
 - **Oficina por nave:** `SpaceProgress.ship_levels` (id da nave → três níveis). `available()` conta por nave. A chave antiga `levels` é aplicada às quatro naves ao restaurar.
+- **Telas novas:** `screens/infiltration/supply_shop.gd` (`SupplyShop`, sem regra: lê o estado, recusa pelo `offer_block` e pede a compra por sinal; a compra continua sendo a intenção `purchase`) e `screens/space/sector_map.gd` (`SectorMap`, só desenho e clique). `ObjectiveCard` só exibe: quem escolhe o texto é a tela.
+- **Marcas no mundo:** `BlasterOpsView.objective_point` e `order_point` são definidos pela tela a cada quadro.
 - **Tutorial de naves:** `SpaceMissionData.tutorial_steps` (`SpaceTutorialStep`) conta ações em `SpaceMissionState`, com o mesmo princípio.
 
 ### Atualização 1.1 das Operações

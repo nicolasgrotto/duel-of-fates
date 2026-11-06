@@ -36,7 +36,7 @@ Painel esquerdo de 728 px: cabeçalho com barra de destaque e contagem à direit
 
 ### Mapa de setor das naves (direção A aprovada)
 
-Céu `tactical_deep` com nebulosa e estrelas geradas, anéis de radar e mira âmbar. As seis missões são nós sobre uma rota: ciano sólido nos trechos concluídos, tracejado à frente. Nó é um losango de 56 px com o ícone de estado. Seleção: colchetes âmbar nos quatro cantos e nome em âmbar acima; passar o mouse: círculo tracejado ciano. Painel chanfrado à direita: prévia, título, objetivo em âmbar, briefing, **Tipos inimigos** (sprite e nome), **Ameaça** (cinco marcas), **Melhor nota** (três losangos e tempo), **Situação**, recompensa. Botões Hangar e Voltar abaixo do mapa. Setas movem entre nós pela ordem da rota; Enter inicia. O campo de ameaça é só de exibição.
+Céu `tactical_deep` com nebulosa e estrelas geradas, anéis de radar e mira âmbar. As seis missões são nós sobre uma rota: ciano sólido nos trechos concluídos, tracejado à frente. Nó é um losango de 56 px com o ícone de estado. Seleção: colchetes âmbar nos quatro cantos e nome em âmbar acima; passar o mouse: círculo tracejado ciano. Painel chanfrado à direita: prévia, título, objetivo em âmbar, briefing, **Tipos inimigos** (sprite e nome), **Ameaça** (cinco marcas), **Melhor nota** (três losangos e tempo), **Situação**, recompensa. Botões Treino de voo, Hangar e Voltar abaixo do mapa. Setas movem entre nós pela ordem da rota; Enter inicia. O campo de ameaça é só de exibição.
 
 ### Hangar e Oficina (tela única)
 

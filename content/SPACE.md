@@ -42,6 +42,10 @@ Casco agregado 1500. Na fase 1, abre o núcleo lateral superior de 500 de vida e
 
 Cada fase tem ciclo fixo de abertura: preparação de 0,6 s, janela de 2 s e fechamento até completar 3,2 s. Contorno partido e texto mostram fechado/aberto; linha/leque progressivo antecede disparos perigosos. Disparar contra proteção consome o tiro sem dano. O chefe nunca fica vulnerável por animação ou efeito sonoro. Os números, armas, limiares e índices de núcleo são recursos.
 
+## Treino de voo
+
+Oito passos, sem nota nem ponto: acelerar, girar, ré, atirar, impulso, destruir dois caças, lançar um míssil e destruir o restante. Abre pelo botão no mapa de setor. Dados em `data/space/missions/training_flight.tres`, gerados por `tools/space/make_missions.py`.
+
 ## Resultado e progressão
 
 Morte do jogador, capital aliada destruída ou tempo esgotado têm prioridade sobre vitória no mesmo tick. Vitória exige todas as ondas obrigatórias e seções exigidas; o chefe exige casco agregado zero. O resultado é selado uma vez e congela o núcleo. Guarda missão, motivo, ticks, casco restante, objetivo, fases e avaliação: três marcas com casco ≥75% e tempo dentro da referência; duas com uma dessas condições; uma no restante das vitórias; zero na derrota.

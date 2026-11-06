@@ -94,6 +94,15 @@ Recurso de uma única tentativa, só em missões longas com **terminais de supri
 
 Inimigo alertado sem alvo visível ataca a barreira mais próxima a até 480 u: atira, corre para bater ou detona nela. A navegação recalcula ao implantar e ao quebrar. A Defesa conserva sua regra: duas cargas, só durante a montagem.
 
+## Treinos (versão 1.1)
+
+| Treino | Passos |
+| --- | --- |
+| Infiltração | mover, correr, andar furtivo, desligar alarme no painel, abater pelas costas, libertar o prisioneiro, sair |
+| Incursão | mover, atirar, trocar para a lâmina, cortar, defender, esquivar, defender disparos, destruir a torre, usar poder, implantar barreira, libertar aliado, dar ordem, comprar no terminal, limpar a sala, sair |
+
+Dados em `data/blaster_ops/missions/training_*.tres`, gerados por `tools/blaster_ops/make_missions.py`. Dano inimigo em 35% no Treino de Incursão.
+
 ## Aliados (versão 1.1)
 
 Aliados são prisioneiros com papel: libertados com `E`, ou chamados como reforço. Agem sozinhos, por intenção, e obedecem à ordem de grupo do jogador (`G`): **Seguir**, **Segurar aqui** ou **Proteger** o alvo da missão. A ordem só muda onde ficam. Até seis por missão, o limite medido. Inimigos os atacam; nenhum ataque do jogador ou de outro aliado os fere. Quem é libertado sem papel continua sendo o prisioneiro comum da task 18.
