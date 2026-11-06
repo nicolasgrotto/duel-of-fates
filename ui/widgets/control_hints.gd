@@ -2,6 +2,7 @@ class_name ControlHints
 
 const SEPARATOR: String = "  ·  "
 const WEB_FEATURE: String = "web"
+const DPAD_ARROWS: Dictionary = {"up": "↑", "down": "↓", "left": "←", "right": "→"}
 
 
 static func key_label(action: StringName) -> String:
@@ -71,6 +72,8 @@ static func blaster_ops_hud_key(suffix: String) -> String:
 		label = buttons[0] if not buttons.is_empty() else ""
 		if label.is_empty() and suffix == "order_allies":
 			label = hold_command_label()
+		if BlasterOpsBindings.DPAD.has(suffix):
+			label = DPAD_ARROWS[suffix]
 	if label.is_empty():
 		for event in InputMap.action_get_events(action):
 			if event is InputEventMouseButton:

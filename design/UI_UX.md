@@ -44,7 +44,7 @@ Uma tela, duas colunas de foco. Esquerda: as quatro naves, com nível total em m
 
 ### Menu de comando no controle
 
-Segurar Back por 0,25 s mostra, acima do aviso de contexto, uma cruz de três etiquetas com as setas do direcional: Seguir, Segurar aqui e Proteger. A ordem atual fica em âmbar; Proteger fica apagada quando não há alvo. Soltar fecha sem mudar nada. Fazer a escolha antes do menu aparecer também vale, para quem já decorou. Sem pausa, e só em missões com aliados.
+Segurar Back por 0,33 s mostra, acima do aviso de contexto, uma cruz de três etiquetas com as setas do direcional: Seguir, Segurar aqui e Proteger. A ordem atual fica em âmbar; Proteger fica apagada quando não há alvo. Soltar fecha sem mudar nada. Fazer a escolha antes do menu aparecer também vale, para quem já decorou. Sem pausa, e só em missões com aliados.
 
 ### Terminal de suprimentos (versão 1.1)
 

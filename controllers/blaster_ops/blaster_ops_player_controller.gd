@@ -11,7 +11,7 @@ const COMMANDS: Dictionary = {
 	InfiltrationIntent.SNEAK: &"blaster_ops_sneak", InfiltrationIntent.INTERACT: &"blaster_ops_interact",
 }
 const STANCES: int = InfiltrationIntent.RUN | InfiltrationIntent.SNEAK
-const COMMAND_HOLD_TICKS: int = 15
+const COMMAND_HOLD_TICKS: int = 20
 const STICK_DEADZONE: float = 0.25
 const MENU_ORDERS: Dictionary = {
 	JOY_BUTTON_DPAD_UP: BlasterOpsMissionState.AllyOrder.FOLLOW,
