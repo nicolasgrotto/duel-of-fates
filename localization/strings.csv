@@ -1251,3 +1251,5 @@ OPS_ALLY_GUNNER,Artilheiro,Heavy gunner
 OPS_ALLY_SHARPSHOOTER,Atirador,Sharpshooter
 OPS_ALLY_MEDIC,Socorrista,Field medic
 OPS_ALLY_BLADE,Guarda de lâmina,Blade guard
+OPS_BARRIER_FIELD,Barreira de campo,Field barrier
+OPS_BARRIER_BULWARK,Muralha,Bulwark

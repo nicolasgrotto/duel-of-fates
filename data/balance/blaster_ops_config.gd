@@ -36,9 +36,11 @@ extends InfiltrationConfig
 @export var max_allies: int = 6
 
 @export_group("Incursion missions")
-@export var barrier_capacity: int = 2
+@export var barrier_slots: int = 9
+@export var barrier_aggro_range: float = 480.0
 @export var deploy_distance: float = 96.0
-@export var deploy_health: float = 60.0
+@export var field_barrier: BlasterOpsBarrierData = preload("res://data/blaster_ops/barriers/field.tres")
+@export var bulwark_barrier: BlasterOpsBarrierData = preload("res://data/blaster_ops/barriers/bulwark.tres")
 @export var ally_fire_interval: float = 1.2
 @export var ally_fire_range: float = 480.0
 @export var protected_speed: float = 90.0

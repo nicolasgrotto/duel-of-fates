@@ -11,6 +11,8 @@ var damage_taken: float = 0.0
 var attempts: int = 0
 var hits: int = 0
 var barriers_placed: int = 0
+var barrier_charges: int = 0
+var heavy_barrier_charges: int = 0
 var last_hit_swing: int = -1
 var repair_ticks: int = 0
 
@@ -19,6 +21,14 @@ func _init(mission_data: BlasterOpsMissionData) -> void:
 	super(mission_data)
 	definition = mission_data
 	intermission_ticks = Ticks.from_seconds(definition.intermission_seconds)
+	barrier_charges = definition.barrier_charges
+	heavy_barrier_charges = definition.heavy_barrier_charges
+
+
+func can_deploy() -> bool:
+	if barrier_charges + heavy_barrier_charges <= 0:
+		return false
+	return not definition.barrier_prep_only or intermission_ticks > 0
 
 
 func setup(sim: BlasterOpsSimulation) -> void:
@@ -63,7 +73,7 @@ func follower_speed(index: int, base: float) -> float:
 func interact(sim: InfiltrationSimulation) -> void:
 	if nearby_object(sim) >= 0:
 		super.interact(sim)
-	elif definition.kind == BlasterOpsMissionData.Kind.DEFENSE and intermission_ticks > 0:
+	elif can_deploy():
 		(sim as BlasterOpsSimulation).deploy_barrier()
 
 
@@ -193,7 +203,7 @@ func bonus_objective(sim: InfiltrationSimulation) -> bool:
 
 func capture() -> Dictionary:
 	var snapshot: Dictionary = super.capture()
-	snapshot["incursion"] = {"wave_index": wave_index, "intermission_ticks": intermission_ticks, "waves_finished": waves_finished, "phase_index": phase_index, "phase_health": phase_health, "damage_taken": damage_taken, "attempts": attempts, "hits": hits, "barriers_placed": barriers_placed, "last_hit_swing": last_hit_swing, "repair_ticks": repair_ticks}
+	snapshot["incursion"] = {"wave_index": wave_index, "intermission_ticks": intermission_ticks, "waves_finished": waves_finished, "phase_index": phase_index, "phase_health": phase_health, "damage_taken": damage_taken, "attempts": attempts, "hits": hits, "barriers_placed": barriers_placed, "barrier_charges": barrier_charges, "heavy_barrier_charges": heavy_barrier_charges, "last_hit_swing": last_hit_swing, "repair_ticks": repair_ticks}
 	return snapshot
 
 

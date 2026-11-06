@@ -51,6 +51,17 @@ Movimento livre normalizado em oito direções, 240 u/s, aceleração 2.200 u/s�
 
 Correr e furtivo são alternâncias no controlador: um toque liga, outro desliga, e ligar um desliga o outro; a pausa conserva a postura e reiniciar a limpa. Nenhuma ação usa Ctrl, Alt ou Meta, e a tela de teclas recusa essas teclas, porque o navegador reserva combinações como Ctrl+W. Teclas salvas no layout anterior são migradas sem perder personalizações: sai só Ctrl, e teclas novas entram apenas se estiverem livres. Ações `blaster_ops_*` próprias pelo InputMap, com aliases `infiltration_*` para compatibilidade. Teclas e botões são remapeáveis em **Teclas e botões › Operações**; mouse e eixos de mira permanecem disponíveis. Botões padrão copiam os bindings do J1, sem alterar o duelo. A tela Controles tem uma página do modo e as dicas vêm de ControlHints. Na pausa do treino é possível reiniciar com outro personagem (Corsária, Lince, Coldre ou Guardião) e outro poder; toda troca reinicia, sem mudar recurso compartilhado ou campanha.
 
+## Barreiras (versão 1.1)
+
+`E` implanta à frente da mira, quando não há objeto para interagir. Cada missão define quantas cargas dá, e os terminais de suprimentos vendem mais. Barreiras são da facção do jogador: paredes para corpos e fogo inimigo, transparentes para o fogo aliado. Não têm reembolso, e quebrá-las reabre a passagem.
+
+| Tipo | Vida | Espaço | Observação |
+| --- | --- | --- | --- |
+| Barreira de campo | 60 | 1 tile, com os quatro vizinhos livres | Proteção rápida, não fecha passagem |
+| Muralha | 120 por tile | 3 tiles, perpendicular à mira | Mais proteção, ocupa mais espaço e pode fechar um corredor; usada primeiro quando há carga |
+
+Inimigo alertado sem alvo visível ataca a barreira mais próxima a até 480 u: atira, corre para bater ou detona nela. A navegação recalcula ao implantar e ao quebrar. A Defesa conserva sua regra: duas cargas, só durante a montagem.
+
 ## Aliados (versão 1.1)
 
 Aliados são prisioneiros com papel: libertados com `E`, ou chamados como reforço. Agem sozinhos, por intenção, e o jogador não dá ordens. Até seis por missão, o limite medido. Inimigos os atacam; nenhum ataque do jogador ou de outro aliado os fere. Quem é libertado sem papel continua sendo o prisioneiro comum da task 18.

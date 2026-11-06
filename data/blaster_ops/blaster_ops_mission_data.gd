@@ -12,6 +12,9 @@ enum Kind { ARENA, ASSAULT, DEFENSE, HOLD_OUT, ESCORT, RIVAL, BOSS }
 @export var phase_target: int = -1
 @export var phases: Array[BlasterOpsPhaseData] = []
 @export var intermission_seconds: float = 6.0
+@export var barrier_charges: int = 0
+@export var heavy_barrier_charges: int = 0
+@export var barrier_prep_only: bool = false
 @export var ally_roles: Array[BlasterOpsAllyData] = []
 @export var reserve_start: int = -1
 @export var damage_bonus: float = 25.0

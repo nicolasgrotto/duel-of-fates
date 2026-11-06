@@ -37,7 +37,7 @@ func _init(configuration: BlasterOpsConfig, data: InfiltrationMapData, equipment
 			aura_indices.append(index)
 	if mission_data is BlasterOpsMissionData:
 		mission = BlasterOpsMissionState.new(mission_data as BlasterOpsMissionData)
-		arena.reserve_barriers(operations.barrier_capacity if (mission_data as BlasterOpsMissionData).kind == BlasterOpsMissionData.Kind.DEFENSE else 0, operations.deploy_health)
+		arena.reserve_barriers(operations.barrier_slots, operations.field_barrier.health)
 		(mission as BlasterOpsMissionState).setup(self)
 
 
@@ -130,27 +130,70 @@ func _absorb_barrier(damage: float, source: int, point: Vector2) -> float:
 
 func deploy_barrier() -> bool:
 	var progress: BlasterOpsMissionState = mission as BlasterOpsMissionState
-	if progress == null or progress.definition.kind != BlasterOpsMissionData.Kind.DEFENSE or progress.intermission_ticks <= 0 or progress.barriers_placed >= operations.barrier_capacity:
+	if progress == null or not progress.can_deploy():
 		return false
-	var cell: Vector2i = Vector2i((player.position + player.aim * operations.deploy_distance) / map.tile_size)
-	var center: Vector2 = (Vector2(cell) + Vector2.ONE * 0.5) * map.tile_size
-	for offset in [Vector2i.ZERO, Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
+	var heavy: bool = progress.heavy_barrier_charges > 0
+	var type: BlasterOpsBarrierData = operations.bulwark_barrier if heavy else operations.field_barrier
+	var center_cell: Vector2i = Vector2i((player.position + player.aim * operations.deploy_distance) / map.tile_size)
+	var across: Vector2i = Vector2i.DOWN if absf(player.aim.x) >= absf(player.aim.y) else Vector2i.RIGHT
+	var cells: Array[Vector2i] = []
+	for offset in range(-(type.width / 2), type.width / 2 + 1):
+		cells.append(center_cell + across * offset)
+	var slots: Array[int] = _free_barrier_slots(cells.size())
+	if slots.size() < cells.size():
+		return false
+	for cell in cells:
+		if not _barrier_cell_free(cell, type.width == 1):
+			return false
+	for index in cells.size():
+		var cover: BlasterOpsCover = arena.covers[slots[index]]
+		cover.data.cell = cells[index]
+		cover.data.health = type.health
+		cover.health = type.health
+	if heavy:
+		progress.heavy_barrier_charges -= 1
+	else:
+		progress.barrier_charges -= 1
+	progress.barriers_placed += 1
+	arena.rebuild_cells()
+	cover_revision += 1
+	_emit(InfiltrationEvent.Type.BARRIER_PLACED, 0, slots[0], (Vector2(center_cell) + Vector2.ONE * 0.5) * map.tile_size)
+	return true
+
+
+func _free_barrier_slots(count: int) -> Array[int]:
+	var slots: Array[int] = []
+	for index in arena.covers.size():
+		if arena.covers[index].deployed and arena.covers[index].health <= 0.0 and slots.size() < count:
+			slots.append(index)
+	return slots
+
+
+func _barrier_cell_free(cell: Vector2i, needs_neighbors: bool) -> bool:
+	var checks: Array[Vector2i] = [Vector2i.ZERO]
+	if needs_neighbors:
+		checks.assign([Vector2i.ZERO, Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN])
+	for offset in checks:
 		if map.is_solid(cell.x + offset.x, cell.y + offset.y):
 			return false
+	var center: Vector2 = (Vector2(cell) + Vector2.ONE * 0.5) * map.tile_size
 	if not _spawn_clear(center):
 		return false
 	for actor in prisoners:
 		if actor.health > 0.0 and actor.position.distance_to(center) < map.tile_size:
 			return false
-	var index: int = arena.covers.size() - operations.barrier_capacity + progress.barriers_placed
-	var cover: BlasterOpsCover = arena.covers[index]
-	cover.data.cell = cell
-	cover.health = operations.deploy_health
-	progress.barriers_placed += 1
-	arena.rebuild_cells()
-	cover_revision += 1
-	_emit(InfiltrationEvent.Type.BARRIER_PLACED, 0, index, center)
 	return true
+
+
+func cover_center(index: int) -> Vector2:
+	return (Vector2(arena.covers[index].data.cell) + Vector2.ONE * 0.5) * map.tile_size
+
+
+func attacking_cover(actor: BlasterOpsActor) -> bool:
+	if actor.target_cover < 0 or actor.visible_player or actor.target_prisoner >= 0:
+		return false
+	var cover: BlasterOpsCover = arena.covers[actor.target_cover]
+	return cover.deployed and cover.health > 0.0
 
 
 func _step_allies(intents: Array[InfiltrationIntent]) -> void:
@@ -718,6 +761,7 @@ func _apply_enemy_intent(index: int, intent: InfiltrationIntent) -> void:
 	actor.decision = InfiltrationActor.Decision.FIGHT if actor.awareness == InfiltrationActor.Awareness.ALERTED else InfiltrationActor.Decision.INVESTIGATE
 	if actor.awareness == InfiltrationActor.Awareness.UNAWARE:
 		actor.decision = InfiltrationActor.Decision.PATROL
+	actor.target_cover = intent.cover_target
 	if actor.telegraph_ticks < 0:
 		var speed: float = data.speed * (data.alarm_speed_ratio if (intent.held & Intent.Command.DODGE) != 0 else 1.0)
 		actor.position = InfiltrationGeometry.move_body(map, actor.position, intent.movement.limit_length() * speed * Ticks.DELTA, actor.radius, live_bodies, actor, player)
@@ -732,10 +776,14 @@ func _apply_enemy_intent(index: int, intent: InfiltrationIntent) -> void:
 		if actor.telegraph_ticks == 0:
 			_release_enemy_attack(index, data, actor)
 		return
-	if actor.fire_ticks > 0 or not InfiltrationPerception.has_shot(self, index):
+	var at_cover: bool = attacking_cover(actor)
+	if actor.fire_ticks > 0 or not (at_cover or InfiltrationPerception.has_shot(self, index)):
 		return
-	if data.melee_damage > 0.0 and data.bolt == null and actor.position.distance_to(player.position) > data.melee_range + player.radius:
-		return
+	if data.melee_damage > 0.0 and data.bolt == null:
+		var reach_point: Vector2 = cover_center(actor.target_cover) if at_cover else player.position
+		var reach_extra: float = map.tile_size * 0.5 if at_cover else player.radius
+		if actor.position.distance_to(reach_point) > data.melee_range + reach_extra:
+			return
 	if actor.burst_left == 0:
 		actor.burst_left = data.bolt.count if data.bolt != null else 1
 	actor.telegraph_ticks = maxi(Ticks.from_seconds(data.telegraph_seconds), 1)
@@ -745,6 +793,9 @@ func _apply_enemy_intent(index: int, intent: InfiltrationIntent) -> void:
 
 func _release_enemy_attack(index: int, data: BlasterOpsEnemyData, actor: BlasterOpsActor) -> void:
 	actor.telegraph_ticks = -1
+	if attacking_cover(actor):
+		_release_at_cover(index, data, actor)
+		return
 	var victim: InfiltrationActor = prisoners[actor.target_prisoner] if actor.target_prisoner >= 0 else player
 	if victim.health <= 0.0 or InfiltrationGeometry.wall_fraction(map, actor.position, victim.position) != INF:
 		actor.burst_left = 0
@@ -768,6 +819,21 @@ func _release_enemy_attack(index: int, data: BlasterOpsEnemyData, actor: Blaster
 		return
 	actor.burst_left -= 1
 	actor.fire_ticks = Ticks.from_seconds(data.fire_interval) if actor.burst_left == 0 else data.bolt.interval_ticks()
+
+
+func _release_at_cover(index: int, data: BlasterOpsEnemyData, actor: BlasterOpsActor) -> void:
+	var center: Vector2 = cover_center(actor.target_cover)
+	if data.bolt == null and data.blast_radius > 0.0:
+		_damage_target(index, actor.health, true)
+		return
+	actor.burst_left = maxi(actor.burst_left - 1, 0)
+	if data.melee_damage > 0.0 and data.bolt == null:
+		_damage_cover(actor.target_cover, data.melee_damage, center)
+		actor.fire_ticks = Ticks.from_seconds(data.melee_interval)
+		return
+	if not _spawn_enemy_shot(index, data, actor.telegraph_aim):
+		_damage_cover(actor.target_cover, data.bolt.damage, center)
+	actor.fire_ticks = Ticks.from_seconds(data.fire_interval)
 
 
 func _spawn_enemy_shot(index: int, data: BlasterOpsEnemyData, aim: Vector2) -> bool:

@@ -13,6 +13,7 @@ var aim: Vector2 = Vector2.ZERO
 var held: int = 0
 var pressed: int = 0
 var panel: int = -1
+var cover_target: int = -1
 
 
 func clear() -> void:
@@ -21,3 +22,4 @@ func clear() -> void:
 	held = 0
 	pressed = 0
 	panel = -1
+	cover_target = -1

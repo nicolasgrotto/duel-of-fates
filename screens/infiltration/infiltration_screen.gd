@@ -471,8 +471,8 @@ func _update_incursion_hud() -> void:
 		hints.append(ControlHints.hint(&"infiltration_interact", "INF_RECRUIT"))
 	if data.protected_index >= 0:
 		hints.append(tr("OPS_PROTECTED_HEALTH").format({"health": roundi(sim.prisoners[data.protected_index].health)}))
-	if data.kind == BlasterOpsMissionData.Kind.DEFENSE and progress.intermission_ticks > 0:
-		hints.append(tr("OPS_DEPLOY_HINT").format({"key": ControlHints.key_label(&"infiltration_interact"), "left": CONFIG.barrier_capacity - progress.barriers_placed}))
+	if progress.can_deploy():
+		hints.append(tr("OPS_DEPLOY_HINT").format({"key": ControlHints.key_label(&"infiltration_interact"), "left": progress.barrier_charges + progress.heavy_barrier_charges}))
 	if progress.waves_finished:
 		hints.append(tr("OPS_EXTRACTION_READY"))
 	else:
