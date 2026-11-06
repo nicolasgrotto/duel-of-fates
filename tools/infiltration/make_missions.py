@@ -531,6 +531,17 @@ def preview_image(m, sprite_overrides=None):
         x, y = center(cell)
         base = math.atan2(facing[1], facing[0])
         half = math.radians(degrees) / 2
+        for step in range(13):
+            angle = base - half + 2 * half * step / 12
+            dx, dy = math.cos(angle), math.sin(angle)
+            if dx > 0.001:
+                reach = min(reach, (PREVIEW_SIZE[0] - 1 - x) / dx)
+            elif dx < -0.001:
+                reach = min(reach, -x / dx)
+            if dy > 0.001:
+                reach = min(reach, (PREVIEW_SIZE[1] - 1 - y) / dy)
+            elif dy < -0.001:
+                reach = min(reach, -y / dy)
         points = [(x, y)]
         for step in range(13):
             angle = base - half + 2 * half * step / 12
