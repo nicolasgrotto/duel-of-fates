@@ -47,6 +47,8 @@ var _rating: LevelPips
 var _best: Label
 var _status_glyph: StatusGlyph
 var _status_text: Label
+var _status_row: HBoxContainer
+var _reward: Label
 var _ship_list: TacticalList
 var _track_list: TacticalList
 var _ship_sprite: TextureRect
@@ -187,14 +189,15 @@ func _build_mission_panel() -> PanelContainer:
 	_enemy_flow.add_theme_constant_override(&"v_separation", CHIP_GAP)
 	column.add_child(_enemy_flow)
 	column.add_child(_build_status_row())
-	var reward: Label = _label(tr("SPACE_MAP_REWARD"), &"TacticalNoteLabel")
-	reward.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	column.add_child(reward)
+	_reward = _label("", &"TacticalNoteLabel")
+	_reward.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	column.add_child(_reward)
 	return panel
 
 
 func _build_status_row() -> HBoxContainer:
 	var row: HBoxContainer = HBoxContainer.new()
+	_status_row = row
 	row.add_theme_constant_override(&"separation", COLUMN_GAP * 2)
 	_threat = LevelPips.new(0, THREAT_LEVELS)
 	_threat.filled_color = PALETTE.danger
@@ -258,6 +261,8 @@ func _show_mission(data: SpaceMissionData) -> void:
 		child.queue_free()
 	for ship in data.enemy_types():
 		_enemy_flow.add_child(_enemy_chip(ship))
+	_status_row.visible = not data.is_tutorial()
+	_reward.text = tr("OPS_MENU_TRAINING_RULES" if data.is_tutorial() else "SPACE_MAP_REWARD")
 	_threat.level = data.threat
 	var record: Dictionary = SaveService.space.records.get(String(data.id), {})
 	_rating.level = int(record.get("rating", 0))

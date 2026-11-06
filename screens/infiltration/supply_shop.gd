@@ -190,7 +190,7 @@ func _show_detail(id: StringName) -> void:
 	var block: BlasterOpsMissionState.OfferBlock = progress.offer_block(_sim, index)
 	_name.text = tr(offer.name_key)
 	_description.text = tr(offer.description_key)
-	_change.text = _change_text(progress, offer)
+	_change.text = "" if block == BlasterOpsMissionState.OfferBlock.LIMIT else _change_text(progress, offer)
 	_note.text = _note_text(progress, offer, index, block)
 
 
