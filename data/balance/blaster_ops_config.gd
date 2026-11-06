@@ -45,6 +45,8 @@ extends InfiltrationConfig
 @export var ally_fire_range: float = 480.0
 @export var protected_speed: float = 90.0
 @export var ally_order_spread: float = 22.0
+@export var close_strike_telegraph_seconds: float = 0.25
+@export var close_strike_gap_seconds: float = 0.6
 @export var protected_follow_range: float = 320.0
 @export var ally_bolt: BoltData = preload("res://data/bolts/standard_bolt.tres")
 

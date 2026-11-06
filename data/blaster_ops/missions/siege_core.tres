@@ -6,6 +6,8 @@
 [ext_resource type="Resource" path="res://data/blaster_ops/enemies/boss_2.tres" id="boss_2"]
 [ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_cover_data.gd" id="cover"]
 [ext_resource type="Texture2D" path="res://assets/blaster_ops/covers.png" id="covers"]
+[ext_resource type="Resource" path="res://data/blaster_ops/enemies/crusher.tres" id="crusher"]
+[ext_resource type="Resource" path="res://data/blaster_ops/enemies/duelist.tres" id="duelist"]
 [ext_resource type="Texture2D" path="res://assets/infiltration/enemy_sprites.png" id="enemies"]
 [ext_resource type="Resource" path="res://data/blaster_ops/enemies/heavy.tres" id="heavy"]
 [ext_resource type="Resource" path="res://data/blaster_ops/enemies/ironstride.tres" id="ironstride"]
@@ -326,6 +328,20 @@ position = Vector2(6368, 672)
 direction = Vector2(-1, 0)
 reinforcement = true
 
+[sub_resource type="Resource" id="p42"]
+script = ExtResource("placement")
+enemy = ExtResource("crusher")
+position = Vector2(1312, 1120)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p43"]
+script = ExtResource("placement")
+enemy = ExtResource("duelist")
+position = Vector2(2976, 1504)
+direction = Vector2(-1, 0)
+reinforcement = true
+
 [sub_resource type="Resource" id="w0"]
 script = ExtResource("wave")
 indices = PackedInt32Array(0, 1, 2)
@@ -333,7 +349,7 @@ final_wave = false
 
 [sub_resource type="Resource" id="w1"]
 script = ExtResource("wave")
-indices = PackedInt32Array(3, 4, 5)
+indices = PackedInt32Array(3, 4, 5, 42)
 final_wave = false
 
 [sub_resource type="Resource" id="w2"]
@@ -343,7 +359,7 @@ final_wave = false
 
 [sub_resource type="Resource" id="w3"]
 script = ExtResource("wave")
-indices = PackedInt32Array(12, 13, 14)
+indices = PackedInt32Array(12, 13, 14, 43)
 final_wave = false
 
 [sub_resource type="Resource" id="w4"]
@@ -783,7 +799,7 @@ strafe = 0.0
 script = ExtResource("map")
 rows = PackedStringArray("########################################################################################################", "########################################################################################################", "########################################################################################################", "########################################################################################################", "########################################################################################################", "########################################################################################################", "################################################.........................###.........................###", "################################################.........................###.........................###", "################################################.........................###.........................###", "################################################.........................###.........................###", "################################################.........................###.........................###", "################################################.........................###.........................###", "################################################......C...........C......###......C...........C......###", "################################################.........................###.........................###", "################################################.........................###.........................###", "################################################.........................###.........................###", "##.....................#########################.........................###............C............###", "##.....................#########################.........................###.........................###", "##.....................#.......................#.........................###.........................###", "##..........C..........#.......................#..........................C..........................###", "##.....................C......C.........C......C..........................C..........................###", "##.....................C.......................C..........................C..........................###", "##.====================C=======================C========C=======C=========C=========================.###", "##.===============C====C=======================C==========================C=========================.###", "##.....................C.......................C..........................C..........................###", "##.....................C.......................C..........................C..........................###", "##.....................C......C.........C......C..........................C..........................###", "##..........C..........#.......................#..........................C..........................###", "##.....................#.......................#.........................###............C............###", "##.....................#########################.........................###.........................###", "##.....................#########################.........................###.........................###", "################################################.........................###.........................###", "################################################......C...........C......###......C...........C......###", "################################################.........................###.........................###", "################################################.........................###.........................###", "################################################.........................###.........................###", "################################################.........................###.........................###", "################################################.........................###.........................###", "################################################.........................###.........................###", "########################################################################################################", "########################################################################################################", "########################################################################################################", "########################################################################################################", "########################################################################################################")
 player_spawn = Vector2(352, 1440)
-enemies = Array[ExtResource("placement")]([SubResource("p0"), SubResource("p1"), SubResource("p2"), SubResource("p3"), SubResource("p4"), SubResource("p5"), SubResource("p6"), SubResource("p7"), SubResource("p8"), SubResource("p9"), SubResource("p10"), SubResource("p11"), SubResource("p12"), SubResource("p13"), SubResource("p14"), SubResource("p15"), SubResource("p16"), SubResource("p17"), SubResource("p18"), SubResource("p19"), SubResource("p20"), SubResource("p21"), SubResource("p22"), SubResource("p23"), SubResource("p24"), SubResource("p25"), SubResource("p26"), SubResource("p27"), SubResource("p28"), SubResource("p29"), SubResource("p30"), SubResource("p31"), SubResource("p32"), SubResource("p33"), SubResource("p34"), SubResource("p35"), SubResource("p36"), SubResource("p37"), SubResource("p38"), SubResource("p39"), SubResource("p40"), SubResource("p41")])
+enemies = Array[ExtResource("placement")]([SubResource("p0"), SubResource("p1"), SubResource("p2"), SubResource("p3"), SubResource("p4"), SubResource("p5"), SubResource("p6"), SubResource("p7"), SubResource("p8"), SubResource("p9"), SubResource("p10"), SubResource("p11"), SubResource("p12"), SubResource("p13"), SubResource("p14"), SubResource("p15"), SubResource("p16"), SubResource("p17"), SubResource("p18"), SubResource("p19"), SubResource("p20"), SubResource("p21"), SubResource("p22"), SubResource("p23"), SubResource("p24"), SubResource("p25"), SubResource("p26"), SubResource("p27"), SubResource("p28"), SubResource("p29"), SubResource("p30"), SubResource("p31"), SubResource("p32"), SubResource("p33"), SubResource("p34"), SubResource("p35"), SubResource("p36"), SubResource("p37"), SubResource("p38"), SubResource("p39"), SubResource("p40"), SubResource("p41"), SubResource("p42"), SubResource("p43")])
 covers = Array[ExtResource("cover")]([SubResource("c0"), SubResource("c1"), SubResource("c2"), SubResource("c3"), SubResource("c4"), SubResource("c5"), SubResource("c6"), SubResource("c7"), SubResource("c8"), SubResource("c9"), SubResource("c10"), SubResource("c11"), SubResource("c12"), SubResource("c13"), SubResource("c14"), SubResource("c15"), SubResource("c16"), SubResource("c17"), SubResource("c18"), SubResource("c19"), SubResource("c20"), SubResource("c21"), SubResource("c22"), SubResource("c23"), SubResource("c24"), SubResource("c25"), SubResource("c26"), SubResource("c27"), SubResource("c28"), SubResource("c29"), SubResource("c30"), SubResource("c31"), SubResource("c32"), SubResource("c33"), SubResource("c34"), SubResource("c35"), SubResource("c36"), SubResource("c37"), SubResource("c38"), SubResource("c39"), SubResource("c40"), SubResource("c41")])
 tiles = ExtResource("tiles")
 sprites = ExtResource("sprites")

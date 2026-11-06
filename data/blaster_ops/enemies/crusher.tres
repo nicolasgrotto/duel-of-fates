@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="BlasterOpsEnemyData" format=3]
+
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_enemy_data.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/blaster_ops/crusher.png" id="texture"]
+
+[resource]
+script = ExtResource("1")
+id = &"crusher"
+kind = 1
+archetype = 0
+health = 70.0
+speed = 125.0
+sprite = 0
+vision_range = 900.0
+vision_degrees = 130.0
+telegraph_seconds = 0.4
+initial_delay = 0.5
+fire_interval = 1.2
+can_raise_alarm = false
+respawn_seconds = 0.0
+texture = ExtResource("texture")
+melee_damage = 13.0
+melee_guard_vigor = 20.0
+melee_range = 64.0
+melee_interval = 1.4
+melee_flinch = 0.2
+preferred_range = 56.0
+supply_value = 2
+attack_degrees = 140.0
+body_radius = 22.0

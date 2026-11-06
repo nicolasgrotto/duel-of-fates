@@ -1,6 +1,7 @@
 class_name BlasterOpsSimulation
 extends InfiltrationSimulation
 
+const ENEMY_PUSH_STEPS: int = 4
 const POWER_COMMANDS: Array[int] = [Intent.Command.POWER, InfiltrationIntent.POWER_2, InfiltrationIntent.POWER_3]
 const POWER_BOLT_SHOOTER: int = -2
 const SPREAD_PATTERN: PackedFloat32Array = [0.0, 1.0, -1.0, 0.5, -0.5]
@@ -13,6 +14,7 @@ var state: BlasterOpsState = BlasterOpsState.new()
 var cover_revision: int = 0
 var aura_indices: PackedInt32Array = []
 var _aura_pulse_ticks: int = 0
+var _close_strike_ready_tick: int = 0
 
 
 func _init(configuration: BlasterOpsConfig, data: InfiltrationMapData, equipment: BlasterOpsLoadout, mission_data: InfiltrationMissionData = null) -> void:
@@ -587,6 +589,8 @@ func _step_bolts() -> void:
 					var prisoner: InfiltrationActor = prisoners[victim - targets.size() - 1]
 					prisoner.health = maxf(prisoner.health - bolt.damage, 0.0)
 					_emit(InfiltrationEvent.Type.BOLT_HIT, bolt.owner, victim, bolt.position, bolt.damage)
+				elif victim > 0 and _deflects_bolt(victim - 1, bolt):
+					_emit(InfiltrationEvent.Type.BOLT_BLOCKED, victim, 0, bolt.position)
 				elif victim > 0:
 					if mission is BlasterOpsMissionState and bolt.shooter == -1 and not bolt.reflected:
 						(mission as BlasterOpsMissionState).hits += 1
@@ -768,6 +772,7 @@ func _apply_enemy_intent(index: int, intent: InfiltrationIntent) -> void:
 		super._apply_enemy_intent(index, intent)
 		return
 	actor.fire_ticks = maxi(actor.fire_ticks - 1, 0)
+	actor.power_wait_ticks = maxi(actor.power_wait_ticks - 1, 0)
 	actor.stun_ticks = maxi(actor.stun_ticks - 1, 0)
 	if actor.impulse_ticks > 0:
 		actor.impulse_ticks -= 1
@@ -798,6 +803,8 @@ func _apply_enemy_intent(index: int, intent: InfiltrationIntent) -> void:
 			_release_enemy_attack(index, data, actor)
 		return
 	var at_cover: bool = attacking_cover(actor)
+	if not at_cover and _begin_enemy_power(index, data, actor):
+		return
 	if actor.fire_ticks > 0 or not (at_cover or InfiltrationPerception.has_shot(self, index)):
 		return
 	if data.melee_damage > 0.0 and data.bolt == null:
@@ -807,13 +814,69 @@ func _apply_enemy_intent(index: int, intent: InfiltrationIntent) -> void:
 			return
 	if actor.burst_left == 0:
 		actor.burst_left = data.bolt.count if data.bolt != null else 1
-	actor.telegraph_ticks = maxi(Ticks.from_seconds(data.telegraph_seconds), 1)
+	actor.casting_power = false
+	actor.telegraph_ticks = maxi(Ticks.from_seconds(_telegraph_seconds(data, actor)), 1)
 	actor.telegraph_aim = actor.aim
 	_emit(InfiltrationEvent.Type.ATTACK_PREPARED, index + 1, 0, actor.position)
 
 
+func _telegraph_seconds(data: BlasterOpsEnemyData, actor: BlasterOpsActor) -> float:
+	if data.bolt != null and data.melee_damage > 0.0 and in_close_reach(data, actor):
+		return maxf(data.telegraph_seconds, operations.close_strike_telegraph_seconds)
+	return data.telegraph_seconds
+
+
+func in_close_reach(data: BlasterOpsEnemyData, actor: InfiltrationActor) -> bool:
+	return actor.position.distance_to(player.position) <= data.melee_range + player.radius
+
+
+func _interrupt_close_strike(index: int) -> void:
+	var data: BlasterOpsEnemyData = target_data[index] as BlasterOpsEnemyData
+	var actor: BlasterOpsActor = targets[index] as BlasterOpsActor
+	if data == null or data.bolt == null or data.melee_damage <= 0.0 or actor.telegraph_ticks < 0 or actor.casting_power or not in_close_reach(data, actor):
+		return
+	actor.telegraph_ticks = -1
+	actor.burst_left = 0
+	actor.fire_ticks = maxi(actor.fire_ticks, Ticks.from_seconds(data.melee_interval))
+
+
+func _begin_enemy_power(index: int, data: BlasterOpsEnemyData, actor: BlasterOpsActor) -> bool:
+	if data.power_radius <= 0.0 or actor.power_wait_ticks > 0 or actor.target_prisoner >= 0:
+		return false
+	if actor.position.distance_to(player.position) > data.power_radius or not InfiltrationPerception.has_shot(self, index):
+		return false
+	actor.power_wait_ticks = Ticks.from_seconds(data.power_cooldown_seconds)
+	actor.casting_power = true
+	actor.telegraph_ticks = maxi(Ticks.from_seconds(data.power_telegraph_seconds), 1)
+	actor.telegraph_aim = actor.aim
+	_emit(InfiltrationEvent.Type.ATTACK_PREPARED, index + 1, 0, actor.position)
+	return true
+
+
+func _release_enemy_power(index: int, data: BlasterOpsEnemyData, actor: BlasterOpsActor) -> void:
+	actor.casting_power = false
+	var reached: bool = _area_reaches(BlasterOpsFaction.Side.HOSTILE, actor.position, data.power_radius, player) and not dodge_invulnerable()
+	apply_area_damage(BlasterOpsFaction.Side.HOSTILE, actor.position, data.power_radius, data.power_damage * _enemy_scale(), index + 1, Ticks.from_seconds(data.power_flinch))
+	if not reached or aftermath or player.health <= 0.0:
+		return
+	var away: Vector2 = (player.position - actor.position).normalized()
+	for step in ENEMY_PUSH_STEPS:
+		player.position = InfiltrationGeometry.move_body(map, player.position, away * data.power_push / ENEMY_PUSH_STEPS, player.radius, live_bodies, player)
+
+
+func _deflects_bolt(index: int, bolt: BlasterOpsBolt) -> bool:
+	var actor: BlasterOpsActor = targets[index] as BlasterOpsActor
+	var data: BlasterOpsEnemyData = target_data[index] as BlasterOpsEnemyData
+	if data == null or data.deflect_degrees <= 0.0 or actor.stun_ticks > 0 or actor.telegraph_ticks >= 0:
+		return false
+	return InfiltrationGeometry.in_sector(actor.position, actor.aim, bolt.origin, INF, data.deflect_degrees)
+
+
 func _release_enemy_attack(index: int, data: BlasterOpsEnemyData, actor: BlasterOpsActor) -> void:
 	actor.telegraph_ticks = -1
+	if actor.casting_power:
+		_release_enemy_power(index, data, actor)
+		return
 	if attacking_cover(actor):
 		_release_at_cover(index, data, actor)
 		return
@@ -826,7 +889,11 @@ func _release_enemy_attack(index: int, data: BlasterOpsEnemyData, actor: Blaster
 		_damage_target(index, actor.health, true)
 		return
 	if data.melee_damage > 0.0 and (data.bolt == null or actor.position.distance_to(victim.position) <= data.melee_range + victim.radius):
-		_resolve_enemy_melee(index, data, actor)
+		if data.bolt == null or actor.target_prisoner >= 0:
+			_resolve_enemy_melee(index, data, actor)
+		elif player.swing_tick < 0 and tick >= _close_strike_ready_tick:
+			_close_strike_ready_tick = tick + Ticks.from_seconds(operations.close_strike_gap_seconds)
+			_resolve_enemy_melee(index, data, actor)
 		actor.fire_ticks = Ticks.from_seconds(data.melee_interval)
 		actor.burst_left = 0
 		return
@@ -1105,4 +1172,6 @@ func _emit(type: InfiltrationEvent.Type, source: int, target: int, point: Vector
 		elif type == InfiltrationEvent.Type.SWING_HIT and amount > 0.0 and progress.last_hit_swing != player.swing_id:
 			progress.hits += 1
 			progress.last_hit_swing = player.swing_id
+	if type == InfiltrationEvent.Type.SWING_HIT and target > 0 and target <= targets.size():
+		_interrupt_close_strike(target - 1)
 	super._emit(type, source, target, point, amount)

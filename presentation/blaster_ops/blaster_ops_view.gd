@@ -8,6 +8,9 @@ const SHELL_SIZE: float = 10.0
 const THREAT_RANGE: float = 1100.0
 const THREAT_INSET: float = 26.0
 const THREAT_SIZE: float = 14.0
+const ENEMY_BLADE_RAISE: float = -1.1
+const ENEMY_BLADE_REST: float = 0.5
+const ENEMY_BLADE_HALO: float = 0.35
 const OBJECTIVE_INSET: float = 26.0
 const OBJECTIVE_SIZE: float = 12.0
 const OBJECTIVE_HOVER: float = 30.0
@@ -116,6 +119,7 @@ func _draw() -> void:
 			var data: InfiltrationEnemyData = sim.target_data[index] as InfiltrationEnemyData
 			_draw_enemy_support(actor, data as BlasterOpsEnemyData)
 			_draw_actor(actor, data.sprite, true, data.texture)
+			_draw_enemy_blade(actor as BlasterOpsActor, data as BlasterOpsEnemyData)
 			_draw_awareness(actor)
 			var point: Vector2 = _snap(actor.previous.lerp(actor.position, alpha))
 			if data.front_damage_ratio < 1.0:
@@ -164,6 +168,20 @@ func _prisoner_texture(index: int) -> Texture2D:
 
 func _prisoner_max_health(index: int) -> float:
 	return operations._ally_max_health(index) if sim.mission is BlasterOpsMissionState else sim.config.prisoner_health
+
+
+func _draw_enemy_blade(actor: BlasterOpsActor, data: BlasterOpsEnemyData) -> void:
+	if data == null or data.blade_length <= 0.0:
+		return
+	var point: Vector2 = _snap(actor.previous.lerp(actor.position, alpha))
+	var raised: bool = actor.telegraph_ticks >= 0 and not actor.casting_power
+	var direction: Vector2 = actor.aim.rotated(ENEMY_BLADE_RAISE if raised else ENEMY_BLADE_REST)
+	var base: Vector2 = _snap(point + direction * actor.radius * 0.5)
+	var tip: Vector2 = _snap(base + direction * data.blade_length)
+	var unit: float = sim.config.units_per_pixel
+	draw_line(base, tip, Color(PALETTE.danger, ENEMY_BLADE_HALO), unit * 3.0)
+	draw_line(base, tip, PALETTE.danger, unit * 2.0)
+	draw_line(base, tip, PALETTE.text, unit)
 
 
 func _draw_enemy_support(actor: InfiltrationActor, data: BlasterOpsEnemyData) -> void:
@@ -302,7 +320,10 @@ func _draw_telegraphs() -> void:
 		if data.bolt == null and data.blast_radius > 0.0:
 			draw_arc(origin, data.blast_radius, 0.0, TAU, 24, PALETTE.danger, sim.config.units_per_pixel * 2.0)
 			continue
-		if data.melee_damage > 0.0 and data.bolt == null:
+		if (actor as BlasterOpsActor).casting_power:
+			draw_arc(origin, data.power_radius, 0.0, TAU, 32, PALETTE.danger, sim.config.units_per_pixel * 2.0)
+			continue
+		if data.melee_damage > 0.0 and (data.bolt == null or operations.in_close_reach(data, actor)):
 			draw_arc(origin, data.melee_range, aim.angle() - deg_to_rad(data.attack_degrees * 0.5), aim.angle() + deg_to_rad(data.attack_degrees * 0.5), 10, PALETTE.danger, sim.config.units_per_pixel)
 			continue
 		var muzzle: Vector2 = _snap(origin + aim * (actor.radius + data.bolt.muzzle_forward))

@@ -8,8 +8,8 @@ from make_missions import Layout, preview_image, cell_point
 from PIL import Image
 
 KINDS = {"training_infiltration": 0, "training_incursion": 0, "encircled_yard": 0, "breach_line": 1, "defense_node": 2, "extraction_window": 3, "ally_corridor": 4, "retreat_vector": 5, "siege_core": 6}
-SPRITES = {"boss": "assets/infiltration/walker.png", "rusher": "assets/blaster_ops/rusher.png", "warden": "assets/blaster_ops/warden.png", "sapper": "assets/blaster_ops/sapper.png", "repairer": "assets/blaster_ops/repairer.png", "ironstride": "assets/blaster_ops/ironstride.png"}
-PREVIEW_KIND = {"soldier": "trooper", "turret": "sentry", "heavy": "heavy", "marksman": "marksman", "rusher": "rusher", "warden": "warden", "sapper": "sapper", "repairer": "repairer", "ironstride": "ironstride"}
+SPRITES = {"boss": "assets/infiltration/walker.png", "rusher": "assets/blaster_ops/rusher.png", "crusher": "assets/blaster_ops/crusher.png", "duelist": "assets/blaster_ops/duelist.png", "warden": "assets/blaster_ops/warden.png", "sapper": "assets/blaster_ops/sapper.png", "repairer": "assets/blaster_ops/repairer.png", "ironstride": "assets/blaster_ops/ironstride.png"}
+PREVIEW_KIND = {"soldier": "trooper", "turret": "sentry", "heavy": "heavy", "marksman": "marksman", "rusher": "rusher", "crusher": "crusher", "duelist": "duelist", "warden": "warden", "sapper": "sapper", "repairer": "repairer", "ironstride": "ironstride"}
 OBJECTIVES = {"clear": 0, "destroy": 1, "hold": 2, "reach": 3, "interact": 4, "escort": 5, "boss": 6, "action": 7}
 ACTIONS = {name: index for index, name in enumerate(["move", "run", "sneak", "fire", "cut", "guard", "parry", "dodge", "power", "switch", "deploy", "order", "buy", "takedown", "panel", "recruit"])}
 TILE_RADIUS = 64
@@ -446,6 +446,9 @@ def enemies():
         fields = f'id = &"{name}"\nhealth = {health}.0\nspeed = {0 if name == "turret" else 160 if phase == 2 else 80}.0\nvision_range = 850.0\nvision_degrees = 360.0\npreferred_range = {36 if phase == 2 else 300}.0\ncan_raise_alarm = false\nprefers_prisoners = true\ntakedown_immune = true\ntelegraph_seconds = {0.5 if phase == 2 else 0.65}\nfire_interval = 1.8\nsprite = {3 if name.startswith("rival") else 1}\n'
         if boss or name.startswith("rival"):
             fields += f"supply_value = {6 if boss else 4}\n"
+        if name != "turret" and phase != 2:
+            damage = 12 if boss else 8
+            fields += f'melee_damage = {damage}.0\nmelee_guard_vigor = 16.0\nmelee_range = {72 if boss else 56}.0\nmelee_interval = 1.4\nmelee_flinch = 0.08\n'
         if phase == 2:
             fields += 'melee_damage = 8.0\nmelee_guard_vigor = 12.0\nmelee_range = 52.0\nmelee_interval = 1.0\nmelee_flinch = 0.15\n'
         else:
@@ -619,10 +622,36 @@ def training_incursion():
     return p
 
 
+REINFORCEMENTS = {
+    "encircled_yard": [(3, "crusher")],
+    "breach_line": [(1, "rusher"), (3, "crusher"), (-2, "crusher"), (-1, "duelist")],
+    "defense_node": [(0, "rusher"), (1, "crusher"), (-1, "crusher"), (-1, "rusher")],
+    "extraction_window": [(1, "crusher"), (2, "rusher")],
+    "ally_corridor": [(1, "crusher"), (3, "rusher"), (-1, "duelist")],
+    "retreat_vector": [(3, "crusher")],
+    "siege_core": [(1, "crusher"), (3, "duelist")],
+}
+
+
+def reinforce(p):
+    used = {cell for _, cell in p.placements}
+    for wave_index, name in REINFORCEMENTS.get(p.id, []):
+        wave = p.waves[wave_index]
+        origin = p.placements[wave[0]][1]
+        cell = next(c for c in ((origin[0] + dx, origin[1] + dy) for dx, dy in ((2, 0), (-2, 0), (0, 2), (0, -2), (2, 2), (-2, -2), (2, -2), (-2, 2), (3, 0), (-3, 0), (0, 3), (0, -3))) if 0 <= c[1] < p.height and 0 <= c[0] < p.width and p.grid[c[1]][c[0]] in ".=" and c not in used)
+        used.add(cell)
+        wave.append(len(p.placements))
+        p.placements.append((name, cell))
+
+
 TUTORIALS = [training_infiltration, training_incursion]
 MISSIONS = [encircled_yard, breach_line, defense_node, extraction_window, ally_corridor, retreat_vector, siege_core]
 
 if __name__ == "__main__":
     enemies()
-    for build in MISSIONS + TUTORIALS:
+    for build in MISSIONS:
+        plan = build()
+        reinforce(plan)
+        write_mission(plan)
+    for build in TUTORIALS:
         write_mission(build())

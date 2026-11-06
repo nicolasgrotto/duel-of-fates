@@ -9,6 +9,7 @@ const FREE_RANGE: float = 900.0
 const LOW_HEALTH: float = 60.0
 const HOLD_MARGIN: float = 220.0
 const SHOOT_RANGE: float = 620.0
+const PARRY_TICKS: int = 6
 const KEEP_AWAY: float = 150.0
 const HEAT_CEILING: float = 80.0
 
@@ -111,6 +112,20 @@ func _shoot_at(sim: BlasterOpsSimulation, target: InfiltrationActor, distance: f
 	return true
 
 
+func _strike_incoming(sim: BlasterOpsSimulation) -> bool:
+	if sim.player.parry_cooldown > 0 or sim.player.swing_tick >= 0:
+		return false
+	for index in sim.targets.size():
+		var actor: BlasterOpsActor = sim.targets[index] as BlasterOpsActor
+		var data: BlasterOpsEnemyData = sim.target_data[index] as BlasterOpsEnemyData
+		if data == null or actor.health <= 0.0 or data.melee_damage <= 0.0 or actor.telegraph_ticks < 0 or actor.telegraph_ticks > PARRY_TICKS or actor.casting_power:
+			continue
+		if actor.position.distance_to(sim.player.position) <= data.melee_range + sim.player.radius:
+			intent.aim = (actor.position - sim.player.position).normalized()
+			return true
+	return false
+
+
 func _reachable(sim: BlasterOpsSimulation, point: Vector2) -> bool:
 	return _navigation.path_tiles(sim.player.position, point) != InfiltrationNavigation.NONE
 
@@ -171,6 +186,10 @@ func produce(sim: BlasterOpsSimulation) -> InfiltrationIntent:
 			intent.movement = intent.aim * 0.5 if distance > 70.0 * 70.0 else Vector2.ZERO
 			intent.held = Intent.Command.LIGHT if sim.loadout.blaster == null else 0
 			intent.pressed = Intent.Command.HEAVY if sim.player.swing_tick < 0 else 0
+		if _strike_incoming(sim):
+			intent.pressed = Intent.Command.BLOCK
+			intent.held = Intent.Command.BLOCK
+			return intent
 		for bolt in sim.bolts:
 			if bolt.active and bolt.owner != 0 and bolt.position.distance_to(sim.player.position) < 130.0 and sim.player.parry_cooldown == 0 and sim.player.swing_tick < 0:
 				intent.pressed = Intent.Command.BLOCK

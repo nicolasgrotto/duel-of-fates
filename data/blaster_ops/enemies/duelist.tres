@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="BlasterOpsEnemyData" format=3]
+
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_enemy_data.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/blaster_ops/duelist.png" id="texture"]
+
+[resource]
+script = ExtResource("1")
+id = &"duelist"
+kind = 1
+archetype = 0
+health = 90.0
+speed = 170.0
+sprite = 0
+vision_range = 900.0
+vision_degrees = 130.0
+telegraph_seconds = 0.22
+initial_delay = 0.5
+fire_interval = 0.75
+can_raise_alarm = false
+respawn_seconds = 0.0
+texture = ExtResource("texture")
+melee_damage = 10.0
+melee_guard_vigor = 16.0
+melee_range = 72.0
+melee_interval = 0.95
+melee_flinch = 0.1
+preferred_range = 60.0
+supply_value = 4
+attack_degrees = 130.0
+takedown_immune = true
+deflect_degrees = 120.0
+blade_length = 56.0
+power_radius = 170.0
+power_damage = 6.0
+power_push = 96.0

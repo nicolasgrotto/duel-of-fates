@@ -3,6 +3,8 @@
 [ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_ally_data.gd" id="ally"]
 [ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_cover_data.gd" id="cover"]
 [ext_resource type="Texture2D" path="res://assets/blaster_ops/covers.png" id="covers"]
+[ext_resource type="Resource" path="res://data/blaster_ops/enemies/crusher.tres" id="crusher"]
+[ext_resource type="Resource" path="res://data/blaster_ops/enemies/duelist.tres" id="duelist"]
 [ext_resource type="Texture2D" path="res://assets/infiltration/enemy_sprites.png" id="enemies"]
 [ext_resource type="Resource" path="res://data/blaster_ops/enemies/heavy.tres" id="heavy"]
 [ext_resource type="Resource" path="res://data/blaster_ops/enemies/ironstride.tres" id="ironstride"]
@@ -326,6 +328,34 @@ position = Vector2(4064, 352)
 direction = Vector2(-1, 0)
 reinforcement = true
 
+[sub_resource type="Resource" id="p43"]
+script = ExtResource("placement")
+enemy = ExtResource("rusher")
+position = Vector2(2144, 416)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p44"]
+script = ExtResource("placement")
+enemy = ExtResource("crusher")
+position = Vector2(1696, 416)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p45"]
+script = ExtResource("placement")
+enemy = ExtResource("crusher")
+position = Vector2(4256, 416)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p46"]
+script = ExtResource("placement")
+enemy = ExtResource("duelist")
+position = Vector2(4000, 736)
+direction = Vector2(-1, 0)
+reinforcement = true
+
 [sub_resource type="Resource" id="w0"]
 script = ExtResource("wave")
 indices = PackedInt32Array(0, 1, 2, 3)
@@ -333,7 +363,7 @@ final_wave = false
 
 [sub_resource type="Resource" id="w1"]
 script = ExtResource("wave")
-indices = PackedInt32Array(4, 5, 6, 7, 8)
+indices = PackedInt32Array(4, 5, 6, 7, 8, 43)
 final_wave = false
 
 [sub_resource type="Resource" id="w2"]
@@ -343,7 +373,7 @@ final_wave = false
 
 [sub_resource type="Resource" id="w3"]
 script = ExtResource("wave")
-indices = PackedInt32Array(11, 12, 13)
+indices = PackedInt32Array(11, 12, 13, 44)
 final_wave = false
 
 [sub_resource type="Resource" id="w4"]
@@ -378,12 +408,12 @@ final_wave = false
 
 [sub_resource type="Resource" id="w10"]
 script = ExtResource("wave")
-indices = PackedInt32Array(36, 37, 38)
+indices = PackedInt32Array(36, 37, 38, 45)
 final_wave = false
 
 [sub_resource type="Resource" id="w11"]
 script = ExtResource("wave")
-indices = PackedInt32Array(39, 40, 41, 42)
+indices = PackedInt32Array(39, 40, 41, 42, 46)
 final_wave = true
 
 [sub_resource type="Resource" id="c0"]
@@ -696,7 +726,7 @@ requires_clear = false
 script = ExtResource("map")
 rows = PackedStringArray("############################################################################################", "############################################################################################", "############################################################################################", "############################################################################################", "##...................#...................#...................#...........................###", "##...................#...................#...................#...........................###", "##...................#...................#...................#...........................###", "##........C..........#......C............#......C............#...........................###", "##...................#...................#...................#......C....................###", "##...................C............C......C...................C...........................###", "##...................C...................C...................C...........................###", "##.===========C======C===================C==========C========C============C=============.###", "##.==================C===================C===================C==========================.###", "##...................C...................C...................C...........................###", "##...................C............C......C...................C...........................###", "##...................#...................#...................#......C....................###", "##........C..........#......C............#......C............#...........................###", "##...................#...................#...................#...........................###", "##...................#...................#...................#...........................###", "##...................#...................#...................#...........................###", "############################################################################################", "############################################################################################", "############################################################################################", "############################################################################################")
 player_spawn = Vector2(352, 736)
-enemies = Array[ExtResource("placement")]([SubResource("p0"), SubResource("p1"), SubResource("p2"), SubResource("p3"), SubResource("p4"), SubResource("p5"), SubResource("p6"), SubResource("p7"), SubResource("p8"), SubResource("p9"), SubResource("p10"), SubResource("p11"), SubResource("p12"), SubResource("p13"), SubResource("p14"), SubResource("p15"), SubResource("p16"), SubResource("p17"), SubResource("p18"), SubResource("p19"), SubResource("p20"), SubResource("p21"), SubResource("p22"), SubResource("p23"), SubResource("p24"), SubResource("p25"), SubResource("p26"), SubResource("p27"), SubResource("p28"), SubResource("p29"), SubResource("p30"), SubResource("p31"), SubResource("p32"), SubResource("p33"), SubResource("p34"), SubResource("p35"), SubResource("p36"), SubResource("p37"), SubResource("p38"), SubResource("p39"), SubResource("p40"), SubResource("p41"), SubResource("p42")])
+enemies = Array[ExtResource("placement")]([SubResource("p0"), SubResource("p1"), SubResource("p2"), SubResource("p3"), SubResource("p4"), SubResource("p5"), SubResource("p6"), SubResource("p7"), SubResource("p8"), SubResource("p9"), SubResource("p10"), SubResource("p11"), SubResource("p12"), SubResource("p13"), SubResource("p14"), SubResource("p15"), SubResource("p16"), SubResource("p17"), SubResource("p18"), SubResource("p19"), SubResource("p20"), SubResource("p21"), SubResource("p22"), SubResource("p23"), SubResource("p24"), SubResource("p25"), SubResource("p26"), SubResource("p27"), SubResource("p28"), SubResource("p29"), SubResource("p30"), SubResource("p31"), SubResource("p32"), SubResource("p33"), SubResource("p34"), SubResource("p35"), SubResource("p36"), SubResource("p37"), SubResource("p38"), SubResource("p39"), SubResource("p40"), SubResource("p41"), SubResource("p42"), SubResource("p43"), SubResource("p44"), SubResource("p45"), SubResource("p46")])
 covers = Array[ExtResource("cover")]([SubResource("c0"), SubResource("c1"), SubResource("c2"), SubResource("c3"), SubResource("c4"), SubResource("c5"), SubResource("c6"), SubResource("c7"), SubResource("c8"), SubResource("c9"), SubResource("c10"), SubResource("c11"), SubResource("c12"), SubResource("c13"), SubResource("c14"), SubResource("c15"), SubResource("c16"), SubResource("c17"), SubResource("c18"), SubResource("c19"), SubResource("c20"), SubResource("c21"), SubResource("c22"), SubResource("c23"), SubResource("c24"), SubResource("c25"), SubResource("c26"), SubResource("c27"), SubResource("c28"), SubResource("c29"), SubResource("c30")])
 tiles = ExtResource("tiles")
 sprites = ExtResource("sprites")

@@ -46,6 +46,41 @@ def rusher(colors):
     return frame
 
 
+def crusher(colors):
+    frame = Image.new("RGBA", (24, 28))
+    draw = ImageDraw.Draw(frame)
+    dark = colors["infiltration_seam"]
+    metal = colors["infiltration_wall"]
+    edge = colors["infiltration_edge"]
+    draw.ellipse((1, 21, 23, 27), fill=(*dark, 150))
+    draw.rectangle((5, 18, 10, 25), fill=shade(metal, .7), outline=dark)
+    draw.rectangle((14, 18, 19, 25), fill=shade(metal, .7), outline=dark)
+    draw.polygon(((5, 9), (19, 9), (21, 21), (3, 21)), fill=metal, outline=dark)
+    draw.rectangle((0, 8, 6, 15), fill=shade(metal, 1.4), outline=dark)
+    draw.rectangle((18, 8, 23, 15), fill=shade(metal, 1.4), outline=dark)
+    draw.rectangle((8, 3, 16, 10), fill=shade(metal, 1.5), outline=dark)
+    draw.line((10, 6, 14, 6), fill=colors["danger"])
+    draw.rectangle((19, 1, 23, 6), fill=edge, outline=dark)
+    draw.line((21, 6, 21, 13), fill=dark, width=2)
+    return frame
+
+
+def duelist(colors):
+    frame = Image.new("RGBA", (24, 28))
+    draw = ImageDraw.Draw(frame)
+    dark = colors["infiltration_seam"]
+    cloth = colors["infiltration_cloth"]
+    draw.ellipse((5, 21, 19, 27), fill=(*dark, 150))
+    draw.rectangle((8, 19, 11, 25), fill=shade(cloth, .55), outline=dark)
+    draw.rectangle((13, 19, 16, 25), fill=shade(cloth, .55), outline=dark)
+    draw.polygon(((8, 9), (16, 9), (18, 22), (6, 22)), fill=shade(cloth, .7), outline=dark)
+    draw.polygon(((12, 2), (17, 8), (15, 12), (9, 12), (7, 8)), fill=shade(cloth, .45), outline=dark)
+    draw.line((10, 9, 14, 9), fill=colors["danger"])
+    draw.rectangle((5, 11, 7, 16), fill=shade(cloth, .9), outline=dark)
+    draw.rectangle((17, 11, 19, 16), fill=shade(cloth, .9), outline=dark)
+    return frame
+
+
 def warden(colors):
     frame = Image.new("RGBA", (28, 32))
     draw = ImageDraw.Draw(frame)
@@ -161,6 +196,8 @@ def main():
     colors = palette()
     cover_atlas(colors).save(folder / "covers.png")
     rusher(colors).save(folder / "rusher.png")
+    crusher(colors).save(folder / "crusher.png")
+    duelist(colors).save(folder / "duelist.png")
     warden(colors).save(folder / "warden.png")
     sapper(colors).save(folder / "sapper.png")
     repairer(colors).save(folder / "repairer.png")
