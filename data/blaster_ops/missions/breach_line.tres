@@ -1,92 +1,703 @@
 [gd_resource type="Resource" script_class="BlasterOpsMissionData" format=3]
 
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_ally_data.gd" id="ally"]
 [ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_cover_data.gd" id="cover"]
 [ext_resource type="Texture2D" path="res://assets/blaster_ops/covers.png" id="covers"]
 [ext_resource type="Texture2D" path="res://assets/infiltration/enemy_sprites.png" id="enemies"]
 [ext_resource type="Resource" path="res://data/blaster_ops/enemies/heavy.tres" id="heavy"]
+[ext_resource type="Resource" path="res://data/blaster_ops/enemies/ironstride.tres" id="ironstride"]
 [ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_arena_data.gd" id="map"]
+[ext_resource type="Resource" path="res://data/blaster_ops/enemies/marksman.tres" id="marksman"]
 [ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_mission_data.gd" id="mission"]
 [ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_phase_data.gd" id="phase"]
 [ext_resource type="Script" path="res://data/infiltration/infiltration_enemy_placement.gd" id="placement"]
 [ext_resource type="Texture2D" path="res://assets/blaster_ops/previews/breach_line.png" id="preview"]
+[ext_resource type="Resource" path="res://data/blaster_ops/enemies/repairer.tres" id="repairer"]
+[ext_resource type="Resource" path="res://data/blaster_ops/allies/rifleman.tres" id="role_rifleman"]
 [ext_resource type="Resource" path="res://data/blaster_ops/enemies/rusher.tres" id="rusher"]
+[ext_resource type="Resource" path="res://data/blaster_ops/enemies/sapper.tres" id="sapper"]
+[ext_resource type="Resource" path="res://data/blaster_ops/enemies/soldier.tres" id="soldier"]
 [ext_resource type="Texture2D" path="res://assets/infiltration/training_sprites.png" id="sprites"]
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_stage_data.gd" id="stage"]
 [ext_resource type="Texture2D" path="res://assets/infiltration/training_tiles.png" id="tiles"]
 [ext_resource type="Resource" path="res://data/blaster_ops/enemies/turret.tres" id="turret"]
+[ext_resource type="Resource" path="res://data/blaster_ops/enemies/warden.tres" id="warden"]
 [ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_wave_data.gd" id="wave"]
 
 
 [sub_resource type="Resource" id="p0"]
 script = ExtResource("placement")
 enemy = ExtResource("turret")
-position = Vector2(800, 544)
+position = Vector2(1120, 480)
 direction = Vector2(-1, 0)
 reinforcement = true
 
 [sub_resource type="Resource" id="p1"]
 script = ExtResource("placement")
 enemy = ExtResource("turret")
-position = Vector2(1376, 544)
+position = Vector2(1120, 1056)
 direction = Vector2(-1, 0)
 reinforcement = true
 
 [sub_resource type="Resource" id="p2"]
 script = ExtResource("placement")
-enemy = ExtResource("turret")
-position = Vector2(1952, 544)
+enemy = ExtResource("soldier")
+position = Vector2(1248, 736)
 direction = Vector2(-1, 0)
 reinforcement = true
 
-[sub_resource type="Resource" id="w0"]
-script = ExtResource("wave")
-indices = PackedInt32Array(0, 1, 2)
-final_wave = false
-
 [sub_resource type="Resource" id="p3"]
 script = ExtResource("placement")
-enemy = ExtResource("heavy")
-position = Vector2(1824, 736)
+enemy = ExtResource("rusher")
+position = Vector2(1184, 416)
 direction = Vector2(-1, 0)
 reinforcement = true
 
 [sub_resource type="Resource" id="p4"]
 script = ExtResource("placement")
-enemy = ExtResource("rusher")
+enemy = ExtResource("sapper")
 position = Vector2(2016, 416)
 direction = Vector2(-1, 0)
 reinforcement = true
 
+[sub_resource type="Resource" id="p5"]
+script = ExtResource("placement")
+enemy = ExtResource("sapper")
+position = Vector2(2016, 1120)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p6"]
+script = ExtResource("placement")
+enemy = ExtResource("soldier")
+position = Vector2(2336, 736)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p7"]
+script = ExtResource("placement")
+enemy = ExtResource("soldier")
+position = Vector2(2464, 480)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p8"]
+script = ExtResource("placement")
+enemy = ExtResource("marksman")
+position = Vector2(2528, 416)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p9"]
+script = ExtResource("placement")
+enemy = ExtResource("heavy")
+position = Vector2(2464, 800)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p10"]
+script = ExtResource("placement")
+enemy = ExtResource("warden")
+position = Vector2(2336, 544)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p11"]
+script = ExtResource("placement")
+enemy = ExtResource("rusher")
+position = Vector2(1568, 416)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p12"]
+script = ExtResource("placement")
+enemy = ExtResource("rusher")
+position = Vector2(1568, 1120)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p13"]
+script = ExtResource("placement")
+enemy = ExtResource("soldier")
+position = Vector2(1696, 736)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p14"]
+script = ExtResource("placement")
+enemy = ExtResource("marksman")
+position = Vector2(2976, 1120)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p15"]
+script = ExtResource("placement")
+enemy = ExtResource("rusher")
+position = Vector2(3232, 416)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p16"]
+script = ExtResource("placement")
+enemy = ExtResource("rusher")
+position = Vector2(3232, 1184)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p17"]
+script = ExtResource("placement")
+enemy = ExtResource("soldier")
+position = Vector2(3488, 544)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p18"]
+script = ExtResource("placement")
+enemy = ExtResource("soldier")
+position = Vector2(3488, 992)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p19"]
+script = ExtResource("placement")
+enemy = ExtResource("sapper")
+position = Vector2(3040, 416)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p20"]
+script = ExtResource("placement")
+enemy = ExtResource("sapper")
+position = Vector2(3040, 1184)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p21"]
+script = ExtResource("placement")
+enemy = ExtResource("turret")
+position = Vector2(3616, 416)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p22"]
+script = ExtResource("placement")
+enemy = ExtResource("turret")
+position = Vector2(3616, 1120)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p23"]
+script = ExtResource("placement")
+enemy = ExtResource("turret")
+position = Vector2(3808, 736)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p24"]
+script = ExtResource("placement")
+enemy = ExtResource("heavy")
+position = Vector2(3552, 736)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p25"]
+script = ExtResource("placement")
+enemy = ExtResource("marksman")
+position = Vector2(3808, 352)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p26"]
+script = ExtResource("placement")
+enemy = ExtResource("repairer")
+position = Vector2(3744, 1184)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p27"]
+script = ExtResource("placement")
+enemy = ExtResource("soldier")
+position = Vector2(2848, 352)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p28"]
+script = ExtResource("placement")
+enemy = ExtResource("soldier")
+position = Vector2(2848, 1184)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p29"]
+script = ExtResource("placement")
+enemy = ExtResource("warden")
+position = Vector2(2976, 736)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p30"]
+script = ExtResource("placement")
+enemy = ExtResource("ironstride")
+position = Vector2(5152, 736)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p31"]
+script = ExtResource("placement")
+enemy = ExtResource("soldier")
+position = Vector2(4896, 480)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p32"]
+script = ExtResource("placement")
+enemy = ExtResource("soldier")
+position = Vector2(4896, 1056)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p33"]
+script = ExtResource("placement")
+enemy = ExtResource("sapper")
+position = Vector2(5536, 416)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p34"]
+script = ExtResource("placement")
+enemy = ExtResource("sapper")
+position = Vector2(5536, 1120)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p35"]
+script = ExtResource("placement")
+enemy = ExtResource("warden")
+position = Vector2(5408, 736)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p36"]
+script = ExtResource("placement")
+enemy = ExtResource("soldier")
+position = Vector2(4128, 416)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p37"]
+script = ExtResource("placement")
+enemy = ExtResource("soldier")
+position = Vector2(4128, 1120)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p38"]
+script = ExtResource("placement")
+enemy = ExtResource("rusher")
+position = Vector2(4256, 736)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p39"]
+script = ExtResource("placement")
+enemy = ExtResource("heavy")
+position = Vector2(4128, 736)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p40"]
+script = ExtResource("placement")
+enemy = ExtResource("sapper")
+position = Vector2(4640, 416)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p41"]
+script = ExtResource("placement")
+enemy = ExtResource("sapper")
+position = Vector2(4640, 1120)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="p42"]
+script = ExtResource("placement")
+enemy = ExtResource("marksman")
+position = Vector2(4064, 352)
+direction = Vector2(-1, 0)
+reinforcement = true
+
+[sub_resource type="Resource" id="w0"]
+script = ExtResource("wave")
+indices = PackedInt32Array(0, 1, 2, 3)
+final_wave = false
+
 [sub_resource type="Resource" id="w1"]
 script = ExtResource("wave")
-indices = PackedInt32Array(3, 4)
+indices = PackedInt32Array(4, 5, 6, 7, 8)
+final_wave = false
+
+[sub_resource type="Resource" id="w2"]
+script = ExtResource("wave")
+indices = PackedInt32Array(9, 10)
+final_wave = false
+
+[sub_resource type="Resource" id="w3"]
+script = ExtResource("wave")
+indices = PackedInt32Array(11, 12, 13)
+final_wave = false
+
+[sub_resource type="Resource" id="w4"]
+script = ExtResource("wave")
+indices = PackedInt32Array(14, 15, 16, 17)
+final_wave = false
+
+[sub_resource type="Resource" id="w5"]
+script = ExtResource("wave")
+indices = PackedInt32Array(18, 19, 20)
+final_wave = false
+
+[sub_resource type="Resource" id="w6"]
+script = ExtResource("wave")
+indices = PackedInt32Array(21, 22, 23, 24, 25, 26)
+final_wave = false
+
+[sub_resource type="Resource" id="w7"]
+script = ExtResource("wave")
+indices = PackedInt32Array(27, 28, 29)
+final_wave = false
+
+[sub_resource type="Resource" id="w8"]
+script = ExtResource("wave")
+indices = PackedInt32Array(30, 31, 32)
+final_wave = false
+
+[sub_resource type="Resource" id="w9"]
+script = ExtResource("wave")
+indices = PackedInt32Array(33, 34, 35)
+final_wave = false
+
+[sub_resource type="Resource" id="w10"]
+script = ExtResource("wave")
+indices = PackedInt32Array(36, 37, 38)
+final_wave = false
+
+[sub_resource type="Resource" id="w11"]
+script = ExtResource("wave")
+indices = PackedInt32Array(39, 40, 41, 42)
 final_wave = true
 
 [sub_resource type="Resource" id="c0"]
 script = ExtResource("cover")
-cell = Vector2i(10, 5)
+cell = Vector2i(10, 7)
 health = 30.0
+door = false
 
 [sub_resource type="Resource" id="c1"]
 script = ExtResource("cover")
-cell = Vector2i(10, 11)
+cell = Vector2i(10, 16)
 health = 30.0
+door = false
 
 [sub_resource type="Resource" id="c2"]
 script = ExtResource("cover")
-cell = Vector2i(19, 5)
+cell = Vector2i(14, 11)
 health = 30.0
+door = false
 
 [sub_resource type="Resource" id="c3"]
 script = ExtResource("cover")
-cell = Vector2i(19, 11)
+cell = Vector2i(28, 7)
 health = 30.0
+door = false
+
+[sub_resource type="Resource" id="c4"]
+script = ExtResource("cover")
+cell = Vector2i(28, 16)
+health = 30.0
+door = false
+
+[sub_resource type="Resource" id="c5"]
+script = ExtResource("cover")
+cell = Vector2i(34, 9)
+health = 30.0
+door = false
+
+[sub_resource type="Resource" id="c6"]
+script = ExtResource("cover")
+cell = Vector2i(34, 14)
+health = 30.0
+door = false
+
+[sub_resource type="Resource" id="c7"]
+script = ExtResource("cover")
+cell = Vector2i(48, 7)
+health = 30.0
+door = false
+
+[sub_resource type="Resource" id="c8"]
+script = ExtResource("cover")
+cell = Vector2i(48, 16)
+health = 30.0
+door = false
+
+[sub_resource type="Resource" id="c9"]
+script = ExtResource("cover")
+cell = Vector2i(52, 11)
+health = 30.0
+door = false
+
+[sub_resource type="Resource" id="c10"]
+script = ExtResource("cover")
+cell = Vector2i(68, 8)
+health = 30.0
+door = false
+
+[sub_resource type="Resource" id="c11"]
+script = ExtResource("cover")
+cell = Vector2i(68, 15)
+health = 30.0
+door = false
+
+[sub_resource type="Resource" id="c12"]
+script = ExtResource("cover")
+cell = Vector2i(74, 11)
+health = 30.0
+door = false
+
+[sub_resource type="Resource" id="c13"]
+script = ExtResource("cover")
+cell = Vector2i(21, 9)
+health = 1.0
+door = true
+
+[sub_resource type="Resource" id="c14"]
+script = ExtResource("cover")
+cell = Vector2i(21, 10)
+health = 1.0
+door = true
+
+[sub_resource type="Resource" id="c15"]
+script = ExtResource("cover")
+cell = Vector2i(21, 11)
+health = 1.0
+door = true
+
+[sub_resource type="Resource" id="c16"]
+script = ExtResource("cover")
+cell = Vector2i(21, 12)
+health = 1.0
+door = true
+
+[sub_resource type="Resource" id="c17"]
+script = ExtResource("cover")
+cell = Vector2i(21, 13)
+health = 1.0
+door = true
+
+[sub_resource type="Resource" id="c18"]
+script = ExtResource("cover")
+cell = Vector2i(21, 14)
+health = 1.0
+door = true
+
+[sub_resource type="Resource" id="c19"]
+script = ExtResource("cover")
+cell = Vector2i(41, 9)
+health = 1.0
+door = true
+
+[sub_resource type="Resource" id="c20"]
+script = ExtResource("cover")
+cell = Vector2i(41, 10)
+health = 1.0
+door = true
+
+[sub_resource type="Resource" id="c21"]
+script = ExtResource("cover")
+cell = Vector2i(41, 11)
+health = 1.0
+door = true
+
+[sub_resource type="Resource" id="c22"]
+script = ExtResource("cover")
+cell = Vector2i(41, 12)
+health = 1.0
+door = true
+
+[sub_resource type="Resource" id="c23"]
+script = ExtResource("cover")
+cell = Vector2i(41, 13)
+health = 1.0
+door = true
+
+[sub_resource type="Resource" id="c24"]
+script = ExtResource("cover")
+cell = Vector2i(41, 14)
+health = 1.0
+door = true
+
+[sub_resource type="Resource" id="c25"]
+script = ExtResource("cover")
+cell = Vector2i(61, 9)
+health = 1.0
+door = true
+
+[sub_resource type="Resource" id="c26"]
+script = ExtResource("cover")
+cell = Vector2i(61, 10)
+health = 1.0
+door = true
+
+[sub_resource type="Resource" id="c27"]
+script = ExtResource("cover")
+cell = Vector2i(61, 11)
+health = 1.0
+door = true
+
+[sub_resource type="Resource" id="c28"]
+script = ExtResource("cover")
+cell = Vector2i(61, 12)
+health = 1.0
+door = true
+
+[sub_resource type="Resource" id="c29"]
+script = ExtResource("cover")
+cell = Vector2i(61, 13)
+health = 1.0
+door = true
+
+[sub_resource type="Resource" id="c30"]
+script = ExtResource("cover")
+cell = Vector2i(61, 14)
+health = 1.0
+door = true
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("stage")
+objective = 1
+title_key = "OPS_ST_BREACH_LINE_1"
+first_wave = 0
+last_wave = 0
+wave_gap_seconds = 0.0
+targets = PackedInt32Array(0, 1)
+terminals = PackedInt32Array()
+opens_covers = PackedInt32Array(13, 14, 15, 16, 17, 18)
+hold_seconds = 0.0
+zone_radius = 0.0
+prep_seconds = 6.0
+supply_reward = 2
+repair_on_complete = 25.0
+requires_clear = false
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("stage")
+objective = 0
+title_key = "OPS_ST_BREACH_LINE_2"
+first_wave = 1
+last_wave = 2
+wave_gap_seconds = 0.0
+targets = PackedInt32Array()
+terminals = PackedInt32Array()
+opens_covers = PackedInt32Array()
+hold_seconds = 0.0
+zone_radius = 0.0
+prep_seconds = 4.0
+supply_reward = 2
+repair_on_complete = 25.0
+requires_clear = false
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("stage")
+objective = 4
+title_key = "OPS_ST_BREACH_LINE_3"
+first_wave = 3
+last_wave = 3
+wave_gap_seconds = 0.0
+targets = PackedInt32Array()
+terminals = PackedInt32Array(0)
+opens_covers = PackedInt32Array(19, 20, 21, 22, 23, 24)
+hold_seconds = 0.0
+zone_radius = 0.0
+prep_seconds = 4.0
+supply_reward = 2
+repair_on_complete = 25.0
+requires_clear = false
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("stage")
+objective = 0
+title_key = "OPS_ST_BREACH_LINE_4"
+first_wave = 4
+last_wave = 5
+wave_gap_seconds = 0.0
+targets = PackedInt32Array()
+terminals = PackedInt32Array()
+opens_covers = PackedInt32Array()
+hold_seconds = 0.0
+zone_radius = 0.0
+prep_seconds = 4.0
+supply_reward = 2
+repair_on_complete = 25.0
+requires_clear = false
+
+[sub_resource type="Resource" id="s4"]
+script = ExtResource("stage")
+objective = 1
+title_key = "OPS_ST_BREACH_LINE_5"
+first_wave = 6
+last_wave = 7
+wave_gap_seconds = 18.0
+targets = PackedInt32Array(21, 22, 23)
+terminals = PackedInt32Array()
+opens_covers = PackedInt32Array(25, 26, 27, 28, 29, 30)
+hold_seconds = 0.0
+zone_radius = 0.0
+prep_seconds = 4.0
+supply_reward = 2
+repair_on_complete = 25.0
+requires_clear = false
+
+[sub_resource type="Resource" id="s5"]
+script = ExtResource("stage")
+objective = 0
+title_key = "OPS_ST_BREACH_LINE_6"
+first_wave = 8
+last_wave = 9
+wave_gap_seconds = 20.0
+targets = PackedInt32Array()
+terminals = PackedInt32Array()
+opens_covers = PackedInt32Array()
+hold_seconds = 0.0
+zone_radius = 0.0
+prep_seconds = 4.0
+supply_reward = 2
+repair_on_complete = 25.0
+requires_clear = false
+
+[sub_resource type="Resource" id="s6"]
+script = ExtResource("stage")
+objective = 2
+title_key = "OPS_ST_BREACH_LINE_7"
+first_wave = 10
+last_wave = 11
+wave_gap_seconds = 15.0
+targets = PackedInt32Array()
+terminals = PackedInt32Array()
+opens_covers = PackedInt32Array()
+hold_seconds = 30.0
+zone = Vector2(5408, 736)
+zone_radius = 192.0
+prep_seconds = 5.0
+supply_reward = 0
+repair_on_complete = 25.0
+requires_clear = false
 
 [sub_resource type="Resource" id="map_data"]
 script = ExtResource("map")
-rows = PackedStringArray("########################################", "#......................................#", "#......................................#", "#......................................#", "#......................................#", "#.........C........C...................#", "#......................................#", "#......................................#", "#.====================================.#", "#......................................#", "#......................................#", "#.........C........C...................#", "#......................................#", "#......................................#", "#......................................#", "#......................................#", "#......................................#", "########################################")
-player_spawn = Vector2(416, 544)
-enemies = Array[ExtResource("placement")]([SubResource("p0"), SubResource("p1"), SubResource("p2"), SubResource("p3"), SubResource("p4")])
-covers = Array[ExtResource("cover")]([SubResource("c0"), SubResource("c1"), SubResource("c2"), SubResource("c3")])
+rows = PackedStringArray("############################################################################################", "############################################################################################", "############################################################################################", "############################################################################################", "##...................#...................#...................#...........................###", "##...................#...................#...................#...........................###", "##...................#...................#...................#...........................###", "##........C..........#......C............#......C............#...........................###", "##...................#...................#...................#......C....................###", "##...................C............C......C...................C...........................###", "##...................C...................C...................C...........................###", "##.===========C======C===================C==========C========C============C=============.###", "##.==================C===================C===================C==========================.###", "##...................C...................C...................C...........................###", "##...................C............C......C...................C...........................###", "##...................#...................#...................#......C....................###", "##........C..........#......C............#......C............#...........................###", "##...................#...................#...................#...........................###", "##...................#...................#...................#...........................###", "##...................#...................#...................#...........................###", "############################################################################################", "############################################################################################", "############################################################################################", "############################################################################################")
+player_spawn = Vector2(352, 736)
+enemies = Array[ExtResource("placement")]([SubResource("p0"), SubResource("p1"), SubResource("p2"), SubResource("p3"), SubResource("p4"), SubResource("p5"), SubResource("p6"), SubResource("p7"), SubResource("p8"), SubResource("p9"), SubResource("p10"), SubResource("p11"), SubResource("p12"), SubResource("p13"), SubResource("p14"), SubResource("p15"), SubResource("p16"), SubResource("p17"), SubResource("p18"), SubResource("p19"), SubResource("p20"), SubResource("p21"), SubResource("p22"), SubResource("p23"), SubResource("p24"), SubResource("p25"), SubResource("p26"), SubResource("p27"), SubResource("p28"), SubResource("p29"), SubResource("p30"), SubResource("p31"), SubResource("p32"), SubResource("p33"), SubResource("p34"), SubResource("p35"), SubResource("p36"), SubResource("p37"), SubResource("p38"), SubResource("p39"), SubResource("p40"), SubResource("p41"), SubResource("p42")])
+covers = Array[ExtResource("cover")]([SubResource("c0"), SubResource("c1"), SubResource("c2"), SubResource("c3"), SubResource("c4"), SubResource("c5"), SubResource("c6"), SubResource("c7"), SubResource("c8"), SubResource("c9"), SubResource("c10"), SubResource("c11"), SubResource("c12"), SubResource("c13"), SubResource("c14"), SubResource("c15"), SubResource("c16"), SubResource("c17"), SubResource("c18"), SubResource("c19"), SubResource("c20"), SubResource("c21"), SubResource("c22"), SubResource("c23"), SubResource("c24"), SubResource("c25"), SubResource("c26"), SubResource("c27"), SubResource("c28"), SubResource("c29"), SubResource("c30")])
 tiles = ExtResource("tiles")
 sprites = ExtResource("sprites")
 enemy_sprites = ExtResource("enemies")
@@ -102,9 +713,18 @@ title_key = "OPS_BREACH_LINE"
 briefing_key = "OPS_BREACH_LINE_BRIEF"
 map = SubResource("map_data")
 preview = ExtResource("preview")
-waves = Array[ExtResource("wave")]([SubResource("w0"), SubResource("w1")])
-prisoner_spawns = PackedVector2Array(544, 800)
+waves = Array[ExtResource("wave")]([SubResource("w0"), SubResource("w1"), SubResource("w2"), SubResource("w3"), SubResource("w4"), SubResource("w5"), SubResource("w6"), SubResource("w7"), SubResource("w8"), SubResource("w9"), SubResource("w10"), SubResource("w11")])
+stages = Array[ExtResource("stage")]([SubResource("s0"), SubResource("s1"), SubResource("s2"), SubResource("s3"), SubResource("s4"), SubResource("s5"), SubResource("s6")])
+prisoner_spawns = PackedVector2Array(480, 1120)
 minimum_prisoners = 0
-extraction = Vector2(2208, 544)
-bonus_seconds = 120.0
-defense_targets = PackedInt32Array(0, 1, 2)
+extraction = Vector2(5536, 736)
+bonus_seconds = 330.0
+damage_bonus = 90.0
+accuracy_bonus = 0.45
+enemy_damage_scale = 0.6
+ally_roles = Array[ExtResource("ally")]([ExtResource("role_rifleman")])
+terminals = PackedVector2Array(2528, 1120)
+supply_terminals = PackedVector2Array(352, 416, 2848, 416)
+starting_supplies = 0
+supply_per_wave = 0
+barrier_charges = 2

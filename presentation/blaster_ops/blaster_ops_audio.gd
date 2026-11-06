@@ -9,7 +9,7 @@ const SOUNDS: Dictionary = {
 	InfiltrationEvent.Type.FOOTSTEP: &"step", InfiltrationEvent.Type.OVERHEATED: &"rejected",
 	InfiltrationEvent.Type.DODGED: &"dodge", InfiltrationEvent.Type.PRECISION_DODGED: &"evade",
 	InfiltrationEvent.Type.COVER_HIT: &"hit_light", InfiltrationEvent.Type.COVER_DESTROYED: &"hit_heavy",
-	InfiltrationEvent.Type.POWER_PREPARED: &"power_cast", InfiltrationEvent.Type.AREA_BLAST: &"power_fracture_burst",
+	InfiltrationEvent.Type.POWER_PREPARED: &"power_cast", InfiltrationEvent.Type.AREA_BLAST: &"power_fracture_burst", InfiltrationEvent.Type.DOOR_OPENED: &"lock_win",
 }
 const POWER_SOUNDS: Dictionary = {
 	PowerData.Kind.REPULSE: &"power_repulse", PowerData.Kind.PULL: &"power_pull", PowerData.Kind.BARRIER: &"power_barrier_absorb",

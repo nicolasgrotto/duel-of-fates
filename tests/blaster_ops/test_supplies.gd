@@ -62,9 +62,10 @@ func test_purchases_require_the_terminal_and_enough_supplies() -> void:
 	assert_false(progress.purchase(sim, _offer(&"barrier")))
 	assert_eq(progress.supplies, 99)
 	sim.player.position = TERMINAL + Vector2(40, 0)
-	progress.supplies = 1
+	var cost: int = BlasterOpsTraining.SUPPLY_OFFERS[_offer(&"barrier")].cost
+	progress.supplies = cost - 1
 	assert_false(progress.purchase(sim, _offer(&"barrier")))
-	progress.supplies = 2
+	progress.supplies = cost
 	assert_true(progress.purchase(sim, _offer(&"barrier")))
 	assert_eq(progress.supplies, 0)
 	assert_eq(progress.barrier_charges, 1)
@@ -121,13 +122,14 @@ func test_reinforcement_calls_the_reserve_ally_to_the_terminal_once() -> void:
 func test_purchase_arrives_only_as_an_intent_through_the_tick() -> void:
 	var sim: BlasterOpsSimulation = _sim()
 	var progress: BlasterOpsMissionState = _progress(sim)
-	progress.supplies = 5
+	var cost: int = BlasterOpsTraining.SUPPLY_OFFERS[_offer(&"barrier")].cost
+	progress.supplies = cost + 1
 	sim.player.position = TERMINAL + Vector2(40, 0)
 	var intent: InfiltrationIntent = InfiltrationIntent.new()
 	intent.purchase = _offer(&"barrier")
 	sim.step(intent)
 	assert_eq(progress.barrier_charges, 1)
-	assert_eq(progress.supplies, 3)
+	assert_eq(progress.supplies, 1)
 	intent.clear()
 	assert_eq(intent.purchase, -1)
 

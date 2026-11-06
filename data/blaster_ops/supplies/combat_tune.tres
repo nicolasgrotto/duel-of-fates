@@ -8,6 +8,6 @@ id = &"combat_tune"
 name_key = "OPS_SUPPLY_COMBAT_TUNE"
 description_key = "OPS_SUPPLY_COMBAT_TUNE_INFO"
 kind = 4
-cost = 5
+cost = 10
 amount = 1.15
 limit = 2

@@ -551,8 +551,9 @@ def preview_image(m, sprite_overrides=None):
         marker(cell, colors["text"])
     for cell in m.prisoners:
         place(prisoner, cell)
-    for kind, cell, facing in m.preview_guards:
-        cone(cell, facing, colors["danger"])
+    if getattr(m, "preview_cones", True):
+        for kind, cell, facing in m.preview_guards:
+            cone(cell, facing, colors["danger"])
     for kind, cell, facing in m.preview_guards:
         sprite = sprite_overrides.get(kind) if sprite_overrides else None
         if sprite is None:

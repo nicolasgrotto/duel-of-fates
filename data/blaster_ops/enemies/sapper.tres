@@ -23,4 +23,4 @@ melee_interval = 1.0
 attack_degrees = 360.0
 texture = ExtResource("texture")
 blast_radius = 120.0
-blast_damage = 28.0
+blast_damage = 22.0

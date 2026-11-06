@@ -1,8 +1,52 @@
 extends TestCase
 
 
-func _sim(index: int = 0) -> BlasterOpsSimulation:
-	return BlasterOpsMode.new(BlasterOpsMode.INCURSIONS[index], DuelMode.character(&"guardian"), null, true).create_simulation()
+func _sim(kind: int = 0) -> BlasterOpsSimulation:
+	return BlasterOpsMode.new(_flow_mission(kind), DuelMode.character(&"guardian"), null, true).create_simulation()
+
+
+func _flow_mission(kind: int) -> BlasterOpsMissionData:
+	var phased: bool = kind == BlasterOpsMissionData.Kind.RIVAL or kind == BlasterOpsMissionData.Kind.BOSS
+	var prefix: String = "rival" if kind == BlasterOpsMissionData.Kind.RIVAL else "boss"
+	var first: BlasterOpsEnemyData = BlasterOpsFixture.enemy(prefix + "_0" if phased else "soldier")
+	var enemies: Array[BlasterOpsEnemyData] = [first, BlasterOpsFixture.enemy("rusher"), BlasterOpsFixture.enemy("soldier")]
+	var arena: BlasterOpsArenaData = BlasterOpsFixture.arena(enemies)
+	arena.enemies_alerted = false
+	for placement in arena.enemies:
+		placement.reinforcement = true
+	var mission: BlasterOpsMissionData = BlasterOpsMissionData.new()
+	mission.id = &"flow_fixture"
+	mission.objective = InfiltrationMissionData.Objective.INCURSION
+	mission.kind = kind as BlasterOpsMissionData.Kind
+	mission.map = arena
+	mission.extraction = Vector2(1300, 416)
+	var early: BlasterOpsWaveData = BlasterOpsWaveData.new()
+	early.indices = PackedInt32Array([0, 1])
+	var late: BlasterOpsWaveData = BlasterOpsWaveData.new()
+	late.indices = PackedInt32Array([2])
+	late.final_wave = true
+	mission.waves = [early, late] as Array[BlasterOpsWaveData]
+	mission.prisoner_spawns = PackedVector2Array([Vector2(240, 416)])
+	if kind == BlasterOpsMissionData.Kind.DEFENSE or kind == BlasterOpsMissionData.Kind.ESCORT:
+		mission.protected_index = 0
+		mission.minimum_prisoners = 1
+		mission.protected_health = 240.0 if kind == BlasterOpsMissionData.Kind.DEFENSE else 180.0
+	if kind == BlasterOpsMissionData.Kind.DEFENSE:
+		mission.barrier_charges = 2
+		mission.barrier_prep_only = true
+	if kind == BlasterOpsMissionData.Kind.HOLD_OUT:
+		mission.hold_seconds = 45.0
+	if phased:
+		mission.phase_target = 0
+		var phases: Array[BlasterOpsPhaseData] = []
+		for index in 3:
+			var phase: BlasterOpsPhaseData = BlasterOpsPhaseData.new()
+			phase.health_ratio = [1.0, 0.65, 0.3][index]
+			phase.title_key = "OPS_PHASE_%d" % index
+			phase.enemy = BlasterOpsFixture.enemy("%s_%d" % [prefix, index])
+			phases.append(phase)
+		mission.phases = phases
+	return mission
 
 
 func _play(index: int, armed: bool = false) -> BlasterOpsSimulation:
@@ -11,7 +55,7 @@ func _play(index: int, armed: bool = false) -> BlasterOpsSimulation:
 	var pilot: BlasterOpsMissionPilot = BlasterOpsMissionPilot.new(sim)
 	var enemies: BlasterOpsMissionController = BlasterOpsMissionController.new(sim.map, sim.targets.size())
 	var allies: InfiltrationEscortController = InfiltrationEscortController.new(sim)
-	for tick in 18000:
+	for tick in 60000:
 		sim.step(pilot.produce(sim), enemies.produce_all(sim), allies.produce_all(sim))
 		if sim.mission.outcome != InfiltrationMissionState.Outcome.ACTIVE:
 			break
@@ -183,7 +227,7 @@ func test_save_migrates_by_absence_and_merges_time_rating_bonuses_and_cosmetics(
 	assert_true(save.unlocked.has("color:guardian:1"))
 	assert_true(save.unlocked.has("costume:guardian:traveler"))
 	save.load_progress()
-	assert_eq(save.incursion_best.encircled_yard, {"ticks": 100, "rating": 4, "bonuses": 3})
+	assert_eq(save.incursion_best.encircled_yard, {"ticks": 100, "rating": 4, "bonuses": 3, "layout": BlasterOpsMode.RECORD_LAYOUT})
 	save.free()
 
 

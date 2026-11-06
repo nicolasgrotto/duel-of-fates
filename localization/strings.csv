@@ -1178,19 +1178,19 @@ BOPS_ACTION_SNEAK,Furtivo (alterna),Sneak (toggle)
 BOPS_ACTION_STRIKE,Corte / abate,Strike / takedown
 BOPS_ACTION_INTERACT,Interagir,Interact
 OPS_ENCIRCLED_YARD,Pátio cercado,Encircled Yard
-OPS_ENCIRCLED_YARD_BRIEF,"Abra espaço entre as coberturas, vença três ondas e retorne à saída. Há um aliado preso no setor sul.","Make room between cover, defeat three waves and return to extraction. An ally is held in the south sector."
+OPS_ENCIRCLED_YARD_BRIEF,"Tome o portão, avance ao centro do pátio e segure a posição enquanto o cerco fecha. Depois derrube os dois pilares que coordenam o ataque e rompa pelo leste. Há dois aliados presos no pátio.","Take the gate, push to the middle of the yard and hold while the siege closes in. Then bring down the two pylons coordinating the attack and break out to the east. Two allies are held in the yard."
 OPS_BREACH_LINE,Linha de ruptura,Breach Line
-OPS_BREACH_LINE_BRIEF,"Avance pelo corredor, destrua as três torres e enfrente o reforço final. A saída fica a leste.","Push through the corridor, destroy three turrets and face the final reinforcements. Extract to the east."
+OPS_BREACH_LINE_BRIEF,"Abra caminho por quatro setores fortificados: torres, um portão que só abre pelo terminal e um Passo de Ferro no último setor. Use barreiras e os terminais de suprimentos.","Fight through four fortified sectors: turrets, a gate that only opens from its terminal and an Ironstride in the last sector. Use barriers and the supply terminals."
 OPS_DEFENSE_NODE,Nó de defesa,Defense Node
-OPS_DEFENSE_NODE_BRIEF,"Proteja o terminal de três ondas. Durante a montagem, Interagir implanta até duas barreiras à frente da mira.","Protect the terminal through three waves. During preparation, Interact deploys up to two barriers ahead of your aim."
+OPS_DEFENSE_NODE_BRIEF,"Proteja o terminal central. Quando as salas laterais abrirem, ligue os dois retransmissores sem deixar o terminal sozinho, depois resista durante a transmissão. Barreiras só durante a montagem.","Protect the central terminal. When the side rooms open, link both relays without leaving the terminal alone, then hold through the upload. Barriers only during preparation."
 OPS_EXTRACTION_WINDOW,Janela de extração,Extraction Window
-OPS_EXTRACTION_WINDOW_BRIEF,"Resista 45 segundos, vença o reforço final e alcance a saída. Use guarda, deslocamento e cobertura.","Hold out for 45 seconds, defeat the final reinforcements and reach extraction. Use guard, movement and cover."
+OPS_EXTRACTION_WINDOW_BRIEF,"Suba à torre e chame a extração, atravesse até a área de pouso e segure as duas posições sob ataque. Ficar na marca é o que conta o tempo.","Climb the tower and call extraction, cross to the landing zone and hold both positions under fire. Staying on the mark is what runs the clock."
 OPS_ALLY_CORRIDOR,Corredor dos aliados,Ally Corridor
-OPS_ALLY_CORRIDOR_BRIEF,Acompanhe o aliado até a saída leste. Ele avança quando você fica perto e ajuda a combater as duas ondas.,Accompany the ally to the eastern exit. They advance while you stay close and help fight both waves.
+OPS_ALLY_CORRIDOR_BRIEF,"Acompanhe o aliado por quatro setores. Ele só avança com você por perto, e cada porta abre quando ele chega à marca. Inimigos miram nele: limpe o caminho antes de seguir.","Accompany the ally through four sectors. They only advance with you nearby, and each door opens when they reach the mark. Enemies aim at them: clear the way before moving on."
 OPS_RETREAT_VECTOR,Vetor de recuo,Retreat Vector
-OPS_RETREAT_VECTOR_BRIEF,"Vença o rival: tiro dirigido, leque e avanço. Use as coberturas ou devolva seus disparos, depois vença sua guarda final.","Defeat the rival: aimed fire, fan and charge. Use cover or return their shots, then defeat their final guard."
+OPS_RETREAT_VECTOR_BRIEF,"Rompa a guarda, derrube os dois pilares que protegem a arena e vença o rival: tiro dirigido, leque e avanço. Reforços chegam enquanto ele estiver de pé. Depois, limpe a saída.","Break the guard, bring down the two pylons protecting the arena and defeat the rival: aimed fire, fan and charge. Reinforcements keep coming while they stand. Then clear the exit."
 OPS_SIEGE_CORE,Núcleo de cerco,Siege Core
-OPS_SIEGE_CORE_BRIEF,Desmonte o andador de cerco. Aos 65% e 30% de integridade ele muda o padrão; sobreviva à última guarda para extrair.,Bring down the siege walker. At 65% and 30% integrity it changes pattern; survive its final guard to extract.
+OPS_SIEGE_CORE_BRIEF,"A operação completa: tomar o portão, destruir as torres da ponte, parar o Passo de Ferro, cortar os dois controles, segurar o reator e derrubar o andador de cerco no núcleo. Peça reforços nos terminais.","The full operation: take the gate, destroy the bridge turrets, stop the Ironstride, cut both controls, hold the reactor and bring down the siege walker at the core. Call reinforcements at the terminals."
 OPS_PHASE_0,Fase I · Mira travada,Phase I · Locked aim
 OPS_PHASE_1,Fase II · Leque,Phase II · Fan
 OPS_PHASE_2,Fase III · Avanço,Phase III · Charge
@@ -1198,7 +1198,7 @@ OPS_GOAL,Cumprir o objetivo principal,Complete the main objective
 OPS_FINAL_WAVE,Última onda,Final wave
 OPS_PROTECTED_DOWN,Objetivo protegido perdido,Protected objective lost
 OPS_REWARDS,Recompensas únicas: primeira vitória libera a cor do Arcade do Guardião; completar as sete libera seu traje Viajante.,One-time rewards: first victory unlocks Guardian's Arcade color; complete all seven for the Traveler outfit.
-OPS_BRIEF_RULES,"{waves} ondas · tempo de referência {time} s. Nota por tempo, dano, precisão e objetivo secundário. Blaster opcional.","{waves} waves · reference time {time} s. Rating for time, damage, accuracy and secondary objective. Blaster optional."
+OPS_BRIEF_RULES,"{waves} etapas · tempo de referência {time} s. Nota por tempo, dano, precisão e objetivo secundário. Blaster opcional.","{waves} stages · reference time {time} s. Rating for time, damage, accuracy and secondary objective. Blaster optional."
 OPS_UNRATED,Sem avaliação,Unrated
 OPS_RATING_C,Avaliação C,Rating C
 OPS_RATING_B,Avaliação B,Rating B
@@ -1271,3 +1271,48 @@ OPS_SUPPLY_TITLE,Terminal de suprimentos · {supplies},Supply terminal · {suppl
 OPS_SUPPLY_ROW,{name} · {cost},{name} · {cost}
 OPS_SUPPLY_STATUS,Suprimentos · {supplies},Supplies · {supplies}
 OPS_SUPPLY_OPEN,Terminal,Terminal
+OPS_STAGE_HOLD_LEFT,Segure mais {time} s,Hold for {time} s
+OPS_STAGE_GUIDE,{direction} {distance} u,{direction} {distance} u
+OPS_ST_ENCIRCLED_YARD_1,Limpe o portão,Clear the gate
+OPS_ST_ENCIRCLED_YARD_2,Avance ao centro do pátio,Push to the middle of the yard
+OPS_ST_ENCIRCLED_YARD_3,Segure o centro,Hold the center
+OPS_ST_ENCIRCLED_YARD_4,Derrube os dois pilares,Bring down both pylons
+OPS_ST_ENCIRCLED_YARD_5,Rompa pelo leste,Break out to the east
+OPS_ST_BREACH_LINE_1,Destrua as torres do primeiro setor,Destroy the first sector's turrets
+OPS_ST_BREACH_LINE_2,Limpe o segundo setor,Clear the second sector
+OPS_ST_BREACH_LINE_3,Abra o portão pelo terminal,Open the gate from the terminal
+OPS_ST_BREACH_LINE_4,Entre no terceiro setor,Enter the third sector
+OPS_ST_BREACH_LINE_5,Destrua as três torres,Destroy the three turrets
+OPS_ST_DEFENSE_NODE_1,Proteja o terminal,Protect the terminal
+OPS_ST_DEFENSE_NODE_2,Ligue o retransmissor oeste,Link the west relay
+OPS_ST_DEFENSE_NODE_3,Ligue o retransmissor leste,Link the east relay
+OPS_ST_DEFENSE_NODE_4,Resista à transmissão,Hold through the upload
+OPS_ST_EXTRACTION_WINDOW_1,Limpe a entrada,Clear the entrance
+OPS_ST_EXTRACTION_WINDOW_2,Suba à torre,Climb the tower
+OPS_ST_EXTRACTION_WINDOW_3,Chame a extração,Call extraction
+OPS_ST_EXTRACTION_WINDOW_4,Vá à área de pouso,Go to the landing zone
+OPS_ST_EXTRACTION_WINDOW_5,Limpe a área de pouso,Clear the landing zone
+OPS_ST_ALLY_CORRIDOR_1,Leve o aliado à primeira marca,Bring the ally to the first mark
+OPS_ST_ALLY_CORRIDOR_2,Limpe o segundo setor,Clear the second sector
+OPS_ST_ALLY_CORRIDOR_3,Leve o aliado à segunda marca,Bring the ally to the second mark
+OPS_ST_ALLY_CORRIDOR_4,Abra a porta pelo terminal,Open the door from the terminal
+OPS_ST_ALLY_CORRIDOR_5,Destrua as torres,Destroy the turrets
+OPS_ST_ALLY_CORRIDOR_6,Leve o aliado à terceira marca,Bring the ally to the third mark
+OPS_ST_RETREAT_VECTOR_1,Rompa a guarda,Break the guard
+OPS_ST_RETREAT_VECTOR_2,Derrube os pilares,Bring down the pylons
+OPS_ST_RETREAT_VECTOR_3,Corte os dois relés,Cut both relays
+OPS_ST_RETREAT_VECTOR_4,Vença o rival,Defeat the rival
+OPS_ST_SIEGE_CORE_1,Tome o portão,Take the gate
+OPS_ST_SIEGE_CORE_2,Destrua as torres da ponte,Destroy the bridge turrets
+OPS_ST_SIEGE_CORE_3,Pare o Passo de Ferro,Stop the Ironstride
+OPS_ST_SIEGE_CORE_4,Corte os dois controles,Cut both controls
+OPS_ST_SIEGE_CORE_5,Segure o reator,Hold the reactor
+OPS_ST_SIEGE_CORE_6,Derrube o andador de cerco,Bring down the siege walker
+OPS_ST_SIEGE_CORE_7,Limpe o núcleo,Clear the core
+OPS_ST_BREACH_LINE_6,Pare o Passo de Ferro,Stop the Ironstride
+OPS_ST_BREACH_LINE_7,Segure enquanto a carga arma,Hold while the charge arms
+OPS_ST_RETREAT_VECTOR_5,Limpe a saída,Clear the exit
+OPS_ST_RETREAT_VECTOR_6,Segure a saída até a chegada do transporte,Hold the exit until the transport arrives
+OPS_ST_EXTRACTION_WINDOW_6,Segure até o transporte pousar,Hold until the transport lands
+OPS_ST_ALLY_CORRIDOR_7,Leve o aliado à última marca,Bring the ally to the last mark
+OPS_RECORD_LEGACY,Concluída · {rating} · missão refeita na versão 1.1: faça um novo tempo,Completed · {rating} · mission rebuilt in version 1.1: set a new time

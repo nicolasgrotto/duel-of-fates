@@ -14,6 +14,8 @@ const INCURSIONS: Array[BlasterOpsMissionData] = [
 	preload("res://data/blaster_ops/missions/siege_core.tres"),
 ]
 
+const RECORD_LAYOUT: int = 2
+
 var external: bool = false
 var sealed: BlasterOpsMissionResult
 
@@ -55,6 +57,11 @@ func finish(sim: InfiltrationSimulation) -> void:
 
 func objective_lines(sim: InfiltrationSimulation) -> Array[Dictionary]:
 	var progress: BlasterOpsMissionState = sim.mission as BlasterOpsMissionState
+	if not progress.definition.stages.is_empty():
+		var lines: Array[Dictionary] = []
+		for index in progress.definition.stages.size():
+			lines.append({"key": progress.definition.stages[index].title_key, "index": index + 1, "done": index < progress.stage_index})
+		return lines
 	return [{"key": "OPS_GOAL", "index": 1, "done": progress.goal_done(sim)}, {"key": "OPS_FINAL_WAVE", "index": 1, "done": progress.waves_finished}]
 
 

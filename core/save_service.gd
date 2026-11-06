@@ -50,11 +50,19 @@ func load_progress() -> void:
 	challenge_best = file.get_value(SECTION, "challenge_best", {})
 	hunt_best = file.get_value(SECTION, "hunt_best", {})
 	infiltration_best = file.get_value(SECTION, "infiltration_best", {})
-	incursion_best = file.get_value(SECTION, "incursion_best", {})
+	incursion_best = _migrate_incursions(file.get_value(SECTION, "incursion_best", {}))
 	infiltration_look = file.get_value(SECTION, "infiltration_look", {})
 	unlocked = file.get_value(SECTION, "unlocked", {})
 	campaign = file.get_value(SECTION, "campaign", {})
 	space.restore(file.get_value(SECTION, "space", {}))
+
+
+func _migrate_incursions(records: Dictionary) -> Dictionary:
+	for key in records:
+		if not records[key].has("layout"):
+			records[key].erase("ticks")
+			records[key]["layout"] = BlasterOpsMode.RECORD_LAYOUT
+	return records
 
 
 func save_progress() -> void:
@@ -79,7 +87,7 @@ func record_incursion(id: StringName, ticks: int, rating: int, bonuses: int) -> 
 		return false
 	var key: String = String(id)
 	var previous: Dictionary = incursion_best.get(key, {})
-	var record: Dictionary = {"ticks": mini(ticks, int(previous.get("ticks", ticks))), "rating": maxi(rating, int(previous.get("rating", 0))), "bonuses": bonuses | int(previous.get("bonuses", 0))}
+	var record: Dictionary = {"ticks": mini(ticks, int(previous.get("ticks", ticks))), "rating": maxi(rating, int(previous.get("rating", 0))), "bonuses": bonuses | int(previous.get("bonuses", 0)), "layout": BlasterOpsMode.RECORD_LAYOUT}
 	if record == previous:
 		return false
 	incursion_best[key] = record

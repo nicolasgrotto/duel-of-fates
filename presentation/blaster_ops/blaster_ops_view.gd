@@ -5,6 +5,9 @@ enum WeaponState { BLADE = 1, BLASTER = 2, BELT_HILT = 4, SUPPORT_HAND = 8 }
 const AURA_SEGMENTS: int = 12
 const AURA_DASH: float = 0.28
 const SHELL_SIZE: float = 10.0
+const THREAT_RANGE: float = 1100.0
+const THREAT_INSET: float = 26.0
+const THREAT_SIZE: float = 14.0
 var operations: BlasterOpsSimulation
 var emitter: bool = false
 var _precision_left: float = 0.0
@@ -18,6 +21,7 @@ var _blast_radius: PackedFloat32Array = []
 var _blast_left: PackedFloat32Array = []
 var _blast_hostile: PackedByteArray = []
 var _next_blast: int = 0
+var view_rect: Rect2 = Rect2()
 
 
 func setup(simulation: InfiltrationSimulation, look: InfiltrationLook) -> void:
@@ -29,6 +33,16 @@ func setup(simulation: InfiltrationSimulation, look: InfiltrationLook) -> void:
 	_blast_left.resize(capacity)
 	_blast_left.fill(0.0)
 	_blast_hostile.resize(capacity)
+
+
+static func threat_marker(rect: Rect2, point: Vector2, inset: float) -> Vector2:
+	var inner: Rect2 = rect.grow(-inset)
+	var center: Vector2 = inner.get_center()
+	var offset: Vector2 = point - center
+	if offset == Vector2.ZERO:
+		return center
+	var scale: float = minf(inner.size.x * 0.5 / maxf(absf(offset.x), 0.001), inner.size.y * 0.5 / maxf(absf(offset.y), 0.001))
+	return center + offset * minf(scale, 1.0)
 
 
 static func weapon_state(loadout: BlasterOpsLoadout, blade_drawn: bool, integrated: bool = false) -> int:
@@ -116,6 +130,7 @@ func _draw() -> void:
 			_draw_emitter()
 	_draw_operations_bolts()
 	_draw_sparks()
+	_draw_threat_markers()
 	if debug:
 		_draw_debug()
 		for cover in operations.arena.covers:
@@ -168,6 +183,20 @@ func _draw_incursion() -> void:
 		var exit: Vector2 = data.extraction
 		draw_line(exit - Vector2.ONE * 14.0, exit + Vector2.ONE * 14.0, PALETTE.secondary, 4.0)
 		draw_line(exit + Vector2(-14, 14), exit + Vector2(14, -14), PALETTE.secondary, 4.0)
+	var stage: BlasterOpsStageData = progress.current_stage()
+	if stage != null and progress.intermission_ticks == 0:
+		if stage.zone_radius > 0.0:
+			var zone: Vector2 = _snap(stage.zone)
+			for segment in AURA_SEGMENTS:
+				var angle: float = TAU * segment / AURA_SEGMENTS
+				draw_arc(zone, stage.zone_radius, angle, angle + AURA_DASH, 6, PALETTE.accent, sim.config.units_per_pixel * 2.0)
+			if stage.objective == BlasterOpsStageData.Objective.HOLD:
+				draw_arc(zone, stage.zone_radius * 0.5, -PI * 0.5, -PI * 0.5 + TAU * clampf(float(progress.hold_ticks) / maxi(Ticks.from_seconds(stage.hold_seconds), 1), 0.0, 1.0), 32, PALETTE.text, sim.config.units_per_pixel * 2.0)
+		for target in stage.targets:
+			var actor: InfiltrationActor = sim.targets[target]
+			if actor.spawned and actor.health > 0.0:
+				var mark: Vector2 = _snap(actor.position)
+				draw_arc(mark, actor.radius + 14.0, 0.0, TAU, 4, PALETTE.danger, sim.config.units_per_pixel * 2.0)
 	for terminal in data.supply_terminals:
 		var center: Vector2 = _snap(terminal)
 		draw_rect(Rect2(center - Vector2(24, 20), Vector2(48, 40)), PALETTE.infiltration_wall)
@@ -314,6 +343,19 @@ func _draw_powers() -> void:
 	var radius: float = _power_entry.power.reach * (progress if _power_kind == PowerData.Kind.REPULSE else 1.0 - progress)
 	var half: float = deg_to_rad(_power_entry.degrees * 0.5)
 	draw_arc(_power_position, maxf(radius, 4.0), _power_aim.angle() - half, _power_aim.angle() + half, 18, Color(color, 1.0 - progress), sim.config.units_per_pixel * (1.0 if reduced else 2.0))
+
+
+func _draw_threat_markers() -> void:
+	if view_rect.size == Vector2.ZERO:
+		return
+	for index in sim.targets.size():
+		var actor: InfiltrationActor = sim.targets[index]
+		if actor.health <= 0.0 or not actor.spawned or actor.awareness != InfiltrationActor.Awareness.ALERTED or view_rect.has_point(actor.position) or actor.position.distance_to(sim.player.position) > THREAT_RANGE:
+			continue
+		var point: Vector2 = threat_marker(view_rect, actor.position, THREAT_INSET)
+		var direction: Vector2 = (actor.position - point).normalized()
+		var side: Vector2 = direction.orthogonal()
+		draw_colored_polygon(PackedVector2Array([_snap(point + direction * THREAT_SIZE), _snap(point + side * THREAT_SIZE * 0.7), _snap(point - side * THREAT_SIZE * 0.7)]), PALETTE.danger)
 
 
 func _draw_blasts() -> void:

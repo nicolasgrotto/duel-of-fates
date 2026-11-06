@@ -51,8 +51,9 @@ func produce_all(sim: InfiltrationSimulation) -> Array[InfiltrationIntent]:
 			var progress: BlasterOpsMissionState = sim.mission as BlasterOpsMissionState
 			if index == progress.definition.protected_index:
 				intent.movement = Vector2.ZERO
-				if progress.definition.kind == BlasterOpsMissionData.Kind.ESCORT and actor.position.distance_to(sim.player.position) <= operations.operations.protected_follow_range and actor.position.distance_to(progress.data.extraction) > progress.data.extraction_radius * 0.5:
-					intent.movement = _navigation.direction(actor.position, progress.data.extraction, actor.radius) * operations.operations.protected_speed / sim.config.escort_speed
+				var goal: Vector2 = progress.escort_goal()
+				if progress.definition.kind == BlasterOpsMissionData.Kind.ESCORT and goal != Vector2.INF and actor.position.distance_to(sim.player.position) <= operations.operations.protected_follow_range and actor.position.distance_to(goal) > progress.data.extraction_radius * 0.5:
+					intent.movement = _navigation.direction(actor.position, goal, actor.radius) * operations.operations.protected_speed / sim.config.escort_speed
 				if progress.definition.kind == BlasterOpsMissionData.Kind.DEFENSE:
 					continue
 			var nearest: float = role.fire_range if role != null and role.bolt != null else operations.operations.ally_fire_range

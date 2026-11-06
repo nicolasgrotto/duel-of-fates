@@ -108,7 +108,7 @@ func apply_area_damage(side: BlasterOpsFaction.Side, center: Vector2, radius: fl
 				_emit(InfiltrationEvent.Type.BOLT_HIT, source, targets.size() + index + 1, prisoners[index].position, damage)
 	for index in arena.covers.size():
 		var cover: BlasterOpsCover = arena.covers[index]
-		if cover.health <= 0.0 or (cover.deployed and side == BlasterOpsFaction.Side.ALLIED):
+		if cover.health <= 0.0 or cover.data.door or (cover.deployed and side == BlasterOpsFaction.Side.ALLIED):
 			continue
 		var point: Vector2 = (Vector2(cover.data.cell) + Vector2.ONE * 0.5) * map.tile_size
 		if point.distance_to(center) <= radius + map.tile_size * 0.5:
@@ -424,7 +424,7 @@ func _resolve_swing() -> void:
 	var last: float = first + config.swing_degrees / config.active_ticks()
 	for index in arena.covers.size():
 		var cover: BlasterOpsCover = arena.covers[index]
-		if cover.health <= 0.0 or cover.deployed or cover.last_swing_id == player.swing_id:
+		if cover.health <= 0.0 or cover.deployed or cover.data.door or cover.last_swing_id == player.swing_id:
 			continue
 		var point: Vector2 = (Vector2(cover.data.cell) + Vector2.ONE * 0.5) * map.tile_size
 		if not InfiltrationGeometry.in_sector(player.position, player.swing_aim, point, config.swing_reach, config.swing_degrees, map.tile_size * 0.5):
@@ -601,6 +601,15 @@ func _step_bolts() -> void:
 			_detonate_bolt(bolt)
 
 
+func open_door(index: int) -> void:
+	var cover: BlasterOpsCover = arena.covers[index]
+	if cover.health <= 0.0:
+		return
+	cover.health = 0.0
+	cover_revision += 1
+	_emit(InfiltrationEvent.Type.DOOR_OPENED, 0, index, cover_center(index))
+
+
 func _detonate_bolt(bolt: BlasterOpsBolt) -> void:
 	if bolt.blast_radius <= 0.0:
 		return
@@ -617,8 +626,8 @@ func _damage_target(index: int, damage: float, silent: bool = false, source_posi
 	var data: BlasterOpsEnemyData = target_data[index] as BlasterOpsEnemyData
 	if mission is BlasterOpsMissionState:
 		(mission as BlasterOpsMissionState).earn_supplies(data.supply_value if data != null else 1)
-	if data != null and data.bolt == null and data.blast_radius > 0.0:
-		apply_area_damage(BlasterOpsFaction.Side.HOSTILE, targets[index].position, data.blast_radius, data.blast_damage, index + 1, Ticks.from_seconds(operations.blast_flinch))
+	if data != null and data.bolt == null and data.blast_radius > 0.0 and (targets[index] as BlasterOpsActor).telegraph_ticks >= 0:
+		apply_area_damage(BlasterOpsFaction.Side.HOSTILE, targets[index].position, data.blast_radius, data.blast_damage * _enemy_scale(), index + 1, Ticks.from_seconds(operations.blast_flinch))
 
 
 func _armored_damage(index: int, damage: float, from: Vector2) -> float:
@@ -676,6 +685,9 @@ func _actor_impact(bolt: BlasterOpsBolt, end: Vector2, actor: InfiltrationActor)
 
 func _damage_cover(index: int, damage: float, point: Vector2) -> void:
 	var cover: BlasterOpsCover = arena.covers[index]
+	if cover.data.door:
+		_emit(InfiltrationEvent.Type.COVER_HIT, 0, index, point, 0.0)
+		return
 	cover.health = maxf(cover.health - damage, 0.0)
 	_emit(InfiltrationEvent.Type.COVER_HIT, 0, index, point, damage)
 	if cover.health <= 0.0:
@@ -806,6 +818,7 @@ func _release_enemy_attack(index: int, data: BlasterOpsEnemyData, actor: Blaster
 		actor.burst_left = 0
 		return
 	if data.bolt == null and data.blast_radius > 0.0:
+		actor.telegraph_ticks = 0
 		_damage_target(index, actor.health, true)
 		return
 	if data.melee_damage > 0.0 and (data.bolt == null or actor.position.distance_to(victim.position) <= data.melee_range + victim.radius):
@@ -829,6 +842,7 @@ func _release_enemy_attack(index: int, data: BlasterOpsEnemyData, actor: Blaster
 func _release_at_cover(index: int, data: BlasterOpsEnemyData, actor: BlasterOpsActor) -> void:
 	var center: Vector2 = cover_center(actor.target_cover)
 	if data.bolt == null and data.blast_radius > 0.0:
+		actor.telegraph_ticks = 0
 		_damage_target(index, actor.health, true)
 		return
 	actor.burst_left = maxi(actor.burst_left - 1, 0)
@@ -841,12 +855,16 @@ func _release_at_cover(index: int, data: BlasterOpsEnemyData, actor: BlasterOpsA
 	actor.fire_ticks = Ticks.from_seconds(data.fire_interval)
 
 
+func _enemy_scale() -> float:
+	return (mission as BlasterOpsMissionState).definition.enemy_damage_scale if mission is BlasterOpsMissionState else 1.0
+
+
 func _spawn_enemy_shot(index: int, data: BlasterOpsEnemyData, aim: Vector2) -> bool:
-	var bolt: BlasterOpsBolt = _spawn_bolt(index, data.bolt, aim)
+	var bolt: BlasterOpsBolt = _spawn_bolt(index, data.bolt, aim, _enemy_scale())
 	if bolt == null:
 		return false
 	bolt.blast_radius = data.blast_radius
-	bolt.blast_damage = data.blast_damage
+	bolt.blast_damage = data.blast_damage * _enemy_scale()
 	return true
 
 
@@ -854,7 +872,7 @@ func _resolve_enemy_melee(index: int, data: BlasterOpsEnemyData, actor: BlasterO
 	if actor.target_prisoner >= 0:
 		var prisoner: InfiltrationActor = prisoners[actor.target_prisoner]
 		if not aftermath and InfiltrationGeometry.in_sector(actor.position, actor.telegraph_aim, prisoner.position, data.melee_range, data.attack_degrees, prisoner.radius):
-			prisoner.health = maxf(prisoner.health - data.melee_damage, 0.0)
+			prisoner.health = maxf(prisoner.health - data.melee_damage * _enemy_scale(), 0.0)
 			_emit(InfiltrationEvent.Type.BOLT_HIT, index + 1, targets.size() + actor.target_prisoner + 1, prisoner.position, data.melee_damage)
 		return
 	if dodge_invulnerable() or not InfiltrationGeometry.in_sector(actor.position, actor.telegraph_aim, player.position, data.melee_range, data.attack_degrees, player.radius):
@@ -867,7 +885,7 @@ func _resolve_enemy_melee(index: int, data: BlasterOpsEnemyData, actor: BlasterO
 			_spend_vigor(data.melee_guard_vigor)
 			_emit(InfiltrationEvent.Type.BOLT_BLOCKED, index + 1, 0, player.position)
 		return
-	_hurt_player(data.melee_damage, Ticks.from_seconds(data.melee_flinch), index + 1, player.position)
+	_hurt_player(data.melee_damage * _enemy_scale(), Ticks.from_seconds(data.melee_flinch), index + 1, player.position)
 
 
 func _step_melee(index: int, data: InfiltrationEnemyData, intent: InfiltrationIntent) -> void:

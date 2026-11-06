@@ -6,7 +6,25 @@ Núcleo superior de Operações, iniciado na task 16 e compartilhado com Infiltr
 
 ## Jogador e controles
 
+## Missões de Incursão (versão 1.1)
+
+Cada Incursão é uma série de **etapas** por dados, com objetivo e encontro próprios: limpar, destruir alvos, segurar uma marca, alcançar um ponto, operar um terminal, escoltar ou vencer o chefe. Portas se abrem ao concluir etapas. Entre etapas há alguns segundos de preparação e um reparo de campo de 25 de vida (40 antes do último bloco do Núcleo de cerco). A duração vem dos objetivos e do mapa: vida e dano dos inimigos comuns não aumentaram, e o dano inimigo nestas missões é 60% do valor do treino, porque as lutas são mais longas e não há cura natural.
+
+| Missão | Etapas | Encontros |
+| --- | --- | --- |
+| Pátio cercado | Limpar o portão → alcançar o centro → segurar 45 s → derrubar dois pilares → romper a leste | Soldados, investidores, atiradores, sapadores, guarda de campo, reparador, pesados; dois aliados presos |
+| Linha de ruptura | Torres → segundo setor → terminal do portão → terceiro setor → três torres → Passo de Ferro → segurar 30 s | Quatro setores com portas, barreiras e dois terminais de suprimentos |
+| Nó de defesa | Proteger o terminal → retransmissor oeste → retransmissor leste → resistir 60 s à transmissão | Terminal de 520; Passo de Ferro no fim; duas barreiras na montagem; reforços por suprimentos |
+| Janela de extração | Limpar a entrada → torre → chamar a extração, 45 s → área de pouso → limpar → segurar 40 s | Duas marcas a defender; Passo de Ferro no fim |
+| Corredor dos aliados | Quatro marcas de escolta, um terminal de porta e duas torres | Aliado de 240; socorrista e fuzileiro a libertar; artilheiro de reforço |
+| Vetor de recuo | Guarda → pilares → dois relés → rival de três fases com reforços → saída → segurar 30 s | Rival de 300 de vida; guarda de lâmina a libertar |
+| Núcleo de cerco | Portão → torres da ponte → Passo de Ferro → dois controles → reator, 40 s → andador de cerco de três fases → limpar o núcleo | Grande operação: chefe de 420, três terminais, cinco aliados possíveis |
+
+Duração-alvo numa primeira jogada cuidadosa: 5 a 8 minutos; 8 a 10 no Núcleo de cerco. Medida automática com o piloto de testes, que joga direto ao ponto e sem hesitar: de cerca de 2 min 25 s a 3 min 35 s nas comuns e 5 min 10 s no Núcleo. A duração humana ainda precisa da validação do autor no PLAYTEST. Tempo de referência da avaliação: 300 a 360 s nas comuns e 600 s no Núcleo. Recordes salvos nas missões antigas conservam nota, bônus e recompensas, mas o tempo antigo é descartado, porque as missões mudaram. IDs e recompensas continuam os mesmos.
+
 ## Missões de Incursão (task 18)
+
+Registro das versões antigas. Vale para fixtures e modos sem etapas; a tabela acima substitui as missões.
 
 Todas disponíveis em Operações, com personagem livre e possíveis só com lâmina. Ciclo: entrada → ondas/objetivo → última onda → extração → resultado. A última onda tem rótulo próprio; a extração só abre quando objetivos e ondas terminam. Morte do jogador ou do protegido prevalece sobre vitória no mesmo tick. Inimigos e tiros continuam vivos durante o banner, sem dano posterior ao resultado.
 
@@ -53,17 +71,17 @@ Correr e furtivo são alternâncias no controlador: um toque liga, outro desliga
 
 ## Suprimentos (versão 1.1)
 
-Recurso de uma única tentativa, só em missões longas com **terminais de suprimentos**. Abater inimigos rende 1 (Guarda de campo e Reparador 2, Passo de Ferro 6), e cada onda nova rende 2. `E` no terminal abre a lista e congela a ação enquanto ela está aberta. Nada é salvo, não há moeda entre tentativas e reiniciar zera tudo. Toda missão pode ser vencida sem comprar nada.
+Recurso de uma única tentativa, só em missões longas com **terminais de suprimentos**. Abater inimigos rende 1 (Guarda de campo e Reparador 2, rival 4, Passo de Ferro e chefe 6), e concluir uma etapa rende de 2 a 4: de 40 a 60 numa missão inteira, ou cerca de cinco compras. `E` no terminal abre a lista e congela a ação enquanto ela está aberta. Nada é salvo, não há moeda entre tentativas e reiniciar zera tudo. Toda missão pode ser vencida sem comprar nada.
 
 | Compra | Custo | Efeito | Limite |
 | --- | --- | --- | --- |
-| Cura de campo | 4 | +40 de vida | sem limite |
-| Barreira de campo | 2 | +1 carga | sem limite |
-| Muralha | 4 | +1 carga de muralha | sem limite |
-| Resfriador | 4 | calor por tiro × 0,75 | 2 vezes, só com blaster |
-| Ajuste de combate | 5 | dano de corte e disparo × 1,15 | 2 vezes |
-| Reforço | 6 | chama o próximo aliado de reserva no terminal | conforme a missão |
-| Equipar aliados | 5 | dano dos aliados × 1,25 e aliados curados | 2 vezes, com ao menos um aliado |
+| Cura de campo | 8 | +40 de vida | sem limite |
+| Barreira de campo | 4 | +1 carga | sem limite |
+| Muralha | 8 | +1 carga de muralha | sem limite |
+| Resfriador | 8 | calor por tiro × 0,75 | 2 vezes, só com blaster |
+| Ajuste de combate | 10 | dano de corte e disparo × 1,15 | 2 vezes |
+| Reforço | 12 | chama o próximo aliado de reserva no terminal | conforme a missão |
+| Equipar aliados | 10 | dano dos aliados × 1,25 e aliados curados | 2 vezes, com ao menos um aliado |
 
 ## Barreiras (versão 1.1)
 
@@ -184,7 +202,7 @@ Versão 1.1, arquétipos originais em `data/blaster_ops/enemies/`, cada um com u
 | Arquétipo | Vida / velocidade | Papel | Como lidar |
 | --- | --- | --- | --- |
 | Guarda de campo / Field warden | 40 / 85 u/s | Campo que reduz à metade o dano de disparos e cortes em aliados a até 170 u; atira pouco | Derrubar primeiro; poderes atravessam o campo |
-| Sapador / Sapper | 14 / 230 u/s | Corre até o alvo, arma 0,6 s com o círculo de explosão à vista e detona: 28 de dano em 120 u, também nas barreiras. Morto, explode onde estiver | Abater de longe ou sair do círculo; a esquiva invulnerável atravessa |
+| Sapador / Sapper | 14 / 230 u/s | Corre até o alvo, arma 0,6 s com o círculo de explosão à vista e detona: 22 de dano em 120 u, também nas barreiras. Morto antes de armar, não explode; morto já armado, explode onde estiver | Cortar antes de armar, abater de longe ou sair do círculo; a esquiva invulnerável atravessa |
 | Reparador / Repairer | 26 / 110 u/s | Mantém distância, recua a menos de 260 u e repara 3 de vida por segundo em aliados a até 200 u; nunca o chefe | Caçar com disparos ou poderes |
 | Passo de Ferro / Ironstride | 280 / 55 u/s | Andador bípede original, grande e de giro lento (50°/s). Canhão com 0,9 s de linha de mira travada: projétil de 24 de dano e explosão de 18 em 110 u. De perto, pisão de 16 em 96 u. Frente com 35% do dano; sem abate silencioso | Flanquear, ficar fora da linha, devolver o projétil no tempo |
 

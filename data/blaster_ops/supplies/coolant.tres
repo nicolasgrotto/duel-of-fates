@@ -8,6 +8,6 @@ id = &"coolant"
 name_key = "OPS_SUPPLY_COOLANT"
 description_key = "OPS_SUPPLY_COOLANT_INFO"
 kind = 3
-cost = 4
+cost = 8
 amount = 0.75
 limit = 2

@@ -157,9 +157,11 @@ func _highlight_mission(id: StringName) -> void:
 func _highlight_incursion(data: BlasterOpsMissionData) -> void:
 	var record: Dictionary = SaveService.incursion_best.get(String(data.id), {})
 	var progress: String = tr("INF_NOT_COMPLETED")
-	if not record.is_empty():
+	if record.has("ticks"):
 		progress = tr("INF_RECORD").format({"time": ChallengeMode.format_time(record.ticks * Ticks.DELTA)}) + ControlHints.SEPARATOR + tr(BlasterOpsMode.rating_key(record.rating)) + "\n" + BlasterOpsMode.incursion_bonus_text(record.bonuses)
-	_show_panel(data.preview, null, tr(data.title_key).to_upper(), tr("OPS_INCURSION") + "\n\n" + tr(data.briefing_key) + "\n\n" + tr("OPS_BRIEF_RULES").format({"time": int(data.bonus_seconds), "waves": data.waves.size()}) + "\n\n" + tr("OPS_REWARDS") + "\n\n" + progress)
+	elif not record.is_empty():
+		progress = tr("OPS_RECORD_LEGACY").format({"rating": tr(BlasterOpsMode.rating_key(record.rating))}) + "\n" + BlasterOpsMode.incursion_bonus_text(record.bonuses)
+	_show_panel(data.preview, null, tr(data.title_key).to_upper(), tr("OPS_INCURSION") + "\n\n" + tr(data.briefing_key) + "\n\n" + tr("OPS_BRIEF_RULES").format({"time": int(data.bonus_seconds), "waves": data.objective_count()}) + "\n\n" + tr("OPS_REWARDS") + "\n\n" + progress)
 
 
 func _show_panel(image: Texture2D, look: InfiltrationLook, title: String, body: String) -> void:

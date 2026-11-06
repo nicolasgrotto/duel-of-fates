@@ -8,6 +8,6 @@ id = &"heal"
 name_key = "OPS_SUPPLY_HEAL"
 description_key = "OPS_SUPPLY_HEAL_INFO"
 kind = 0
-cost = 4
+cost = 8
 amount = 40.0
 limit = 0

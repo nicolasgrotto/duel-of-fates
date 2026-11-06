@@ -61,6 +61,7 @@ var _music: Array[AudioStreamPlayer] = []
 var _context: Label
 var _accumulator: float = 0.0
 var _guide_navigation: InfiltrationNavigation
+var _guide_revision: int = -1
 var _tick_total: int = 0
 var _tick_peak: int = 0
 var _tick_samples: int = 0
@@ -406,7 +407,7 @@ func _present_events() -> void:
 	for index in sim.event_count:
 		var event: InfiltrationEvent = sim.events[index]
 		_view.on_event(event)
-		if event.type in [InfiltrationEvent.Type.WAVE_STARTED, InfiltrationEvent.Type.PHASE_CHANGED, InfiltrationEvent.Type.BARRIER_PLACED, InfiltrationEvent.Type.EXTRACTION_OPENED]:
+		if event.type in [InfiltrationEvent.Type.WAVE_STARTED, InfiltrationEvent.Type.PHASE_CHANGED, InfiltrationEvent.Type.BARRIER_PLACED, InfiltrationEvent.Type.EXTRACTION_OPENED, InfiltrationEvent.Type.STAGE_COMPLETED]:
 			AudioDirector.play_ui(&"ui_confirm")
 		if BlasterOpsAudio.SOUNDS.has(event.type) and not SOUNDS.has(event.type):
 			AudioDirector.play(BlasterOpsAudio.SOUNDS[event.type], event.position, CONFIG.effects_db)
@@ -461,6 +462,7 @@ func _update_presentation(alpha: float) -> void:
 	var half: Vector2 = get_viewport_rect().size / CONFIG.camera_zoom * 0.5
 	var desired: Vector2 = sim.player.previous.lerp(sim.player.position, alpha)
 	_camera.position = desired.clamp(half, sim.map.world_size() - half)
+	_view.view_rect = Rect2(_camera.position - half, half * 2.0)
 	_health.ratio = sim.player.health / CONFIG.health
 	_health.ghost_ratio = _health.ratio
 	_health.fill_color = PALETTE.danger if _health.ratio < 0.25 else PALETTE.text
@@ -553,29 +555,56 @@ func _cooldown(ticks: int) -> String:
 
 func _update_incursion_hud() -> void:
 	var progress: BlasterOpsMissionState = sim.mission as BlasterOpsMissionState
+	if _guide_revision != sim.cover_revision:
+		_guide_navigation.invalidate()
+		_guide_revision = sim.cover_revision
 	var data: BlasterOpsMissionData = progress.definition
 	var text: String = tr("OPS_EXTRACTION_READY") if progress.waves_finished else tr("OPS_PREPARING").format({"time": ceili(progress.intermission_ticks * Ticks.DELTA)}) if progress.intermission_ticks > 0 else tr("OPS_WAVE").format({"wave": progress.wave_index + 1, "total": data.waves.size(), "left": progress.enemies_left(sim)})
 	if progress.wave_index >= 0 and data.waves[progress.wave_index].final_wave and not progress.waves_finished:
 		text += ControlHints.SEPARATOR + tr("OPS_FINAL_WAVE")
 	if data.kind == BlasterOpsMissionData.Kind.HOLD_OUT and not progress.waves_finished:
 		text += ControlHints.SEPARATOR + tr("OPS_HOLD_TIMER").format({"time": maxi(ceili(data.hold_seconds - sim.tick * Ticks.DELTA), 0)})
-	if data.phase_target >= 0:
+	if data.phase_target >= 0 and sim.targets[data.phase_target].spawned and sim.targets[data.phase_target].health > 0.0:
 		text += ControlHints.SEPARATOR + tr(data.phases[progress.phase_index].title_key)
 	_status.text = text
 	var hints: PackedStringArray = []
+	var stage: BlasterOpsStageData = progress.current_stage()
+	if progress.waves_finished:
+		hints.append(tr("OPS_EXTRACTION_READY"))
+		hints.append(_incursion_guide(data.extraction))
+	elif stage != null:
+		hints.append(tr(stage.title_key))
+		if stage.objective == BlasterOpsStageData.Objective.HOLD:
+			hints.append(tr("OPS_STAGE_HOLD_LEFT").format({"time": maxi(ceili(stage.hold_seconds - progress.hold_ticks * Ticks.DELTA), 0)}))
+		var guide: String = _incursion_guide(progress.objective_point(sim))
+		if guide != "":
+			hints.append(guide)
+	else:
+		hints.append(tr("OPS_KIND_" + str(data.kind)))
 	if progress.nearby_object(sim) >= 0:
-		hints.append(ControlHints.hint(&"infiltration_interact", "INF_RECRUIT"))
+		hints.append(ControlHints.hint(&"infiltration_interact", "INF_COPY" if progress.nearby_object(sim) < data.terminals.size() else "INF_RECRUIT"))
 	elif progress.nearby_terminal(sim) >= 0:
 		hints.append(ControlHints.hint(&"infiltration_interact", "OPS_SUPPLY_OPEN"))
 	if data.protected_index >= 0:
 		hints.append(tr("OPS_PROTECTED_HEALTH").format({"health": roundi(sim.prisoners[data.protected_index].health)}))
-	if progress.can_deploy():
+	if progress.can_deploy() and progress.nearby_terminal(sim) < 0:
 		hints.append(tr("OPS_DEPLOY_HINT").format({"key": ControlHints.key_label(&"infiltration_interact"), "left": progress.barrier_charges + progress.heavy_barrier_charges}))
-	if progress.waves_finished:
-		hints.append(tr("OPS_EXTRACTION_READY"))
-	else:
-		hints.append(tr("OPS_KIND_" + str(data.kind)))
 	_context.text = ControlHints.line(hints)
+
+
+func _incursion_guide(point: Vector2) -> String:
+	if point == Vector2.INF:
+		return ""
+	_guide_age = (_guide_age + 1) % GUIDE_REFRESH_FRAMES
+	if _guide_age != 1 and _guide_text != "":
+		return _guide_text
+	var offset: Vector2 = _guide_navigation.direction(sim.player.position, point, CONFIG.body_radius)
+	var direction: String = "←" if offset.x < 0.0 else "→"
+	if absf(offset.y) > absf(offset.x):
+		direction = "↑" if offset.y < 0.0 else "↓"
+	var tiles: int = _guide_navigation.path_tiles(sim.player.position, point)
+	_guide_text = tr("OPS_STAGE_GUIDE").format({"direction": direction, "distance": roundi(maxi(tiles, 0) * sim.map.tile_size)})
+	return _guide_text
 
 
 func _unhandled_input(event: InputEvent) -> void:

@@ -5,6 +5,7 @@ enum Kind { ARENA, ASSAULT, DEFENSE, HOLD_OUT, ESCORT, RIVAL, BOSS }
 
 @export var kind: Kind = Kind.ARENA
 @export var waves: Array[BlasterOpsWaveData] = []
+@export var stages: Array[BlasterOpsStageData] = []
 @export var defense_targets: PackedInt32Array
 @export var protected_index: int = -1
 @export var protected_health: float = 180.0
@@ -15,6 +16,7 @@ enum Kind { ARENA, ASSAULT, DEFENSE, HOLD_OUT, ESCORT, RIVAL, BOSS }
 @export var supply_terminals: PackedVector2Array
 @export var starting_supplies: int = 0
 @export var supply_per_wave: int = 2
+@export var enemy_damage_scale: float = 1.0
 @export var barrier_charges: int = 0
 @export var heavy_barrier_charges: int = 0
 @export var barrier_prep_only: bool = false
@@ -33,4 +35,4 @@ func is_reserve(index: int) -> bool:
 
 
 func objective_count() -> int:
-	return 2
+	return stages.size() if not stages.is_empty() else 2

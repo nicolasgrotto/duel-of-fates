@@ -8,6 +8,6 @@ id = &"barrier"
 name_key = "OPS_SUPPLY_BARRIER"
 description_key = "OPS_SUPPLY_BARRIER_INFO"
 kind = 1
-cost = 2
+cost = 4
 amount = 1.0
 limit = 0

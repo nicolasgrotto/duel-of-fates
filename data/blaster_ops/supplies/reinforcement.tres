@@ -8,6 +8,6 @@ id = &"reinforcement"
 name_key = "OPS_SUPPLY_REINFORCEMENT"
 description_key = "OPS_SUPPLY_REINFORCEMENT_INFO"
 kind = 5
-cost = 6
+cost = 12
 amount = 0.0
 limit = 0

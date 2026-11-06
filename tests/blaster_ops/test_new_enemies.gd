@@ -55,17 +55,17 @@ func test_repairer_heals_wounded_allies_but_never_above_maximum_or_itself() -> v
 func test_repairer_never_heals_the_boss_phase_target() -> void:
 	var mission: BlasterOpsMissionData = BlasterOpsMode.INCURSIONS[6]
 	var sim: BlasterOpsSimulation = BlasterOpsMode.new(mission, DuelMode.character(&"guardian"), null, true).create_simulation()
-	sim.aura_indices = PackedInt32Array([1])
-	var original: InfiltrationTargetData = sim.target_data[1]
-	sim.target_data[1] = BlasterOpsFixture.enemy("repairer")
-	sim.targets[0].health = 10.0
-	sim.targets[0].position = Vector2(400, 400)
-	sim.targets[1].health = 10.0
-	sim.targets[1].position = Vector2(440, 400)
+	var boss: int = mission.phase_target
+	var source: int = 0 if boss != 0 else 1
+	sim.aura_indices = PackedInt32Array([source])
+	sim.target_data[source] = BlasterOpsFixture.enemy("repairer")
+	sim.targets[boss].health = 10.0
+	sim.targets[boss].position = Vector2(400, 400)
+	sim.targets[source].health = 10.0
+	sim.targets[source].position = Vector2(440, 400)
 	sim._refresh_live_bodies()
 	sim._advance_auras()
-	assert_eq(sim.targets[0].health, 10.0)
-	sim.target_data[1] = original
+	assert_eq(sim.targets[boss].health, 10.0)
 
 
 func test_repairer_flees_through_intents_only() -> void:
@@ -94,14 +94,18 @@ func test_sapper_arms_visibly_then_detonates_and_dies() -> void:
 	assert_almost(sim.player.health, BlasterOpsTraining.CONFIG.health - BlasterOpsFixture.enemy("sapper").blast_damage)
 
 
-func test_killing_a_sapper_detonates_it_where_it_stands_and_spares_other_enemies() -> void:
-	var fixture: BlasterOpsFixture = _fixture(["sapper", "soldier"], [Vector2(600, 416), Vector2(650, 416)])
+func test_sapper_killed_before_arming_fizzles_and_one_killed_armed_explodes() -> void:
+	var fixture: BlasterOpsFixture = _fixture(["sapper", "soldier"], [Vector2(210, 416), Vector2(260, 416)])
 	var sim: BlasterOpsSimulation = fixture.sim
 	var health: float = sim.targets[1].health
 	sim._damage_target(0, 100.0)
-	assert_eq(fixture.sim.event_count > 0, true)
-	assert_eq(sim.targets[1].health, health)
 	assert_eq(sim.player.health, BlasterOpsTraining.CONFIG.health)
+	var armed: BlasterOpsFixture = _fixture(["sapper", "soldier"], [Vector2(210, 416), Vector2(260, 416)])
+	var actor: BlasterOpsActor = armed.sim.targets[0] as BlasterOpsActor
+	actor.telegraph_ticks = 10
+	armed.sim._damage_target(0, 100.0)
+	assert_lt(armed.sim.player.health, BlasterOpsTraining.CONFIG.health)
+	assert_eq(armed.sim.targets[1].health, health)
 
 
 func test_ironstride_shell_explodes_on_impact_and_breaks_cover() -> void:

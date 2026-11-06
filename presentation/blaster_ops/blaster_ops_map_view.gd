@@ -31,6 +31,12 @@ func _draw() -> void:
 		if cover.data.cell.x < 0:
 			continue
 		var position: Vector2 = Vector2(cover.data.cell) * map.tile_size
+		if cover.data.door:
+			if cover.health > 0.0:
+				draw_rect(Rect2(position, Vector2.ONE * map.tile_size), PALETTE.infiltration_wall)
+				draw_rect(Rect2(position + Vector2.ONE * 4.0, Vector2.ONE * (map.tile_size - 8.0)), PALETTE.danger, false, config.units_per_pixel)
+				draw_line(position + Vector2(8.0, map.tile_size * 0.5), position + Vector2(map.tile_size - 8.0, map.tile_size * 0.5), PALETTE.danger, config.units_per_pixel * 2.0)
+			continue
 		if cover.deployed:
 			if cover.health > 0.0:
 				var color: Color = PALETTE.accent if cover.data.health <= operations.operations.field_barrier.health else PALETTE.text

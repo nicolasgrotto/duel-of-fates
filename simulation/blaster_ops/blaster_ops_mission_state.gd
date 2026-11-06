@@ -20,6 +20,10 @@ var offer_counts: PackedInt32Array = []
 var heat_scale: float = 1.0
 var damage_scale: float = 1.0
 var ally_scale: float = 1.0
+var stage_index: int = -1
+var stage_ticks: int = 0
+var hold_ticks: int = 0
+var wave_gap_ticks: int = 0
 
 
 func _init(mission_data: BlasterOpsMissionData) -> void:
@@ -146,7 +150,7 @@ func call_reinforcement(sim: BlasterOpsSimulation, point: Vector2) -> bool:
 
 
 func can_extract(index: int) -> bool:
-	return waves_finished or index == definition.protected_index
+	return waves_finished or (definition.stages.is_empty() and index == definition.protected_index)
 
 
 func follower_speed(index: int, base: float) -> float:
@@ -191,8 +195,133 @@ func _advance_phases(sim: BlasterOpsSimulation) -> void:
 		sim._emit(InfiltrationEvent.Type.PHASE_CHANGED, definition.phase_target + 1, phase_index, actor.position)
 
 
+func current_stage() -> BlasterOpsStageData:
+	if stage_index < 0 or stage_index >= definition.stages.size() or waves_finished:
+		return null
+	return definition.stages[stage_index]
+
+
+func objective_point(sim: BlasterOpsSimulation) -> Vector2:
+	var stage: BlasterOpsStageData = current_stage()
+	if stage == null:
+		return data.extraction
+	match stage.objective:
+		BlasterOpsStageData.Objective.HOLD, BlasterOpsStageData.Objective.REACH, BlasterOpsStageData.Objective.ESCORT:
+			if stage.zone_radius > 0.0:
+				return stage.zone
+		BlasterOpsStageData.Objective.INTERACT:
+			for terminal in stage.terminals:
+				if copied[terminal] == 0:
+					return data.terminals[terminal]
+		BlasterOpsStageData.Objective.DESTROY:
+			var nearest: float = INF
+			var point: Vector2 = Vector2.INF
+			for target in stage.targets:
+				var actor: InfiltrationActor = sim.targets[target]
+				if actor.spawned and actor.health > 0.0 and actor.position.distance_squared_to(sim.player.position) < nearest:
+					nearest = actor.position.distance_squared_to(sim.player.position)
+					point = actor.position
+			if point != Vector2.INF:
+				return point
+	return Vector2.INF
+
+
+func escort_goal() -> Vector2:
+	if definition.stages.is_empty():
+		return data.extraction
+	var stage: BlasterOpsStageData = current_stage()
+	if stage != null and stage.objective == BlasterOpsStageData.Objective.ESCORT:
+		return stage.zone
+	return data.extraction if waves_finished else Vector2.INF
+
+
+func _advance_stages(sim: BlasterOpsSimulation) -> void:
+	if waves_finished:
+		return
+	if stage_index < 0:
+		_enter_stage(0)
+		intermission_ticks = maxi(intermission_ticks, Ticks.from_seconds(definition.intermission_seconds))
+	var stage: BlasterOpsStageData = definition.stages[stage_index]
+	if intermission_ticks > 0:
+		intermission_ticks -= 1
+		if intermission_ticks == 0 and stage.first_wave >= 0:
+			_start_wave(sim, stage.first_wave)
+			wave_gap_ticks = Ticks.from_seconds(stage.wave_gap_seconds)
+		return
+	stage_ticks += 1
+	_spawn_pending(sim)
+	_advance_stage_waves(sim, stage)
+	if _stage_done(sim, stage):
+		_complete_stage(sim, stage)
+
+
+func _advance_stage_waves(sim: BlasterOpsSimulation, stage: BlasterOpsStageData) -> void:
+	if wave_index >= stage.last_wave or stage.last_wave < 0:
+		return
+	wave_gap_ticks = maxi(wave_gap_ticks - 1, 0)
+	var ready: bool = stage.wave_gap_seconds > 0.0 and wave_gap_ticks == 0
+	if ready or (_wave_spawned(sim) and enemies_left(sim) == 0):
+		_start_wave(sim, wave_index + 1)
+		wave_gap_ticks = Ticks.from_seconds(stage.wave_gap_seconds)
+
+
+func _stage_cleared(sim: BlasterOpsSimulation, stage: BlasterOpsStageData) -> bool:
+	return wave_index >= stage.last_wave and _wave_spawned(sim) and enemies_left(sim) == 0
+
+
+func _stage_done(sim: BlasterOpsSimulation, stage: BlasterOpsStageData) -> bool:
+	if stage.requires_clear and not _stage_cleared(sim, stage):
+		return false
+	match stage.objective:
+		BlasterOpsStageData.Objective.DESTROY:
+			for target in stage.targets:
+				if not sim.targets[target].spawned or sim.targets[target].health > 0.0:
+					return false
+			return true
+		BlasterOpsStageData.Objective.HOLD:
+			if stage.zone_radius <= 0.0 or sim.player.position.distance_to(stage.zone) <= stage.zone_radius:
+				hold_ticks += 1
+			return hold_ticks >= Ticks.from_seconds(stage.hold_seconds)
+		BlasterOpsStageData.Objective.REACH:
+			return sim.player.position.distance_to(stage.zone) <= stage.zone_radius
+		BlasterOpsStageData.Objective.INTERACT:
+			for terminal in stage.terminals:
+				if copied[terminal] == 0:
+					return false
+			return true
+		BlasterOpsStageData.Objective.ESCORT:
+			return sim.prisoners[definition.protected_index].position.distance_to(stage.zone) <= stage.zone_radius
+		BlasterOpsStageData.Objective.BOSS:
+			return sim.targets[definition.phase_target].spawned and sim.targets[definition.phase_target].health <= 0.0
+	return _stage_cleared(sim, stage)
+
+
+func _complete_stage(sim: BlasterOpsSimulation, stage: BlasterOpsStageData) -> void:
+	for cover in stage.opens_covers:
+		sim.open_door(cover)
+	earn_supplies(stage.supply_reward)
+	sim.player.health = minf(sim.player.health + stage.repair_on_complete, sim.operations.health)
+	sim._emit(InfiltrationEvent.Type.STAGE_COMPLETED, 0, stage_index, sim.player.position)
+	if stage_index + 1 >= definition.stages.size():
+		stage_index = definition.stages.size()
+		waves_finished = true
+		sim._emit(InfiltrationEvent.Type.EXTRACTION_OPENED, 0, -1, data.extraction)
+	else:
+		_enter_stage(stage_index + 1)
+
+
+func _enter_stage(index: int) -> void:
+	stage_index = index
+	stage_ticks = 0
+	hold_ticks = 0
+	intermission_ticks = maxi(Ticks.from_seconds(definition.stages[index].prep_seconds), 1)
+
+
 func _advance_waves(sim: BlasterOpsSimulation) -> void:
 	if waves_finished:
+		return
+	if not definition.stages.is_empty():
+		_advance_stages(sim)
 		return
 	if definition.kind == BlasterOpsMissionData.Kind.HOLD_OUT and wave_index == 0 and sim.tick >= Ticks.from_seconds(definition.hold_seconds):
 		_start_wave(sim, 1)
@@ -254,6 +383,8 @@ func enemies_left(sim: InfiltrationSimulation) -> int:
 
 
 func goal_done(sim: InfiltrationSimulation) -> bool:
+	if not definition.stages.is_empty():
+		return waves_finished
 	if definition.kind == BlasterOpsMissionData.Kind.HOLD_OUT:
 		return sim.tick >= Ticks.from_seconds(definition.hold_seconds)
 	if definition.kind == BlasterOpsMissionData.Kind.ESCORT:
@@ -265,6 +396,8 @@ func goal_done(sim: InfiltrationSimulation) -> bool:
 
 
 func completed_objectives(sim: InfiltrationSimulation) -> int:
+	if not definition.stages.is_empty():
+		return maxi(stage_index, 0)
 	return int(goal_done(sim)) + int(waves_finished)
 
 
@@ -291,7 +424,7 @@ func bonus_objective(sim: InfiltrationSimulation) -> bool:
 
 func capture() -> Dictionary:
 	var snapshot: Dictionary = super.capture()
-	snapshot["incursion"] = {"wave_index": wave_index, "intermission_ticks": intermission_ticks, "waves_finished": waves_finished, "phase_index": phase_index, "phase_health": phase_health, "damage_taken": damage_taken, "attempts": attempts, "hits": hits, "barriers_placed": barriers_placed, "barrier_charges": barrier_charges, "heavy_barrier_charges": heavy_barrier_charges, "last_hit_swing": last_hit_swing, "repair_ticks": repair_ticks, "supplies": supplies, "offer_counts": offer_counts.duplicate(), "heat_scale": heat_scale, "damage_scale": damage_scale, "ally_scale": ally_scale}
+	snapshot["incursion"] = {"wave_index": wave_index, "intermission_ticks": intermission_ticks, "waves_finished": waves_finished, "phase_index": phase_index, "phase_health": phase_health, "damage_taken": damage_taken, "attempts": attempts, "hits": hits, "barriers_placed": barriers_placed, "barrier_charges": barrier_charges, "heavy_barrier_charges": heavy_barrier_charges, "last_hit_swing": last_hit_swing, "repair_ticks": repair_ticks, "supplies": supplies, "offer_counts": offer_counts.duplicate(), "heat_scale": heat_scale, "damage_scale": damage_scale, "ally_scale": ally_scale, "stage_index": stage_index, "stage_ticks": stage_ticks, "hold_ticks": hold_ticks, "wave_gap_ticks": wave_gap_ticks}
 	return snapshot
 
 

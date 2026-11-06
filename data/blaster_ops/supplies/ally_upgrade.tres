@@ -8,6 +8,6 @@ id = &"ally_upgrade"
 name_key = "OPS_SUPPLY_ALLY_UPGRADE"
 description_key = "OPS_SUPPLY_ALLY_UPGRADE_INFO"
 kind = 6
-cost = 5
+cost = 10
 amount = 1.25
 limit = 2

@@ -8,6 +8,6 @@ id = &"bulwark"
 name_key = "OPS_SUPPLY_BULWARK"
 description_key = "OPS_SUPPLY_BULWARK_INFO"
 kind = 2
-cost = 4
+cost = 8
 amount = 1.0
 limit = 0

@@ -34,6 +34,10 @@ Barra de **Calor** no lugar do número, abaixo de Vida e Vigor, só para quem te
 
 **Suprimentos.** Com terminais na missão, a linha de status mostra `Suprimentos · 7`. Terminal no mapa: monitor com uma cruz na cor de destaque; perto dele, a dica `E  Terminal`. A lista usa a composição da pausa, com nome e custo por linha, descrição abaixo e o saldo no título. Sem saldo, a linha fica apagada e a compra toca recusa; indisponível não aparece. Rodapé com confirmar e voltar.
 
+**Etapas.** A linha de contexto mostra o objetivo da etapa, o tempo restante quando há marca a segurar e a direção e distância do alvo pelo caminho real. A marca aparece no mapa como círculo tracejado de destaque, com arco de progresso; alvos a destruir ganham um losango de perigo; portas fechadas têm contorno de perigo. O resultado lista as etapas concluídas.
+
+**Ameaças fora da tela.** Inimigo alertado fora da câmera, a até 1.100 u, aparece como uma seta de perigo na borda da área de jogo, apontando para ele. Vale para os dois objetivos, porque atiradores e o Passo de Ferro atiram de longe e o jogador não deve ser atingido sem aviso.
+
 A janela do jogo no desktop abre em 1280×720 e encolhe para caber na área útil da tela: a antiga 1600×900 passava da tela do autor (1440×900) e cortava o rodapé e o lado direito. HUD e menus são validados na build Web, não só na prévia do editor.
 
 ### Operações unificadas (task 17)
