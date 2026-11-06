@@ -140,6 +140,17 @@ Arquétipos próprios em `data/blaster_ops/enemies/` estendem os da Infiltraçã
 | Pesado | 48 / 70 u/s | três tiros de dano 7, pausa 0,12 s entre preparações, recarga 1,5 s | 0,12 s por tiro; armadura frontal de 120° recebe 35% do dano |
 | Investidor | 28 / 200 u/s | corpo a corpo, alcance 48 u, dano 12, recarga 0,8 s | 0,25 s, arco curto travado; guarda gasta 14 de Vigor, parry causa tranco |
 
+Versão 1.1, arquétipos originais em `data/blaster_ops/enemies/`, cada um com um papel que muda como se luta, não só os números:
+
+| Arquétipo | Vida / velocidade | Papel | Como lidar |
+| --- | --- | --- | --- |
+| Guarda de campo / Field warden | 40 / 85 u/s | Campo que reduz à metade o dano de disparos e cortes em aliados a até 170 u; atira pouco | Derrubar primeiro; poderes atravessam o campo |
+| Sapador / Sapper | 14 / 230 u/s | Corre até o alvo, arma 0,6 s com o círculo de explosão à vista e detona: 28 de dano em 120 u, também nas barreiras. Morto, explode onde estiver | Abater de longe ou sair do círculo; a esquiva invulnerável atravessa |
+| Reparador / Repairer | 26 / 110 u/s | Mantém distância, recua a menos de 260 u e repara 3 de vida por segundo em aliados a até 200 u; nunca o chefe | Caçar com disparos ou poderes |
+| Passo de Ferro / Ironstride | 280 / 55 u/s | Andador bípede original, grande e de giro lento (50°/s). Canhão com 0,9 s de linha de mira travada: projétil de 24 de dano e explosão de 18 em 110 u. De perto, pisão de 16 em 96 u. Frente com 35% do dano; sem abate silencioso | Flanquear, ficar fora da linha, devolver o projétil no tempo |
+
+As explosões e áreas seguem a regra de facções: as inimigas não ferem inimigos, quebram caixas e barreiras e param em paredes.
+
 Mira trava durante a preparação de cada ataque. Perder intenção de ataque cancela a preparação; um tiro preparado só sai com linha livre e alvo ainda vivo. Corpo a corpo verifica alcance, setor e parede na resolução, e pode ser evitado saindo do arco. Armadura não depende de cor: placa/contorno frontal e faísca de impacto mostram a redução.
 
 Caixas destrutíveis ocupam tiles marcados, têm 30 de vida e três estados visuais (íntegra, amassada até 20, rachada até 10); com zero viram destroço baixo passável. Paredes e caixas sem marca continuam indestrutíveis. Disparo que destrói a caixa se encerra nela; o próximo pode atravessar. Navegação e percepção passam a usar a abertura no próximo tick, inclusive após restaurar snapshot. O mapa original e seus recursos nunca são alterados. Sem reaparecimento automático nesta etapa; reiniciar restaura corpos, caixas, tiros, calor e recargas.

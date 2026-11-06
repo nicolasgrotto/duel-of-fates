@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="BlasterOpsEnemyData" format=3]
+
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_enemy_data.gd" id="1"]
+[ext_resource type="Resource" path="res://data/blaster_ops/bolts/ironstride_shell.tres" id="bolt"]
+[ext_resource type="Texture2D" path="res://assets/blaster_ops/ironstride.png" id="texture"]
+
+[resource]
+script = ExtResource("1")
+id = &"ironstride"
+kind = 1
+respawn_seconds = 0.0
+can_raise_alarm = false
+vision_range = 1000.0
+vision_degrees = 200.0
+archetype = 6
+health = 280.0
+speed = 55.0
+preferred_range = 420.0
+turn_degrees = 50.0
+body_radius = 40.0
+front_damage_ratio = 0.35
+front_degrees = 140.0
+takedown_immune = true
+aim_line = true
+telegraph_seconds = 0.9
+initial_delay = 1.5
+fire_interval = 3.0
+bolt = ExtResource("bolt")
+texture = ExtResource("texture")
+blast_radius = 110.0
+blast_damage = 18.0
+melee_damage = 16.0
+melee_guard_vigor = 24.0
+melee_range = 96.0
+melee_interval = 2.0
+melee_flinch = 0.35
+attack_degrees = 360.0
+stride = 26.0

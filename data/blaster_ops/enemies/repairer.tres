@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="BlasterOpsEnemyData" format=3]
+
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_enemy_data.gd" id="1"]
+[ext_resource type="Resource" path="res://data/infiltration/bolts/trooper_bolt.tres" id="bolt"]
+[ext_resource type="Texture2D" path="res://assets/blaster_ops/repairer.png" id="texture"]
+
+[resource]
+script = ExtResource("1")
+id = &"repairer"
+kind = 1
+respawn_seconds = 0.0
+can_raise_alarm = false
+vision_range = 1000.0
+vision_degrees = 200.0
+health = 26.0
+speed = 110.0
+preferred_range = 420.0
+telegraph_seconds = 0.3
+initial_delay = 1.0
+fire_interval = 2.4
+bolt = ExtResource("bolt")
+texture = ExtResource("texture")
+aura = 2
+aura_radius = 200.0
+aura_value = 3.0
+flee_range = 260.0

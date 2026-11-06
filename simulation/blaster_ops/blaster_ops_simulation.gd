@@ -11,6 +11,8 @@ var arena: BlasterOpsMap
 var loadout: BlasterOpsLoadout
 var state: BlasterOpsState = BlasterOpsState.new()
 var cover_revision: int = 0
+var aura_indices: PackedInt32Array = []
+var _aura_pulse_ticks: int = 0
 
 
 func _init(configuration: BlasterOpsConfig, data: InfiltrationMapData, equipment: BlasterOpsLoadout, mission_data: InfiltrationMissionData = null) -> void:
@@ -29,6 +31,10 @@ func _init(configuration: BlasterOpsConfig, data: InfiltrationMapData, equipment
 		targets[index] = actor
 	for index in bolts.size():
 		bolts[index] = BlasterOpsBolt.new()
+	for index in target_data.size():
+		var enemy: BlasterOpsEnemyData = target_data[index] as BlasterOpsEnemyData
+		if enemy != null and enemy.aura != BlasterOpsEnemyData.Aura.NONE:
+			aura_indices.append(index)
 	if mission_data is BlasterOpsMissionData:
 		mission = BlasterOpsMissionState.new(mission_data as BlasterOpsMissionData)
 		arena.reserve_barriers(operations.barrier_capacity if (mission_data as BlasterOpsMissionData).kind == BlasterOpsMissionData.Kind.DEFENSE else 0, operations.deploy_health)
@@ -56,6 +62,7 @@ func step(intent: InfiltrationIntent, enemy_intents: Array[InfiltrationIntent] =
 		return
 	InfiltrationPerception.step(self)
 	_step_enemies(enemy_intents)
+	_advance_auras()
 	_step_panels()
 	if mission != null:
 		mission.advance(self, escort_intents)
@@ -408,6 +415,8 @@ func _spawn_bolt(shooter: int, data: BoltData, aim: Vector2, scale: float = 1.0,
 		bolt.damage = data.damage * scale
 		bolt.evaded = false
 		bolt.reflected = false
+		bolt.blast_radius = 0.0
+		bolt.blast_damage = 0.0
 		_emit(InfiltrationEvent.Type.SHOT_FIRED, shooter + 1, -1, muzzle)
 		if shooter == -1 and mission is BlasterOpsMissionState:
 			(mission as BlasterOpsMissionState).attempts += 1
@@ -475,11 +484,66 @@ func _step_bolts() -> void:
 					_damage_target(victim - 1, damage, false, bolt.origin)
 				elif cover >= 0:
 					_damage_cover(cover, bolt.damage, bolt.position)
+			if not bolt.active:
+				_detonate_bolt(bolt)
 			continue
 		bolt.position = end
 		bolt.travelled += distance
 		if bolt.travelled >= bolt.data.max_range:
 			bolt.active = false
+			_detonate_bolt(bolt)
+
+
+func _detonate_bolt(bolt: BlasterOpsBolt) -> void:
+	if bolt.blast_radius <= 0.0:
+		return
+	var radius: float = bolt.blast_radius
+	bolt.blast_radius = 0.0
+	apply_area_damage(BlasterOpsFaction.of_bolt(bolt), bolt.position, radius, bolt.blast_damage, bolt.owner, Ticks.from_seconds(operations.blast_flinch))
+
+
+func _damage_target(index: int, damage: float, silent: bool = false, source_position: Vector2 = Vector2(INF, INF)) -> void:
+	var alive: bool = targets[index].health > 0.0
+	super._damage_target(index, damage, silent, source_position)
+	if not alive or targets[index].health > 0.0:
+		return
+	var data: BlasterOpsEnemyData = target_data[index] as BlasterOpsEnemyData
+	if data != null and data.bolt == null and data.blast_radius > 0.0:
+		apply_area_damage(BlasterOpsFaction.Side.HOSTILE, targets[index].position, data.blast_radius, data.blast_damage, index + 1, Ticks.from_seconds(operations.blast_flinch))
+
+
+func _armored_damage(index: int, damage: float, from: Vector2) -> float:
+	var result: float = super._armored_damage(index, damage, from)
+	for warden in aura_indices:
+		var data: BlasterOpsEnemyData = target_data[warden] as BlasterOpsEnemyData
+		if data.aura == BlasterOpsEnemyData.Aura.SHIELD and warden != index and targets[warden].health > 0.0 and targets[warden].position.distance_to(targets[index].position) <= data.aura_radius:
+			return result * data.aura_value
+	return result
+
+
+func _advance_auras() -> void:
+	if aura_indices.is_empty():
+		return
+	_aura_pulse_ticks -= 1
+	if _aura_pulse_ticks > 0:
+		return
+	_aura_pulse_ticks = maxi(Ticks.from_seconds(operations.aura_pulse_seconds), 1)
+	var protected_boss: int = (mission as BlasterOpsMissionState).definition.phase_target if mission is BlasterOpsMissionState else -1
+	for source in aura_indices:
+		var data: BlasterOpsEnemyData = target_data[source] as BlasterOpsEnemyData
+		if data.aura != BlasterOpsEnemyData.Aura.REPAIR or targets[source].health <= 0.0:
+			continue
+		var healed: bool = false
+		for index in live_indices:
+			var actor: InfiltrationActor = targets[index]
+			if index == source or index == protected_boss or actor.health <= 0.0 or actor.position.distance_to(targets[source].position) > data.aura_radius:
+				continue
+			var maximum: float = target_data[index].health
+			if actor.health < maximum:
+				actor.health = minf(actor.health + data.aura_value * operations.aura_pulse_seconds, maximum)
+				healed = true
+		if healed:
+			_emit(InfiltrationEvent.Type.AURA_PULSE, source + 1, -1, targets[source].position, data.aura_radius)
 
 
 func _cover_impact(bolt: BlasterOpsBolt, end: Vector2, wall: float) -> int:
@@ -609,7 +673,7 @@ func _apply_enemy_intent(index: int, intent: InfiltrationIntent) -> void:
 		return
 	if actor.fire_ticks > 0 or not InfiltrationPerception.has_shot(self, index):
 		return
-	if data.melee_damage > 0.0 and actor.position.distance_to(player.position) > data.melee_range + player.radius:
+	if data.melee_damage > 0.0 and data.bolt == null and actor.position.distance_to(player.position) > data.melee_range + player.radius:
 		return
 	if actor.burst_left == 0:
 		actor.burst_left = data.bolt.count if data.bolt != null else 1
@@ -624,22 +688,34 @@ func _release_enemy_attack(index: int, data: BlasterOpsEnemyData, actor: Blaster
 	if victim.health <= 0.0 or InfiltrationGeometry.wall_fraction(map, actor.position, victim.position) != INF:
 		actor.burst_left = 0
 		return
-	if data.melee_damage > 0.0:
+	if data.bolt == null and data.blast_radius > 0.0:
+		_damage_target(index, actor.health, true)
+		return
+	if data.melee_damage > 0.0 and (data.bolt == null or actor.position.distance_to(victim.position) <= data.melee_range + victim.radius):
 		_resolve_enemy_melee(index, data, actor)
 		actor.fire_ticks = Ticks.from_seconds(data.melee_interval)
 		actor.burst_left = 0
 		return
 	var emitted: bool = false
 	if data.shot_angles.is_empty():
-		emitted = _spawn_bolt(index, data.bolt, actor.telegraph_aim) != null
+		emitted = _spawn_enemy_shot(index, data, actor.telegraph_aim)
 	else:
 		for angle in data.shot_angles:
-			emitted = _spawn_bolt(index, data.bolt, actor.telegraph_aim.rotated(deg_to_rad(angle))) != null or emitted
+			emitted = _spawn_enemy_shot(index, data, actor.telegraph_aim.rotated(deg_to_rad(angle))) or emitted
 	if not emitted:
 		actor.telegraph_ticks = 1
 		return
 	actor.burst_left -= 1
 	actor.fire_ticks = Ticks.from_seconds(data.fire_interval) if actor.burst_left == 0 else data.bolt.interval_ticks()
+
+
+func _spawn_enemy_shot(index: int, data: BlasterOpsEnemyData, aim: Vector2) -> bool:
+	var bolt: BlasterOpsBolt = _spawn_bolt(index, data.bolt, aim)
+	if bolt == null:
+		return false
+	bolt.blast_radius = data.blast_radius
+	bolt.blast_damage = data.blast_damage
+	return true
 
 
 func _resolve_enemy_melee(index: int, data: BlasterOpsEnemyData, actor: BlasterOpsActor) -> void:

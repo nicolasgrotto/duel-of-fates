@@ -2,6 +2,9 @@ class_name BlasterOpsView
 extends InfiltrationView
 
 enum WeaponState { BLADE = 1, BLASTER = 2, BELT_HILT = 4, SUPPORT_HAND = 8 }
+const AURA_SEGMENTS: int = 12
+const AURA_DASH: float = 0.28
+const SHELL_SIZE: float = 10.0
 var operations: BlasterOpsSimulation
 var emitter: bool = false
 var _precision_left: float = 0.0
@@ -89,6 +92,7 @@ func _draw() -> void:
 			_draw_actor(actor, SPRITE_DUMMY)
 		else:
 			var data: InfiltrationEnemyData = sim.target_data[index] as InfiltrationEnemyData
+			_draw_enemy_support(actor, data as BlasterOpsEnemyData)
 			_draw_actor(actor, data.sprite, true, data.texture)
 			_draw_awareness(actor)
 			var point: Vector2 = _snap(actor.previous.lerp(actor.position, alpha))
@@ -117,6 +121,26 @@ func _draw() -> void:
 		for cover in operations.arena.covers:
 			if cover.health > 0.0:
 				draw_rect(Rect2(Vector2(cover.data.cell) * sim.map.tile_size, Vector2.ONE * sim.map.tile_size), PALETTE.potential, false, sim.config.units_per_pixel)
+
+
+func _draw_enemy_support(actor: InfiltrationActor, data: BlasterOpsEnemyData) -> void:
+	if data == null:
+		return
+	var point: Vector2 = _snap(actor.previous.lerp(actor.position, alpha))
+	if data.aura != BlasterOpsEnemyData.Aura.NONE:
+		var color: Color = PALETTE.flow_tiers[1] if data.aura == BlasterOpsEnemyData.Aura.SHIELD else PALETTE.text
+		for segment in AURA_SEGMENTS:
+			var angle: float = TAU * segment / AURA_SEGMENTS
+			draw_arc(point, data.aura_radius, angle, angle + AURA_DASH, 4, Color(color, 0.45), sim.config.units_per_pixel)
+	if data.stride > 0.0:
+		var side: Vector2 = actor.aim.orthogonal() * actor.radius * 0.7
+		var cycle: float = sin(actor.position.dot(actor.aim) / data.stride * PI)
+		for leg in [1.0, -1.0]:
+			var foot: Vector2 = _snap(point + side * leg + actor.aim * data.stride * cycle * leg)
+			draw_set_transform(foot, actor.aim.angle() + PI * 0.5)
+			draw_rect(Rect2(-10.0, -16.0, 20.0, 32.0), PALETTE.infiltration_wall)
+			draw_rect(Rect2(-10.0, -16.0, 20.0, 32.0), PALETTE.infiltration_seam, false, sim.config.units_per_pixel)
+			draw_set_transform(Vector2.ZERO)
 
 
 func _draw_incursion() -> void:
@@ -191,6 +215,10 @@ func _draw_operations_bolts() -> void:
 		var direction: Vector2 = bolt.velocity.normalized()
 		var tail: Vector2 = _snap(point - direction * sim.config.bolt_length)
 		var color: Color = _look.blade_color if bolt.reflected else PALETTE.bolt
+		if bolt.data.size >= SHELL_SIZE:
+			draw_circle(point, bolt.data.size, PALETTE.danger)
+			draw_circle(point, bolt.data.size * 0.5, PALETTE.bolt)
+			continue
 		draw_line(tail, point, color, sim.config.blade_width)
 		draw_line(tail, point, PALETTE.text, sim.config.units_per_pixel)
 		if bolt.owner != 0:
@@ -208,7 +236,10 @@ func _draw_telegraphs() -> void:
 			continue
 		var origin: Vector2 = _snap(actor.position)
 		var aim: Vector2 = actor.telegraph_aim
-		if data.melee_damage > 0.0:
+		if data.bolt == null and data.blast_radius > 0.0:
+			draw_arc(origin, data.blast_radius, 0.0, TAU, 24, PALETTE.danger, sim.config.units_per_pixel * 2.0)
+			continue
+		if data.melee_damage > 0.0 and data.bolt == null:
 			draw_arc(origin, data.melee_range, aim.angle() - deg_to_rad(data.attack_degrees * 0.5), aim.angle() + deg_to_rad(data.attack_degrees * 0.5), 10, PALETTE.danger, sim.config.units_per_pixel)
 			continue
 		var muzzle: Vector2 = _snap(origin + aim * (actor.radius + data.bolt.muzzle_forward))

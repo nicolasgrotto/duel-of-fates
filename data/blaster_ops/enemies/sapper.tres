@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="BlasterOpsEnemyData" format=3]
+
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_enemy_data.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/blaster_ops/sapper.png" id="texture"]
+
+[resource]
+script = ExtResource("1")
+id = &"sapper"
+kind = 1
+respawn_seconds = 0.0
+can_raise_alarm = false
+vision_range = 1000.0
+vision_degrees = 200.0
+health = 14.0
+speed = 230.0
+preferred_range = 40.0
+telegraph_seconds = 0.6
+initial_delay = 0.3
+fire_interval = 1.0
+melee_damage = 1.0
+melee_range = 56.0
+melee_interval = 1.0
+attack_degrees = 360.0
+texture = ExtResource("texture")
+blast_radius = 120.0
+blast_damage = 28.0

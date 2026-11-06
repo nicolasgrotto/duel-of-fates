@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="BoltData" format=3]
+
+[ext_resource type="Script" path="res://data/bolt_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"ironstride_shell"
+speed = 620.0
+max_range = 1400.0
+size = 12.0
+flinch = 0.4
+muzzle_forward = 52.0
+damage = 24.0
+guard_vigor = 30.0

@@ -26,6 +26,10 @@ extends InfiltrationConfig
 @export var dodge_noise: float = 220.0
 @export var power_noise: float = 300.0
 
+@export_group("Enemy support")
+@export var aura_pulse_seconds: float = 0.5
+@export var blast_flinch: float = 0.3
+
 @export_group("Limits")
 @export var max_active_enemies: int = 24
 @export var max_allies: int = 6
