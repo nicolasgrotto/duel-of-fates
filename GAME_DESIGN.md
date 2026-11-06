@@ -642,6 +642,12 @@ Decisão do autor, resumida em [DESIGN.md](DESIGN.md#atualização-11-das-opera�
 
 **Facções.** Todo disparo e área pertencem a uma facção: jogador e aliados, ou inimigos. Dano só atravessa de uma facção para a outra. Disparo devolvido passa a pertencer a quem devolveu. Barreiras implantadas são da facção do jogador e bloqueiam só o fogo inimigo. Caixas do mapa não têm dono e quebram com qualquer disparo. Prisioneiro ainda na cela não sofre dano de ninguém.
 
+**Arsenal nas Operações.** O conjunto é escolhido na linha **Arma**, no painel de personagem e no menu de Operações: arma própria do personagem (ou só lâmina, o padrão de quem não tem blaster) ou um dos cinco blasters do Arsenal, de graça, só neste modo e em Infiltração e Incursão. A escolha é uma preferência salva, não uma posse: não há compra, desbloqueio nem progressão, e a História não é afetada.
+
+Cada personagem tem **treino** por classe de arma: Treinado, Familiar ou Sem treino. Treino não muda o dano; muda calor, cadência, dispersão e tempo de troca. Assim o Arsenal amplia o personagem sem igualar todo mundo.
+
+**Modos de arma.** Blaster de uma mão com lâmina de uma mão é **híbrido**: as duas ficam na mão, o tiro sai do blaster e o corpo a corpo da lâmina, como a Corsária. Arma de duas mãos, ou qualquer blaster para quem luta com duas lâminas ou lâmina em haste, exige **troca**: `X` alterna entre modo de disparo e modo de lâmina, com tempo vindo dos dados da arma. No modo de disparo a primária atira; no de lâmina ela corta. Em modo de disparo, `F` ou guarda iniciam a troca sozinhos: o corte sai ao terminar, e a guarda vale enquanto a tecla continuar segurada. Durante a troca não há tiro, corte nem guarda. O abate silencioso continua imediato. O sistema recebe personagem e arma explícitos, para servir à futura História completa.
+
 ## Arsenal da História
 
 Decisão do autor. Tela **Arsenal** no hub, para qualquer estilo. **Créditos** vêm só da primeira vitória em cada encontro: repetir não rende nada, e saves antigos recebem pelos encontros já vencidos. Compram só blasters; não valem fora da História. O elenco do duelo não muda.

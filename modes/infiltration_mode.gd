@@ -25,6 +25,10 @@ static func look_character() -> CharacterData:
 	return chosen if Unlocks.is_character_unlocked(chosen) else CharacterRoster.character(CharacterRoster.IDS[0])
 
 
+static func look_weapon() -> StringName:
+	return StringName(SaveService.infiltration_look.get("weapon", ""))
+
+
 static func look_costume(character: CharacterData) -> int:
 	var index: int = int(SaveService.infiltration_look.get("costume", 0))
 	if index < 0 or index >= character.costumes.size():
@@ -53,7 +57,7 @@ func _init(mission: InfiltrationMissionData, fighter: CharacterData = null, load
 
 func create_simulation() -> BlasterOpsSimulation:
 	var fighter: CharacterData = character if character != null else look_character()
-	var loadout: BlasterOpsLoadout = equipment if equipment != null else BlasterOpsTraining.mission_loadout(fighter)
+	var loadout: BlasterOpsLoadout = equipment if equipment != null else BlasterOpsTraining.mission_loadout(fighter, look_weapon() if character == null else &"")
 	return BlasterOpsSimulation.new(BlasterOpsTraining.CONFIG, data.map, loadout, data)
 
 

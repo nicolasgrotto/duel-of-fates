@@ -5,6 +5,8 @@ const LIST_WIDTH: float = 540.0
 const COLUMN_GAP: int = 80
 const DETAIL_GAP: int = 12
 const CHARACTER_ROW: StringName = &"character"
+const WEAPON_ROW: StringName = &"weapon"
+const OWN_WEAPON: StringName = &"own"
 const BACK_ROW: StringName = &"back"
 
 var _list: MenuList
@@ -17,6 +19,8 @@ var _footer: Label
 var _mode: InfiltrationMode
 var _result: bool = false
 var _characters_panel: bool = false
+var _weapons_panel: bool = false
+var _focused_character: StringName = &""
 var _mission: StringName
 var _costume: int = 0
 var _blade: int = 0
@@ -101,10 +105,14 @@ func open(params: Dictionary) -> void:
 	if params.get("panel", &"") == &"characters":
 		_show_characters()
 		return
+	if params.get("panel", &"") == &"weapons":
+		_show_weapons()
+		return
 	_heading.text = tr("MENU_OPERATIONS").to_upper()
 	for mission in BlasterOpsMode.all_missions():
 		_list.add_item(mission.id, tr(mission.title_key) + "\n" + tr(mission.objective_key()))
 	_list.add_item(CHARACTER_ROW, tr("INF_CHARACTER").format({"name": tr(InfiltrationMode.look_character().name_key)}))
+	_list.add_item(WEAPON_ROW, _weapon_row_text(InfiltrationMode.look_character()))
 	_list.add_item(BACK_ROW, tr("MENU_BACK"))
 	_list.select_id(_mission)
 	_highlight(_list._ids[_list.selected])
@@ -113,8 +121,13 @@ func open(params: Dictionary) -> void:
 func _highlight(id: StringName) -> void:
 	if _result:
 		return
-	if _characters_panel:
+	if _weapons_panel:
+		_highlight_weapon(id)
+	elif _characters_panel:
 		_highlight_character(id)
+	elif id == WEAPON_ROW:
+		var character: CharacterData = InfiltrationMode.look_character()
+		_show_panel(null, InfiltrationMode.current_look(), tr("OPS_WEAPON_TITLE").to_upper(), _weapon_detail(character, InfiltrationMode.look_weapon()))
 	elif id == BACK_ROW:
 		_show_panel(null, null, "", "")
 	elif id == CHARACTER_ROW:
@@ -166,17 +179,66 @@ func _show_characters() -> void:
 		var character: CharacterData = CharacterRoster.character(id)
 		if Unlocks.is_character_unlocked(character):
 			_list.add_item(id, tr(character.name_key))
+	_list.add_item(WEAPON_ROW, _weapon_row_text(current))
 	_list.add_item(BACK_ROW, tr("MENU_BACK"))
+	_focused_character = current.id
 	_costume = InfiltrationMode.look_costume(current)
 	_blade = InfiltrationMode.look_blade(current)
 	_list.select_id(current.id)
 	_refresh_character(current)
 
 
+func _weapon_row_text(character: CharacterData) -> String:
+	return tr("OPS_WEAPON_ROW").format({"name": tr(BlasterOpsTraining.weapon_name_key(character, InfiltrationMode.look_weapon()))})
+
+
+func _weapon_detail(character: CharacterData, weapon_id: StringName) -> String:
+	var entry: BlasterOpsWeaponData = BlasterOpsTraining.ARSENAL.weapon(weapon_id)
+	if entry == null:
+		return tr("OPS_WEAPON_OWN_INFO")
+	var tier: BlasterOpsTrainingTier = BlasterOpsTraining.ARSENAL.tier_for(character.id, entry)
+	var switching: bool = entry.two_handed or character.weapon.kind != WeaponData.Kind.SINGLE
+	var lines: PackedStringArray = [
+		tr("OPS_WEAPON_TRAINING").format({"character": tr(character.name_key), "tier": tr(tier.name_key)}),
+		tr("OPS_WEAPON_SWITCH_INFO" if switching else "OPS_WEAPON_HYBRID_INFO"),
+		tr("OPS_WEAPON_STATS").format({"damage": roundi(entry.blaster.bolt.damage * entry.damage_scale), "shots": maxi(entry.blaster.shot_count, 1), "interval": snappedf(entry.fire_interval * tier.interval_scale, 0.01), "heat": roundi(entry.heat_per_shot * tier.heat_scale * entry.blaster.vigor_multiplier)}),
+		"",
+		tr("OPS_WEAPON_ARSENAL_INFO"),
+	]
+	return "\n".join(lines)
+
+
+func _show_weapons() -> void:
+	_weapons_panel = true
+	_heading.text = tr("OPS_WEAPON_TITLE").to_upper()
+	var character: CharacterData = InfiltrationMode.look_character()
+	_list.add_item(OWN_WEAPON, tr(BlasterOpsTraining.weapon_name_key(character, &"")))
+	for entry in BlasterOpsTraining.ARSENAL.weapons:
+		_list.add_item(entry.blaster.id, tr(entry.blaster.name_key))
+	_list.add_item(BACK_ROW, tr("MENU_BACK"))
+	var current: StringName = InfiltrationMode.look_weapon()
+	_list.select_id(current if BlasterOpsTraining.ARSENAL.weapon(current) != null else OWN_WEAPON)
+	_highlight_weapon(_list._ids[_list.selected])
+
+
+func _highlight_weapon(id: StringName) -> void:
+	if id == BACK_ROW:
+		_show_panel(null, null, "", "")
+		return
+	var character: CharacterData = InfiltrationMode.look_character()
+	var key: String = BlasterOpsTraining.weapon_name_key(character, id)
+	_show_panel(null, InfiltrationMode.current_look(), tr(key).to_upper(), _weapon_detail(character, id))
+
+
 func _highlight_character(id: StringName) -> void:
 	if id == BACK_ROW:
 		_show_panel(null, null, "", "")
 		return
+	if id == WEAPON_ROW:
+		var focused: CharacterData = CharacterRoster.character(_focused_character)
+		_show_panel(null, InfiltrationLook.create(focused, _costume, _blade), tr("OPS_WEAPON_TITLE").to_upper(), _weapon_detail(focused, InfiltrationMode.look_weapon()))
+		return
+	_focused_character = id
 	_costume = 0
 	_blade = 0
 	_refresh_character(CharacterRoster.character(id))
@@ -192,7 +254,7 @@ func _refresh_character(character: CharacterData) -> void:
 
 
 func _adjust(id: StringName, direction: int) -> void:
-	if not _characters_panel or id == BACK_ROW:
+	if not _characters_panel or id == BACK_ROW or id == WEAPON_ROW:
 		return
 	var character: CharacterData = CharacterRoster.character(id)
 	var count: int = character.costumes.size()
@@ -204,7 +266,7 @@ func _adjust(id: StringName, direction: int) -> void:
 
 
 func _cycle_blade(id: StringName) -> void:
-	if id == BACK_ROW:
+	if id == BACK_ROW or id == WEAPON_ROW:
 		return
 	var character: CharacterData = CharacterRoster.character(id)
 	var count: int = character.blade_colors.size()
@@ -250,12 +312,22 @@ func _choose(id: StringName) -> void:
 				_mode.next()
 			&"missions":
 				SceneRouter.change(&"operations", {"mission": _mode.data.id})
+	elif _weapons_panel:
+		if id != BACK_ROW:
+			SaveService.set_infiltration_weapon(&"" if id == OWN_WEAPON else id)
+		_leave()
 	elif _characters_panel:
+		if id == WEAPON_ROW:
+			SaveService.set_infiltration_look(_focused_character, _costume, _blade)
+			SceneRouter.change(&"operations_characters", {"panel": &"weapons", "mission": _mission})
+			return
 		if id != BACK_ROW:
 			SaveService.set_infiltration_look(id, _costume, _blade)
 		_leave()
 	elif id == BACK_ROW:
 		_leave()
+	elif id == WEAPON_ROW:
+		SceneRouter.change(&"operations_characters", {"panel": &"weapons", "mission": _mission})
 	elif id == CHARACTER_ROW:
 		SceneRouter.change(&"operations_characters", {"panel": &"characters", "mission": _mission})
 	else:
@@ -269,7 +341,7 @@ func _exit_tree() -> void:
 func _leave() -> void:
 	if _result:
 		SceneRouter.change(&"operations", {"mission": _mode.data.id})
-	elif _characters_panel:
+	elif _characters_panel or _weapons_panel:
 		SceneRouter.change(&"operations", {"mission": _mission})
 	else:
 		SceneRouter.change(&"menu", {"group": &"special", "focus": &"operations"})

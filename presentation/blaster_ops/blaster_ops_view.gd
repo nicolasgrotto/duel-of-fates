@@ -28,12 +28,14 @@ func setup(simulation: InfiltrationSimulation, look: InfiltrationLook) -> void:
 	_blast_hostile.resize(capacity)
 
 
-static func weapon_state(loadout: BlasterOpsLoadout, guard: bool, striking: bool, integrated: bool = false) -> int:
+static func weapon_state(loadout: BlasterOpsLoadout, blade_drawn: bool, integrated: bool = false) -> int:
 	if loadout.blaster == null:
 		return WeaponState.BLADE
-	if not loadout.blaster.two_handed():
+	if not loadout.switchable:
 		return WeaponState.BLADE | (0 if integrated else WeaponState.BLASTER)
-	return WeaponState.BLADE if guard or striking else WeaponState.BLASTER | WeaponState.BELT_HILT | WeaponState.SUPPORT_HAND
+	if blade_drawn:
+		return WeaponState.BLADE
+	return WeaponState.BLASTER | WeaponState.BELT_HILT | (WeaponState.SUPPORT_HAND if loadout.two_handed else 0)
 
 
 func on_event(event: InfiltrationEvent) -> void:
@@ -99,7 +101,7 @@ func _draw() -> void:
 	if sim.player.health > 0.0:
 		_draw_dodge()
 		_draw_actor(sim.player, SPRITE_PLAYER)
-		var weapons: int = weapon_state(operations.loadout, sim.player.guard, sim.player.swing_tick >= 0, emitter)
+		var weapons: int = weapon_state(operations.loadout, operations.state.blade_drawn, emitter)
 		if (weapons & WeaponState.BLADE) != 0:
 			_draw_blade()
 		if (weapons & WeaponState.BLASTER) != 0:
@@ -155,7 +157,7 @@ func _draw_weapon() -> void:
 	draw_line(Vector2(-2, -4), Vector2(length - 4, -4), metal.lightened(0.2), sim.config.units_per_pixel)
 	draw_rect(Rect2(length - 2, -4, 4, 8), PALETTE.bolt)
 	draw_rect(Rect2(-4, 0, 8, 12), _look.skin_color)
-	if operations.loadout.blaster.two_handed():
+	if operations.loadout.two_handed:
 		draw_rect(Rect2(length * 0.5, 2, 8, 8), _look.skin_color)
 	draw_set_transform(Vector2.ZERO)
 	if operations.state.overheated:

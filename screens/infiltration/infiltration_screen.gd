@@ -13,6 +13,7 @@ const GUIDE_REFRESH_FRAMES: int = 15
 const HEAT_BAR_HEIGHT: float = 12.0
 const HEAT_LABEL_GAP: float = 16.0
 const ABILITY_BOTTOM: float = 40.0
+const ABILITY_RESERVE: float = 356.0
 const SOUNDS: Dictionary = {
 	InfiltrationEvent.Type.SWING_STARTED: &"swing_light",
 	InfiltrationEvent.Type.SWING_HIT: &"hit_light",
@@ -42,6 +43,7 @@ var _vigor: HudBar
 var _heat: HeatBar
 var _heat_label: Label
 var _abilities: AbilityBar
+var _weapon_status: Label
 var _status: Label
 var _debug: Label
 var _pause_layer: CanvasLayer
@@ -84,7 +86,7 @@ func open(params: Dictionary) -> void:
 	_view = BlasterOpsView.new()
 	_stage.viewport.add_child(_view)
 	_view.setup(sim, mode.mission_look() if mode != null else InfiltrationMode.current_look())
-	_view.emitter = (mode.character if mode != null and mode.character != null else InfiltrationMode.look_character()).weapon.sidearm == WeaponData.Sidearm.HILT_EMITTER
+	_view.emitter = sim.loadout.integrated
 	_view.reduced = Settings.reduced_effects
 	_camera = Camera2D.new()
 	_camera.zoom = Vector2.ONE * CONFIG.camera_zoom
@@ -132,6 +134,9 @@ func _build_hud() -> void:
 	_operations_status = _label("", &"InfiltrationLabel")
 	_operations_status.position = Vector2(HUD_MARGIN, 100.0)
 	hud.add_child(_operations_status)
+	_weapon_status = _label("", &"InfiltrationLabel")
+	_weapon_status.position = Vector2(HUD_MARGIN, 136.0)
+	hud.add_child(_weapon_status)
 	var objective: Label = _label(tr("INFILTRATION_OBJECTIVE"), &"InfiltrationLabel")
 	objective.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 	objective.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -142,11 +147,13 @@ func _build_hud() -> void:
 	_context.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
 	_context.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_context.offset_top = -154.0
+	_context.offset_right = -ABILITY_RESERVE
 	hud.add_child(_context)
 	var footer: Label = _label(_hints(), &"InfiltrationLabel")
 	footer.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
 	footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	footer.offset_top = -98.0
+	footer.offset_right = -ABILITY_RESERVE
 	hud.add_child(footer)
 	_abilities = AbilityBar.new()
 	_abilities.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
@@ -202,10 +209,17 @@ func _hints() -> String:
 		movement,
 		ControlHints.blaster_ops_hud_hint("run"), ControlHints.blaster_ops_hud_hint("sneak"),
 		ControlHints.blaster_ops_hud_hint("dodge"),
-	])) + "\n" + ControlHints.line(PackedStringArray([
+	])) + "\n" + ControlHints.line(_combat_hints())
+
+
+func _combat_hints() -> PackedStringArray:
+	var hints: PackedStringArray = [
 		ControlHints.blaster_ops_hud_hint("fire"), ControlHints.blaster_ops_hud_hint("guard"),
 		ControlHints.blaster_ops_hud_hint("strike"), ControlHints.blaster_ops_hud_hint("interact"),
-	]))
+	]
+	if sim.loadout.switchable and sim.loadout.blaster != null:
+		hints.append(ControlHints.blaster_ops_hud_hint("switch_weapon"))
+	return hints
 
 
 func _build_pause() -> void:
@@ -296,6 +310,8 @@ func _present_events() -> void:
 			AudioDirector.play(BlasterOpsAudio.SOUNDS[event.type], event.position, CONFIG.effects_db)
 		elif event.type == InfiltrationEvent.Type.POWER_RELEASED:
 			AudioDirector.play(BlasterOpsAudio.POWER_SOUNDS.get(int(event.amount), &"power_cast"), event.position, CONFIG.effects_db)
+		if event.type == InfiltrationEvent.Type.WEAPON_SWITCHED:
+			AudioDirector.play(&"extinguish" if event.target == 0 else &"ignition", event.position, CONFIG.effects_db)
 		if event.type == InfiltrationEvent.Type.AWARENESS_CHANGED and event.amount > 0.0:
 			_notice.play()
 		elif event.type == InfiltrationEvent.Type.TAKEDOWN_LANDED:
@@ -353,6 +369,7 @@ func _update_presentation(alpha: float) -> void:
 	var cooldowns: PackedStringArray = [tr("BOPS_COOLDOWN").format({"action": tr("BOPS_ACTION_DODGE"), "time": _cooldown(sim.state.dodge_cooldown)})]
 	_abilities.show_state(sim.state)
 	_update_heat()
+	_update_weapon()
 	var stance: int = controller.stance()
 	if stance != 0:
 		cooldowns.append(tr("BOPS_STANCE_RUN" if stance == InfiltrationIntent.RUN else "BOPS_STANCE_SNEAK"))
@@ -380,6 +397,17 @@ func _update_presentation(alpha: float) -> void:
 		for index in range(sim.map.targets.size(), sim.targets.size()):
 			var actor: InfiltrationActor = sim.targets[index]
 			_debug.text += "\n%d %s %.3f  %s  waypoint %d" % [index + 1, InfiltrationActor.Awareness.keys()[actor.awareness], actor.suspicion, InfiltrationActor.Decision.keys()[actor.decision], actor.waypoint]
+
+
+func _update_weapon() -> void:
+	var name_key: String = sim.loadout.blaster.name_key if sim.loadout.blaster != null else "OPS_WEAPON_BLADE"
+	var text: String = tr(name_key)
+	if sim.loadout.integrated:
+		text = tr("OPS_WEAPON_OWN_EMITTER")
+	if sim.loadout.switchable and sim.loadout.blaster != null:
+		var mode_key: String = "OPS_MODE_SWITCHING" if sim.state.switch_ticks > 0 else "OPS_MODE_BLADE" if sim.state.blade_drawn else "OPS_MODE_RANGED"
+		text += ControlHints.SEPARATOR + tr(mode_key)
+	_weapon_status.text = text
 
 
 func _update_heat() -> void:

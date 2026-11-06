@@ -174,13 +174,12 @@ func test_one_handed_rifle_and_saber_only_presentation_states() -> void:
 	var pistol: BlasterOpsLoadout = BlasterOpsTraining.PISTOL
 	var rifle: BlasterOpsLoadout = BlasterOpsTraining.RIFLE
 	var saber: BlasterOpsLoadout = BlasterOpsTraining.equipment(DuelMode.character(&"guardian"), 0)
-	for guard in [false, true]:
-		for striking in [false, true]:
-			assert_eq(BlasterOpsView.weapon_state(pistol, guard, striking), BlasterOpsView.WeaponState.BLADE | BlasterOpsView.WeaponState.BLASTER)
-			assert_eq(BlasterOpsView.weapon_state(saber, guard, striking), BlasterOpsView.WeaponState.BLADE)
-			var expected: int = BlasterOpsView.WeaponState.BLADE if guard or striking else BlasterOpsView.WeaponState.BLASTER | BlasterOpsView.WeaponState.BELT_HILT | BlasterOpsView.WeaponState.SUPPORT_HAND
-			assert_eq(BlasterOpsView.weapon_state(rifle, guard, striking), expected)
-	assert_eq(BlasterOpsView.weapon_state(pistol, false, false, true), BlasterOpsView.WeaponState.BLADE)
+	for drawn in [false, true]:
+		assert_eq(BlasterOpsView.weapon_state(pistol, drawn), BlasterOpsView.WeaponState.BLADE | BlasterOpsView.WeaponState.BLASTER)
+		assert_eq(BlasterOpsView.weapon_state(saber, drawn), BlasterOpsView.WeaponState.BLADE)
+		var expected: int = BlasterOpsView.WeaponState.BLADE if drawn else BlasterOpsView.WeaponState.BLASTER | BlasterOpsView.WeaponState.BELT_HILT | BlasterOpsView.WeaponState.SUPPORT_HAND
+		assert_eq(BlasterOpsView.weapon_state(rifle, drawn), expected)
+	assert_eq(BlasterOpsView.weapon_state(pistol, false, true), BlasterOpsView.WeaponState.BLADE)
 
 
 func test_story_equipped_weapon_keeps_patterns_without_mutating_catalog_or_charging_credits() -> void:

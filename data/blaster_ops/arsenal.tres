@@ -1,0 +1,85 @@
+[gd_resource type="Resource" script_class="BlasterOpsArsenal" format=3]
+
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_arsenal.gd" id="arsenal"]
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_weapon_data.gd" id="weapon"]
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_training_tier.gd" id="tier"]
+[ext_resource type="Resource" path="res://data/blasters/holster_pistol.tres" id="holster_pistol"]
+[ext_resource type="Resource" path="res://data/blasters/thigh_revolver.tres" id="thigh_revolver"]
+[ext_resource type="Resource" path="res://data/blasters/lumbar_carbine.tres" id="lumbar_carbine"]
+[ext_resource type="Resource" path="res://data/blasters/back_rifle.tres" id="back_rifle"]
+[ext_resource type="Resource" path="res://data/blasters/back_sniper.tres" id="back_sniper"]
+
+[sub_resource type="Resource" id="t0"]
+script = ExtResource("tier")
+name_key = "OPS_TRAINING_TRAINED"
+heat_scale = 1.0
+interval_scale = 1.0
+spread_degrees = 0.0
+switch_scale = 1.0
+
+[sub_resource type="Resource" id="t1"]
+script = ExtResource("tier")
+name_key = "OPS_TRAINING_FAMILIAR"
+heat_scale = 1.15
+interval_scale = 1.1
+spread_degrees = 2.0
+switch_scale = 1.2
+
+[sub_resource type="Resource" id="t2"]
+script = ExtResource("tier")
+name_key = "OPS_TRAINING_NONE"
+heat_scale = 1.35
+interval_scale = 1.25
+spread_degrees = 5.0
+switch_scale = 1.5
+
+[sub_resource type="Resource" id="w_holster_pistol"]
+script = ExtResource("weapon")
+blaster = ExtResource("holster_pistol")
+training_class = 0
+two_handed = false
+damage_scale = 2.5
+fire_interval = 0.16
+heat_per_shot = 20.0
+
+[sub_resource type="Resource" id="w_thigh_revolver"]
+script = ExtResource("weapon")
+blaster = ExtResource("thigh_revolver")
+training_class = 0
+two_handed = false
+damage_scale = 2.0
+fire_interval = 0.55
+heat_per_shot = 30.0
+
+[sub_resource type="Resource" id="w_lumbar_carbine"]
+script = ExtResource("weapon")
+blaster = ExtResource("lumbar_carbine")
+training_class = 1
+two_handed = true
+damage_scale = 2.0
+fire_interval = 0.36
+heat_per_shot = 14.0
+
+[sub_resource type="Resource" id="w_back_rifle"]
+script = ExtResource("weapon")
+blaster = ExtResource("back_rifle")
+training_class = 2
+two_handed = true
+damage_scale = 2.0
+fire_interval = 0.42
+heat_per_shot = 12.0
+
+[sub_resource type="Resource" id="w_back_sniper"]
+script = ExtResource("weapon")
+blaster = ExtResource("back_sniper")
+training_class = 2
+two_handed = true
+damage_scale = 2.0
+fire_interval = 1.1
+heat_per_shot = 40.0
+
+[resource]
+script = ExtResource("arsenal")
+weapons = Array[ExtResource("weapon")]([SubResource("w_holster_pistol"), SubResource("w_thigh_revolver"), SubResource("w_lumbar_carbine"), SubResource("w_back_rifle"), SubResource("w_back_sniper")])
+tiers = Array[ExtResource("tier")]([SubResource("t0"), SubResource("t1"), SubResource("t2")])
+training = { &"guardian": [1, 1, 2], &"shadow": [1, 1, 2], &"bastion": [2, 0, 1], &"wasp": [1, 2, 2], &"mirror": [1, 2, 1], &"lance": [2, 1, 0], &"ember": [1, 1, 2], &"forge": [2, 0, 1], &"heron": [0, 2, 2], &"reaper": [1, 2, 2], &"echo": [0, 1, 1], &"corsair": [0, 1, 1], &"lynx": [0, 1, 1], &"sovereign": [2, 2, 2], &"elder": [2, 2, 2], &"foretold": [1, 1, 1] }

@@ -1229,3 +1229,20 @@ BOPS_OVERHEATED,Superaquecido · Resfriando,Overheated · Cooling
 BOPS_STANCE_RUN,Correndo,Running
 BOPS_STANCE_SNEAK,Furtivo,Sneaking
 OPS_CHARACTER_POWERS,Poderes: {powers},Powers: {powers}
+OPS_WEAPON_ROW,Arma: {name},Weapon: {name}
+OPS_WEAPON_TITLE,Arma,Weapon
+OPS_WEAPON_BLADE,Só lâmina,Blade only
+OPS_WEAPON_OWN_BLASTER,Pistola própria,Own pistol
+OPS_WEAPON_OWN_EMITTER,Emissor no cabo,Hilt emitter
+OPS_WEAPON_OWN_INFO,"O equipamento do próprio personagem, sem nada do Arsenal. Todas as missões podem ser concluídas assim.","The character's own equipment, with nothing from the Arsenal. Every mission can be completed this way."
+OPS_WEAPON_TRAINING,Treino de {character}: {tier},{character}'s training: {tier}
+OPS_WEAPON_HYBRID_INFO,Híbrida: a arma numa mão e a lâmina acesa na outra.,Hybrid: the weapon in one hand and the lit blade in the other.
+OPS_WEAPON_SWITCH_INFO,Exige troca: alterna entre o modo de disparo e o modo de lâmina.,Requires switching: alternates between ranged mode and blade mode.
+OPS_WEAPON_STATS,"Dano {damage} · {shots} tiro(s) · intervalo {interval} s · calor {heat}","Damage {damage} · {shots} shot(s) · interval {interval} s · heat {heat}"
+OPS_WEAPON_ARSENAL_INFO,Gratuita e só nas Operações. Não muda a História nem o duelo.,Free and only in Operations. It does not change the Story or duels.
+OPS_TRAINING_TRAINED,Treinado,Trained
+OPS_TRAINING_FAMILIAR,Familiar,Familiar
+OPS_TRAINING_NONE,Sem treino,Untrained
+OPS_MODE_RANGED,Disparo,Ranged
+OPS_MODE_BLADE,Lâmina,Blade
+OPS_MODE_SWITCHING,Trocando,Switching

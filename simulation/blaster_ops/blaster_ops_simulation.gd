@@ -3,6 +3,7 @@ extends InfiltrationSimulation
 
 const POWER_COMMANDS: Array[int] = [Intent.Command.POWER, InfiltrationIntent.POWER_2, InfiltrationIntent.POWER_3]
 const POWER_BOLT_SHOOTER: int = -2
+const SPREAD_PATTERN: PackedFloat32Array = [0.0, 1.0, -1.0, 0.5, -0.5]
 
 var operations: BlasterOpsConfig
 var arena: BlasterOpsMap
@@ -165,6 +166,11 @@ func _advance_operations() -> void:
 		state.dodge_age += 1
 		if state.dodge_age >= Ticks.from_seconds(operations.dodge_seconds):
 			state.dodge_age = -1
+	if state.switch_ticks > 0:
+		state.switch_ticks -= 1
+		if state.switch_ticks == 0:
+			state.blade_drawn = state.switch_to_blade
+			_emit(InfiltrationEvent.Type.WEAPON_SWITCHED, 0, int(state.blade_drawn), player.position)
 	state.absorb_ticks = maxi(state.absorb_ticks - 1, 0)
 	state.boost_ticks = maxi(state.boost_ticks - 1, 0)
 	if state.heal_ticks > 0:
@@ -196,6 +202,8 @@ func _apply_intent(intent: InfiltrationIntent) -> void:
 			_disable_panel()
 		elif mission != null:
 			mission.interact(self)
+	if (intent.pressed & InfiltrationIntent.SWITCH_WEAPON) != 0 and player.swing_tick < 0 and state.power_ticks == 0 and state.channel_ticks == 0:
+		_begin_switch(not state.blade_drawn)
 	var blade_requested: bool = (intent.pressed & Intent.Command.HEAVY) != 0
 	if blade_requested and player.swing_tick < 0 and state.power_ticks == 0:
 		var victim: int = takedown_target()
@@ -203,8 +211,17 @@ func _apply_intent(intent: InfiltrationIntent) -> void:
 			_emit(InfiltrationEvent.Type.TAKEDOWN_LANDED, 0, victim + 1, targets[victim].position)
 			_damage_target(victim, targets[victim].health, true)
 			blade_requested = false
-	if loadout.blaster == null and ((intent.held | intent.pressed) & Intent.Command.LIGHT) != 0:
+	if blade_requested and _ranged_only():
+		_begin_switch(true)
+		state.strike_queued = true
+		blade_requested = false
+	elif state.strike_queued and state.switch_ticks == 0:
+		state.strike_queued = false
 		blade_requested = true
+	if _primary_cuts() and ((intent.held | intent.pressed) & Intent.Command.LIGHT) != 0:
+		blade_requested = true
+	if state.switch_ticks > 0:
+		blade_requested = false
 	if blade_requested and player.swing_tick < 0 and state.power_ticks == 0 and state.power_recovery_ticks == 0 and player.vigor >= config.swing_vigor:
 		player.swing_tick = 0
 		player.swing_id += 1
@@ -219,7 +236,9 @@ func _apply_intent(intent: InfiltrationIntent) -> void:
 			_release_power()
 	elif player.swing_tick < 0 and state.channel_ticks == 0:
 		_try_start_power(intent)
-	if state.power_ticks == 0 and state.channel_ticks == 0 and player.swing_tick < 0 and (intent.held & Intent.Command.BLOCK) != 0 and loadout.can_deflect:
+	if state.power_ticks == 0 and state.channel_ticks == 0 and player.swing_tick < 0 and (intent.held & Intent.Command.BLOCK) != 0 and loadout.can_deflect and _ranged_only():
+		_begin_switch(true)
+	elif state.switch_ticks == 0 and state.power_ticks == 0 and state.channel_ticks == 0 and player.swing_tick < 0 and (intent.held & Intent.Command.BLOCK) != 0 and loadout.can_deflect:
 		player.guard = true
 		if (intent.pressed & Intent.Command.BLOCK) != 0 and player.parry_cooldown == 0:
 			player.parry_age = 0
@@ -238,10 +257,28 @@ func _apply_intent(intent: InfiltrationIntent) -> void:
 		if player.locomotion == InfiltrationActor.Locomotion.RUN:
 			player.locomotion = InfiltrationActor.Locomotion.WALK
 	_move_player(intent.movement.limit_length() * speed)
-	if (intent.held & Intent.Command.LIGHT) != 0 and loadout.blaster != null and player.swing_tick < 0 and not player.guard and state.power_ticks == 0 and state.power_recovery_ticks == 0:
+	if (intent.held & Intent.Command.LIGHT) != 0 and not _primary_cuts() and state.switch_ticks == 0 and player.swing_tick < 0 and not player.guard and state.power_ticks == 0 and state.power_recovery_ticks == 0:
 		_fire_primary()
 	else:
 		_cancel_burst()
+
+
+func _primary_cuts() -> bool:
+	return loadout.blaster == null or (loadout.switchable and state.blade_drawn)
+
+
+func _ranged_only() -> bool:
+	return loadout.blaster != null and loadout.switchable and not state.blade_drawn and not (state.switch_ticks > 0 and state.switch_to_blade)
+
+
+func _begin_switch(to_blade: bool) -> void:
+	if loadout.blaster == null or not loadout.switchable or state.switch_ticks > 0 or to_blade == state.blade_drawn:
+		return
+	var seconds: float = (loadout.blaster.holster_time if to_blade else loadout.blaster.draw_time) * loadout.switch_scale
+	state.switch_ticks = maxi(Ticks.from_seconds(seconds), 1)
+	state.switch_to_blade = to_blade
+	_cancel_burst()
+	_close_parry()
 
 
 func _cancel_burst() -> void:
@@ -317,9 +354,11 @@ func _fire_primary() -> void:
 	state.burst_ticks = maxi(state.burst_ticks - 1, 0)
 	if state.burst_ticks > 0:
 		return
-	var bolt: BlasterOpsBolt = _spawn_bolt(-1, loadout.blaster.bolt, player.aim, loadout.damage_scale * _dealt_scale())
+	var aim: Vector2 = player.aim.rotated(deg_to_rad(loadout.spread_degrees * SPREAD_PATTERN[state.shot_index % SPREAD_PATTERN.size()]))
+	var bolt: BlasterOpsBolt = _spawn_bolt(-1, loadout.blaster.bolt, aim, loadout.damage_scale * _dealt_scale())
 	if bolt == null:
 		return
+	state.shot_index += 1
 	state.burst_left -= 1
 	state.burst_ticks = maxi(Ticks.from_seconds(loadout.blaster.shot_interval), 1)
 	state.fire_ticks = maxi(Ticks.from_seconds(loadout.fire_interval), 1)

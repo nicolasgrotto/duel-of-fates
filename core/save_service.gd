@@ -149,8 +149,13 @@ func is_unlocked(key: String) -> bool:
 	return unlocked.get(key, false)
 
 
+func set_infiltration_weapon(weapon: StringName) -> void:
+	infiltration_look["weapon"] = String(weapon)
+	save_progress()
+
+
 func set_infiltration_look(character: StringName, costume: int, blade: int) -> void:
-	infiltration_look = {"character": String(character), "costume": costume, "blade": blade}
+	infiltration_look = {"character": String(character), "costume": costume, "blade": blade, "weapon": infiltration_look.get("weapon", "")}
 	save_progress()
 
 

@@ -14,6 +14,7 @@ const ADAPTED_POWERS: Array[BlasterOpsPowerData] = [
 	preload("res://data/blaster_ops/powers/wrath.tres"), preload("res://data/blaster_ops/powers/storm.tres"),
 ]
 const MAX_POWER_SLOTS: int = 3
+const ARSENAL: BlasterOpsArsenal = preload("res://data/blaster_ops/arsenal.tres")
 
 
 static func equipment(character: CharacterData, power_index: int) -> BlasterOpsLoadout:
@@ -26,6 +27,7 @@ static func equipment(character: CharacterData, power_index: int) -> BlasterOpsL
 	elif character.weapon.sidearm == WeaponData.Sidearm.HOLSTER:
 		result.blaster = character.weapon.blaster
 	result.power = POWERS[clampi(power_index, 0, POWERS.size() - 1)]
+	result.integrated = character.weapon.sidearm == WeaponData.Sidearm.HILT_EMITTER
 	return result
 
 
@@ -36,8 +38,23 @@ static func adapted(power: PowerData) -> BlasterOpsPowerData:
 	return null
 
 
-static func mission_loadout(character: CharacterData) -> BlasterOpsLoadout:
+static func weapon_name_key(character: CharacterData, weapon_id: StringName) -> String:
+	var entry: BlasterOpsWeaponData = ARSENAL.weapon(weapon_id)
+	if entry != null:
+		return entry.blaster.name_key
+	match character.weapon.sidearm:
+		WeaponData.Sidearm.BLASTER:
+			return "OPS_WEAPON_OWN_BLASTER"
+		WeaponData.Sidearm.HILT_EMITTER:
+			return "OPS_WEAPON_OWN_EMITTER"
+	return "OPS_WEAPON_BLADE"
+
+
+static func mission_loadout(character: CharacterData, weapon_id: StringName = &"") -> BlasterOpsLoadout:
 	var result: BlasterOpsLoadout = equipment(character, 0)
+	var weapon: BlasterOpsWeaponData = ARSENAL.weapon(weapon_id)
+	if weapon != null:
+		ARSENAL.apply(result, weapon, character)
 	var chosen: Array[BlasterOpsPowerData] = []
 	for power in character.powers:
 		var entry: BlasterOpsPowerData = adapted(power) if power != null else null

@@ -30,6 +30,8 @@ Barra de **Calor** no lugar do número, abaixo de Vida e Vigor, só para quem te
 
 **Poderes** ficam no canto inferior direito, fora da área de luta, em até três quadrados de 84 px na base 1080p: ícone do próprio poder (o mesmo das árvores), tecla atual no canto e, em recarga, véu escuro que baixa com os segundos em texto. Pronto: contorno de destaque. Em uso: contorno claro. Em Infiltração a recarga maior aparece igual. A pausa lista tecla e nome de cada poder, e o rodapé deixa de repetir a tecla de poder.
 
+**Arma.** Abaixo do calor, uma linha diz a arma e o modo: `Rifle · Disparo`, `Rifle · Lâmina` ou `Rifle · Trocando`, com a tecla de troca quando há troca. Personagem sem blaster mostra só a lâmina. O rodapé acrescenta `X  Trocar arma` só nesses casos. A linha **Arma** aparece no menu de Operações e no painel de personagem, e abre uma lista com a arma própria e as cinco do Arsenal; o painel à direita mostra treino, uso (híbrido ou troca) e números sem jargão. É a mesma composição de lista e detalhe até o redesenho dos menus.
+
 A janela do jogo no desktop abre em 1280×720 e encolhe para caber na área útil da tela: a antiga 1600×900 passava da tela do autor (1440×900) e cortava o rodapé e o lado direito. HUD e menus são validados na build Web, não só na prévia do editor.
 
 ### Operações unificadas (task 17)

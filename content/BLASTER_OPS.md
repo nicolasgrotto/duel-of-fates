@@ -51,6 +51,47 @@ Movimento livre normalizado em oito direções, 240 u/s, aceleração 2.200 u/s�
 
 Correr e furtivo são alternâncias no controlador: um toque liga, outro desliga, e ligar um desliga o outro; a pausa conserva a postura e reiniciar a limpa. Nenhuma ação usa Ctrl, Alt ou Meta, e a tela de teclas recusa essas teclas, porque o navegador reserva combinações como Ctrl+W. Teclas salvas no layout anterior são migradas sem perder personalizações: sai só Ctrl, e teclas novas entram apenas se estiverem livres. Ações `blaster_ops_*` próprias pelo InputMap, com aliases `infiltration_*` para compatibilidade. Teclas e botões são remapeáveis em **Teclas e botões › Operações**; mouse e eixos de mira permanecem disponíveis. Botões padrão copiam os bindings do J1, sem alterar o duelo. A tela Controles tem uma página do modo e as dicas vêm de ControlHints. Na pausa do treino é possível reiniciar com outro personagem (Corsária, Lince, Coldre ou Guardião) e outro poder; toda troca reinicia, sem mudar recurso compartilhado ou campanha.
 
+## Arsenal nas Operações
+
+Dano é o do BoltData vezes a escala da arma; calor por tiro é o da tabela vezes o `vigor_multiplier` do BlasterData. Rajadas e saque vêm do mesmo BlasterData do duelo e da História.
+
+| Arma | Classe | Uso | Dano | Tiros | Intervalo | Calor por tiro |
+| --- | --- | --- | --- | --- | --- | --- |
+| Pistola | Curta | uma mão | 10 | 1 | 0,16 s | 20 |
+| Revólver pesado | Curta | uma mão | 24 | 1 | 0,55 s | 36 |
+| Carabina | Média | duas mãos | 12 | 2 | 0,36 s | 15,4 |
+| Rifle | Longa | duas mãos | 12 | 3 | 0,42 s | 15 |
+| Rifle de precisão | Longa | duas mãos | 44 | 1 | 1,1 s | 64 |
+
+| Treino | Calor | Intervalo | Dispersão | Tempo de troca |
+| --- | --- | --- | --- | --- |
+| Treinado | × 1 | × 1 | 0° | × 1 |
+| Familiar | × 1,15 | × 1,1 | 2° | × 1,2 |
+| Sem treino | × 1,35 | × 1,25 | 5° | × 1,5 |
+
+Dispersão segue um padrão fixo por tiro, sem sorteio, para a reexecução continuar determinística.
+
+| Personagem | Curta | Média | Longa | Por quê |
+| --- | --- | --- | --- | --- |
+| Guardião | Familiar | Familiar | Sem treino | fundamentos, prefere a lâmina |
+| Sombra | Familiar | Familiar | Sem treino | pressão de perto |
+| Bastião | Sem treino | Treinado | Familiar | mãos pesadas, arma firme |
+| Vespa | Familiar | Sem treino | Sem treino | duas lâminas, velocidade |
+| Espelho | Familiar | Sem treino | Familiar | paciente, precisa |
+| Haste | Sem treino | Familiar | Treinado | luta à distância |
+| Brasa | Familiar | Familiar | Sem treino | resposta curta |
+| Forja | Sem treino | Treinado | Familiar | peso e carga |
+| Garça | Treinado | Sem treino | Sem treino | acrobata, arma leve |
+| Ceifador | Familiar | Sem treino | Sem treino | lâmina dupla |
+| Eco | Treinado | Familiar | Familiar | truques |
+| Corsária | Treinado | Familiar | Familiar | versátil |
+| Lince | Treinado | Familiar | Familiar | versátil |
+| Soberano | Sem treino | Sem treino | Sem treino | desdenha armas |
+| Ancião | Sem treino | Sem treino | Sem treino | só a lâmina |
+| Predestinado | Familiar | Familiar | Familiar | talento geral |
+
+Vespa, Brasa, Haste e Ceifador usam as duas mãos na lâmina: para eles, todo blaster é de troca. A Corsária e o Lince começam com a própria arma e podem escolher outra.
+
 ## Tiro e calor
 
 Armas usam `BlasterData` e `BoltData`. O conjunto do modo define escala de dano, cadência e calor; não modifica as armas do duelo.

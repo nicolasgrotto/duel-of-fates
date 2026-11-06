@@ -8,6 +8,11 @@ extends Resource
 @export var fire_interval: float = 0.16
 @export var heat_per_shot: float = 20.0
 @export var can_deflect: bool = true
+@export var switchable: bool = false
+@export var two_handed: bool = false
+@export var integrated: bool = false
+@export var spread_degrees: float = 0.0
+@export var switch_scale: float = 1.0
 
 
 func slot_count() -> int:
