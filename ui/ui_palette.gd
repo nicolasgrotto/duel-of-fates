@@ -14,6 +14,16 @@ const DEFAULT_FLOW_TIERS: PackedColorArray = [Color("#9cc4ff"), Color("#5d8dff")
 @export var potential: Color = Color("#d9b45a")
 @export var flow_tiers: PackedColorArray = DEFAULT_FLOW_TIERS
 
+@export_group("Tactical")
+@export var tactical_ground: Color = Color("#060b16")
+@export var tactical_panel: Color = Color("#0b1424")
+@export var tactical_raised: Color = Color("#12203a")
+@export var tactical_line: Color = Color("#223555")
+@export var tactical_line_strong: Color = Color("#3a5078")
+@export var tactical_muted: Color = Color("#a3aec6")
+@export var tactical_dim: Color = Color("#7f8aa3")
+@export var tactical_deep: Color = Color("#03060f")
+
 @export_group("Duel HUD")
 @export var bar_back: Color = Color(0.91, 0.925, 0.96, 0.1)
 @export var health_ghost: Color = Color(0.91, 0.925, 0.96, 0.35)

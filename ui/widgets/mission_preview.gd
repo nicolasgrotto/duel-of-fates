@@ -4,9 +4,11 @@ extends TextureRect
 const UPSCALE_SHADER: Shader = preload("res://presentation/camera/pixel_upscale.gdshader")
 const DISPLAY_SIZE: Vector2 = Vector2(960.0, 340.0)
 
+var display_size: Vector2 = DISPLAY_SIZE
+
 
 func _ready() -> void:
-	custom_minimum_size = DISPLAY_SIZE
+	custom_minimum_size = display_size
 	expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	size_flags_horizontal = Control.SIZE_SHRINK_BEGIN

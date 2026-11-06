@@ -1020,7 +1020,7 @@ SPACE_M6_BRIEF,"Um campo de destroços esconde esquadrões à espreita. Eles sur
 SPACE_M6_OBJECTIVE,Sobreviva às nove emboscadas,Survive all nine ambushes
 SPACE_HANGAR,Hangar,Hangar
 SPACE_HANGAR_ROW,Hangar: {name},Hangar: {name}
-SPACE_HANGAR_INFO,"A nave escolhida vale para todas as missões, e as melhorias da Oficina somam-se a ela.","The chosen ship is used in every mission, and Workshop upgrades add to it."
+SPACE_HANGAR_INFO,"A nave em uso vale para todas as missões, com as melhorias dela.","The ship in use flies every mission, with its own upgrades."
 SPACE_CURRENT_SHIP,Nave: {name},Ship: {name}
 SPACE_STAT_HULL,Casco,Hull
 SPACE_STAT_SHIELD,Escudo,Shield
@@ -1069,7 +1069,7 @@ SPACE_REPEAT,Recordes atualizados · O ponto desta missão já foi recebido,Reco
 SPACE_FAILURE_SAVE,Derrota não concede pontos nem altera recordes,Defeat grants no points and changes no records
 SPACE_WORKSHOP,Oficina de naves,Ship workshop
 SPACE_POINTS,Pontos disponíveis: {points},Available points: {points}
-SPACE_WORKSHOP_RULES,Cada primeira vitória concede 1 ponto. Cada nível custa 1 ponto; máximo de 2 níveis por sistema. Reinicie a distribuição sem custo. Todas as missões aceitam o equipamento inicial.,Each first victory grants 1 point. Each level costs 1 point; maximum 2 levels per system. Reset allocation for free. All missions support the starting equipment.
+SPACE_WORKSHOP_RULES,"Cada primeira vitória rende 1 ponto. Os pontos valem para cada nave em separado: comprar para uma não tira nada das outras.","Each first victory earns 1 point. Points apply to each ship separately: buying for one takes nothing from the others."
 SPACE_UP_VALUES,"Por nível
 Arma: +{damage} dano, −{interval}s entre disparos
 Escudo: +{shield} capacidade, +{regen}/s de recarga
@@ -1316,3 +1316,54 @@ OPS_ST_RETREAT_VECTOR_6,Segure a saída até a chegada do transporte,Hold the ex
 OPS_ST_EXTRACTION_WINDOW_6,Segure até o transporte pousar,Hold until the transport lands
 OPS_ST_ALLY_CORRIDOR_7,Leve o aliado à última marca,Bring the ally to the last mark
 OPS_RECORD_LEGACY,Concluída · {rating} · missão refeita na versão 1.1: faça um novo tempo,Completed · {rating} · mission rebuilt in version 1.1: set a new time
+OPS_MENU_COMPLETED,{done} de {total} concluídas,{done} of {total} completed
+OPS_MENU_INFILTRATION,Infiltração,Infiltration
+OPS_MENU_INCURSION,Incursão,Incursion
+OPS_MENU_REWARDS,Recompensas,Rewards
+OPS_MENU_DONE,Concluída,Completed
+OPS_MENU_AVAILABLE,Disponível,Available
+OPS_MENU_OBJECTIVE,Objetivo,Objective
+OPS_MENU_TIME_BONUS,Bônus de tempo,Time bonus
+OPS_MENU_BONUSES,Bônus,Bonuses
+OPS_MENU_INFILTRATION_BONUSES,Sem alarme · Sem abates · Todos salvos,No alarm · No takedowns · Everyone saved
+OPS_MENU_STAGES,Etapas,Stages
+OPS_MENU_REFERENCE,Tempo de referência,Reference time
+OPS_MENU_SUPPLIES,Terminais,Terminals
+OPS_MENU_BARRIERS,Barreiras,Barriers
+OPS_MENU_CRITERIA,Critérios da nota,Rating criteria
+OPS_MENU_CRITERIA_TEXT,Tempo · Dano · Precisão · Objetivo secundário,Time · Damage · Accuracy · Secondary objective
+OPS_MENU_COSTUME,Traje,Outfit
+OPS_RATING_C_SHORT,C,C
+OPS_RATING_B_SHORT,B,B
+OPS_RATING_A_SHORT,A,A
+OPS_RATING_S_SHORT,S,S
+OPS_UNRATED_SHORT,–,–
+OPS_MENU_BONUS_COUNT,{count} de 4 bônus,{count} of 4 bonuses
+OPS_MENU_PRISONERS,Prisioneiros,Prisoners
+SPACE_MAP_PROGRESS,{done} de {total} concluídas · {points} pontos de oficina,{done} of {total} completed · {points} workshop points
+SPACE_MAP_MOVE,trocar missão,change mission
+SPACE_MAP_START,iniciar,start
+SPACE_MAP_ENEMIES,Tipos de inimigo,Enemy types
+SPACE_MAP_THREAT,Ameaça,Threat
+SPACE_MAP_BEST,Melhor nota,Best rating
+SPACE_MAP_STATUS,Situação,Status
+SPACE_MAP_REWARD,Primeira vitória: 1 ponto de oficina,First victory: 1 workshop point
+SPACE_HANGAR_TITLE,Hangar e Oficina,Hangar and Workshop
+SPACE_POINTS_EARNED,{points} de {total} pontos ganhos,{points} of {total} points earned
+SPACE_POINTS_SHIP,{ship}: {free} de {total} pontos livres,{ship}: {free} of {total} points free
+SPACE_HANGAR_SWITCH,naves e melhorias,ships and upgrades
+SPACE_HANGAR_CONFIRM_SHIP,usar esta nave,fly this ship
+SPACE_HANGAR_CONFIRM_BUY,comprar,buy
+SPACE_SHIP_EQUIPPED,{name} em uso nas missões.,{name} now flies your missions.
+SPACE_TRACK_WEAPON,Arma,Weapon
+SPACE_TRACK_SHIELD,Escudo,Shield
+SPACE_TRACK_SPEED,Propulsão,Thrusters
+SPACE_TRACK_MAX,MÁX,MAX
+SPACE_TRACK_COST,{cost} pt,{cost} pt
+SPACE_TRACK_FULL,Nível máximo nesta nave.,Maximum level on this ship.
+SPACE_TRACK_ONE_LEFT,Resta 1 nível.,1 level left.
+SPACE_TRACK_NEED_POINT,Sem pontos livres nesta nave. Vença uma missão pela primeira vez para ganhar outro.,No points free on this ship. Win a mission for the first time to earn another.
+SPACE_EFFECT_WEAPON,Dano {a} → {b}  ·  Intervalo {c} → {d} s,Damage {a} → {b}  ·  Interval {c} → {d} s
+SPACE_EFFECT_SHIELD,Capacidade {a} → {b}  ·  Recarga {c} → {d}/s,Capacity {a} → {b}  ·  Recharge {c} → {d}/s
+SPACE_EFFECT_SPEED,Velocidade {a} → {b}  ·  Aceleração {c} → {d},Speed {a} → {b}  ·  Acceleration {c} → {d}
+SPACE_IN_USE,Em uso,In use

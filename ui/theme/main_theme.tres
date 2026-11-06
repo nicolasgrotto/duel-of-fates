@@ -57,6 +57,203 @@ border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0.909804, 0.92549, 0.960784, 1)
 
+[sub_resource type="FontVariation" id="tactical_title_font"]
+base_font = ExtResource("1_font")
+fallbacks = Array[Font]([ExtResource("2_arrows")])
+variation_opentype = {
+2003265652: 600
+}
+spacing_glyph = 5
+
+[sub_resource type="FontVariation" id="tactical_strong_font"]
+base_font = ExtResource("1_font")
+fallbacks = Array[Font]([ExtResource("2_arrows")])
+variation_opentype = {
+2003265652: 600
+}
+spacing_glyph = 0
+
+[sub_resource type="FontVariation" id="tactical_label_font"]
+base_font = ExtResource("1_font")
+fallbacks = Array[Font]([ExtResource("2_arrows")])
+variation_opentype = {
+2003265652: 600
+}
+spacing_glyph = 2
+
+[sub_resource type="StyleBoxFlat" id="tactical_panel_box"]
+content_margin_left = 16.0
+content_margin_top = 14.0
+content_margin_right = 16.0
+content_margin_bottom = 14.0
+bg_color = Color(0.0431373, 0.0784314, 0.141176, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.133333, 0.207843, 0.333333, 1)
+
+[sub_resource type="StyleBoxFlat" id="tactical_detail_box"]
+content_margin_left = 40.0
+content_margin_top = 20.0
+content_margin_right = 40.0
+content_margin_bottom = 20.0
+bg_color = Color(0.0431373, 0.0784314, 0.141176, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.133333, 0.207843, 0.333333, 1)
+
+[sub_resource type="StyleBoxFlat" id="tactical_chamfer_box"]
+content_margin_left = 24.0
+content_margin_top = 20.0
+content_margin_right = 24.0
+content_margin_bottom = 20.0
+bg_color = Color(0.0431373, 0.0784314, 0.141176, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.227451, 0.313725, 0.470588, 1)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="tactical_chip_box"]
+content_margin_left = 14.0
+content_margin_top = 6.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.0705882, 0.12549, 0.227451, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.133333, 0.207843, 0.333333, 1)
+
+[sub_resource type="StyleBoxFlat" id="tactical_danger_chip_box"]
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 12.0
+content_margin_bottom = 4.0
+bg_color = Color(0.898039, 0.282353, 0.301961, 0.14)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.898039, 0.282353, 0.301961, 0.7)
+
+[sub_resource type="StyleBoxFlat" id="tactical_pill_box"]
+content_margin_left = 12.0
+content_margin_top = 4.0
+content_margin_right = 14.0
+content_margin_bottom = 4.0
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.498039, 0.894118, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="tactical_keycap_box"]
+content_margin_left = 10.0
+content_margin_top = 2.0
+content_margin_right = 10.0
+content_margin_bottom = 2.0
+bg_color = Color(0.0705882, 0.12549, 0.227451, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 4
+border_color = Color(0.227451, 0.313725, 0.470588, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="tactical_row_box"]
+content_margin_left = 10.0
+content_margin_top = 0.0
+content_margin_right = 8.0
+content_margin_bottom = 0.0
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 5
+border_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="tactical_row_selected_box"]
+content_margin_left = 10.0
+content_margin_top = 0.0
+content_margin_right = 8.0
+content_margin_bottom = 0.0
+bg_color = Color(0.0705882, 0.12549, 0.227451, 1)
+border_width_left = 5
+border_color = Color(0.498039, 0.894118, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="tactical_row_held_box"]
+content_margin_left = 10.0
+content_margin_top = 0.0
+content_margin_right = 8.0
+content_margin_bottom = 0.0
+bg_color = Color(0.0705882, 0.12549, 0.227451, 1)
+border_width_left = 5
+border_color = Color(0.227451, 0.313725, 0.470588, 1)
+
+[sub_resource type="StyleBoxFlat" id="tactical_card_box"]
+content_margin_left = 20.0
+content_margin_top = 10.0
+content_margin_right = 22.0
+content_margin_bottom = 12.0
+bg_color = Color(0.0431373, 0.0784314, 0.141176, 0.88)
+border_width_left = 6
+border_color = Color(0.498039, 0.894118, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="tactical_card_danger_box"]
+content_margin_left = 20.0
+content_margin_top = 10.0
+content_margin_right = 22.0
+content_margin_bottom = 12.0
+bg_color = Color(0.0431373, 0.0784314, 0.141176, 0.88)
+border_width_left = 6
+border_color = Color(0.898039, 0.282353, 0.301961, 1)
+
+[sub_resource type="StyleBoxFlat" id="tactical_card_amber_box"]
+content_margin_left = 20.0
+content_margin_top = 10.0
+content_margin_right = 22.0
+content_margin_bottom = 12.0
+bg_color = Color(0.0431373, 0.0784314, 0.141176, 0.88)
+border_width_left = 6
+border_color = Color(1, 0.701961, 0.290196, 1)
+
+[sub_resource type="StyleBoxFlat" id="tactical_hud_chip_box"]
+content_margin_left = 12.0
+content_margin_top = 5.0
+content_margin_right = 14.0
+content_margin_bottom = 6.0
+bg_color = Color(0.0431373, 0.0784314, 0.141176, 0.88)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.133333, 0.207843, 0.333333, 1)
+
+[sub_resource type="StyleBoxFlat" id="tactical_track_box"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.909804, 0.92549, 0.960784, 0.12)
+
+[sub_resource type="StyleBoxFlat" id="tactical_fill_box"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.498039, 0.894118, 1, 1)
+
 [resource]
 default_font = SubResource("regular_font")
 default_font_size = 26
@@ -151,3 +348,90 @@ FighterNameLabel/base_type = &"Label"
 FighterNameLabel/colors/font_color = Color(0.909804, 0.92549, 0.960784, 1)
 FighterNameLabel/font_sizes/font_size = 52
 FighterNameLabel/fonts/font = SubResource("title_font")
+TacticalTitleLabel/base_type = &"Label"
+TacticalTitleLabel/colors/font_color = Color(0.909804, 0.92549, 0.960784, 1)
+TacticalTitleLabel/font_sizes/font_size = 42
+TacticalTitleLabel/fonts/font = SubResource("tactical_title_font")
+TacticalNameLabel/base_type = &"Label"
+TacticalNameLabel/colors/font_color = Color(0.909804, 0.92549, 0.960784, 1)
+TacticalNameLabel/font_sizes/font_size = 38
+TacticalNameLabel/fonts/font = SubResource("tactical_strong_font")
+TacticalGroupLabel/base_type = &"Label"
+TacticalGroupLabel/colors/font_color = Color(0.498039, 0.894118, 1, 1)
+TacticalGroupLabel/font_sizes/font_size = 24
+TacticalGroupLabel/fonts/font = SubResource("tactical_label_font")
+TacticalCaptionLabel/base_type = &"Label"
+TacticalCaptionLabel/colors/font_color = Color(0.639216, 0.682353, 0.776471, 1)
+TacticalCaptionLabel/font_sizes/font_size = 21
+TacticalCaptionLabel/fonts/font = SubResource("tactical_label_font")
+TacticalRowLabel/base_type = &"Label"
+TacticalRowLabel/colors/font_color = Color(0.909804, 0.92549, 0.960784, 1)
+TacticalRowLabel/font_sizes/font_size = 28
+TacticalRowLabel/fonts/font = SubResource("regular_font")
+TacticalRowDimLabel/base_type = &"Label"
+TacticalRowDimLabel/colors/font_color = Color(0.498039, 0.541176, 0.639216, 1)
+TacticalRowDimLabel/font_sizes/font_size = 28
+TacticalRowDimLabel/fonts/font = SubResource("regular_font")
+TacticalMarkLabel/base_type = &"Label"
+TacticalMarkLabel/colors/font_color = Color(0.498039, 0.894118, 1, 1)
+TacticalMarkLabel/font_sizes/font_size = 27
+TacticalMarkLabel/fonts/font = SubResource("tactical_strong_font")
+TacticalBodyLabel/base_type = &"Label"
+TacticalBodyLabel/colors/font_color = Color(0.909804, 0.92549, 0.960784, 1)
+TacticalBodyLabel/font_sizes/font_size = 27
+TacticalBodyLabel/fonts/font = SubResource("regular_font")
+TacticalMutedLabel/base_type = &"Label"
+TacticalMutedLabel/colors/font_color = Color(0.639216, 0.682353, 0.776471, 1)
+TacticalMutedLabel/font_sizes/font_size = 27
+TacticalMutedLabel/fonts/font = SubResource("regular_font")
+TacticalNoteLabel/base_type = &"Label"
+TacticalNoteLabel/colors/font_color = Color(0.639216, 0.682353, 0.776471, 1)
+TacticalNoteLabel/font_sizes/font_size = 24
+TacticalNoteLabel/fonts/font = SubResource("regular_font")
+TacticalValueLabel/base_type = &"Label"
+TacticalValueLabel/colors/font_color = Color(0.909804, 0.92549, 0.960784, 1)
+TacticalValueLabel/font_sizes/font_size = 27
+TacticalValueLabel/fonts/font = SubResource("tactical_strong_font")
+TacticalAmberLabel/base_type = &"Label"
+TacticalAmberLabel/colors/font_color = Color(1, 0.701961, 0.290196, 1)
+TacticalAmberLabel/font_sizes/font_size = 26
+TacticalAmberLabel/fonts/font = SubResource("tactical_strong_font")
+KeycapLabel/base_type = &"Label"
+KeycapLabel/colors/font_color = Color(0.909804, 0.92549, 0.960784, 1)
+KeycapLabel/font_sizes/font_size = 24
+KeycapLabel/fonts/font = SubResource("tactical_strong_font")
+ObjectiveTextLabel/base_type = &"Label"
+ObjectiveTextLabel/colors/font_color = Color(0.909804, 0.92549, 0.960784, 1)
+ObjectiveTextLabel/font_sizes/font_size = 30
+ObjectiveTextLabel/fonts/font = SubResource("tactical_strong_font")
+TacticalPanel/base_type = &"PanelContainer"
+TacticalPanel/styles/panel = SubResource("tactical_panel_box")
+TacticalDetailPanel/base_type = &"PanelContainer"
+TacticalDetailPanel/styles/panel = SubResource("tactical_detail_box")
+TacticalChamferPanel/base_type = &"PanelContainer"
+TacticalChamferPanel/styles/panel = SubResource("tactical_chamfer_box")
+TacticalChip/base_type = &"PanelContainer"
+TacticalChip/styles/panel = SubResource("tactical_chip_box")
+TacticalDangerChip/base_type = &"PanelContainer"
+TacticalDangerChip/styles/panel = SubResource("tactical_danger_chip_box")
+TacticalPill/base_type = &"PanelContainer"
+TacticalPill/styles/panel = SubResource("tactical_pill_box")
+KeycapPanel/base_type = &"PanelContainer"
+KeycapPanel/styles/panel = SubResource("tactical_keycap_box")
+TacticalRow/base_type = &"PanelContainer"
+TacticalRow/styles/panel = SubResource("tactical_row_box")
+TacticalRowHeld/base_type = &"PanelContainer"
+TacticalRowHeld/styles/panel = SubResource("tactical_row_held_box")
+TacticalRowSelected/base_type = &"PanelContainer"
+TacticalRowSelected/styles/panel = SubResource("tactical_row_selected_box")
+ObjectiveCardPanel/base_type = &"PanelContainer"
+ObjectiveCardPanel/styles/panel = SubResource("tactical_card_box")
+ObjectiveCardDanger/base_type = &"PanelContainer"
+ObjectiveCardDanger/styles/panel = SubResource("tactical_card_danger_box")
+ObjectiveCardAmber/base_type = &"PanelContainer"
+ObjectiveCardAmber/styles/panel = SubResource("tactical_card_amber_box")
+TacticalHudChip/base_type = &"PanelContainer"
+TacticalHudChip/styles/panel = SubResource("tactical_hud_chip_box")
+TacticalProgress/base_type = &"ProgressBar"
+TacticalProgress/styles/background = SubResource("tactical_track_box")
+TacticalProgress/styles/fill = SubResource("tactical_fill_box")
