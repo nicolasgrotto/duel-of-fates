@@ -9,11 +9,23 @@ var _power_left: float = 0.0
 var _power_kind: PowerData.Kind = PowerData.Kind.REPULSE
 var _power_position: Vector2 = Vector2.ZERO
 var _power_aim: Vector2 = Vector2.RIGHT
+var _power_entry: BlasterOpsPowerData
+var _blast_positions: PackedVector2Array = []
+var _blast_radius: PackedFloat32Array = []
+var _blast_left: PackedFloat32Array = []
+var _blast_hostile: PackedByteArray = []
+var _next_blast: int = 0
 
 
 func setup(simulation: InfiltrationSimulation, look: InfiltrationLook) -> void:
 	super.setup(simulation, look)
 	operations = simulation as BlasterOpsSimulation
+	var capacity: int = operations.operations.blast_capacity
+	_blast_positions.resize(capacity)
+	_blast_radius.resize(capacity)
+	_blast_left.resize(capacity)
+	_blast_left.fill(0.0)
+	_blast_hostile.resize(capacity)
 
 
 static func weapon_state(loadout: BlasterOpsLoadout, guard: bool, striking: bool, integrated: bool = false) -> int:
@@ -33,6 +45,13 @@ func on_event(event: InfiltrationEvent) -> void:
 		_power_kind = int(event.amount) as PowerData.Kind
 		_power_position = event.position
 		_power_aim = operations.state.power_aim
+		_power_entry = operations.loadout.slot(operations.state.cast_slot)
+	elif event.type == InfiltrationEvent.Type.AREA_BLAST:
+		_blast_positions[_next_blast] = event.position
+		_blast_radius[_next_blast] = event.amount
+		_blast_left[_next_blast] = operations.operations.blast_seconds
+		_blast_hostile[_next_blast] = event.target
+		_next_blast = (_next_blast + 1) % _blast_left.size()
 	elif event.type == InfiltrationEvent.Type.COVER_HIT:
 		_spark_positions[_next_spark] = event.position
 		_spark_left[_next_spark] = sim.config.spark_seconds
@@ -45,6 +64,8 @@ func _process(delta: float) -> void:
 	if animate:
 		_precision_left = maxf(_precision_left - delta, 0.0)
 		_power_left = maxf(_power_left - delta, 0.0)
+		for index in _blast_left.size():
+			_blast_left[index] = maxf(_blast_left[index] - delta, 0.0)
 
 
 func _draw() -> void:
@@ -71,6 +92,8 @@ func _draw() -> void:
 			var point: Vector2 = _snap(actor.previous.lerp(actor.position, alpha))
 			if data.front_damage_ratio < 1.0:
 				draw_arc(point, actor.radius + 8.0, actor.aim.angle() - deg_to_rad(data.front_degrees * 0.5), actor.aim.angle() + deg_to_rad(data.front_degrees * 0.5), 8, PALETTE.infiltration_edge, sim.config.units_per_pixel * 2.0)
+			if (actor as BlasterOpsActor).stun_ticks > 0:
+				draw_arc(point, actor.radius + 6.0, 0.0, TAU, 8, PALETTE.flow_tiers[0], sim.config.units_per_pixel)
 			if actor.health < data.health:
 				draw_line(point + Vector2(-18, 34), point + Vector2(-18 + 36.0 * actor.health / data.health, 34), PALETTE.secondary, sim.config.units_per_pixel)
 	if sim.player.health > 0.0:
@@ -219,9 +242,28 @@ func _draw_powers() -> void:
 			draw_arc(point, 32.0, angle, angle + 0.5, 3, color, sim.config.units_per_pixel)
 	if operations.state.power_ticks > 0:
 		draw_arc(point, 26.0, 0.0, TAU, 12, Color(color, 0.4), sim.config.units_per_pixel)
-	if _power_left <= 0.0 or _power_kind == PowerData.Kind.BARRIER:
+	if operations.state.absorb_ticks > 0:
+		draw_arc(point, 34.0, 0.0, TAU, 16, PALETTE.flow_tiers[1], sim.config.units_per_pixel * 2.0)
+	if operations.state.heal_ticks > 0:
+		draw_arc(point, 30.0, -PI * 0.5, -PI * 0.5 + TAU * operations.state.heal_ticks * Ticks.DELTA, 16, PALETTE.text, sim.config.units_per_pixel)
+	if operations.state.boost_ticks > 0:
+		draw_arc(point, 28.0, 0.0, TAU, 12, PALETTE.ember, sim.config.units_per_pixel * (1.0 if reduced else 2.0))
+	if operations.state.channel_target >= 0:
+		draw_line(point, _snap(sim.targets[operations.state.channel_target].position), color, sim.config.units_per_pixel * 2.0)
+	_draw_blasts()
+	if _power_left <= 0.0 or _power_entry == null or _power_entry.effect != BlasterOpsPowerData.Effect.CONE:
 		return
 	var progress: float = 1.0 - _power_left / operations.operations.power_effect_seconds
-	var radius: float = operations.loadout.power.power.reach * (progress if _power_kind == PowerData.Kind.REPULSE else 1.0 - progress)
-	var half: float = deg_to_rad(operations.loadout.power.degrees * 0.5)
+	var radius: float = _power_entry.power.reach * (progress if _power_kind == PowerData.Kind.REPULSE else 1.0 - progress)
+	var half: float = deg_to_rad(_power_entry.degrees * 0.5)
 	draw_arc(_power_position, maxf(radius, 4.0), _power_aim.angle() - half, _power_aim.angle() + half, 18, Color(color, 1.0 - progress), sim.config.units_per_pixel * (1.0 if reduced else 2.0))
+
+
+func _draw_blasts() -> void:
+	for index in _blast_left.size():
+		if _blast_left[index] <= 0.0:
+			continue
+		var remaining: float = _blast_left[index] / operations.operations.blast_seconds
+		var color: Color = PALETTE.danger if _blast_hostile[index] == BlasterOpsFaction.Side.HOSTILE else PALETTE.flow_tiers[0]
+		var radius: float = _blast_radius[index] * (1.0 - remaining * remaining)
+		draw_arc(_blast_positions[index], maxf(radius, 4.0), 0.0, TAU, 20, Color(color, remaining), sim.config.units_per_pixel * (1.0 if reduced else 2.0))

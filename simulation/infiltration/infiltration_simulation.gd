@@ -215,9 +215,13 @@ func _resolve_swing() -> void:
 		if InfiltrationGeometry.wall_fraction(map, player.position, target.position) != INF:
 			continue
 		target.last_swing_id = player.swing_id
-		var damage: float = _armored_damage(index, config.swing_damage, player.position)
+		var damage: float = _armored_damage(index, swing_damage(), player.position)
 		_emit(InfiltrationEvent.Type.SWING_HIT if damage > 0.0 else InfiltrationEvent.Type.BOLT_BLOCKED, 0, index + 1, target.position, damage)
 		_damage_target(index, damage)
+
+
+func swing_damage() -> float:
+	return config.swing_damage
 
 
 func _step_targets() -> void:

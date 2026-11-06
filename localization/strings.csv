@@ -1228,3 +1228,4 @@ BOPS_ACTION_SWITCH_WEAPON,Trocar arma,Switch weapon
 BOPS_OVERHEATED,Superaquecido · Resfriando,Overheated · Cooling
 BOPS_STANCE_RUN,Correndo,Running
 BOPS_STANCE_SNEAK,Furtivo,Sneaking
+OPS_CHARACTER_POWERS,Poderes: {powers},Powers: {powers}

@@ -55,6 +55,10 @@ static func line(hints: PackedStringArray) -> String:
 
 
 static func blaster_ops_hud_hint(suffix: String) -> String:
+	return "%s  %s" % [blaster_ops_hud_key(suffix), TranslationServer.translate("BOPS_ACTION_" + suffix.to_upper())]
+
+
+static func blaster_ops_hud_key(suffix: String) -> String:
 	var action: StringName = StringName(BlasterOpsBindings.PREFIX + suffix)
 	var label: String = ""
 	if not Input.get_connected_joypads().is_empty():
@@ -65,9 +69,7 @@ static func blaster_ops_hud_hint(suffix: String) -> String:
 			if event is InputEventMouseButton:
 				label = TranslationServer.translate("BOPS_MOUSE_LEFT" if event.button_index == MOUSE_BUTTON_LEFT else "BOPS_MOUSE_RIGHT")
 				break
-	if label.is_empty():
-		label = key_label(action)
-	return "%s  %s" % [label, TranslationServer.translate("BOPS_ACTION_" + suffix.to_upper())]
+	return label if not label.is_empty() else key_label(action)
 
 
 static func blaster_ops_hint(suffix: String) -> String:

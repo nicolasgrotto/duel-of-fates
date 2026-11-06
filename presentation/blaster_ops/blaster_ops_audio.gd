@@ -11,6 +11,12 @@ const SOUNDS: Dictionary = {
 	InfiltrationEvent.Type.COVER_HIT: &"hit_light", InfiltrationEvent.Type.COVER_DESTROYED: &"hit_heavy",
 	InfiltrationEvent.Type.POWER_PREPARED: &"power_cast",
 }
+const POWER_SOUNDS: Dictionary = {
+	PowerData.Kind.REPULSE: &"power_repulse", PowerData.Kind.PULL: &"power_pull", PowerData.Kind.BARRIER: &"power_barrier_absorb",
+	PowerData.Kind.THROW: &"power_rock_lift", PowerData.Kind.HEAL: &"power_heal", PowerData.Kind.ABSORPTION: &"power_absorption",
+	PowerData.Kind.LIGHTNING: &"power_lightning_snap", PowerData.Kind.CHOKE: &"power_choke", PowerData.Kind.FREEZE: &"power_freeze",
+	PowerData.Kind.WRATH: &"power_wrath", PowerData.Kind.STORM: &"power_thunder",
+}
 const VOICES: int = 12
 
 var _config: BlasterOpsConfig

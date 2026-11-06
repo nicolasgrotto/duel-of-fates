@@ -28,6 +28,8 @@ Português (padrão) e inglês, escolhidos nas Opções e salvos. Todo texto de 
 
 Barra de **Calor** no lugar do número, abaixo de Vida e Vigor, só para quem tem blaster, com o rótulo ao lado. Frio: cor de destaque. Acima de 70%: âmbar (`menu_blade_b`). Superaquecido: perigo, pulsando, rótulo **Superaquecido · Resfriando** e um traço no ponto em que a arma volta a disparar. Com efeitos reduzidos não pulsa; o texto e o traço continuam. Sem número de calor, que fica no F3. A postura atual (**Correndo**, **Furtivo**) aparece em texto junto às recargas, porque agora é uma alternância sem tecla segurada.
 
+**Poderes** ficam no canto inferior direito, fora da área de luta, em até três quadrados de 84 px na base 1080p: ícone do próprio poder (o mesmo das árvores), tecla atual no canto e, em recarga, véu escuro que baixa com os segundos em texto. Pronto: contorno de destaque. Em uso: contorno claro. Em Infiltração a recarga maior aparece igual. A pausa lista tecla e nome de cada poder, e o rodapé deixa de repetir a tecla de poder.
+
 A janela do jogo no desktop abre em 1280×720 e encolhe para caber na área útil da tela: a antiga 1600×900 passava da tela do autor (1440×900) e cortava o rodapé e o lado direito. HUD e menus são validados na build Web, não só na prévia do editor.
 
 ### Operações unificadas (task 17)

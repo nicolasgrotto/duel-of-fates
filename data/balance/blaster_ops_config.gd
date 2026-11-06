@@ -17,6 +17,10 @@ extends InfiltrationConfig
 @export var precision_until: int = 9
 @export var melee_parry_stun: float = 0.4
 
+@export_group("Powers")
+@export var absorb_refund_seconds: float = 1.0
+@export var storm_reach: float = 640.0
+
 @export_group("Infiltration policy")
 @export var stealth_power_cooldown_multiplier: float = 3.0
 @export var dodge_noise: float = 220.0
@@ -37,5 +41,7 @@ extends InfiltrationConfig
 @export var precision_flash_seconds: float = 0.24
 @export var power_effect_seconds: float = 0.3
 @export var warning_db: float = -8.0
+@export var blast_capacity: int = 8
+@export var blast_seconds: float = 0.35
 @export var heat_hot_ratio: float = 0.7
 @export var heat_pulse_speed: float = 6.0

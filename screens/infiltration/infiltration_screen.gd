@@ -12,6 +12,7 @@ const HUD_WIDTH: float = 320.0
 const GUIDE_REFRESH_FRAMES: int = 15
 const HEAT_BAR_HEIGHT: float = 12.0
 const HEAT_LABEL_GAP: float = 16.0
+const ABILITY_BOTTOM: float = 40.0
 const SOUNDS: Dictionary = {
 	InfiltrationEvent.Type.SWING_STARTED: &"swing_light",
 	InfiltrationEvent.Type.SWING_HIT: &"hit_light",
@@ -40,6 +41,7 @@ var _health: HudBar
 var _vigor: HudBar
 var _heat: HeatBar
 var _heat_label: Label
+var _abilities: AbilityBar
 var _status: Label
 var _debug: Label
 var _pause_layer: CanvasLayer
@@ -146,6 +148,16 @@ func _build_hud() -> void:
 	footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	footer.offset_top = -98.0
 	hud.add_child(footer)
+	_abilities = AbilityBar.new()
+	_abilities.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+	_abilities.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	_abilities.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	_abilities.offset_left = -HUD_MARGIN
+	_abilities.offset_right = -HUD_MARGIN
+	_abilities.offset_top = -ABILITY_BOTTOM
+	_abilities.offset_bottom = -ABILITY_BOTTOM
+	hud.add_child(_abilities)
+	_setup_abilities()
 	_debug = _label("", &"DebugLabel")
 	_debug.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
 	_debug.offset_left = HUD_MARGIN
@@ -170,6 +182,17 @@ func _bar(parent: Node, top: float, color: Color) -> HudBar:
 	return bar
 
 
+func _power_legend() -> String:
+	var entries: PackedStringArray = []
+	for index in sim.loadout.slot_count():
+		entries.append("%s  %s" % [ControlHints.blaster_ops_hud_key(AbilityBar.SUFFIXES[index]), tr(sim.loadout.slot(index).power.name_key)])
+	return ControlHints.line(entries)
+
+
+func _setup_abilities() -> void:
+	_abilities.setup(sim.loadout, CONFIG.stealth_power_cooldown_multiplier if sim.stealth_objective() else 1.0)
+
+
 func _hints() -> String:
 	var movement: String = TranslationServer.translate("INFILTRATION_MOVE").format({
 		"left": ControlHints.key_label(&"infiltration_left"), "right": ControlHints.key_label(&"infiltration_right"),
@@ -182,7 +205,6 @@ func _hints() -> String:
 	])) + "\n" + ControlHints.line(PackedStringArray([
 		ControlHints.blaster_ops_hud_hint("fire"), ControlHints.blaster_ops_hud_hint("guard"),
 		ControlHints.blaster_ops_hud_hint("strike"), ControlHints.blaster_ops_hud_hint("interact"),
-		ControlHints.blaster_ops_hud_hint("power"),
 	]))
 
 
@@ -206,8 +228,7 @@ func _build_pause() -> void:
 	var legend: Label = _label(tr("INFILTRATION_LEGEND"), &"InfiltrationLabel")
 	legend.text += "\n" + ControlHints.line(PackedStringArray([
 		ControlHints.blaster_ops_hint("strike"), ControlHints.blaster_ops_hint("interact"),
-		ControlHints.blaster_ops_hint("power"),
-	]))
+	])) + "\n" + _power_legend()
 	legend.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(legend)
 	var center: CenterContainer = CenterContainer.new()
@@ -274,8 +295,7 @@ func _present_events() -> void:
 		if BlasterOpsAudio.SOUNDS.has(event.type) and not SOUNDS.has(event.type):
 			AudioDirector.play(BlasterOpsAudio.SOUNDS[event.type], event.position, CONFIG.effects_db)
 		elif event.type == InfiltrationEvent.Type.POWER_RELEASED:
-			var sound: StringName = &"power_repulse" if int(event.amount) == PowerData.Kind.REPULSE else (&"power_pull" if int(event.amount) == PowerData.Kind.PULL else &"power_barrier_absorb")
-			AudioDirector.play(sound, event.position, CONFIG.effects_db)
+			AudioDirector.play(BlasterOpsAudio.POWER_SOUNDS.get(int(event.amount), &"power_cast"), event.position, CONFIG.effects_db)
 		if event.type == InfiltrationEvent.Type.AWARENESS_CHANGED and event.amount > 0.0:
 			_notice.play()
 		elif event.type == InfiltrationEvent.Type.TAKEDOWN_LANDED:
@@ -331,8 +351,7 @@ func _update_presentation(alpha: float) -> void:
 	_vigor.ghost_ratio = _vigor.ratio
 	_vigor.queue_redraw()
 	var cooldowns: PackedStringArray = [tr("BOPS_COOLDOWN").format({"action": tr("BOPS_ACTION_DODGE"), "time": _cooldown(sim.state.dodge_cooldown)})]
-	if sim.loadout.power != null:
-		cooldowns.append(tr("BOPS_COOLDOWN").format({"action": tr(sim.loadout.power.power.name_key), "time": _cooldown(sim.state.power_cooldown)}))
+	_abilities.show_state(sim.state)
 	_update_heat()
 	var stance: int = controller.stance()
 	if stance != 0:
@@ -352,7 +371,7 @@ func _update_presentation(alpha: float) -> void:
 			player.parry_age, player.parry_cooldown, player.swing_tick, player.health, player.vigor, sim.dropped_events,
 		]
 		_debug.text += "\nalarm %s  reinforcements %d" % [sim.alarm_active(), sim.reinforcement_ticks]
-		_debug.text += "\nheat %.1f  burst %d / %d  dodge %d / %d  power %d / %d" % [sim.state.heat, sim.state.burst_left, sim.state.burst_ticks, sim.state.dodge_age, sim.state.dodge_cooldown, sim.state.power_ticks, sim.state.power_cooldown]
+		_debug.text += "\nheat %.1f  burst %d / %d  dodge %d / %d  power %d slot %d cooldowns %d %d %d  channel %d  absorb %d  heal %d  boost %d  area %d" % [sim.state.heat, sim.state.burst_left, sim.state.burst_ticks, sim.state.dodge_age, sim.state.dodge_cooldown, sim.state.power_ticks, sim.state.cast_slot, sim.state.power_cooldown, sim.state.power_cooldown_2, sim.state.power_cooldown_3, sim.state.channel_ticks, sim.state.absorb_ticks, sim.state.heal_ticks, sim.state.boost_ticks, sim.state.area_ticks]
 		if sim.mission is BlasterOpsMissionState:
 			var progress: BlasterOpsMissionState = sim.mission as BlasterOpsMissionState
 			_debug.text += "\nwave %d prep %d phase %d damage %.1f hits %d/%d barriers %d" % [progress.wave_index, progress.intermission_ticks, progress.phase_index, progress.damage_taken, progress.hits, progress.attempts, progress.barriers_placed]
@@ -456,6 +475,7 @@ func _on_pause_chosen(option: StringName) -> void:
 			_guide_navigation = InfiltrationNavigation.new(sim.map)
 			_guide_text = ""
 			controller.reset_stance()
+			_setup_abilities()
 			_map_view.attach(sim)
 			_view.setup(sim, mode.mission_look() if mode != null else InfiltrationMode.current_look())
 			_set_paused(false)

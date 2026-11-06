@@ -1,6 +1,9 @@
 class_name BlasterOpsSimulation
 extends InfiltrationSimulation
 
+const POWER_COMMANDS: Array[int] = [Intent.Command.POWER, InfiltrationIntent.POWER_2, InfiltrationIntent.POWER_3]
+const POWER_BOLT_SHOOTER: int = -2
+
 var operations: BlasterOpsConfig
 var arena: BlasterOpsMap
 var loadout: BlasterOpsLoadout
@@ -146,7 +149,8 @@ func _step_allies(intents: Array[InfiltrationIntent]) -> void:
 func _advance_operations() -> void:
 	state.fire_ticks = maxi(state.fire_ticks - 1, 0)
 	state.dodge_cooldown = maxi(state.dodge_cooldown - 1, 0)
-	state.power_cooldown = maxi(state.power_cooldown - 1, 0)
+	for slot in POWER_COMMANDS.size():
+		state.set_cooldown(slot, maxi(state.cooldown(slot) - 1, 0))
 	state.power_recovery_ticks = maxi(state.power_recovery_ticks - 1, 0)
 	state.barrier_ticks = maxi(state.barrier_ticks - 1, 0)
 	if state.barrier_ticks == 0:
@@ -161,6 +165,13 @@ func _advance_operations() -> void:
 		state.dodge_age += 1
 		if state.dodge_age >= Ticks.from_seconds(operations.dodge_seconds):
 			state.dodge_age = -1
+	state.absorb_ticks = maxi(state.absorb_ticks - 1, 0)
+	state.boost_ticks = maxi(state.boost_ticks - 1, 0)
+	if state.heal_ticks > 0:
+		state.heal_ticks -= 1
+		player.health = minf(player.health + state.heal_rate, operations.health)
+	_advance_channel()
+	_advance_area()
 
 
 func _apply_intent(intent: InfiltrationIntent) -> void:
@@ -176,7 +187,7 @@ func _apply_intent(intent: InfiltrationIntent) -> void:
 		return
 	if player.stun_ticks > 0:
 		_cancel_burst()
-		state.power_ticks = 0
+		_interrupt_powers()
 		_close_parry()
 		player.velocity = Vector2.ZERO
 		return
@@ -206,9 +217,9 @@ func _apply_intent(intent: InfiltrationIntent) -> void:
 		state.power_ticks -= 1
 		if state.power_ticks == 0:
 			_release_power()
-	elif (intent.pressed & Intent.Command.POWER) != 0 and state.power_cooldown == 0 and player.swing_tick < 0 and loadout.power != null:
-		_start_power()
-	if state.power_ticks == 0 and player.swing_tick < 0 and (intent.held & Intent.Command.BLOCK) != 0 and loadout.can_deflect:
+	elif player.swing_tick < 0 and state.channel_ticks == 0:
+		_try_start_power(intent)
+	if state.power_ticks == 0 and state.channel_ticks == 0 and player.swing_tick < 0 and (intent.held & Intent.Command.BLOCK) != 0 and loadout.can_deflect:
 		player.guard = true
 		if (intent.pressed & Intent.Command.BLOCK) != 0 and player.parry_cooldown == 0:
 			player.parry_age = 0
@@ -222,7 +233,7 @@ func _apply_intent(intent: InfiltrationIntent) -> void:
 	elif (intent.held & InfiltrationIntent.RUN) != 0:
 		speed = config.run_speed
 		player.locomotion = InfiltrationActor.Locomotion.RUN
-	if player.guard or state.power_ticks > 0:
+	if player.guard or state.power_ticks > 0 or state.channel_ticks > 0:
 		speed = minf(speed, config.walk_speed * config.guard_speed_ratio)
 		if player.locomotion == InfiltrationActor.Locomotion.RUN:
 			player.locomotion = InfiltrationActor.Locomotion.WALK
@@ -285,7 +296,7 @@ func _start_dodge(intent: InfiltrationIntent) -> void:
 	state.dodge_cooldown = Ticks.from_seconds(operations.dodge_cooldown)
 	state.dodge_direction = intent.movement.normalized() if intent.movement.length_squared() > 0.0 else player.aim
 	state.precision_succeeded = false
-	state.power_ticks = 0
+	_interrupt_powers()
 	player.swing_tick = -1
 	_emit(InfiltrationEvent.Type.DODGED, 0, -1, player.position)
 	InfiltrationPerception.noise(self, player.position, operations.dodge_noise, 0)
@@ -306,7 +317,7 @@ func _fire_primary() -> void:
 	state.burst_ticks = maxi(state.burst_ticks - 1, 0)
 	if state.burst_ticks > 0:
 		return
-	var bolt: BlasterOpsBolt = _spawn_bolt(-1, loadout.blaster.bolt, player.aim, loadout.damage_scale)
+	var bolt: BlasterOpsBolt = _spawn_bolt(-1, loadout.blaster.bolt, player.aim, loadout.damage_scale * _dealt_scale())
 	if bolt == null:
 		return
 	state.burst_left -= 1
@@ -453,6 +464,12 @@ func _resolve_player_bolt(candidate: InfiltrationBolt) -> void:
 			state.dodge_cooldown = 0
 			_emit(InfiltrationEvent.Type.PRECISION_DODGED, 0, bolt.owner, bolt.position)
 		return
+	if state.absorb_ticks > 0:
+		bolt.active = false
+		for slot in POWER_COMMANDS.size():
+			state.set_cooldown(slot, maxi(state.cooldown(slot) - Ticks.from_seconds(operations.absorb_refund_seconds), 0))
+		_emit(InfiltrationEvent.Type.BOLT_BLOCKED, bolt.owner, 0, bolt.position)
+		return
 	var front: bool = InfiltrationGeometry.in_sector(Vector2.ZERO, player.aim, -bolt.velocity, INF, config.guard_degrees)
 	if player.guard and front:
 		InfiltrationPerception.noise(self, bolt.position, config.combat_noise, 0)
@@ -479,10 +496,12 @@ func _resolve_player_bolt(candidate: InfiltrationBolt) -> void:
 func _hurt_player(damage: float, flinch_ticks: int, source: int, point: Vector2) -> void:
 	if aftermath:
 		return
+	var taken: float = damage * (config.duel_config.flow.wrath_taken if state.boost_ticks > 0 else 1.0)
 	if mission is BlasterOpsMissionState:
-		(mission as BlasterOpsMissionState).damage_taken += minf(damage, player.health)
-	super._hurt_player(damage, flinch_ticks, source, point)
-	state.power_ticks = 0
+		(mission as BlasterOpsMissionState).damage_taken += minf(taken, player.health)
+	super._hurt_player(taken, flinch_ticks, source, point)
+	_interrupt_powers()
+	state.heal_ticks = 0
 	if player.health <= 0.0:
 		state.dodge_age = -1
 
@@ -591,17 +610,41 @@ func _step_melee(index: int, data: InfiltrationEnemyData, intent: InfiltrationIn
 	super._step_melee(index, data, intent)
 
 
-func _start_power() -> void:
-	state.power_ticks = maxi(loadout.power.power.startup_ticks(), 1)
+func swing_damage() -> float:
+	return config.swing_damage * _dealt_scale()
+
+
+func _dealt_scale() -> float:
+	return config.duel_config.flow.wrath_dealt if state.boost_ticks > 0 else 1.0
+
+
+func _interrupt_powers() -> void:
+	state.power_ticks = 0
+	state.channel_ticks = 0
+	state.channel_target = -1
+
+
+func _try_start_power(intent: InfiltrationIntent) -> void:
+	for slot in POWER_COMMANDS.size():
+		if (intent.pressed & POWER_COMMANDS[slot]) != 0 and loadout.slot(slot) != null and state.cooldown(slot) == 0:
+			_start_power(slot)
+			return
+
+
+func _start_power(slot: int) -> void:
+	var entry: BlasterOpsPowerData = loadout.slot(slot)
+	state.cast_slot = slot
+	state.power_ticks = maxi(entry.power.startup_ticks(), 1)
 	var multiplier: float = operations.stealth_power_cooldown_multiplier if stealth_objective() else 1.0
-	state.power_cooldown = Ticks.from_seconds(loadout.power.cooldown * multiplier)
+	state.set_cooldown(slot, Ticks.from_seconds(entry.cooldown * multiplier))
 	state.power_aim = player.aim
 	_close_parry()
 	_emit(InfiltrationEvent.Type.POWER_PREPARED, 0, -1, player.position)
 
 
 func _release_power() -> void:
-	var power: PowerData = loadout.power.power
+	var entry: BlasterOpsPowerData = loadout.slot(state.cast_slot)
+	var power: PowerData = entry.power
 	state.power_recovery_ticks = power.recovery_ticks()
 	_emit(InfiltrationEvent.Type.POWER_RELEASED, 0, -1, player.position, float(power.kind))
 	InfiltrationPerception.noise(self, player.position, operations.power_noise, 0)
@@ -609,36 +652,125 @@ func _release_power() -> void:
 		for index in range(map.targets.size(), targets.size()):
 			if InfiltrationPerception.sees(self, index):
 				InfiltrationPerception.alert(self, index, player.position)
-	if power.kind == PowerData.Kind.BARRIER:
-		state.barrier_health = power.strength
-		state.barrier_ticks = Ticks.from_seconds(power.max_channel)
-		return
+	match entry.effect:
+		BlasterOpsPowerData.Effect.SHIELD:
+			state.barrier_health = power.strength
+			state.barrier_ticks = Ticks.from_seconds(power.max_channel)
+		BlasterOpsPowerData.Effect.ABSORB:
+			state.absorb_ticks = Ticks.from_seconds(power.max_channel)
+		BlasterOpsPowerData.Effect.HEAL:
+			state.heal_ticks = Ticks.from_seconds(power.duration)
+			state.heal_rate = power.strength * entry.effect_scale / maxi(state.heal_ticks, 1)
+		BlasterOpsPowerData.Effect.PROJECTILE:
+			_spawn_bolt(POWER_BOLT_SHOOTER, entry.bolt, state.power_aim, _dealt_scale(), player)
+		BlasterOpsPowerData.Effect.CHANNEL:
+			state.channel_slot = state.cast_slot
+			state.channel_ticks = Ticks.from_seconds(power.max_channel)
+			state.pulse_ticks = 0
+			state.power_recovery_ticks += state.channel_ticks
+		BlasterOpsPowerData.Effect.STUN:
+			var victim: int = _nearest_in_cone(state.power_aim, power.reach, entry.degrees)
+			if victim >= 0:
+				_hold_target(victim, Ticks.from_seconds(power.duration))
+		BlasterOpsPowerData.Effect.BOOST:
+			state.boost_ticks = Ticks.from_seconds(power.duration)
+		BlasterOpsPowerData.Effect.AREA:
+			state.area_slot = state.cast_slot
+			state.area_ticks = Ticks.from_seconds(power.duration)
+			state.pulse_ticks = 0
+		_:
+			_release_cone(entry)
+
+
+func _release_cone(entry: BlasterOpsPowerData) -> void:
+	var power: PowerData = entry.power
 	var nearest: int = -1
 	var distance: float = INF
 	for index in targets.size():
 		var actor: BlasterOpsActor = targets[index] as BlasterOpsActor
-		if actor.health <= 0.0 or not InfiltrationGeometry.in_sector(player.position, state.power_aim, actor.position, power.reach, loadout.power.degrees):
+		if actor.health <= 0.0 or not InfiltrationGeometry.in_sector(player.position, state.power_aim, actor.position, power.reach, entry.degrees):
 			continue
 		if wall_for(BlasterOpsFaction.Side.ALLIED, player.position, actor.position) != INF:
 			continue
 		if power.kind == PowerData.Kind.REPULSE:
-			_affect_enemy(index, power)
+			_affect_enemy(index, entry)
 		elif actor.position.distance_squared_to(player.position) < distance:
 			nearest = index
 			distance = actor.position.distance_squared_to(player.position)
 	if nearest >= 0:
-		_affect_enemy(nearest, power)
+		_affect_enemy(nearest, entry)
+
+
+func _nearest_in_cone(aim: Vector2, reach: float, degrees: float) -> int:
+	var nearest: int = -1
+	var distance: float = INF
+	for index in targets.size():
+		var actor: InfiltrationActor = targets[index]
+		if actor.health <= 0.0 or not InfiltrationGeometry.in_sector(player.position, aim, actor.position, reach, degrees, actor.radius):
+			continue
+		var candidate: float = actor.position.distance_squared_to(player.position)
+		if candidate < distance and wall_for(BlasterOpsFaction.Side.ALLIED, player.position, actor.position) == INF:
+			nearest = index
+			distance = candidate
+	return nearest
+
+
+func _hold_target(index: int, ticks: int) -> void:
+	var actor: BlasterOpsActor = targets[index] as BlasterOpsActor
+	actor.stun_ticks = maxi(actor.stun_ticks, ticks)
+	actor.telegraph_ticks = -1
+	actor.burst_left = 0
+
+
+func _advance_channel() -> void:
+	if state.channel_ticks <= 0:
+		return
+	state.channel_ticks -= 1
+	state.pulse_ticks -= 1
+	var entry: BlasterOpsPowerData = loadout.slot(state.channel_slot)
+	state.channel_target = _nearest_in_cone(player.aim, entry.power.reach, entry.degrees)
+	if state.channel_ticks == 0:
+		state.channel_target = -1
+	if state.pulse_ticks > 0 or state.channel_target < 0:
+		return
+	state.pulse_ticks = maxi(Ticks.from_seconds(entry.pulse_seconds), 1)
+	var target: BlasterOpsActor = targets[state.channel_target] as BlasterOpsActor
+	var hold: int = state.pulse_ticks + 1 if entry.holds_target else Ticks.from_seconds(entry.power.stagger)
+	_hold_target(state.channel_target, hold)
+	var damage: float = entry.power.damage * _dealt_scale()
+	_emit(InfiltrationEvent.Type.BOLT_HIT, 0, state.channel_target + 1, target.position, damage)
+	_damage_target(state.channel_target, damage, false, player.position)
+
+
+func _advance_area() -> void:
+	if state.area_ticks <= 0:
+		return
+	state.area_ticks -= 1
+	state.pulse_ticks -= 1
+	if state.pulse_ticks > 0:
+		return
+	var entry: BlasterOpsPowerData = loadout.slot(state.area_slot)
+	state.pulse_ticks = maxi(Ticks.from_seconds(entry.pulse_seconds), 1)
+	var nearest: int = -1
+	var distance: float = operations.storm_reach * operations.storm_reach
+	for index in targets.size():
+		if targets[index].health > 0.0 and targets[index].position.distance_squared_to(player.position) < distance:
+			nearest = index
+			distance = targets[index].position.distance_squared_to(player.position)
+	if nearest >= 0:
+		apply_area_damage(BlasterOpsFaction.Side.ALLIED, targets[nearest].position, entry.effect_radius, entry.power.damage * _dealt_scale(), 0)
 
 
 func stealth_objective() -> bool:
 	return mission != null and mission.data.objective == InfiltrationMissionData.Objective.INFILTRATION
 
 
-func _affect_enemy(index: int, power: PowerData) -> void:
+func _affect_enemy(index: int, entry: BlasterOpsPowerData) -> void:
+	var power: PowerData = entry.power
 	var actor: BlasterOpsActor = targets[index] as BlasterOpsActor
-	_damage_target(index, power.damage)
+	_damage_target(index, power.damage * _dealt_scale())
 	actor.stun_ticks = Ticks.from_seconds(power.stagger)
-	actor.impulse_ticks = Ticks.from_seconds(loadout.power.impulse_seconds)
+	actor.impulse_ticks = Ticks.from_seconds(entry.impulse_seconds)
 	var direction: Vector2 = (actor.position - player.position).normalized()
 	actor.impulse = direction * power.tier_value(0) * (-1.0 if power.kind == PowerData.Kind.PULL else 1.0)
 	actor.telegraph_ticks = -1

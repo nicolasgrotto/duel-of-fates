@@ -70,15 +70,23 @@ Disparos são varridos contra paredes, caixas, corpos e prisioneiros; só acerta
 
 Esquiva: novo toque, duração 0,26 s, velocidade 720 u/s e recarga 0,90 s desde a ativação. Direção do movimento, ou da mira se parado, travada durante o dash. Colide com paredes, caixas e corpos. Invulnerável com idade de **3 a 11 ticks**; precisão de **3 a 8 ticks**, intervalos de fim exclusivos 12 e 9. Disparo que cruza a precisão zera a recarga uma vez por esquiva. Outra passagem invulnerável não restitui recarga. O projétil continua voando e não pode ferir o jogador até ser devolvido; não há devolução automática. Preparação e cauda são vulneráveis; dano não cancela o trajeto. Recarga zerada só permite outro dash depois de acabar o atual.
 
-Um poder equipado, sem acorde ou barra de Fluxo. Preparação vem de PowerData, movimento a 60% e sem tiro; esquiva cancela a preparação e mantém a recarga gasta. Dano que causa tranco também interrompe a preparação. O efeito só começa quando a preparação termina. Paredes/caixas bloqueiam os poderes direcionais.
+Até três poderes, os do conjunto do personagem no duelo, cada um em sua tecla, sem acorde ou barra de Fluxo. Um lançamento por vez, com recargas independentes. Preparação vem de PowerData, movimento a 60% e sem tiro; esquiva cancela a preparação e mantém a recarga gasta. Dano que causa tranco também interrompe a preparação. O efeito só começa quando a preparação termina. Paredes/caixas bloqueiam os poderes direcionais.
 
 | Poder | Adaptação | Recarga |
 | --- | --- | --- |
 | Repulsão | cone de 100°, alcance 320 u, dano 6, tranco 0,40 s e impulso de 950 u/s por 0,16 s, limitados pela colisão | 6 s |
 | Puxão | alvo mais próximo no cone de 60°, alcance 320 u, dano 4, tranco 0,45 s e aproximação a 330 u/s por 0,24 s | 7 s |
 | Barreira | absorve até 95 de dano de disparos por 1,5 s, excedente fere; sem proteção contra corpo a corpo | 8 s |
+| Arremesso | lança destroços na mira: projétil de 16 de dano e 700 u de alcance, sem calor | 7 s |
+| Cura | recupera 28 de vida em 2 s; dano recebido interrompe | 14 s |
+| Absorção | por 1,5 s, disparos que chegam somem sem dano e cada um adianta 1 s das outras recargas; sem proteção contra corpo a corpo e explosões | 10 s |
+| Raio | canal de 1 s: 2,2 de dano a cada 0,1 s e tranco no alvo mais próximo do cone de 40°, alcance 480 u; mira acompanha, esquiva e tranco cortam | 9 s |
+| Estrangular | canal de 1,8 s: prende o alvo mais próximo do cone de 60°, alcance 240 u, 3 de dano a cada 0,3 s | 10 s |
+| Congelar | prende o alvo mais próximo do cone de 60° por 1,1 s, alcance 340 u | 9 s |
+| Ira | por 5 s, dano causado × 1,2 e recebido × 0,85 | 18 s |
+| Tempestade | por 5 s, a cada 1 s cai um raio no inimigo mais próximo, até 640 u: 5 de dano em 96 u de raio, sem atravessar paredes; não fere aliados | 20 s |
 
-Alcance, dano, preparação, tranco, potência e duração reutilizam os PowerData existentes quando aplicáveis; ângulos, duração dos impulsos e recargas são dados da adaptação. Sem mortes cinematográficas ou membros cortados no plano superior.
+Nome, ícone, alcance, dano, preparação, tranco, potência e duração reutilizam os PowerData do duelo quando aplicáveis, e Ira usa os multiplicadores do FlowConfig. Um único catálogo liga cada PowerData à sua forma no plano superior; ângulos, duração dos impulsos e recargas são dados da adaptação. Sem mortes cinematográficas ou membros cortados no plano superior.
 
 ## Inimigos e cobertura
 

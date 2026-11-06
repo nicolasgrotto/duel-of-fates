@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="BlasterOpsPowerData" format=3]
+
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_power_data.gd" id="1"]
+[ext_resource type="Resource" path="res://data/powers/absorption.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+power = ExtResource("2")
+effect = 2
+cooldown = 10.0
+degrees = 60.0

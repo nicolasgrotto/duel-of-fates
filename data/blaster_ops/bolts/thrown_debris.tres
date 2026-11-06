@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="BoltData" format=3]
+
+[ext_resource type="Script" path="res://data/bolt_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"thrown_debris"
+speed = 700.0
+max_range = 700.0
+size = 10.0
+flinch = 0.3
+muzzle_forward = 30.0
+damage = 16.0
+guard_vigor = 16.0

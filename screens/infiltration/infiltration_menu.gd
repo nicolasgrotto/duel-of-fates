@@ -183,7 +183,11 @@ func _highlight_character(id: StringName) -> void:
 
 
 func _refresh_character(character: CharacterData) -> void:
-	var body: String = tr("INF_CHARACTER_COSTUME").format({"name": tr(character.costumes[_costume].name_key)}) + "\n" + tr("INF_CHARACTER_BLADE").format({"name": tr(character.blade_color_keys[_blade])}) + "\n\n" + tr("INF_CHARACTER_INFO")
+	var powers: PackedStringArray = []
+	var equipment: BlasterOpsLoadout = BlasterOpsTraining.mission_loadout(character)
+	for index in equipment.slot_count():
+		powers.append(tr(equipment.slot(index).power.name_key))
+	var body: String = tr("INF_CHARACTER_COSTUME").format({"name": tr(character.costumes[_costume].name_key)}) + "\n" + tr("INF_CHARACTER_BLADE").format({"name": tr(character.blade_color_keys[_blade])}) + "\n" + tr("OPS_CHARACTER_POWERS").format({"powers": ControlHints.line(powers)}) + "\n\n" + tr("INF_CHARACTER_INFO")
 	_show_panel(null, InfiltrationLook.create(character, _costume, _blade), tr(character.name_key).to_upper(), body)
 
 

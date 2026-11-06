@@ -7,6 +7,13 @@ const PISTOL: BlasterOpsLoadout = preload("res://data/blaster_ops/loadouts/pisto
 const RIFLE: BlasterOpsLoadout = preload("res://data/blaster_ops/loadouts/rifle.tres")
 const CHARACTERS: Array[StringName] = [&"corsair", &"lynx", &"holster", &"guardian"]
 const POWERS: Array[BlasterOpsPowerData] = [preload("res://data/blaster_ops/powers/repulse.tres"), preload("res://data/blaster_ops/powers/pull.tres"), preload("res://data/blaster_ops/powers/barrier.tres")]
+const ADAPTED_POWERS: Array[BlasterOpsPowerData] = [
+	preload("res://data/blaster_ops/powers/repulse.tres"), preload("res://data/blaster_ops/powers/pull.tres"), preload("res://data/blaster_ops/powers/barrier.tres"),
+	preload("res://data/blaster_ops/powers/throw.tres"), preload("res://data/blaster_ops/powers/heal.tres"), preload("res://data/blaster_ops/powers/absorption.tres"),
+	preload("res://data/blaster_ops/powers/lightning.tres"), preload("res://data/blaster_ops/powers/choke.tres"), preload("res://data/blaster_ops/powers/freeze.tres"),
+	preload("res://data/blaster_ops/powers/wrath.tres"), preload("res://data/blaster_ops/powers/storm.tres"),
+]
+const MAX_POWER_SLOTS: int = 3
 
 
 static func equipment(character: CharacterData, power_index: int) -> BlasterOpsLoadout:
@@ -19,6 +26,27 @@ static func equipment(character: CharacterData, power_index: int) -> BlasterOpsL
 	elif character.weapon.sidearm == WeaponData.Sidearm.HOLSTER:
 		result.blaster = character.weapon.blaster
 	result.power = POWERS[clampi(power_index, 0, POWERS.size() - 1)]
+	return result
+
+
+static func adapted(power: PowerData) -> BlasterOpsPowerData:
+	for entry in ADAPTED_POWERS:
+		if entry.power.id == power.id:
+			return entry
+	return null
+
+
+static func mission_loadout(character: CharacterData) -> BlasterOpsLoadout:
+	var result: BlasterOpsLoadout = equipment(character, 0)
+	var chosen: Array[BlasterOpsPowerData] = []
+	for power in character.powers:
+		var entry: BlasterOpsPowerData = adapted(power) if power != null else null
+		if entry != null and chosen.size() < MAX_POWER_SLOTS:
+			chosen.append(entry)
+	if chosen.is_empty():
+		return result
+	result.power = chosen[0]
+	result.extra_powers = chosen.slice(1)
 	return result
 
 
