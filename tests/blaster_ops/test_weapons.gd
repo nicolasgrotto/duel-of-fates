@@ -241,7 +241,9 @@ func test_corsair_signature_beats_every_arsenal_weapon_and_stays_hers() -> void:
 	var pistol: BlasterOpsLoadout = BlasterOpsTraining.mission_loadout(corsair, &"holster_pistol")
 	assert_lt(signature.heat_per_shot / signature.fire_interval, pistol.heat_per_shot / pistol.fire_interval)
 	var lynx: BlasterOpsLoadout = BlasterOpsTraining.equipment(_character(&"lynx"), 0)
-	assert_almost(lynx.damage_scale, BlasterOpsTraining.PISTOL.damage_scale)
+	assert_true(lynx.integrated, "the emitter stays integrated in the hilt")
+	assert_gt(_rate(lynx), _rate(BlasterOpsTraining.mission_loadout(_character(&"lynx"), &"holster_pistol")), "better than the shop pistol")
+	assert_lt(_rate(lynx), _rate(signature), "the Corsair remains the strongest sidearm")
 	assert_eq(BlasterOpsTraining.PISTOL.damage_scale, 2.5, "the shared pistol set keeps its damage")
 
 

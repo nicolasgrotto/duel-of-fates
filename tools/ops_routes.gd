@@ -3,11 +3,13 @@ extends Node
 const MAX_TICKS: int = 72000
 
 var _shop_weapon: StringName = &""
+var _hero: StringName = &""
 
 
 func _ready() -> void:
 	var args: PackedStringArray = OS.get_cmdline_user_args()
 	var armed: bool = "--armed" in args
+	_hero = StringName(args[args.find("--hero") + 1]) if "--hero" in args else &""
 	_shop_weapon = StringName(args[args.find("--weapon") + 1]) if "--weapon" in args else &""
 	for mission in BlasterOpsMode.INCURSIONS:
 		_run(mission, armed)
@@ -15,7 +17,7 @@ func _ready() -> void:
 
 
 func _run(mission: BlasterOpsMissionData, armed: bool) -> void:
-	var hero: CharacterData = CharacterRoster.character(&"corsair" if armed else &"guardian")
+	var hero: CharacterData = CharacterRoster.character(_hero if _hero != &"" else (&"corsair" if armed else &"guardian"))
 	var sim: BlasterOpsSimulation = BlasterOpsMode.new(mission, hero, BlasterOpsTraining.mission_loadout(hero, _shop_weapon), true).create_simulation()
 	var pilot: BlasterOpsMissionPilot = BlasterOpsMissionPilot.new(sim)
 	var enemies: BlasterOpsMissionController = BlasterOpsMissionController.new(sim.map, sim.targets.size())

@@ -5,7 +5,10 @@ const CONFIG: BlasterOpsConfig = preload("res://data/balance/blaster_ops_config.
 const ARENA: BlasterOpsArenaData = preload("res://data/blaster_ops/training_arena.tres")
 const PISTOL: BlasterOpsLoadout = preload("res://data/blaster_ops/loadouts/pistol.tres")
 const RIFLE: BlasterOpsLoadout = preload("res://data/blaster_ops/loadouts/rifle.tres")
-const SIGNATURE_LOADOUTS: Dictionary = {&"corsair": preload("res://data/blaster_ops/loadouts/corsair_pistol.tres")}
+const SIGNATURE_LOADOUTS: Dictionary = {
+	&"corsair": preload("res://data/blaster_ops/loadouts/corsair_pistol.tres"),
+	&"lynx": preload("res://data/blaster_ops/loadouts/lynx_emitter.tres"),
+}
 const CHARACTERS: Array[StringName] = [&"corsair", &"lynx", &"holster", &"guardian"]
 const POWERS: Array[BlasterOpsPowerData] = [preload("res://data/blaster_ops/powers/repulse.tres"), preload("res://data/blaster_ops/powers/pull.tres"), preload("res://data/blaster_ops/powers/barrier.tres")]
 const ADAPTED_POWERS: Array[BlasterOpsPowerData] = [

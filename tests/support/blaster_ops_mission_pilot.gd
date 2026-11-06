@@ -98,7 +98,7 @@ func _avoid_blast(sim: BlasterOpsSimulation) -> bool:
 
 
 func _shoot_at(sim: BlasterOpsSimulation, target: InfiltrationActor, distance: float) -> bool:
-	if sim.loadout.blaster == null or sim.loadout.integrated or sim.state.overheated or sim.state.heat >= HEAT_CEILING:
+	if sim.loadout.blaster == null or sim.state.overheated or sim.state.heat >= HEAT_CEILING:
 		return false
 	if distance > SHOOT_RANGE * SHOOT_RANGE or sim.wall_for(BlasterOpsFaction.Side.ALLIED, sim.player.position, target.position) != INF:
 		return false

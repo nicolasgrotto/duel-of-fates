@@ -359,7 +359,7 @@ func _weapon_row_text(character: CharacterData) -> String:
 func _weapon_detail(character: CharacterData, weapon_id: StringName) -> String:
 	var entry: BlasterOpsWeaponData = BlasterOpsTraining.ARSENAL.weapon(weapon_id)
 	if entry == null:
-		return tr("OPS_WEAPON_SIGNATURE_INFO" if BlasterOpsTraining.SIGNATURE_LOADOUTS.has(character.id) else "OPS_WEAPON_OWN_INFO")
+		return _own_weapon_detail(character)
 	var tier: BlasterOpsTrainingTier = BlasterOpsTraining.ARSENAL.tier_for(character.id, entry)
 	var switching: bool = entry.two_handed or character.weapon.kind != WeaponData.Kind.SINGLE
 	var lines: PackedStringArray = [
@@ -370,6 +370,13 @@ func _weapon_detail(character: CharacterData, weapon_id: StringName) -> String:
 		tr("OPS_WEAPON_ARSENAL_INFO"),
 	]
 	return "\n".join(lines)
+
+
+func _own_weapon_detail(character: CharacterData) -> String:
+	var signature: BlasterOpsLoadout = BlasterOpsTraining.SIGNATURE_LOADOUTS.get(character.id)
+	if signature == null:
+		return tr("OPS_WEAPON_OWN_INFO")
+	return tr("OPS_WEAPON_SIGNATURE_INFO").format({"damage": roundi(signature.blaster.bolt.damage * signature.damage_scale), "interval": snappedf(signature.fire_interval, 0.01), "heat": roundi(signature.heat_per_shot)})
 
 
 func _show_weapons() -> void:

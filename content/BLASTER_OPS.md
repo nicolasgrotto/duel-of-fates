@@ -169,7 +169,7 @@ Armas usam `BlasterData` e `BoltData`. O conjunto do modo define escala de dano,
 | --- | --- | --- | --- | --- |
 | Pistola da Corsária, arma de assinatura | 16 (4 × 4) | 900 / 1.100 u | 0,14 s | 10 |
 | Pistola (Coldre) | 10 (4 × 2,5) | 900 / 1.100 u | 0,16 s | 14 |
-| Emissor (Lince) | 10 (4 × 2,5) | 900 / 1.100 u | 0,16 s | 14 |
+| Emissor do Lince, arma de assinatura | 13 (4 × 3,25) | 900 / 1.100 u | 0,15 s | 12 |
 | Rifle de dorso (conjunto explícito da futura Saga) | 15 por tiro (6 × 2,5), rajada de 3 | 650 / 1.500 u | 0,12 s entre tiros; 0,42 s entre rajadas | 26,3 (21 × 1,25) |
 | Personagem só de lâmina | corte 10 | alcance 88 u | ciclo 0,40 s | sem calor |
 

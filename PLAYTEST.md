@@ -11,7 +11,7 @@ Legenda: ✅ ficou bom · ⚠️ funciona mas a sensação ou o número precisa 
 | 27.1 | Segurar o disparo com a pistola da loja | Superaquece no 8º tiro, não mais no 5º. O calor ainda importa? |
 | 27.2 | Corsária com a própria pistola, depois com a da loja | A própria é claramente melhor: 16 contra 11 de dano, mais cadência, menos calor |
 | 27.3 | Corsária em todas as Incursões, atirando | Vence sem ficar fácil demais? O piloto de testes vence as sete |
-| 27.4 | Lince com o Emissor | Só ganhou no calor: 10 de dano, contra 11 da pistola da loja. Parece justo? |
+| 27.4 | Lince com o Emissor | Melhor que a pistola da loja (13 contra 11 de dano, menos calor) e abaixo da Corsária (16) |
 | 27.5 | Rifle e Rifle de precisão sem treino, com Guardião | Dá para vencer? O piloto de testes perde quatro das sete com o Rifle, mas ele atira mal e quase não se defende |
 
 ## 26. Interface da 1.1, ordens e tutoriais
