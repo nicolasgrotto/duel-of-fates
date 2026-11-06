@@ -12,6 +12,7 @@ var attempts: int = 0
 var hits: int = 0
 var barriers_placed: int = 0
 var last_hit_swing: int = -1
+var repair_ticks: int = 0
 
 
 func _init(mission_data: BlasterOpsMissionData) -> void:
@@ -28,6 +29,35 @@ func setup(sim: BlasterOpsSimulation) -> void:
 		phase_health = sim.target_data[definition.phase_target].health
 		if not definition.phases.is_empty():
 			sim.target_data[definition.phase_target] = definition.phases[0].enemy
+	for index in sim.prisoners.size():
+		var role: BlasterOpsAllyData = definition.ally_role(index)
+		if role != null:
+			sim.prisoners[index].health = role.health
+		if definition.is_reserve(index):
+			sim.prisoners[index].health = 0.0
+
+
+func call_reinforcement(sim: BlasterOpsSimulation, point: Vector2) -> bool:
+	for index in sim.prisoners.size():
+		if definition.is_reserve(index) and recruited[index] == 0:
+			var actor: InfiltrationActor = sim.prisoners[index]
+			actor.position = point
+			actor.previous = point
+			var role: BlasterOpsAllyData = definition.ally_role(index)
+			actor.health = role.health if role != null else sim.config.prisoner_health
+			recruited[index] = 1
+			sim.emit_mission_event(InfiltrationEvent.Type.PRISONER_RECRUITED, index, point)
+			return true
+	return false
+
+
+func can_extract(index: int) -> bool:
+	return waves_finished or index == definition.protected_index
+
+
+func follower_speed(index: int, base: float) -> float:
+	var role: BlasterOpsAllyData = definition.ally_role(index)
+	return role.speed if role != null else base
 
 
 func interact(sim: InfiltrationSimulation) -> void:
@@ -153,6 +183,8 @@ func bonus_objective(sim: InfiltrationSimulation) -> bool:
 		return sim.prisoners[definition.protected_index].health >= definition.protected_health * 0.5
 	if not sim.prisoners.is_empty():
 		for index in recruited.size():
+			if definition.is_reserve(index):
+				continue
 			if recruited[index] == 0 or sim.prisoners[index].health <= 0.0:
 				return false
 		return true
@@ -161,7 +193,7 @@ func bonus_objective(sim: InfiltrationSimulation) -> bool:
 
 func capture() -> Dictionary:
 	var snapshot: Dictionary = super.capture()
-	snapshot["incursion"] = {"wave_index": wave_index, "intermission_ticks": intermission_ticks, "waves_finished": waves_finished, "phase_index": phase_index, "phase_health": phase_health, "damage_taken": damage_taken, "attempts": attempts, "hits": hits, "barriers_placed": barriers_placed, "last_hit_swing": last_hit_swing}
+	snapshot["incursion"] = {"wave_index": wave_index, "intermission_ticks": intermission_ticks, "waves_finished": waves_finished, "phase_index": phase_index, "phase_health": phase_health, "damage_taken": damage_taken, "attempts": attempts, "hits": hits, "barriers_placed": barriers_placed, "last_hit_swing": last_hit_swing, "repair_ticks": repair_ticks}
 	return snapshot
 
 

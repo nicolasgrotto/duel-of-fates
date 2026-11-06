@@ -122,6 +122,39 @@ def ironstride(colors):
     return frame
 
 
+def ally(colors, accent, weapon, bulky=False):
+    frame = Image.new("RGBA", (24, 28))
+    draw = ImageDraw.Draw(frame)
+    dark = colors["infiltration_seam"]
+    cloth = colors["infiltration_cloth"]
+    skin = colors["infiltration_skin"]
+    tone = colors[accent]
+    draw.ellipse((3, 21, 21, 27), fill=(*dark, 150))
+    draw.rectangle((7, 18, 10, 25), fill=shade(cloth, .7), outline=dark)
+    draw.rectangle((14, 18, 17, 25), fill=shade(cloth, .7), outline=dark)
+    left, right = (4, 20) if bulky else (6, 18)
+    draw.polygon(((left + 1, 10), (right - 1, 10), (right, 21), (left, 21)), fill=cloth, outline=dark)
+    draw.rectangle((left, 12, right, 15), fill=tone)
+    draw.rectangle((9, 4, 15, 11), fill=skin, outline=dark)
+    draw.rectangle((9, 4, 15, 6), fill=shade(tone, .8))
+    if weapon == "rifle":
+        draw.line((17, 3, 20, 18), fill=dark, width=3)
+        draw.line((17, 3, 20, 16), fill=colors["infiltration_edge"])
+    elif weapon == "cannon":
+        draw.rectangle((17, 1, 22, 18), fill=shade(colors["infiltration_wall"], 1.2), outline=dark)
+        draw.line((19, 3, 19, 15), fill=colors["infiltration_edge"])
+    elif weapon == "long":
+        draw.line((18, 0, 20, 19), fill=dark, width=2)
+        draw.line((18, 0, 19, 12), fill=colors["text"])
+    elif weapon == "cross":
+        draw.line((12, 16, 12, 20), fill=colors["text"], width=2)
+        draw.line((10, 18, 14, 18), fill=colors["text"], width=2)
+    elif weapon == "blade":
+        draw.line((18, 1, 20, 17), fill=colors["menu_blade_a"], width=2)
+        draw.rectangle((19, 16, 21, 20), fill=colors["infiltration_edge"])
+    return frame
+
+
 def main():
     folder = Path(__file__).resolve().parents[2] / "assets/blaster_ops"
     folder.mkdir(parents=True, exist_ok=True)
@@ -132,6 +165,11 @@ def main():
     sapper(colors).save(folder / "sapper.png")
     repairer(colors).save(folder / "repairer.png")
     ironstride(colors).save(folder / "ironstride.png")
+    ally(colors, "accent", "rifle").save(folder / "ally_rifleman.png")
+    ally(colors, "potential", "cannon", True).save(folder / "ally_gunner.png")
+    ally(colors, "aurora", "long").save(folder / "ally_sharpshooter.png")
+    ally(colors, "text", "cross").save(folder / "ally_medic.png")
+    ally(colors, "menu_blade_a", "blade").save(folder / "ally_blade.png")
 
 
 if __name__ == "__main__":

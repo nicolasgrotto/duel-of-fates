@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="BlasterOpsAllyData" format=3]
+
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_ally_data.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/blaster_ops/ally_gunner.png" id="texture"]
+[ext_resource type="Resource" path="res://data/blaster_ops/bolts/heavy_burst.tres" id="bolt"]
+
+[resource]
+script = ExtResource("1")
+id = &"gunner"
+name_key = "OPS_ALLY_GUNNER"
+texture = ExtResource("texture")
+bolt = ExtResource("bolt")
+health = 130.0
+speed = 165.0
+follow_distance = 96.0
+damage_scale = 3.0
+fire_interval = 1.4
+fire_range = 460.0

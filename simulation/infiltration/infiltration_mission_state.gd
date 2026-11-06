@@ -77,12 +77,12 @@ func advance(sim: InfiltrationSimulation, escorts: Array[InfiltrationIntent]) ->
 		if actor.health <= 0.0 or recruited[index] == 0 or extracted[index] != 0:
 			continue
 		if index < escorts.size():
-			var movement: Vector2 = escorts[index].movement.limit_length() * sim.config.escort_speed * Ticks.DELTA
+			var movement: Vector2 = escorts[index].movement.limit_length() * follower_speed(index, sim.config.escort_speed) * Ticks.DELTA
 			actor.position = InfiltrationGeometry.move_body(sim.map, actor.position, movement, sim.config.body_radius, sim.targets)
 			actor.velocity = (actor.position - actor.previous) / Ticks.DELTA
 			if actor.velocity.length_squared() > 0.0:
 				actor.aim = actor.velocity.normalized()
-		if actor.position.distance_to(data.extraction) <= data.extraction_radius:
+		if can_extract(index) and actor.position.distance_to(data.extraction) <= data.extraction_radius:
 			extracted[index] = 1
 			sim.emit_mission_event(InfiltrationEvent.Type.PRISONER_EXTRACTED, index, actor.position)
 	if surviving_prisoners(sim) < data.required_prisoners():
@@ -91,6 +91,14 @@ func advance(sim: InfiltrationSimulation, escorts: Array[InfiltrationIntent]) ->
 		_finish(sim, Outcome.PLAYER_DOWN)
 	elif completed_objectives(sim) == data.objective_count() and _followers_arrived(sim) and sim.player.position.distance_to(data.extraction) <= data.extraction_radius:
 		_finish(sim, Outcome.COMPLETED)
+
+
+func can_extract(_index: int) -> bool:
+	return true
+
+
+func follower_speed(_index: int, base: float) -> float:
+	return base
 
 
 func surviving_prisoners(sim: InfiltrationSimulation) -> int:

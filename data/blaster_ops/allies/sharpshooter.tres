@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="BlasterOpsAllyData" format=3]
+
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_ally_data.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/blaster_ops/ally_sharpshooter.png" id="texture"]
+[ext_resource type="Resource" path="res://data/blaster_ops/bolts/marksman_bolt.tres" id="bolt"]
+
+[resource]
+script = ExtResource("1")
+id = &"sharpshooter"
+name_key = "OPS_ALLY_SHARPSHOOTER"
+texture = ExtResource("texture")
+bolt = ExtResource("bolt")
+health = 70.0
+speed = 200.0
+follow_distance = 150.0
+damage_scale = 1.0
+fire_interval = 2.2
+fire_range = 900.0

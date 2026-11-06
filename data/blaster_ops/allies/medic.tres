@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="BlasterOpsAllyData" format=3]
+
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_ally_data.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/blaster_ops/ally_medic.png" id="texture"]
+
+[resource]
+script = ExtResource("1")
+id = &"medic"
+name_key = "OPS_ALLY_MEDIC"
+texture = ExtResource("texture")
+health = 80.0
+speed = 215.0
+follow_distance = 64.0
+repair_per_second = 3.0
+repair_radius = 220.0

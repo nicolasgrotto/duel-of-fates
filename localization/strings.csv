@@ -1246,3 +1246,8 @@ OPS_TRAINING_NONE,Sem treino,Untrained
 OPS_MODE_RANGED,Disparo,Ranged
 OPS_MODE_BLADE,Lâmina,Blade
 OPS_MODE_SWITCHING,Trocando,Switching
+OPS_ALLY_RIFLEMAN,Fuzileiro,Rifleman
+OPS_ALLY_GUNNER,Artilheiro,Heavy gunner
+OPS_ALLY_SHARPSHOOTER,Atirador,Sharpshooter
+OPS_ALLY_MEDIC,Socorrista,Field medic
+OPS_ALLY_BLADE,Guarda de lâmina,Blade guard

@@ -12,8 +12,18 @@ enum Kind { ARENA, ASSAULT, DEFENSE, HOLD_OUT, ESCORT, RIVAL, BOSS }
 @export var phase_target: int = -1
 @export var phases: Array[BlasterOpsPhaseData] = []
 @export var intermission_seconds: float = 6.0
+@export var ally_roles: Array[BlasterOpsAllyData] = []
+@export var reserve_start: int = -1
 @export var damage_bonus: float = 25.0
 @export var accuracy_bonus: float = 0.5
+
+
+func ally_role(index: int) -> BlasterOpsAllyData:
+	return ally_roles[index] if index >= 0 and index < ally_roles.size() else null
+
+
+func is_reserve(index: int) -> bool:
+	return reserve_start >= 0 and index >= reserve_start
 
 
 func objective_count() -> int:

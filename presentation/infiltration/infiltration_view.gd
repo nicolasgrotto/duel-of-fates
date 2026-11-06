@@ -139,11 +139,13 @@ func _draw_mission() -> void:
 			_draw_check(point + Vector2(0, -30), PALETTE.text)
 	for index in sim.prisoners.size():
 		var actor: InfiltrationActor = sim.prisoners[index]
+		if not _prisoner_visible(index):
+			continue
 		var point: Vector2 = _snap(actor.previous.lerp(actor.position, alpha))
 		color = PALETTE.text if actor.health > 0.0 else PALETTE.danger
 		var size: Vector2 = Vector2(sim.config.sprite_pixels) * sim.config.units_per_pixel
 		draw_set_transform(point, actor.aim.angle() + PI * 0.5)
-		draw_texture_rect(PRISONER, Rect2(-size * 0.5, size), false, Color.WHITE if actor.health > 0.0 else PALETTE.danger)
+		draw_texture_rect(_prisoner_texture(index), Rect2(-size * 0.5, size), false, Color.WHITE if actor.health > 0.0 else PALETTE.danger)
 		draw_set_transform(Vector2.ZERO)
 		var marker: Vector2 = point - Vector2(0, 40)
 		var locked: bool = sim.mission.prisoners_locked(sim)
@@ -153,10 +155,20 @@ func _draw_mission() -> void:
 			draw_line(marker + Vector2(5, -5), marker + Vector2(-5, 5), PALETTE.danger, 2.0)
 		if sim.mission.recruited[index] != 0:
 			_draw_check(marker, PALETTE.text)
-		var maximum: float = sim.config.prisoner_health
-		if sim.mission is BlasterOpsMissionState and index == (sim.mission as BlasterOpsMissionState).definition.protected_index:
-			maximum = (sim.mission as BlasterOpsMissionState).definition.protected_health
+		var maximum: float = _prisoner_max_health(index)
 		draw_line(point + Vector2(-18, 28), point + Vector2(-18 + 36.0 * actor.health / maximum, 28), color, 2.0)
+
+
+func _prisoner_visible(_index: int) -> bool:
+	return true
+
+
+func _prisoner_texture(_index: int) -> Texture2D:
+	return PRISONER
+
+
+func _prisoner_max_health(_index: int) -> float:
+	return sim.config.prisoner_health
 
 
 func _draw_check(point: Vector2, color: Color) -> void:

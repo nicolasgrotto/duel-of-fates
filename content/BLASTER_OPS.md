@@ -51,6 +51,20 @@ Movimento livre normalizado em oito direções, 240 u/s, aceleração 2.200 u/s�
 
 Correr e furtivo são alternâncias no controlador: um toque liga, outro desliga, e ligar um desliga o outro; a pausa conserva a postura e reiniciar a limpa. Nenhuma ação usa Ctrl, Alt ou Meta, e a tela de teclas recusa essas teclas, porque o navegador reserva combinações como Ctrl+W. Teclas salvas no layout anterior são migradas sem perder personalizações: sai só Ctrl, e teclas novas entram apenas se estiverem livres. Ações `blaster_ops_*` próprias pelo InputMap, com aliases `infiltration_*` para compatibilidade. Teclas e botões são remapeáveis em **Teclas e botões › Operações**; mouse e eixos de mira permanecem disponíveis. Botões padrão copiam os bindings do J1, sem alterar o duelo. A tela Controles tem uma página do modo e as dicas vêm de ControlHints. Na pausa do treino é possível reiniciar com outro personagem (Corsária, Lince, Coldre ou Guardião) e outro poder; toda troca reinicia, sem mudar recurso compartilhado ou campanha.
 
+## Aliados (versão 1.1)
+
+Aliados são prisioneiros com papel: libertados com `E`, ou chamados como reforço. Agem sozinhos, por intenção, e o jogador não dá ordens. Até seis por missão, o limite medido. Inimigos os atacam; nenhum ataque do jogador ou de outro aliado os fere. Quem é libertado sem papel continua sendo o prisioneiro comum da task 18.
+
+| Papel | Vida / velocidade | Distância do jogador | Ação |
+| --- | --- | --- | --- |
+| Fuzileiro / Rifleman | 90 / 215 u/s | 72 u | 6 de dano a cada 1 s, até 520 u |
+| Artilheiro / Heavy gunner | 130 / 165 u/s | 96 u | 21 de dano a cada 1,4 s, até 460 u; lento e forte |
+| Atirador / Sharpshooter | 70 / 200 u/s | 150 u | 14 de dano a cada 2,2 s, até 900 u; projétil rápido |
+| Socorrista / Field medic | 80 / 215 u/s | 64 u | não atira; repara 3 de vida por segundo no jogador e aliados a até 220 u |
+| Guarda de lâmina / Blade guard | 110 / 240 u/s | 72 u | avança em inimigos a até 260 u do jogador e corta: 8 de dano a cada 0,7 s, alcance 52 u |
+
+Aliado só vai embora pela extração depois que os combates terminam: até lá ele luta. Na Escolta, o protegido continua indo à saída.
+
 ## Arsenal nas Operações
 
 Dano é o do BoltData vezes a escala da arma; calor por tiro é o da tabela vezes o `vigor_multiplier` do BlasterData. Rajadas e saque vêm do mesmo BlasterData do duelo e da História.

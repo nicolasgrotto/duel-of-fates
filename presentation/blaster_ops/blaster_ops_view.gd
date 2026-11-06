@@ -123,6 +123,24 @@ func _draw() -> void:
 				draw_rect(Rect2(Vector2(cover.data.cell) * sim.map.tile_size, Vector2.ONE * sim.map.tile_size), PALETTE.potential, false, sim.config.units_per_pixel)
 
 
+func _prisoner_visible(index: int) -> bool:
+	if not sim.mission is BlasterOpsMissionState:
+		return true
+	return not (sim.mission as BlasterOpsMissionState).definition.is_reserve(index) or sim.mission.recruited[index] != 0
+
+
+func _prisoner_texture(index: int) -> Texture2D:
+	if sim.mission is BlasterOpsMissionState:
+		var role: BlasterOpsAllyData = (sim.mission as BlasterOpsMissionState).definition.ally_role(index)
+		if role != null:
+			return role.texture
+	return PRISONER
+
+
+func _prisoner_max_health(index: int) -> float:
+	return operations._ally_max_health(index) if sim.mission is BlasterOpsMissionState else sim.config.prisoner_health
+
+
 func _draw_enemy_support(actor: InfiltrationActor, data: BlasterOpsEnemyData) -> void:
 	if data == null:
 		return

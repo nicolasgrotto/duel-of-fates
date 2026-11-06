@@ -28,6 +28,7 @@ extends InfiltrationConfig
 
 @export_group("Enemy support")
 @export var aura_pulse_seconds: float = 0.5
+@export var repair_pulse_seconds: float = 0.5
 @export var blast_flinch: float = 0.3
 
 @export_group("Limits")

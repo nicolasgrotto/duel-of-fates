@@ -154,12 +154,20 @@ func deploy_barrier() -> bool:
 
 
 func _step_allies(intents: Array[InfiltrationIntent]) -> void:
+	var progress: BlasterOpsMissionState = mission as BlasterOpsMissionState
+	var repairing: bool = _advance_repair_pulse(progress)
 	for index in prisoners.size():
 		var actor: InfiltrationActor = prisoners[index]
 		actor.fire_ticks = maxi(actor.fire_ticks - 1, 0)
+		var role: BlasterOpsAllyData = progress.definition.ally_role(index)
+		if repairing and role != null and role.repair_per_second > 0.0 and actor.health > 0.0 and mission.recruited[index] != 0:
+			_repair_around(index, role)
 		if actor.health <= 0.0 or mission.recruited[index] == 0 or actor.fire_ticks > 0 or index >= intents.size() or (intents[index].held & Intent.Command.LIGHT) == 0:
 			continue
 		var aim: Vector2 = intents[index].aim.normalized()
+		if role != null:
+			_act_as_role(index, actor, role, aim)
+			continue
 		var target: bool = false
 		for enemy in live_bodies:
 			if enemy.health > 0.0 and InfiltrationGeometry.in_sector(actor.position, aim, enemy.position, operations.ally_fire_range, config.swing_degrees) and wall_for(BlasterOpsFaction.Side.ALLIED, actor.position, enemy.position) == INF:
@@ -168,6 +176,59 @@ func _step_allies(intents: Array[InfiltrationIntent]) -> void:
 		if target and _spawn_bolt(-index - 2, operations.ally_bolt, aim, 1.0, actor) != null:
 			actor.fire_ticks = Ticks.from_seconds(operations.ally_fire_interval)
 			actor.aim = aim
+
+
+func _advance_repair_pulse(progress: BlasterOpsMissionState) -> bool:
+	progress.repair_ticks -= 1
+	if progress.repair_ticks > 0:
+		return false
+	progress.repair_ticks = maxi(Ticks.from_seconds(operations.repair_pulse_seconds), 1)
+	return true
+
+
+func _repair_around(index: int, role: BlasterOpsAllyData) -> void:
+	var amount: float = role.repair_per_second * operations.repair_pulse_seconds
+	var origin: Vector2 = prisoners[index].position
+	var healed: bool = false
+	if player.health > 0.0 and player.health < operations.health and player.position.distance_to(origin) <= role.repair_radius:
+		player.health = minf(player.health + amount, operations.health)
+		healed = true
+	for other in prisoners.size():
+		var body: InfiltrationActor = prisoners[other]
+		var maximum: float = _ally_max_health(other)
+		if other != index and prisoner_exposed(other) and body.health < maximum and body.position.distance_to(origin) <= role.repair_radius:
+			body.health = minf(body.health + amount, maximum)
+			healed = true
+	if healed:
+		_emit(InfiltrationEvent.Type.AURA_PULSE, 0, -1, origin, role.repair_radius)
+
+
+func _ally_max_health(index: int) -> float:
+	var progress: BlasterOpsMissionState = mission as BlasterOpsMissionState
+	if index == progress.definition.protected_index:
+		return progress.definition.protected_health
+	var role: BlasterOpsAllyData = progress.definition.ally_role(index)
+	return role.health if role != null else config.prisoner_health
+
+
+func _act_as_role(index: int, actor: InfiltrationActor, role: BlasterOpsAllyData, aim: Vector2) -> void:
+	if role.melee_damage > 0.0:
+		for enemy in live_indices:
+			if targets[enemy].health > 0.0 and InfiltrationGeometry.in_sector(actor.position, aim, targets[enemy].position, role.melee_range, config.swing_degrees, targets[enemy].radius) and wall_for(BlasterOpsFaction.Side.ALLIED, actor.position, targets[enemy].position) == INF:
+				actor.fire_ticks = Ticks.from_seconds(role.melee_interval)
+				actor.aim = aim
+				_emit(InfiltrationEvent.Type.SWING_HIT, 0, enemy + 1, targets[enemy].position, role.melee_damage)
+				_damage_target(enemy, _armored_damage(enemy, role.melee_damage, actor.position), false, actor.position)
+				return
+		return
+	if role.bolt == null:
+		return
+	for enemy in live_indices:
+		if targets[enemy].health > 0.0 and InfiltrationGeometry.in_sector(actor.position, aim, targets[enemy].position, role.fire_range, config.swing_degrees) and wall_for(BlasterOpsFaction.Side.ALLIED, actor.position, targets[enemy].position) == INF:
+			if _spawn_bolt(-index - 2, role.bolt, aim, role.damage_scale, actor) != null:
+				actor.fire_ticks = Ticks.from_seconds(role.fire_interval)
+				actor.aim = aim
+			return
 
 
 func _advance_operations() -> void:
