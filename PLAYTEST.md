@@ -8,6 +8,9 @@ Legenda: ✅ ficou bom · ⚠️ funciona mas a sensação ou o número precisa 
 
 | Passo | Verificar | Resultado esperado |
 | --- | --- | --- |
+| 27.0 | Andar com o mouse parado, em qualquer personagem | A mira continua apontando para o mesmo ponto da tela, sem girar |
+| 27.0b | Encostar em soldado, Pesado e Guarda de campo | Eles golpeiam com arco à vista; guarda e parry funcionam |
+| 27.0c | Esmagador e Duelista | Esmagador pede distância; Duelista defende disparos de frente, empurra com Repulsão e cede a ataques laterais e parry |
 | 27.1 | Segurar o disparo com a pistola da loja | Superaquece no 8º tiro, não mais no 5º. O calor ainda importa? |
 | 27.2 | Corsária com a própria pistola, depois com a da loja | A própria é claramente melhor: 16 contra 11 de dano, mais cadência, menos calor |
 | 27.3 | Corsária em todas as Incursões, atirando | Vence sem ficar fácil demais? O piloto de testes vence as sete |

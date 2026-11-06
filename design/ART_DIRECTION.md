@@ -69,6 +69,8 @@ Task 16: Operações de blaster reutiliza esses sprites, o atlas industrial, os 
 
 Mesma grade de 24×28 px e paleta do atlas: atirador esguio com cano longo e visor vermelho; drone hexagonal com sensor central; escudeiro com placa curva à frente, que precisa ler de longe. O andador blindado é original, em 48×56 px: carapaça hexagonal com pernas laterais e canhão duplo, sem silhueta de veículo de franquia. Atirador alertado mostra linha de mira fina, para o tiro forte ser legível.
 
+Versão 1.1.1: **Esmagador** de ombros muito largos e maça curta, na paleta industrial. **Duelista** esguio de capuz, com lâmina desenhada pelo jogo em `danger` e núcleo em `text`: lê como oponente à altura, sem ser um dos personagens do elenco. O golpe de perto dos atiradores mostra o mesmo arco de preparação dos inimigos corpo a corpo.
+
 ### Personagens e imagens de fase nos modos especiais
 
 Na Infiltração, cada personagem do elenco tem um sprite próprio de vista superior em 24×28 px, com silhueta dada por ombros, capuz ou cabelo e capa. O sprite usa a mesma codificação de paleta dos lutadores (luz, slot e brilho), e as cores vêm do traje escolhido. Lâmina na cor escolhida, cabo no metal do traje e mão na pele, sempre presa ao cabo: na guarda a lâmina sai da mão direita e cruza à frente do corpo, nunca girando pelo centro com o cabo para fora.

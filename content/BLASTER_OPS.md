@@ -219,6 +219,15 @@ Versão 1.1, arquétipos originais em `data/blaster_ops/enemies/`, cada um com u
 | Reparador / Repairer | 26 / 110 u/s | Mantém distância, recua a menos de 260 u e repara 3 de vida por segundo em aliados a até 200 u; nunca o chefe | Caçar com disparos ou poderes |
 | Passo de Ferro / Ironstride | 280 / 55 u/s | Andador bípede original, grande e de giro lento (50°/s). Canhão com 0,9 s de linha de mira travada: projétil de 24 de dano e explosão de 18 em 110 u. De perto, pisão de 16 em 96 u. Frente com 35% do dano; sem abate silencioso | Flanquear, ficar fora da linha, devolver o projétil no tempo |
 
+Versão 1.1.1, combate de perto:
+
+- **Golpe de perto.** Soldado, Atirador, Pesado, Guarda de campo, Reparador, rival e chefe atacam com a arma quando o jogador encosta, com arco à vista e preparação de pelo menos 0,25 s. Dano 3 a 12 conforme o tipo, baixo de propósito: pesa para quem fica parado encostado, sem inviabilizar quem luta de lâmina. Guarda e parry funcionam como contra qualquer corte, e **quem está cortando não sofre esse golpe, e um corte que acerta o interrompe**: quem encosta atirando apanha, quem encosta cortando se defende atacando. Numa multidão, os golpes de perto dos atiradores acertam no máximo um a cada 0,6 s, para o cerco não matar de uma vez. Só vale para os atiradores; Investidor, Esmagador e Duelista são lutadores de perto de verdade. Torres não têm esse golpe.
+
+| Arquétipo | Vida / velocidade | Papel | Como lidar |
+| --- | --- | --- | --- |
+| Esmagador / Crusher | 70 / 125 u/s | Só corpo a corpo: arco largo de 140°, alcance 64 u, dano 13, preparação de 0,4 s | Sair do arco, esquivar ou aparar para abrir |
+| Duelista / Duelist | 90 / 170 u/s | Lâmina própria: alcance 72 u, dano 10, preparação de 0,22 s. Defende disparos pela frente, exceto ao preparar um ataque. A cada 6 s lança Repulsão com 0,45 s de aviso: 6 de dano e empurrão em 170 u | Atacar pelos lados, aparar, usar poderes. Blaster de frente não resolve |
+
 As explosões e áreas seguem a regra de facções: as inimigas não ferem inimigos, quebram caixas e barreiras e param em paredes.
 
 Mira trava durante a preparação de cada ataque. Perder intenção de ataque cancela a preparação; um tiro preparado só sai com linha livre e alvo ainda vivo. Corpo a corpo verifica alcance, setor e parede na resolução, e pode ser evitado saindo do arco. Armadura não depende de cor: placa/contorno frontal e faísca de impacto mostram a redução.

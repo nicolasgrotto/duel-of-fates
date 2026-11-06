@@ -10,7 +10,8 @@ Ordem de construção do jogo. Cada fase termina jogável e testada. Marque `[x]
   - [x] **Cache:** arquivos Web com o commit no nome (ARCHITECTURE, "Publicação Web e cache").
   - [ ] **Upgrade visual e sonoro:** índice, auditoria e proposta em [docs/tasks/](docs/tasks/README.md), briefs em [docs/art-briefs/](docs/art-briefs/). Decisões D1 a D12 do autor registradas na proposta. Nada implementado ainda. Tasks em `build/agent_tasks/`, na ordem de execução.
   - [x] **Revisão de marcas:** [relatório e decisões do autor](docs/tasks/_revisao-marca.md).
-  - [ ] **Guia de estilo:** escrito; [paletas](docs/art-briefs/_palettes.md) aguardando o autor.
+  - [x] **Guia de estilo:** registrado, com as [paletas](docs/art-briefs/_palettes.md) atuais mantidas pelo autor.
+  - [x] **Combate de perto:** golpe de perto nos atiradores, Esmagador, Duelista e mais inimigos nas Incursões; mira corrigida.
   - **Próximo:** autor avaliar **PLAYTEST 27**. Tasks em `build/agent_tasks/`, com o agente no nome do arquivo e o prefixo `DONE_` ao terminar; 1.1.1 antes da migração para 640×360, 1.2 com todo o resto.
 
 - [x] **Atualização 1.1 — Operações** (pedido do autor, branch `1.x`). Auditoria feita: **771 testes, zero falhas** na linha de base (`build/v11_audit/tests_baseline.log`). Direções visuais aprovadas pelo autor: Operações A (Console) e Naves A (Mapa de setor) (`build/v11_audit/mockups/index.html`). Decisões registradas em DESIGN e GAME_DESIGN.

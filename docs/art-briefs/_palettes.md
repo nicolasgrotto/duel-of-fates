@@ -1,6 +1,6 @@
 # Paletas
 
-Task 21. Proposta para aprovação do autor, gerada das cores do traje Original em `data/characters/`. A cor-base de cada slot é a atual; o que muda é a escala de tons.
+Task 21. Aprovada pelo autor, que manteve as cores atuais, gerada do traje Original em `data/characters/`. A cor-base de cada slot é a atual; o que muda é a escala de tons.
 
 ## Regra
 
@@ -20,6 +20,8 @@ Os trajes alternativos usam os mesmos slots e a mesma regra, e o rig troca as co
 Nenhuma cor indica herói ou vilão; o tema aparece só na seleção de lutador e nas telas de Caminho.
 
 ## Conferência de contraste
+
+**Só informativa.** O autor gostou das cores atuais e elas ficam. Os casos abaixo ocorrem quase só no acabamento, a menor área; núcleo branco e halo (task 23) já separam a lâmina da roupa. Reavaliar no piloto só se a lâmina se perder em captura.
 
 Critério: contraste de pelo menos 2,0 entre a lâmina padrão e manto, corpo e acabamento, e manto saturado sem o mesmo matiz da lâmina. O núcleo branco sempre passa; a conta usa a cor da lâmina, o caso difícil.
 
