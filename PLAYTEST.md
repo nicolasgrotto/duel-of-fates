@@ -28,11 +28,11 @@ Legenda: ✅ ficou bom · ⚠️ funciona mas a sensação ou o número precisa 
 | 26.16 | `G` em Corredor dos aliados e Nó de defesa | Proteger aparece e cerca o protegido ou o terminal; sem alvo, o ciclo pula Proteger |
 | 26.17 | Extração aberta com ordem dada | Todos seguem para a saída sozinhos |
 | 26.18 | Teclas personalizadas antigas | Continuam iguais; `G` só entra se estiver livre |
-| 26.19 | Controle físico: direcional para cima dá a ordem | **Mudança:** o direcional não move mais nas Operações, só o stick esquerdo. Ainda não testado com controle real |
+| 26.19 | Controle físico: segurar Back abre o menu, direcional escolhe; toque em Back troca de arma; direcional e stick movem | Testado no Chrome com controle simulado; ainda não testado com controle real |
 | 26.20 | Treino de Infiltração | Passos em ordem, com as teclas atuais, sem nota nem recompensa. Dá para entender sozinho? Dura de 2 a 4 minutos? |
 | 26.21 | Treino de Incursão com vários personagens | Todos os 14 passos; o rifle é só do treino; sem poder, o passo de poder é pulado |
 | 26.22 | Treino de voo | Oito passos; acessível pelo mapa de setor |
-| 26.23 | Tentar travar um treino: gastar barreiras antes, libertar antes da hora, sair da área | Nenhum passo fica impossível; se a ação já não pode acontecer, o passo conclui sozinho |
+| 26.23 | Tentar travar um treino: gastar barreiras antes, libertar antes da hora, sair da área | Nenhum passo fica impossível; só conclui sozinho quando a ação já foi feita ou o alvo sumiu, e o `F3` mostra o passo e o motivo |
 | 26.24 | Terminar treinos e voltar ao menu | Recordes e pontos da Oficina inalterados |
 
 ## 25. Atualização 1.1 das Operações
