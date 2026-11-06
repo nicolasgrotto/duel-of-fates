@@ -5,6 +5,7 @@ const COMMANDS: Dictionary = {
 	Intent.Command.LIGHT: &"blaster_ops_fire", Intent.Command.BLOCK: &"blaster_ops_guard",
 	Intent.Command.DODGE: &"blaster_ops_dodge", Intent.Command.POWER: &"blaster_ops_power",
 	InfiltrationIntent.POWER_2: &"blaster_ops_power_2", InfiltrationIntent.POWER_3: &"blaster_ops_power_3",
+	InfiltrationIntent.ORDER_ALLIES: &"blaster_ops_order_allies",
 	InfiltrationIntent.SWITCH_WEAPON: &"blaster_ops_switch_weapon",
 	Intent.Command.HEAVY: &"blaster_ops_strike", InfiltrationIntent.RUN: &"blaster_ops_run",
 	InfiltrationIntent.SNEAK: &"blaster_ops_sneak", InfiltrationIntent.INTERACT: &"blaster_ops_interact",

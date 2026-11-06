@@ -52,7 +52,7 @@ Movimento livre normalizado em oito direções, 240 u/s, aceleração 2.200 u/s�
 
 | Ação | Teclado e mouse padrão | Controle padrão |
 | --- | --- | --- |
-| Mover | WASD / setas | stick esquerdo / D-pad |
+| Mover | WASD / setas | stick esquerdo |
 | Mirar | mouse | stick direito |
 | Disparar / cortar sem blaster | botão esquerdo / V | botão oeste (Rápido) |
 | Guarda / parry | botão direito / Q | gatilho de guarda do J1 |

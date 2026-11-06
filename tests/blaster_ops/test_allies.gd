@@ -164,3 +164,94 @@ func test_ally_state_replays_identically_from_a_snapshot() -> void:
 	sim.restore(snapshot)
 	_run(sim, 30)
 	assert_eq(sim.capture(), expected)
+
+
+func _order(sim: BlasterOpsSimulation) -> void:
+	var intent: InfiltrationIntent = InfiltrationIntent.new()
+	intent.pressed = InfiltrationIntent.ORDER_ALLIES
+	sim.step(intent, [], [])
+
+
+func _rifle_sim() -> BlasterOpsSimulation:
+	var sim: BlasterOpsSimulation = _sim([_role("rifleman")] as Array[BlasterOpsAllyData])
+	sim.mission.recruited[0] = 1
+	sim.player.position = POINT
+	sim.prisoners[0].position = POINT + Vector2(0.0, 60.0)
+	return sim
+
+
+func test_order_hold_keeps_allies_at_the_ordered_point() -> void:
+	var sim: BlasterOpsSimulation = _rifle_sim()
+	var progress: BlasterOpsMissionState = sim.mission as BlasterOpsMissionState
+	_order(sim)
+	assert_eq(progress.ally_order, BlasterOpsMissionState.AllyOrder.HOLD)
+	var anchor: Vector2 = progress.ally_anchor
+	sim.player.position = POINT + Vector2(700.0, 0.0)
+	_run(sim, 180)
+	assert_true(sim.prisoners[0].position.distance_to(anchor) < 150.0, "ally stayed at the point")
+
+
+func test_order_follow_is_the_default_and_returns_after_the_cycle() -> void:
+	var sim: BlasterOpsSimulation = _rifle_sim()
+	var progress: BlasterOpsMissionState = sim.mission as BlasterOpsMissionState
+	assert_eq(progress.ally_order, BlasterOpsMissionState.AllyOrder.FOLLOW)
+	_order(sim)
+	_order(sim)
+	assert_eq(progress.ally_order, BlasterOpsMissionState.AllyOrder.FOLLOW, "nothing to protect, so guard is skipped")
+	sim.player.position = POINT + Vector2(500.0, 0.0)
+	_run(sim, 180)
+	assert_true(sim.prisoners[0].position.distance_to(sim.player.position) < 200.0, "ally followed the player")
+
+
+func test_order_guard_stands_by_the_hold_zone() -> void:
+	var sim: BlasterOpsSimulation = _rifle_sim()
+	var progress: BlasterOpsMissionState = sim.mission as BlasterOpsMissionState
+	var stage: BlasterOpsStageData = BlasterOpsStageData.new()
+	stage.objective = BlasterOpsStageData.Objective.HOLD
+	stage.zone = POINT + Vector2(420.0, 0.0)
+	stage.zone_radius = 100.0
+	stage.hold_seconds = 60.0
+	progress.definition.stages = [stage] as Array[BlasterOpsStageData]
+	progress.stage_index = 0
+	_order(sim)
+	_order(sim)
+	assert_eq(progress.ally_order, BlasterOpsMissionState.AllyOrder.GUARD)
+	_run(sim, 240)
+	assert_true(sim.prisoners[0].position.distance_to(stage.zone) < 150.0, "ally reached the zone")
+
+
+func test_orders_ignored_without_free_allies() -> void:
+	var sim: BlasterOpsSimulation = _sim([_role("rifleman")] as Array[BlasterOpsAllyData])
+	_order(sim)
+	assert_eq((sim.mission as BlasterOpsMissionState).ally_order, BlasterOpsMissionState.AllyOrder.FOLLOW)
+
+
+func test_orders_end_when_extraction_opens() -> void:
+	var sim: BlasterOpsSimulation = _rifle_sim()
+	var progress: BlasterOpsMissionState = sim.mission as BlasterOpsMissionState
+	_order(sim)
+	assert_true(progress.order_point(sim) != Vector2.INF)
+	progress.waves_finished = true
+	assert_eq(progress.order_point(sim), Vector2.INF)
+
+
+func test_order_survives_a_snapshot() -> void:
+	var sim: BlasterOpsSimulation = _rifle_sim()
+	var progress: BlasterOpsMissionState = sim.mission as BlasterOpsMissionState
+	_order(sim)
+	var snapshot: Dictionary = progress.capture()
+	progress.ally_order = BlasterOpsMissionState.AllyOrder.FOLLOW
+	progress.ally_anchor = Vector2.ZERO
+	progress.restore(snapshot)
+	assert_eq(progress.ally_order, BlasterOpsMissionState.AllyOrder.HOLD)
+	assert_true(progress.ally_anchor != Vector2.ZERO)
+
+
+func test_new_order_key_keeps_custom_bindings() -> void:
+	var saved: Dictionary = {"fire": [KEY_J], "guard": [KEY_G]}
+	var migrated: Dictionary = BlasterOpsBindings.migrate_keys(saved)
+	assert_true(migrated.fire.has(KEY_J))
+	assert_true(migrated.guard.has(KEY_G))
+	assert_false(migrated.order_allies.has(KEY_G), "a key the player already uses is not taken")
+	var free: Dictionary = BlasterOpsBindings.migrate_keys({"fire": [KEY_J]})
+	assert_true(free.order_allies.has(KEY_G))

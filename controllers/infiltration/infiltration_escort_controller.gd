@@ -12,11 +12,11 @@ func _init(sim: InfiltrationSimulation) -> void:
 		_intents.append(InfiltrationIntent.new())
 
 
-func _engage(sim: InfiltrationSimulation, _index: int, actor: InfiltrationActor, role: BlasterOpsAllyData, intent: InfiltrationIntent) -> void:
+func _engage(sim: InfiltrationSimulation, origin: Vector2, actor: InfiltrationActor, role: BlasterOpsAllyData, intent: InfiltrationIntent) -> void:
 	var nearest: float = INF
 	var goal: Vector2 = Vector2.INF
 	for target in sim.targets:
-		if target.health <= 0.0 or target.position.distance_to(sim.player.position) > role.engage_range:
+		if target.health <= 0.0 or target.position.distance_to(origin) > role.engage_range:
 			continue
 		var distance: float = actor.position.distance_to(target.position)
 		if distance < nearest:
@@ -27,6 +27,13 @@ func _engage(sim: InfiltrationSimulation, _index: int, actor: InfiltrationActor,
 	intent.aim = goal - actor.position
 	intent.held = Intent.Command.LIGHT
 	intent.movement = _navigation.direction(actor.position, goal, actor.radius) if nearest > role.melee_range else Vector2.ZERO
+
+
+func _ordered_point(sim: InfiltrationSimulation, index: int) -> Vector2:
+	var progress: BlasterOpsMissionState = sim.mission as BlasterOpsMissionState
+	if progress == null or index == progress.definition.protected_index:
+		return Vector2.INF
+	return progress.order_point(sim as BlasterOpsSimulation)
 
 
 func produce_all(sim: InfiltrationSimulation) -> Array[InfiltrationIntent]:
@@ -45,8 +52,13 @@ func produce_all(sim: InfiltrationSimulation) -> Array[InfiltrationIntent]:
 		if sim.mission is BlasterOpsMissionState:
 			role = (sim.mission as BlasterOpsMissionState).definition.ally_role(index)
 		var follow: float = role.follow_distance if role != null else sim.config.escort_follow_distance
-		if actor.position.distance_to(leader) > follow:
-			intent.movement = _navigation.direction(actor.position, leader, sim.config.body_radius)
+		var ordered: Vector2 = _ordered_point(sim, index)
+		var goal_point: Vector2 = leader
+		if ordered != Vector2.INF:
+			goal_point = ordered
+			follow += operations.operations.ally_order_spread * index
+		if actor.position.distance_to(goal_point) > follow:
+			intent.movement = _navigation.direction(actor.position, goal_point, sim.config.body_radius)
 		if sim.mission is BlasterOpsMissionState:
 			var progress: BlasterOpsMissionState = sim.mission as BlasterOpsMissionState
 			if index == progress.definition.protected_index:
@@ -58,7 +70,7 @@ func produce_all(sim: InfiltrationSimulation) -> Array[InfiltrationIntent]:
 					continue
 			var nearest: float = role.fire_range if role != null and role.bolt != null else operations.operations.ally_fire_range
 			if role != null and role.melee_damage > 0.0:
-				_engage(sim, index, actor, role, intent)
+				_engage(sim, ordered if ordered != Vector2.INF else sim.player.position, actor, role, intent)
 				leader = actor.position
 				continue
 			if actor.fire_ticks > 0 or (role != null and role.bolt == null):

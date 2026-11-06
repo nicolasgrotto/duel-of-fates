@@ -2,12 +2,12 @@ class_name BlasterOpsBindings
 extends RefCounted
 
 const PREFIX: String = "blaster_ops_"
-const LAYOUT_VERSION: int = 2
-const ACTIONS: Array[String] = ["left", "right", "up", "down", "fire", "guard", "dodge", "power", "power_2", "power_3", "switch_weapon", "run", "sneak", "strike", "interact"]
+const LAYOUT_VERSION: int = 3
+const ACTIONS: Array[String] = ["left", "right", "up", "down", "fire", "guard", "dodge", "power", "power_2", "power_3", "switch_weapon", "order_allies", "run", "sneak", "strike", "interact"]
 const KEYS: Dictionary = {
 	"left": [KEY_A, KEY_LEFT], "right": [KEY_D, KEY_RIGHT], "up": [KEY_W, KEY_UP], "down": [KEY_S, KEY_DOWN],
 	"fire": [KEY_V], "guard": [KEY_Q], "dodge": [KEY_SPACE], "power": [KEY_1, KEY_R], "power_2": [KEY_2], "power_3": [KEY_3],
-	"switch_weapon": [KEY_X], "run": [KEY_SHIFT], "sneak": [KEY_C], "strike": [KEY_F], "interact": [KEY_E],
+	"switch_weapon": [KEY_X], "order_allies": [KEY_G], "run": [KEY_SHIFT], "sneak": [KEY_C], "strike": [KEY_F], "interact": [KEY_E],
 }
 const ADDED_IN_LAYOUT_2: Dictionary = {"fire": [KEY_V], "power": [KEY_1]}
 const UNSAFE_KEYS: Array[Key] = [KEY_CTRL, KEY_ALT, KEY_META]
@@ -15,7 +15,7 @@ const COPIES: Dictionary = {"fire": &"p1_light_attack", "guard": &"p1_block", "d
 const BUTTONS: Dictionary = {"run": JOY_BUTTON_LEFT_STICK, "interact": JOY_BUTTON_A, "power_2": JOY_BUTTON_LEFT_SHOULDER, "power_3": JOY_BUTTON_RIGHT_STICK, "switch_weapon": JOY_BUTTON_BACK}
 const MOVE_AXES: Dictionary = {"left": [JOY_AXIS_LEFT_X, -1.0], "right": [JOY_AXIS_LEFT_X, 1.0], "up": [JOY_AXIS_LEFT_Y, -1.0], "down": [JOY_AXIS_LEFT_Y, 1.0]}
 const AIM_AXES: Dictionary = {"aim_left": [JOY_AXIS_RIGHT_X, -1.0], "aim_right": [JOY_AXIS_RIGHT_X, 1.0], "aim_up": [JOY_AXIS_RIGHT_Y, -1.0], "aim_down": [JOY_AXIS_RIGHT_Y, 1.0]}
-const DPAD: Dictionary = {"left": JOY_BUTTON_DPAD_LEFT, "right": JOY_BUTTON_DPAD_RIGHT, "up": JOY_BUTTON_DPAD_UP, "down": JOY_BUTTON_DPAD_DOWN}
+const DPAD: Dictionary = {"order_allies": JOY_BUTTON_DPAD_UP}
 const DEADZONE: float = 0.25
 static var _users: int = 0
 
@@ -48,7 +48,7 @@ static func apply(keys: Dictionary, buttons: Dictionary) -> void:
 		elif BUTTONS.has(suffix):
 			if not _button_taken(buttons, BUTTONS[suffix]):
 				_add_button(action, BUTTONS[suffix])
-		else:
+		elif COPIES.has(suffix):
 			for event in InputMap.action_get_events(COPIES[suffix]):
 				if event is InputEventJoypadButton and not BUTTONS.values().has(event.button_index):
 					InputMap.action_add_event(action, event.duplicate())

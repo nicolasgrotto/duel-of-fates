@@ -310,6 +310,8 @@ func _advance_operations() -> void:
 func _apply_intent(intent: InfiltrationIntent) -> void:
 	if intent.purchase >= 0 and mission is BlasterOpsMissionState:
 		(mission as BlasterOpsMissionState).purchase(self, intent.purchase)
+	if (intent.pressed & InfiltrationIntent.ORDER_ALLIES) != 0 and mission is BlasterOpsMissionState:
+		(mission as BlasterOpsMissionState).cycle_ally_order(self)
 	if intent.aim.length_squared() > 0.0:
 		player.aim = intent.aim.normalized()
 	player.guard = false
