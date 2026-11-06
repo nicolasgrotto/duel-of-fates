@@ -13,7 +13,7 @@ Seis operações independentes e repetíveis em Jogar › Modos especiais › Co
 
 ## Naves do jogador
 
-Quatro naves, todas liberadas desde o início, escolhidas no **Hangar**. A escolha fica salva e vale para qualquer missão; melhorias da Oficina somam-se à nave escolhida.
+Quatro naves, todas liberadas desde o início, escolhidas no **Hangar**, a mesma tela da **Oficina**. A escolha fica salva e vale para qualquer missão. **Cada nave tem as próprias melhorias** (decisão do autor), somadas só a ela.
 
 | Nave | Perfil | Casco | Escudo | Regen. | Atraso | Veloc. | Giro | Raio | Primária (dano / intervalo) | Míssil (dano / recarga) | Dano de colisão | Recarga do impulso |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -46,6 +46,6 @@ Cada fase tem ciclo fixo de abertura: preparação de 0,6 s, janela de 2 s e fec
 
 Morte do jogador, capital aliada destruída ou tempo esgotado têm prioridade sobre vitória no mesmo tick. Vitória exige todas as ondas obrigatórias e seções exigidas; o chefe exige casco agregado zero. O resultado é selado uma vez e congela o núcleo. Guarda missão, motivo, ticks, casco restante, objetivo, fases e avaliação: três marcas com casco ≥75% e tempo dentro da referência; duas com uma dessas condições; uma no restante das vitórias; zero na derrota.
 
-Primeira vitória em cada missão concede um ponto, seis no total, o bastante para comprar toda a Oficina. Arma, Escudo e Velocidade têm dois níveis de custo 1, configurados em recurso: Arma acrescenta 2 de dano e reduz o intervalo em 0,02 s por nível; Escudo acrescenta 10 de capacidade e 2/s de regeneração; Velocidade acrescenta 35 u/s e 60 u/s². Redistribuição gratuita zera os níveis, sem apagar conclusões. Repetir pode melhorar tempo e avaliação, nunca duplica pontos. Saves antigos começam vazios e mantêm seus outros modos.
+Primeira vitória em cada missão concede um ponto, seis no total. **Os pontos valem para cada nave separadamente**: a nave gasta do total ganho sem tirar nada das outras, e os seis pontos bastam para comprar toda a Oficina de **cada** nave. Assim trocar de nave nunca penaliza. Ao abrir um save antigo, as melhorias que já valiam para qualquer nave são mantidas em todas as quatro, e nada se perde. Refazer vale por nave. Arma, Escudo e Velocidade têm dois níveis de custo 1, configurados em recurso: Arma acrescenta 2 de dano e reduz o intervalo em 0,02 s por nível; Escudo acrescenta 10 de capacidade e 2/s de regeneração; Velocidade acrescenta 35 u/s e 60 u/s². Redistribuição gratuita zera os níveis, sem apagar conclusões. Repetir pode melhorar tempo e avaliação, nunca duplica pontos. Saves antigos começam vazios e mantêm seus outros modos.
 
 O modo pode ser iniciado por fluxo externo com `SpaceMissionData` e `SpaceLoadout` explícitos. O resultado é entregue como objeto e sinal, inclusive na derrota; uma tentativa externa não escreve progresso local nem presume tela seguinte. Voltar na pausa de uma tentativa externa emite `exit_requested`, para o dono do fluxo decidir a saída. Isso prepara a Saga sem implementá-la nesta tarefa.

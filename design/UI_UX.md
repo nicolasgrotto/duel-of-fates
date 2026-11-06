@@ -24,7 +24,46 @@ Português (padrão) e inglês, escolhidos nas Opções e salvos. Todo texto de 
 
 ## Telas
 
+### Componentes táticos (versão 1.1)
+
+Menus e HUD de Operações e naves usam a mesma família, com tokens de `UiPalette` e tipos do `main_theme.tres`, sem valores soltos: fundo `tactical_ground` #060b16, painel `tactical_panel` #0b1424, elevado `tactical_raised` #12203a, borda `tactical_line` #223555 e `tactical_line_strong` #3a5078, texto `text`, apoio `tactical_muted` #a3aec6 e `tactical_dim` #7f8aa3, destaque ciano `menu_blade_a`, âmbar `menu_blade_b`, perigo `danger`, céu das naves `tactical_deep` #03060f. Tudo em Oxanium. Corpo de texto com espaçamento normal, só títulos curtos com letras abertas. Mínimo de 27 px na base 1080p (18 px em 720p) para texto de leitura e 21 para rótulos.
+
+Reutilizáveis em `ui/widgets/`: **tecla** (`Keycap`, recuo inferior), **rodapé de teclas** (`KeyFooter`), **ícone de estado** (`StatusGlyph`: concluída, disponível, bloqueada), **etiqueta** (`InfoChip`: rótulo pequeno e valor), **níveis** (`LevelPips`: quadrados cheios até o nível, com `MÁX` no fim), **lista agrupada** (`GroupedMissionList`: mesma API de `MenuList`, com títulos de grupo que não recebem foco) e **cartão de objetivo** (`ObjectiveCard`).
+
+### Console de Operações (direção A aprovada)
+
+Painel esquerdo de 728 px: cabeçalho com barra de destaque e contagem à direita (`5 de 13 concluídas`), grupos **Treinamento**, **Infiltração** e **Incursão**, linhas de uma altura com barra ciano de 5 px e fundo elevado na seleção, ícone de estado, nome, nota ou bônus, melhor tempo. Separador, depois Personagem, Arma e Voltar. Painel direito: prévia inteira da missão, título, grupo, pílula de estado, linha de recorde, briefing com quebra de linha, etiquetas (Objetivo, Duração, Equipamento) e Recompensas separadas. Rodapé com teclas dentro da margem segura: setas, Enter, Esc. Personagens, armas e resultado seguem a mesma composição.
+
+### Mapa de setor das naves (direção A aprovada)
+
+Céu `tactical_deep` com nebulosa e estrelas geradas, anéis de radar e mira âmbar. As seis missões são nós sobre uma rota: ciano sólido nos trechos concluídos, tracejado à frente. Nó é um losango de 56 px com o ícone de estado. Seleção: colchetes âmbar nos quatro cantos e nome em âmbar acima; passar o mouse: círculo tracejado ciano. Painel chanfrado à direita: prévia, título, objetivo em âmbar, briefing, **Tipos inimigos** (sprite e nome), **Ameaça** (cinco marcas), **Melhor nota** (três losangos e tempo), **Situação**, recompensa. Botões Hangar e Voltar abaixo do mapa. Setas movem entre nós pela ordem da rota; Enter inicia. O campo de ameaça é só de exibição.
+
+### Hangar e Oficina (tela única)
+
+Uma tela, duas colunas de foco. Esquerda: as quatro naves, com nível total em marcas e selo **Em uso**. Centro: sprite grande e barras de atributo, com um trecho ciano que mostra o que as melhorias acrescentam. Direita: as três melhorias da nave em foco, com `LevelPips`, efeito atual e efeito seguinte, custo, pontos livres **desta nave**, e Refazer. Esquerda e direita trocam de coluna; cima e baixo movem; Enter usa a nave ou compra o nível. Item comprado até o fim mostra `MÁX`; sem pontos, mostra quanto falta e como ganhar (`Vença uma missão pela primeira vez`).
+
+### Terminal de suprimentos (versão 1.1)
+
+Painel de duas colunas sobre a ação congelada. Cabeçalho: nome do terminal e saldo grande. Esquerda: todas as ofertas, sempre visíveis, cada uma com ícone, nome, `LevelPips` (comprados sobre o limite, `MÁX` ao chegar nele; sem limite, `×N` comprados) e custo. Oferta indisponível fica apagada **com o motivo** na coluna da direita, nunca some: sem saldo, vida cheia, sem aliado, grupo no limite, sem blaster, limite atingido. Direita: nome, descrição, **Agora → Depois** com os números reais (`Barreiras 1 → 2`, `Dano 100% → 90%`), `Resta 1 compra` quando só falta uma, e a situação atual do jogador (vida, cargas, aliados). Ao comprar, a linha pisca, e o saldo e os níveis mudam na hora; um aviso curto confirma. `Esc` fecha.
+
+### HUD de missão (versão 1.1)
+
+Regra: **um só cartão de objetivo** e o resto da tela livre. Substitui as linhas soltas de objetivo, contexto e status.
+
+- **Cartão de objetivo**, no alto ao centro, largura fixa, fundo `tactical_panel` translúcido e barra de destaque à esquerda. Acima, rótulo pequeno (`ETAPA 3 DE 7`, `ONDA 2 DE 4` ou `INFILTRAÇÃO`). No meio, **o objetivo em uma frase grande** (28 px base). Abaixo, barra de progresso quando há medida (tempo a segurar, alvos, inimigos restantes) e linha fina com o número, e a direção e distância do alvo (`↗ 340 u`). Tempo limite, quando há, fica à direita do rótulo. Ao concluir a etapa, o cartão pisca em destaque e mostra `Etapa concluída` por um instante antes da próxima.
+- **Seta de objetivo** ciano na borda da área de jogo quando o alvo está fora da câmera; marca do alvo no mundo quando está visível. As setas vermelhas seguem só para ameaças.
+- **Canto superior esquerdo:** personagem, Vida, Vigor e Calor com rótulos. A esquiva aparece como uma marca junto das barras, e não como texto, enquanto recarrega.
+- **Canto inferior direito:** quadros de poder e, ao lado, a etiqueta de arma com a tecla de troca.
+- **Canto inferior esquerdo:** etiquetas só do que existe na missão: **Aliados** (número vivos, ordem atual e tecla), **Barreiras** e **Suprimentos**. Abaixo, Correndo ou Furtivo.
+- **Centro inferior:** um só aviso de contexto com tecla desenhada, quando há algo a fazer ali (`E  Terminal`, `E  Libertar`).
+- **Comandos:** a lista completa aparece no início da tentativa por 12 s e some aos poucos. Volta na pausa, junto do objetivo. Nada de duas linhas fixas no rodapé durante a ação.
+- **Naves:** mesmo cartão e mesma regra; casco e escudo à esquerda; impulso e míssil em quadros à direita; alvos por marcador.
+- **Infiltração:** o cartão mostra o objetivo da fase e o rótulo mostra o estado da segurança, em âmbar ou perigo quando há alarme.
+- **Tutorial:** o mesmo cartão com o rótulo `TREINO 3 DE 9`, a instrução com as teclas atuais e o progresso (`1 / 2`).
+
 ### HUD das Operações (versão 1.1)
+
+*A disposição acima substitui as linhas de texto descritas nesta seção; barra de calor, quadros de poder e setas de ameaça continuam valendo.*
 
 Barra de **Calor** no lugar do número, abaixo de Vida e Vigor, só para quem tem blaster, com o rótulo ao lado. Frio: cor de destaque. Acima de 70%: âmbar (`menu_blade_b`). Superaquecido: perigo, pulsando, rótulo **Superaquecido · Resfriando** e um traço no ponto em que a arma volta a disparar. Com efeitos reduzidos não pulsa; o texto e o traço continuam. Sem número de calor, que fica no F3. A postura atual (**Correndo**, **Furtivo**) aparece em texto junto às recargas, porque agora é uma alternância sem tecla segurada.
 

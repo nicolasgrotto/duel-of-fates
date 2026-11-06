@@ -96,7 +96,7 @@ Inimigo alertado sem alvo visível ataca a barreira mais próxima a até 480 u: 
 
 ## Aliados (versão 1.1)
 
-Aliados são prisioneiros com papel: libertados com `E`, ou chamados como reforço. Agem sozinhos, por intenção, e o jogador não dá ordens. Até seis por missão, o limite medido. Inimigos os atacam; nenhum ataque do jogador ou de outro aliado os fere. Quem é libertado sem papel continua sendo o prisioneiro comum da task 18.
+Aliados são prisioneiros com papel: libertados com `E`, ou chamados como reforço. Agem sozinhos, por intenção, e obedecem à ordem de grupo do jogador (`G`): **Seguir**, **Segurar aqui** ou **Proteger** o alvo da missão. A ordem só muda onde ficam. Até seis por missão, o limite medido. Inimigos os atacam; nenhum ataque do jogador ou de outro aliado os fere. Quem é libertado sem papel continua sendo o prisioneiro comum da task 18.
 
 | Papel | Vida / velocidade | Distância do jogador | Ação |
 | --- | --- | --- | --- |
@@ -106,7 +106,7 @@ Aliados são prisioneiros com papel: libertados com `E`, ou chamados como refor�
 | Socorrista / Field medic | 80 / 215 u/s | 64 u | não atira; repara 3 de vida por segundo no jogador e aliados a até 220 u |
 | Guarda de lâmina / Blade guard | 110 / 240 u/s | 72 u | avança em inimigos a até 260 u do jogador e corta: 8 de dano a cada 0,7 s, alcance 52 u |
 
-Aliado só vai embora pela extração depois que os combates terminam: até lá ele luta. Na Escolta, o protegido continua indo à saída.
+Com ordem de **Segurar aqui** ou **Proteger**, a distância da tabela passa a contar a partir do ponto ordenado, e a guarda de lâmina avança em inimigos a até 260 u desse ponto. Aliado só vai embora pela extração depois que os combates terminam: até lá ele luta. Na Escolta, o protegido continua indo à saída.
 
 ## Arsenal nas Operações
 

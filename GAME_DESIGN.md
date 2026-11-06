@@ -640,6 +640,8 @@ Decisão do autor, resumida em [DESIGN.md](DESIGN.md#atualização-11-das-opera�
 
 **Controles.** `1` `2` `3` lançam os poderes, `R` também lança o primeiro, `F` é o corpo a corpo, `X` troca de arma, `V` dispara pelo teclado além do botão esquerdo. `E`, `Q` e `Espaço` continuam. `Shift` alterna corrida e `C` alterna furtivo: um toque liga, outro desliga, e ligar um desliga o outro. Teclas personalizadas salvas são preservadas; Ctrl e Alt não podem ser escolhidas neste modo, e quem tinha Ctrl no furtivo fica com o restante das teclas.
 
+**Ordens aos aliados.** `G` (no controle, direcional para cima) alterna a ordem do grupo, valendo para todos os aliados livres: **Seguir** (padrão, atrás do jogador), **Segurar aqui** (formam em volta do ponto onde o jogador estava ao dar a ordem) e **Proteger** (formam em volta do alvo da missão, só quando existe alguém ou algo a proteger; sem alvo, a ordem é pulada). Ordem é posição, não combate: cada papel continua atirando, cortando ou reparando sozinho, e a guarda de lâmina avança a partir do ponto ordenado, não do jogador. O protegido da Escolta não recebe ordens. Ordem vive só na tentativa, fica no snapshot e é uma intenção como qualquer outra, então é determinística e reproduzível. Na hora de extrair, todos seguem para a saída como antes, sem depender de ordem.
+
 **Facções.** Todo disparo e área pertencem a uma facção: jogador e aliados, ou inimigos. Dano só atravessa de uma facção para a outra. Disparo devolvido passa a pertencer a quem devolveu. Barreiras implantadas são da facção do jogador e bloqueiam só o fogo inimigo. Caixas do mapa não têm dono e quebram com qualquer disparo. Prisioneiro ainda na cela não sofre dano de ninguém.
 
 **Arsenal nas Operações.** O conjunto é escolhido na linha **Arma**, no painel de personagem e no menu de Operações: arma própria do personagem (ou só lâmina, o padrão de quem não tem blaster) ou um dos cinco blasters do Arsenal, de graça, só neste modo e em Infiltração e Incursão. A escolha é uma preferência salva, não uma posse: não há compra, desbloqueio nem progressão, e a História não é afetada.
@@ -647,6 +649,14 @@ Decisão do autor, resumida em [DESIGN.md](DESIGN.md#atualização-11-das-opera�
 Cada personagem tem **treino** por classe de arma: Treinado, Familiar ou Sem treino. Treino não muda o dano; muda calor, cadência, dispersão e tempo de troca. Assim o Arsenal amplia o personagem sem igualar todo mundo.
 
 **Modos de arma.** Blaster de uma mão com lâmina de uma mão é **híbrido**: as duas ficam na mão, o tiro sai do blaster e o corpo a corpo da lâmina, como a Corsária. Arma de duas mãos, ou qualquer blaster para quem luta com duas lâminas ou lâmina em haste, exige **troca**: `X` alterna entre modo de disparo e modo de lâmina, com tempo vindo dos dados da arma. No modo de disparo a primária atira; no de lâmina ela corta. Em modo de disparo, `F` ou guarda iniciam a troca sozinhos: o corte sai ao terminar, e a guarda vale enquanto a tecla continuar segurada. Durante a troca não há tiro, corte nem guarda. O abate silencioso continua imediato. O sistema recebe personagem e arma explícitos, para servir à futura História completa.
+
+**Tutoriais das Operações e das naves.** Cada modo especial tem o seu, conforme a regra do DESIGN. São missões curtas, feitas com o motor de etapas, sem nota nem save:
+
+- **Treino de Infiltração:** andar, modo furtivo, correr, abater pelas costas, usar painel, libertar e guiar um prisioneiro, ver o que o alarme faz, extrair.
+- **Treino de Incursão:** mirar e atirar, o calor da arma, corte e guarda, aparar disparo, esquiva, poderes, trocar de arma, barreira, ordem aos aliados, terminal de suprimentos.
+- **Treino de Voo:** acelerar e girar, disparar, impulso, míssil, derrubar um alvo, escudo, seguir o marcador de alvo.
+
+Cada passo é um **objetivo de ação** na etapa: uma ação a realizar, N vezes. O alvo vem dos dados e é contado pela simulação, para que o teste possa atravessar o tutorial com as mesmas intenções do jogador.
 
 ## Arsenal da História
 

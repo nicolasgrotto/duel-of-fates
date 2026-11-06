@@ -155,10 +155,22 @@ Objetivo: fazer da Incursão uma operação de combate completa, sem comprometer
 - **Conjunto do Arsenal.** A linha de arma do painel de personagem oferece os cinco blasters do Arsenal, de graça e só neste modo, sem posse nem progressão. Lâmina é o padrão. Cada personagem tem seu treino com cada classe de arma: ninguém fica igualmente bom em tudo, e o Arsenal não substitui a identidade do personagem.
 - **Duas formas de usar.** Arma de uma mão com lâmina de uma mão fica junto da lâmina. Arma de duas mãos, ou qualquer arma para quem luta com duas lâminas ou lâmina em haste, exige trocar entre o modo de disparo e o modo de lâmina. O sistema é modular para servir à futura História completa.
 - **Suprimentos.** Ganhos e gastos dentro de uma tentativa, em terminais que só existem em algumas missões longas: cura, barreiras, resfriamento, reforços aliados. Nunca viram moeda, nada é salvo entre tentativas, e toda missão pode ser vencida sem comprar nada.
-- **Aliados e barreiras.** Aliados têm papéis próprios e agem sozinhos; o jogador não dá ordens. Barreiras podem ser implantadas além da Defesa e bloqueiam fogo inimigo.
+- **Aliados e barreiras.** Aliados têm papéis próprios e lutam sozinhos. O jogador dá **uma ordem de grupo** com uma tecla: seguir, segurar posição ou proteger o alvo da missão. A ordem diz onde ficar, nunca como lutar (decisão do autor depois de jogar a Incursão). Barreiras podem ser implantadas além da Defesa e bloqueiam fogo inimigo.
 - **Duração.** Incursão comum: 5 a 8 minutos numa primeira jogada cuidadosa. Chefe ou grande operação: 8 a 10. A duração vem de objetivos, ambientes e encontros diferentes, nunca de inflar vida de inimigo ou repetir ondas. IDs, recompensas e progresso continuam os mesmos.
 - **Teclas perto do WASD e nada em Ctrl.** Correr e andar furtivo alternam com um toque; o navegador reserva combinações com Ctrl, como Ctrl+W.
 - **Web é plataforma de validação.** O limite de unidades, disparos e busca de caminho é medido antes de crescer, porque a build Web roda em uma só thread.
+- **Objetivo sempre legível.** Dentro da missão, o objetivo atual, o progresso dele e a direção até ele ficam em um único cartão, e nunca em linhas de texto soltas. O jogador nunca deve parar de jogar para descobrir o que fazer.
+
+## Todo modo especial tem tutorial próprio (decisão do autor)
+
+**Regra permanente.** Um modo especial só está pronto quando tem tutorial próprio, jogável, que ensina fazendo. Vale para Infiltração, Incursão e Combate de naves, e para todo modo futuro: Operações roguelite, Saga e Ação lateral, entre outros.
+
+- Curto: de 2 a 4 minutos, com um passo por vez.
+- Cada passo pede uma ação e só avança quando o jogador a faz. As teclas mostradas vêm dos atalhos atuais, nunca de texto fixo.
+- Entrada visível no menu do próprio modo, primeira na ordem, sem bloquear as missões.
+- Não rende nota, recorde nem recompensa, e não mexe no save.
+- Usa os mesmos dados, a mesma simulação e o mesmo HUD do modo. Não é uma cópia à parte.
+- Tem teste automatizado que atravessa todos os passos e é verificado em captura, como o resto do modo.
 
 ## Propriedade intelectual
 
