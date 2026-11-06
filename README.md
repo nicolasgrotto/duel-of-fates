@@ -8,7 +8,7 @@ Jogo de duelo de lâminas de energia em visão lateral, feito na **Godot 4.7** c
 
 ## Situação
 
-**Versão 1.0.0.** Duelo completo com o elenco inteiro, o Fluxo (poderes e técnicas), as dez arenas, a História com quatro finais, Duelar, Batalhas, Infiltração e Combate de naves, em português e inglês. O detalhe de cada entrega fica em [ROADMAP.md](ROADMAP.md).
+**Versão 1.1.0.** Duelo completo com o elenco inteiro, o Fluxo (poderes e técnicas), as dez arenas, a História com quatro finais, Duelar, Batalhas, Infiltração e Combate de naves, em português e inglês. O detalhe de cada entrega fica em [ROADMAP.md](ROADMAP.md).
 
 **Branches:** o desenvolvimento acontece na `1.x`. A `main` recebe só o que está pronto para publicar: cada push nela atualiza o site, e cada tag `v*` cria uma release.
 
