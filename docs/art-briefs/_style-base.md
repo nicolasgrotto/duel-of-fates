@@ -1,6 +1,6 @@
 # Prompt-base de estilo
 
-**Todo brief herda este arquivo** e usa como referência a imagem do sprite atual do lutador em `art/reference/<id>/` (gerada pelo pipeline da task 01). Prompts em inglês, sem citar nenhuma franquia, obra, marca ou artista.
+**Todo brief herda este arquivo** e usa como referência a imagem do sprite atual do lutador em `art/reference/<id>/` (gerada pelo pipeline da task 25). Prompts em inglês, sem citar nenhuma franquia, obra, marca ou artista.
 
 ## Prompt-base
 

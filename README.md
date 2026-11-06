@@ -66,7 +66,7 @@ Arte e áudio são gerados por ferramentas offline (Python 3 com numpy e Pillow)
 | [content/STORY.md](content/STORY.md) | Mundo, campanha, rotas, diálogos (PT-BR e EN) e finais |
 | [content/ARENAS.md](content/ARENAS.md) | As arenas e suas assinaturas visuais |
 | [content/INFILTRATION.md](content/INFILTRATION.md) | Missões, escolta, extração e bônus da Infiltração |
-| [docs/tasks/README.md](docs/tasks/README.md) | Tasks do upgrade visual e sonoro, auditoria e riscos |
+| [docs/tasks/README.md](docs/tasks/README.md) | Índice das tasks do upgrade visual e sonoro, auditoria e riscos |
 | [content/BLASTER_OPS.md](content/BLASTER_OPS.md) | Operações compartilhadas, sete Incursões, ondas, aliados, fases, avaliações e recompensas |
 | [content/HUNTS.md](content/HUNTS.md) | As três caçadas, recompensas e falas nos dois idiomas |
 | [design/ART_DIRECTION.md](design/ART_DIRECTION.md) | Identidade visual, personagens, lâminas, luz e animação |

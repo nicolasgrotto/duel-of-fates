@@ -41,7 +41,7 @@ O que depende do rig, além da animação:
 
 ## Lâminas
 
-Já existe bem mais do que parece, então a task 02 é de **melhoria**, não de criação.
+Já existe bem mais do que parece, então a task 23 é de **melhoria**, não de criação.
 
 | Pedido | Estado atual | Onde |
 | --- | --- | --- |
@@ -53,7 +53,7 @@ Já existe bem mais do que parece, então a task 02 é de **melhoria**, não de 
 | Faíscas | Sim, por evento | `presentation/effects/effects_director.gd` |
 | Punhos | 7 tipos em `WeaponData.Hilt`, desenhados por código | `hilt_view.gd` |
 
-Problemas para a task 02: o alfa externo é baixo e **a Web, onde o jogo é publicado, não tem glow**, por isso a lâmina lê como linha fina no site; e `GRID := 2.0` está fixo em `blade_view.gd`.
+Problemas para a task 23: o alfa externo é baixo e **a Web, onde o jogo é publicado, não tem glow**, por isso a lâmina lê como linha fina no site; e `GRID := 2.0` está fixo em `blade_view.gd`.
 
 ## Menus
 

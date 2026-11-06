@@ -1,6 +1,6 @@
 # Lições do fluxo de arte
 
-A ser preenchido na task 03 e atualizado a cada grupo.
+A ser preenchido na task 27 e atualizado a cada grupo.
 
 ## Custo medido
 

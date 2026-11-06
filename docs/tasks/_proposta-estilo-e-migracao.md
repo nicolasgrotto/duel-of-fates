@@ -1,6 +1,6 @@
 # Proposta: guia de estilo e migração para 640×360
 
-Aprovada pelo autor, com as decisões abaixo; a task 00 registra tudo em `ART_DIRECTION.md`. **Nada foi implementado ainda.** Base: [_auditoria.md](_auditoria.md).
+Aprovada pelo autor, com as decisões abaixo; a task 21 registra tudo em `ART_DIRECTION.md`. **Nada foi implementado ainda.** Base: [_auditoria.md](_auditoria.md).
 
 ## Grade
 
@@ -15,18 +15,22 @@ A simulação não muda: ela trabalha em unidades, e a mudança é só de quanto
 
 ## Decisões do autor
 
-Respondidas pelo autor. A task 00 as registra em `ART_DIRECTION.md`.
+Respondidas pelo autor. A task 21 as registra em `ART_DIRECTION.md`. Os números de task referem-se a `build/agent_tasks/`.
 
 | # | Decisão | Consequência |
 | --- | --- | --- |
-| D1 | **Rig com peças**, mantido. Quadro a quadro está descartado | A task 03 compara duas formas de fazer as peças: (a) todas por IA a partir do frame-chave; (b) híbrido, com IA só em cabeça, torso, capa e punho, e o restante por código |
-| D2 | **Zoom contínuo mantido**, com 640×360 como enquadramento neutro | A task 00b testa punch-in e zoom contínuo quanto a shimmer e pixels de largura desigual, e propõe degraus inteiros ou transição curta se precisar |
+| D1 | **Rig com peças**, mantido. Quadro a quadro está descartado | A task 27 compara (a) peças geradas a partir do frame-chave e (b) híbrido, com IA só em cabeça, torso, capa e punho. Registra imagens consumidas, tempo de limpeza e resultado visual, com capturas ao lado do Guardião atual. Só a versão escolhida fica no jogo |
+| D2 | **Zoom contínuo mantido**, com 640×360 como enquadramento neutro | A task 24 testa shimmer e largura dos pixels no zoom contínuo e no punch-in, no nativo e no Chrome, e propõe degraus inteiros ou transição curta se precisar |
 | D3 | **Texto em Oxanium**, em alta resolução | Imagens de interface ficam na grade, com pixel de 3 px na base 1080p |
 | D4 | **Recorte pintado só em retratos e fundos** | Nas peças, a luz vem do shader e dos mapas de normal |
-| D5 | **Tasks 00b e 03 antes das tasks 20 a 22 do Codex**, para a plataforma já usar os modelos novos. Sem branches separadas | A task 19 do Codex (Roguelite) é top-down e não depende do rig: pode rodar antes, sem esperar |
+| D5 | **Upgrade visual antes das tasks 53 e 54 (Ação lateral)** e da 52 (Saga), para os modos nascerem com a grade e o rig novos | Essas tasks só começam depois da migração (24) e da aprovação do piloto (27). A 19 (Roguelite) e o áudio não esperam |
 | D6 | **Modos top-down fora** desta rodada | Operações e naves ficam na grade atual |
-| D7 | **Áudio sem serviços pagos, Suno ou Udio.** MIDI + FluidSynth com soundfont de licença livre, mais síntese em numpy | Direção: synth sombrio, pads, baixos, coro sintético e percussão, com orquestral só como textura. Faixa sem licença confirmada não entra |
-| D8 | **Trajes com risco de propriedade intelectual** são feitos por código ou descritos só por formas genéricas | Ver "Trajes de risco" abaixo |
+| D7 | **Áudio só com synth sombrio e atmosférico:** pads, baixos graves, drones, arpejos, coro sintético, percussão e impactos eletrônicos. **Sem camadas orquestrais.** Sem serviços pagos, Suno ou Udio | Síntese em numpy e, se precisar, MIDI com sons de synth, com material de licença livre registrado. Faixa sem licença confirmada não entra. Faixa de teste do menu, de cerca de 30 s, antes de produzir o resto |
+| D8 | **Trajes de risco:** Caído, Duelo, Legado e Ocaso do Predestinado, além de Soberano, Sombra, Espelho e Eco, só por código ou formas genéricas | Podem ser reabertos um a um depois do piloto |
+| D9 | **Glow na Web:** o autor mede no Chrome dele, com GPU real | Se não mantiver 60 FPS, usar halo aditivo no próprio sabre (task 23) |
+| D10 | **Limpeza de arte:** automatizada ao máximo por script (quantização, pixels soltos, contorno) | Tempo automático e manual registrados separadamente |
+| D11 | **Retoque em Pixelorama** (1.2.4), com LibreSprite como alternativa. Sem Aseprite | MCP do Pixelorama não é instalado agora; critérios na task 27 |
+| D12 | **Duas publicações:** 1.1.1 antes da migração e 1.2 com todo o resto. Não haverá 1.3 | Tasks 22 e 55. Tags internas sem publicar |
 
 ## Trajes de risco
 
@@ -58,7 +62,7 @@ Sem moral: nenhuma cor de lâmina indica lado, e o Caminho aparece só na interf
 | Tema | Aurora | Eclipse |
 | --- | --- | --- |
 | Cor de interface | `#5aa2ff` | `#ff4458` |
-| Base de painel | azul-ardósia `#0b1424` | vinho muito escuro, a definir na task 00 |
+| Base de painel | azul-ardósia `#0b1424` | vinho muito escuro, a definir na task 21 |
 | Roupas | ardósia, terra, oliva, dessaturados | vinho, carvão, ferrugem, dessaturados |
 
 **Lâmina:** núcleo branco, cor saturada e halo aditivo. É sempre o elemento mais claro da cena.
@@ -81,7 +85,7 @@ A imagem de carregamento é **referência de riqueza, não de técnica**: tem 16
 
 ## Migração para 640×360
 
-Passos da task 00b, sem arte nova:
+Passos da task 24, sem arte nova:
 
 1. Trocar `units_per_pixel` para 1,5 e tirar valores fixos como `GRID` de `blade_view.gd`, passando a ler do config.
 2. Fazer os pintores (`fighter_parts.py`, `make_arenas.py`, `make_finishers.py`, `paint_blasters.py`) aceitarem a escala e regenerar as peças e arenas atuais na grade nova.
