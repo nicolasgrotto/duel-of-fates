@@ -15,6 +15,11 @@ var barrier_charges: int = 0
 var heavy_barrier_charges: int = 0
 var last_hit_swing: int = -1
 var repair_ticks: int = 0
+var supplies: int = 0
+var offer_counts: PackedInt32Array = []
+var heat_scale: float = 1.0
+var damage_scale: float = 1.0
+var ally_scale: float = 1.0
 
 
 func _init(mission_data: BlasterOpsMissionData) -> void:
@@ -23,6 +28,85 @@ func _init(mission_data: BlasterOpsMissionData) -> void:
 	intermission_ticks = Ticks.from_seconds(definition.intermission_seconds)
 	barrier_charges = definition.barrier_charges
 	heavy_barrier_charges = definition.heavy_barrier_charges
+	supplies = definition.starting_supplies
+	offer_counts.resize(BlasterOpsTraining.SUPPLY_OFFERS.size())
+
+
+func has_supplies() -> bool:
+	return not definition.supply_terminals.is_empty()
+
+
+func earn_supplies(amount: int) -> void:
+	if has_supplies():
+		supplies += amount
+
+
+func nearby_terminal(sim: BlasterOpsSimulation) -> int:
+	for index in definition.supply_terminals.size():
+		if _reachable(sim, definition.supply_terminals[index]):
+			return index
+	return -1
+
+
+func offer_available(sim: BlasterOpsSimulation, index: int) -> bool:
+	var offer: BlasterOpsSupplyOffer = BlasterOpsTraining.SUPPLY_OFFERS[index]
+	if offer.limit > 0 and offer_counts[index] >= offer.limit:
+		return false
+	match offer.kind:
+		BlasterOpsSupplyOffer.Kind.COOLANT:
+			return sim.loadout.blaster != null
+		BlasterOpsSupplyOffer.Kind.REINFORCEMENT:
+			return _next_reserve() >= 0
+		BlasterOpsSupplyOffer.Kind.ALLY_UPGRADE:
+			return _has_allies(sim)
+	return true
+
+
+func purchase(sim: BlasterOpsSimulation, index: int) -> bool:
+	if index < 0 or index >= BlasterOpsTraining.SUPPLY_OFFERS.size() or nearby_terminal(sim) < 0 or not offer_available(sim, index):
+		return false
+	var offer: BlasterOpsSupplyOffer = BlasterOpsTraining.SUPPLY_OFFERS[index]
+	if supplies < offer.cost:
+		return false
+	supplies -= offer.cost
+	offer_counts[index] += 1
+	match offer.kind:
+		BlasterOpsSupplyOffer.Kind.HEAL:
+			sim.player.health = minf(sim.player.health + offer.amount, sim.operations.health)
+		BlasterOpsSupplyOffer.Kind.BARRIER:
+			barrier_charges += int(offer.amount)
+		BlasterOpsSupplyOffer.Kind.BULWARK:
+			heavy_barrier_charges += int(offer.amount)
+		BlasterOpsSupplyOffer.Kind.COOLANT:
+			heat_scale *= offer.amount
+		BlasterOpsSupplyOffer.Kind.COMBAT_TUNE:
+			damage_scale *= offer.amount
+		BlasterOpsSupplyOffer.Kind.REINFORCEMENT:
+			call_reinforcement(sim, definition.supply_terminals[nearby_terminal(sim)] + Vector2.DOWN * sim.map.tile_size)
+		BlasterOpsSupplyOffer.Kind.ALLY_UPGRADE:
+			ally_scale *= offer.amount
+			_restore_allies(sim)
+	return true
+
+
+func _next_reserve() -> int:
+	for index in recruited.size():
+		if definition.is_reserve(index) and recruited[index] == 0:
+			return index
+	return -1
+
+
+func _has_allies(sim: BlasterOpsSimulation) -> bool:
+	for index in recruited.size():
+		if recruited[index] != 0 and index != definition.protected_index and sim.prisoners[index].health > 0.0:
+			return true
+	return false
+
+
+func _restore_allies(sim: BlasterOpsSimulation) -> void:
+	for index in recruited.size():
+		if recruited[index] != 0 and sim.prisoners[index].health > 0.0:
+			sim.prisoners[index].health = sim._ally_max_health(index)
 
 
 func can_deploy() -> bool:
@@ -73,6 +157,8 @@ func follower_speed(index: int, base: float) -> float:
 func interact(sim: InfiltrationSimulation) -> void:
 	if nearby_object(sim) >= 0:
 		super.interact(sim)
+	elif nearby_terminal(sim as BlasterOpsSimulation) >= 0:
+		return
 	elif can_deploy():
 		(sim as BlasterOpsSimulation).deploy_barrier()
 
@@ -128,6 +214,8 @@ func _advance_waves(sim: BlasterOpsSimulation) -> void:
 
 
 func _start_wave(sim: BlasterOpsSimulation, index: int) -> void:
+	if index > 0:
+		earn_supplies(definition.supply_per_wave)
 	wave_index = index
 	intermission_ticks = 0
 	sim._emit(InfiltrationEvent.Type.WAVE_STARTED, 0, index, sim.player.position)
@@ -203,7 +291,7 @@ func bonus_objective(sim: InfiltrationSimulation) -> bool:
 
 func capture() -> Dictionary:
 	var snapshot: Dictionary = super.capture()
-	snapshot["incursion"] = {"wave_index": wave_index, "intermission_ticks": intermission_ticks, "waves_finished": waves_finished, "phase_index": phase_index, "phase_health": phase_health, "damage_taken": damage_taken, "attempts": attempts, "hits": hits, "barriers_placed": barriers_placed, "barrier_charges": barrier_charges, "heavy_barrier_charges": heavy_barrier_charges, "last_hit_swing": last_hit_swing, "repair_ticks": repair_ticks}
+	snapshot["incursion"] = {"wave_index": wave_index, "intermission_ticks": intermission_ticks, "waves_finished": waves_finished, "phase_index": phase_index, "phase_health": phase_health, "damage_taken": damage_taken, "attempts": attempts, "hits": hits, "barriers_placed": barriers_placed, "barrier_charges": barrier_charges, "heavy_barrier_charges": heavy_barrier_charges, "last_hit_swing": last_hit_swing, "repair_ticks": repair_ticks, "supplies": supplies, "offer_counts": offer_counts.duplicate(), "heat_scale": heat_scale, "damage_scale": damage_scale, "ally_scale": ally_scale}
 	return snapshot
 
 

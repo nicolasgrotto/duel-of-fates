@@ -14,6 +14,11 @@ const ADAPTED_POWERS: Array[BlasterOpsPowerData] = [
 	preload("res://data/blaster_ops/powers/wrath.tres"), preload("res://data/blaster_ops/powers/storm.tres"),
 ]
 const MAX_POWER_SLOTS: int = 3
+const SUPPLY_OFFERS: Array[BlasterOpsSupplyOffer] = [
+	preload("res://data/blaster_ops/supplies/heal.tres"), preload("res://data/blaster_ops/supplies/barrier.tres"), preload("res://data/blaster_ops/supplies/bulwark.tres"),
+	preload("res://data/blaster_ops/supplies/coolant.tres"), preload("res://data/blaster_ops/supplies/combat_tune.tres"),
+	preload("res://data/blaster_ops/supplies/reinforcement.tres"), preload("res://data/blaster_ops/supplies/ally_upgrade.tres"),
+]
 const ARSENAL: BlasterOpsArsenal = preload("res://data/blaster_ops/arsenal.tres")
 
 

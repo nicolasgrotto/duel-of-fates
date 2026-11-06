@@ -168,6 +168,12 @@ func _draw_incursion() -> void:
 		var exit: Vector2 = data.extraction
 		draw_line(exit - Vector2.ONE * 14.0, exit + Vector2.ONE * 14.0, PALETTE.secondary, 4.0)
 		draw_line(exit + Vector2(-14, 14), exit + Vector2(14, -14), PALETTE.secondary, 4.0)
+	for terminal in data.supply_terminals:
+		var center: Vector2 = _snap(terminal)
+		draw_rect(Rect2(center - Vector2(24, 20), Vector2(48, 40)), PALETTE.infiltration_wall)
+		draw_rect(Rect2(center - Vector2(24, 20), Vector2(48, 40)), PALETTE.accent, false, sim.config.units_per_pixel)
+		draw_line(center + Vector2(-10, 0), center + Vector2(10, 0), PALETTE.accent, 4.0)
+		draw_line(center + Vector2(0, -10), center + Vector2(0, 10), PALETTE.accent, 4.0)
 	if data.protected_index >= 0 and data.kind == BlasterOpsMissionData.Kind.DEFENSE:
 		var actor: InfiltrationActor = sim.prisoners[data.protected_index]
 		var point: Vector2 = _snap(actor.position)

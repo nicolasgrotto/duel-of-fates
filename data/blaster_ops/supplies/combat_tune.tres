@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="BlasterOpsSupplyOffer" format=3]
+
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_supply_offer.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"combat_tune"
+name_key = "OPS_SUPPLY_COMBAT_TUNE"
+description_key = "OPS_SUPPLY_COMBAT_TUNE_INFO"
+kind = 4
+cost = 5
+amount = 1.15
+limit = 2

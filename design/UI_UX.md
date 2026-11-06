@@ -32,6 +32,8 @@ Barra de **Calor** no lugar do número, abaixo de Vida e Vigor, só para quem te
 
 **Arma.** Abaixo do calor, uma linha diz a arma e o modo: `Rifle · Disparo`, `Rifle · Lâmina` ou `Rifle · Trocando`, com a tecla de troca quando há troca. Personagem sem blaster mostra só a lâmina. O rodapé acrescenta `X  Trocar arma` só nesses casos. A linha **Arma** aparece no menu de Operações e no painel de personagem, e abre uma lista com a arma própria e as cinco do Arsenal; o painel à direita mostra treino, uso (híbrido ou troca) e números sem jargão. É a mesma composição de lista e detalhe até o redesenho dos menus.
 
+**Suprimentos.** Com terminais na missão, a linha de status mostra `Suprimentos · 7`. Terminal no mapa: monitor com uma cruz na cor de destaque; perto dele, a dica `E  Terminal`. A lista usa a composição da pausa, com nome e custo por linha, descrição abaixo e o saldo no título. Sem saldo, a linha fica apagada e a compra toca recusa; indisponível não aparece. Rodapé com confirmar e voltar.
+
 A janela do jogo no desktop abre em 1280×720 e encolhe para caber na área útil da tela: a antiga 1600×900 passava da tela do autor (1440×900) e cortava o rodapé e o lado direito. HUD e menus são validados na build Web, não só na prévia do editor.
 
 ### Operações unificadas (task 17)

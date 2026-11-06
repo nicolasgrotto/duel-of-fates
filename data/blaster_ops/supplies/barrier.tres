@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="BlasterOpsSupplyOffer" format=3]
+
+[ext_resource type="Script" path="res://data/blaster_ops/blaster_ops_supply_offer.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"barrier"
+name_key = "OPS_SUPPLY_BARRIER"
+description_key = "OPS_SUPPLY_BARRIER_INFO"
+kind = 1
+cost = 2
+amount = 1.0
+limit = 0

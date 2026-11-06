@@ -216,7 +216,7 @@ func _step_allies(intents: Array[InfiltrationIntent]) -> void:
 			if enemy.health > 0.0 and InfiltrationGeometry.in_sector(actor.position, aim, enemy.position, operations.ally_fire_range, config.swing_degrees) and wall_for(BlasterOpsFaction.Side.ALLIED, actor.position, enemy.position) == INF:
 				target = true
 				break
-		if target and _spawn_bolt(-index - 2, operations.ally_bolt, aim, 1.0, actor) != null:
+		if target and _spawn_bolt(-index - 2, operations.ally_bolt, aim, (mission as BlasterOpsMissionState).ally_scale, actor) != null:
 			actor.fire_ticks = Ticks.from_seconds(operations.ally_fire_interval)
 			actor.aim = aim
 
@@ -261,14 +261,14 @@ func _act_as_role(index: int, actor: InfiltrationActor, role: BlasterOpsAllyData
 				actor.fire_ticks = Ticks.from_seconds(role.melee_interval)
 				actor.aim = aim
 				_emit(InfiltrationEvent.Type.SWING_HIT, 0, enemy + 1, targets[enemy].position, role.melee_damage)
-				_damage_target(enemy, _armored_damage(enemy, role.melee_damage, actor.position), false, actor.position)
+				_damage_target(enemy, _armored_damage(enemy, role.melee_damage * (mission as BlasterOpsMissionState).ally_scale, actor.position), false, actor.position)
 				return
 		return
 	if role.bolt == null:
 		return
 	for enemy in live_indices:
 		if targets[enemy].health > 0.0 and InfiltrationGeometry.in_sector(actor.position, aim, targets[enemy].position, role.fire_range, config.swing_degrees) and wall_for(BlasterOpsFaction.Side.ALLIED, actor.position, targets[enemy].position) == INF:
-			if _spawn_bolt(-index - 2, role.bolt, aim, role.damage_scale, actor) != null:
+			if _spawn_bolt(-index - 2, role.bolt, aim, role.damage_scale * (mission as BlasterOpsMissionState).ally_scale, actor) != null:
 				actor.fire_ticks = Ticks.from_seconds(role.fire_interval)
 				actor.aim = aim
 			return
@@ -308,6 +308,8 @@ func _advance_operations() -> void:
 
 
 func _apply_intent(intent: InfiltrationIntent) -> void:
+	if intent.purchase >= 0 and mission is BlasterOpsMissionState:
+		(mission as BlasterOpsMissionState).purchase(self, intent.purchase)
 	if intent.aim.length_squared() > 0.0:
 		player.aim = intent.aim.normalized()
 	player.guard = false
@@ -490,7 +492,8 @@ func _fire_primary() -> void:
 	state.burst_ticks = maxi(Ticks.from_seconds(loadout.blaster.shot_interval), 1)
 	state.fire_ticks = maxi(Ticks.from_seconds(loadout.fire_interval), 1)
 	state.cooling_ticks = Ticks.from_seconds(operations.cooling_delay)
-	state.heat = minf(state.heat + loadout.heat_per_shot * loadout.blaster.vigor_multiplier, operations.heat_capacity)
+	var scale: float = (mission as BlasterOpsMissionState).heat_scale if mission is BlasterOpsMissionState else 1.0
+	state.heat = minf(state.heat + loadout.heat_per_shot * loadout.blaster.vigor_multiplier * scale, operations.heat_capacity)
 	if state.heat >= operations.heat_capacity:
 		state.overheated = true
 		state.overheat_ticks = Ticks.from_seconds(operations.overheat_seconds)
@@ -612,6 +615,8 @@ func _damage_target(index: int, damage: float, silent: bool = false, source_posi
 	if not alive or targets[index].health > 0.0:
 		return
 	var data: BlasterOpsEnemyData = target_data[index] as BlasterOpsEnemyData
+	if mission is BlasterOpsMissionState:
+		(mission as BlasterOpsMissionState).earn_supplies(data.supply_value if data != null else 1)
 	if data != null and data.bolt == null and data.blast_radius > 0.0:
 		apply_area_damage(BlasterOpsFaction.Side.HOSTILE, targets[index].position, data.blast_radius, data.blast_damage, index + 1, Ticks.from_seconds(operations.blast_flinch))
 
@@ -876,7 +881,8 @@ func swing_damage() -> float:
 
 
 func _dealt_scale() -> float:
-	return config.duel_config.flow.wrath_dealt if state.boost_ticks > 0 else 1.0
+	var supply: float = (mission as BlasterOpsMissionState).damage_scale if mission is BlasterOpsMissionState else 1.0
+	return supply * (config.duel_config.flow.wrath_dealt if state.boost_ticks > 0 else 1.0)
 
 
 func _interrupt_powers() -> void:

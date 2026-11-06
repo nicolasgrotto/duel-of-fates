@@ -1253,3 +1253,21 @@ OPS_ALLY_MEDIC,Socorrista,Field medic
 OPS_ALLY_BLADE,Guarda de lâmina,Blade guard
 OPS_BARRIER_FIELD,Barreira de campo,Field barrier
 OPS_BARRIER_BULWARK,Muralha,Bulwark
+OPS_SUPPLY_HEAL,Cura de campo,Field repair
+OPS_SUPPLY_HEAL_INFO,Recupera 40 de vida agora.,Restores 40 health now.
+OPS_SUPPLY_BARRIER,Barreira de campo,Field barrier
+OPS_SUPPLY_BARRIER_INFO,Mais uma barreira rápida para implantar com Interagir.,One more quick barrier to deploy with Interact.
+OPS_SUPPLY_BULWARK,Muralha,Bulwark
+OPS_SUPPLY_BULWARK_INFO,Mais uma muralha de três tiles; é usada antes das barreiras de campo.,One more three-tile bulwark; it is used before field barriers.
+OPS_SUPPLY_COOLANT,Resfriador,Coolant
+OPS_SUPPLY_COOLANT_INFO,Cada tiro aquece um quarto a menos até o fim da tentativa.,Each shot heats a quarter less until the end of the attempt.
+OPS_SUPPLY_COMBAT_TUNE,Ajuste de combate,Combat tuning
+OPS_SUPPLY_COMBAT_TUNE_INFO,Cortes e disparos causam 15% mais dano até o fim da tentativa.,Cuts and shots deal 15% more damage until the end of the attempt.
+OPS_SUPPLY_REINFORCEMENT,Reforço,Reinforcement
+OPS_SUPPLY_REINFORCEMENT_INFO,Chama o próximo aliado de reserva até este terminal.,Calls the next reserve ally to this terminal.
+OPS_SUPPLY_ALLY_UPGRADE,Equipar aliados,Equip allies
+OPS_SUPPLY_ALLY_UPGRADE_INFO,Aliados causam 25% mais dano e têm a vida restaurada.,Allies deal 25% more damage and have their health restored.
+OPS_SUPPLY_TITLE,Terminal de suprimentos · {supplies},Supply terminal · {supplies}
+OPS_SUPPLY_ROW,{name} · {cost},{name} · {cost}
+OPS_SUPPLY_STATUS,Suprimentos · {supplies},Supplies · {supplies}
+OPS_SUPPLY_OPEN,Terminal,Terminal

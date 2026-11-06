@@ -21,6 +21,7 @@ var _pointer_active: bool = false
 var _aim: Vector2 = Vector2.RIGHT
 var _explicit_aim: bool = false
 var _stance: int = 0
+var _queued_purchase: int = -1
 
 
 func handle_input(event: InputEvent) -> void:
@@ -57,7 +58,13 @@ func produce(sim: InfiltrationSimulation, intent: InfiltrationIntent) -> void:
 	_last_held = active | intent.pressed
 	_toggle_stance(intent.pressed)
 	intent.held = (_last_held & ~STANCES) | _stance
+	intent.purchase = _queued_purchase
+	_queued_purchase = -1
 	_pending = 0
+
+
+func queue_purchase(offer: int) -> void:
+	_queued_purchase = offer
 
 
 func stance() -> int:

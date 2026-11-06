@@ -45,6 +45,10 @@ var _heat: HeatBar
 var _heat_label: Label
 var _abilities: AbilityBar
 var _weapon_status: Label
+var _shop_layer: CanvasLayer
+var _shop_title: Label
+var _shop_detail: Label
+var _shop_list: MenuList
 var _status: Label
 var _debug: Label
 var _pause_layer: CanvasLayer
@@ -101,6 +105,7 @@ func open(params: Dictionary) -> void:
 	_stage.rig = _camera
 	_build_hud()
 	_build_pause()
+	_build_shop()
 	_hum = AudioStreamPlayer.new()
 	_hum.stream = AudioDirector.stream(&"blade_hum")
 	_hum.bus = &"Blades"
@@ -259,6 +264,95 @@ func _build_pause() -> void:
 	_set_paused(false)
 
 
+func _build_shop() -> void:
+	_shop_layer = CanvasLayer.new()
+	_shop_layer.layer = 30
+	add_child(_shop_layer)
+	var overlay: ColorRect = ColorRect.new()
+	overlay.color = Color(PALETTE.background, 0.9)
+	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_shop_layer.add_child(overlay)
+	var column: VBoxContainer = VBoxContainer.new()
+	column.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	column.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	column.grow_vertical = Control.GROW_DIRECTION_BOTH
+	column.add_theme_constant_override(&"separation", 30)
+	_shop_layer.add_child(column)
+	_shop_title = _label("", &"ScreenTitleLabel")
+	_shop_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	column.add_child(_shop_title)
+	var center: CenterContainer = CenterContainer.new()
+	column.add_child(center)
+	_shop_list = MenuList.new()
+	center.add_child(_shop_list)
+	_shop_list.chosen.connect(_on_shop_chosen)
+	_shop_list.highlighted.connect(_on_shop_highlighted)
+	_shop_detail = _label("", &"InfiltrationLabel")
+	_shop_detail.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	column.add_child(_shop_detail)
+	var hints: Label = _label(ControlHints.line(PackedStringArray([ControlHints.hint(&"ui_accept", "HINT_CONFIRM"), ControlHints.hint(&"ui_cancel", "HINT_BACK")])), &"InfiltrationLabel")
+	hints.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	column.add_child(hints)
+	_shop_layer.visible = false
+	_shop_list.set_process_unhandled_input(false)
+
+
+func _open_shop() -> void:
+	paused = true
+	_accumulator = 0.0
+	_view.animate = false
+	controller.discard_pending()
+	_shop_layer.visible = true
+	_shop_list.set_process_unhandled_input(true)
+	_refresh_shop()
+
+
+func _close_shop() -> void:
+	paused = false
+	_accumulator = 0.0
+	_view.animate = true
+	controller.discard_pending()
+	_shop_layer.visible = false
+	_shop_list.set_process_unhandled_input(false)
+
+
+func _refresh_shop(focus: StringName = &"") -> void:
+	var progress: BlasterOpsMissionState = sim.mission as BlasterOpsMissionState
+	_shop_title.text = tr("OPS_SUPPLY_TITLE").format({"supplies": progress.supplies})
+	_shop_list.clear_items()
+	for index in BlasterOpsTraining.SUPPLY_OFFERS.size():
+		if not progress.offer_available(sim, index):
+			continue
+		var offer: BlasterOpsSupplyOffer = BlasterOpsTraining.SUPPLY_OFFERS[index]
+		var id: StringName = StringName(str(index))
+		_shop_list.add_item(id, tr("OPS_SUPPLY_ROW").format({"name": tr(offer.name_key), "cost": offer.cost}))
+		if progress.supplies < offer.cost:
+			_shop_list.set_item_color(id, PALETTE.secondary)
+	_shop_list.add_item(&"back", tr("MENU_BACK"))
+	if focus != &"":
+		_shop_list.select_id(focus)
+	_on_shop_highlighted(_shop_list._ids[_shop_list.selected])
+
+
+func _on_shop_highlighted(id: StringName) -> void:
+	_shop_detail.text = "" if id == &"back" else tr(BlasterOpsTraining.SUPPLY_OFFERS[int(String(id))].description_key)
+
+
+func _on_shop_chosen(id: StringName) -> void:
+	if id == &"back":
+		_close_shop()
+		return
+	var offer: int = int(String(id))
+	var progress: BlasterOpsMissionState = sim.mission as BlasterOpsMissionState
+	if progress.supplies < BlasterOpsTraining.SUPPLY_OFFERS[offer].cost:
+		AudioDirector.play_ui(&"rejected")
+		return
+	controller.queue_purchase(offer)
+	controller.produce(sim, intent)
+	step_once(intent)
+	_refresh_shop(id)
+
+
 func _process(delta: float) -> void:
 	if sim == null:
 		return
@@ -378,6 +472,8 @@ func _update_presentation(alpha: float) -> void:
 	_abilities.show_state(sim.state)
 	_update_heat()
 	_update_weapon()
+	if sim.mission is BlasterOpsMissionState and (sim.mission as BlasterOpsMissionState).has_supplies():
+		cooldowns.append(tr("OPS_SUPPLY_STATUS").format({"supplies": (sim.mission as BlasterOpsMissionState).supplies}))
 	var stance: int = controller.stance()
 	if stance != 0:
 		cooldowns.append(tr("BOPS_STANCE_RUN" if stance == InfiltrationIntent.RUN else "BOPS_STANCE_SNEAK"))
@@ -469,6 +565,8 @@ func _update_incursion_hud() -> void:
 	var hints: PackedStringArray = []
 	if progress.nearby_object(sim) >= 0:
 		hints.append(ControlHints.hint(&"infiltration_interact", "INF_RECRUIT"))
+	elif progress.nearby_terminal(sim) >= 0:
+		hints.append(ControlHints.hint(&"infiltration_interact", "OPS_SUPPLY_OPEN"))
 	if data.protected_index >= 0:
 		hints.append(tr("OPS_PROTECTED_HEALTH").format({"health": roundi(sim.prisoners[data.protected_index].health)}))
 	if progress.can_deploy():
@@ -482,6 +580,15 @@ func _update_incursion_hud() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if sim == null or _finished:
+		return
+	if _shop_layer.visible:
+		if event.is_action_pressed(&"ui_cancel") or event.is_action_pressed(&"p1_pause"):
+			_close_shop()
+			get_viewport().set_input_as_handled()
+		return
+	if not paused and event.is_action_pressed(&"infiltration_interact") and sim.mission is BlasterOpsMissionState and (sim.mission as BlasterOpsMissionState).nearby_terminal(sim) >= 0:
+		_open_shop()
+		get_viewport().set_input_as_handled()
 		return
 	if event.is_action_pressed(&"debug_overlay"):
 		_view.debug = not _view.debug

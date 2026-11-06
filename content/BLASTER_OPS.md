@@ -51,6 +51,20 @@ Movimento livre normalizado em oito direções, 240 u/s, aceleração 2.200 u/s�
 
 Correr e furtivo são alternâncias no controlador: um toque liga, outro desliga, e ligar um desliga o outro; a pausa conserva a postura e reiniciar a limpa. Nenhuma ação usa Ctrl, Alt ou Meta, e a tela de teclas recusa essas teclas, porque o navegador reserva combinações como Ctrl+W. Teclas salvas no layout anterior são migradas sem perder personalizações: sai só Ctrl, e teclas novas entram apenas se estiverem livres. Ações `blaster_ops_*` próprias pelo InputMap, com aliases `infiltration_*` para compatibilidade. Teclas e botões são remapeáveis em **Teclas e botões › Operações**; mouse e eixos de mira permanecem disponíveis. Botões padrão copiam os bindings do J1, sem alterar o duelo. A tela Controles tem uma página do modo e as dicas vêm de ControlHints. Na pausa do treino é possível reiniciar com outro personagem (Corsária, Lince, Coldre ou Guardião) e outro poder; toda troca reinicia, sem mudar recurso compartilhado ou campanha.
 
+## Suprimentos (versão 1.1)
+
+Recurso de uma única tentativa, só em missões longas com **terminais de suprimentos**. Abater inimigos rende 1 (Guarda de campo e Reparador 2, Passo de Ferro 6), e cada onda nova rende 2. `E` no terminal abre a lista e congela a ação enquanto ela está aberta. Nada é salvo, não há moeda entre tentativas e reiniciar zera tudo. Toda missão pode ser vencida sem comprar nada.
+
+| Compra | Custo | Efeito | Limite |
+| --- | --- | --- | --- |
+| Cura de campo | 4 | +40 de vida | sem limite |
+| Barreira de campo | 2 | +1 carga | sem limite |
+| Muralha | 4 | +1 carga de muralha | sem limite |
+| Resfriador | 4 | calor por tiro × 0,75 | 2 vezes, só com blaster |
+| Ajuste de combate | 5 | dano de corte e disparo × 1,15 | 2 vezes |
+| Reforço | 6 | chama o próximo aliado de reserva no terminal | conforme a missão |
+| Equipar aliados | 5 | dano dos aliados × 1,25 e aliados curados | 2 vezes, com ao menos um aliado |
+
 ## Barreiras (versão 1.1)
 
 `E` implanta à frente da mira, quando não há objeto para interagir. Cada missão define quantas cargas dá, e os terminais de suprimentos vendem mais. Barreiras são da facção do jogador: paredes para corpos e fogo inimigo, transparentes para o fogo aliado. Não têm reembolso, e quebrá-las reabre a passagem.

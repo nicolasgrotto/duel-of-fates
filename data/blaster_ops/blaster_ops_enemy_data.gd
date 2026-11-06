@@ -13,3 +13,4 @@ enum Aura { NONE, SHIELD, REPAIR }
 @export var blast_damage: float = 0.0
 @export var flee_range: float = 0.0
 @export var stride: float = 0.0
+@export var supply_value: int = 1
